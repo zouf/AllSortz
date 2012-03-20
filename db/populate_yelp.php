@@ -7,7 +7,6 @@
 require_once ('../yelp/OAuth.php');
 require_once ('utilities.php');
 
-
 function yelpAddTypeByCity($dbname, $city, $type)
 {
 

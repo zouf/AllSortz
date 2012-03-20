@@ -26,6 +26,7 @@ function googleAddTypeByCity($dbname, $city, $type)
 
 	$CityRestauarants = "https://maps.googleapis.com/maps/api/place/search/json?location=".$lat.",".$lng."&radius=500&types=".$type."&sensor=false&key=".$APIKey;
 	echo($CityRestauarants);
+
 	$ch = curl_init($CityRestauarants);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
