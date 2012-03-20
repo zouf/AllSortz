@@ -25,7 +25,6 @@ function googleAddTypeByCity($dbname, $city, $type)
 	
 
 	$CityRestauarants = "https://maps.googleapis.com/maps/api/place/search/json?location=".$lat.",".$lng."&radius=500&types=".$type."&sensor=false&key=".$APIKey;
-	echo($CityRestauarants);
 
 	$ch = curl_init($CityRestauarants);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -44,11 +43,11 @@ function googleAddTypeByCity($dbname, $city, $type)
 			if(isset($bus['rating']))  // if possible seed with businesses
 			{
 				$rating = $bus['rating'];
-				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_keywords, bus_descr, bus_rating) VALUES ('$nm',  '$type' , 'test desc', '$rating' ); ";
+				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_keyword, bus_descr, bus_rating) VALUES ('$nm',  '$type' , 'test desc', '$rating' ); ";
 			}
 			else
 			{
-				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_keywords, bus_descr) VALUES ('$nm', '$type', 'test desc' ); ";
+				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_keyword, bus_descr) VALUES ('$nm', '$type', 'test desc' ); ";
 			}
 
 			$res = mysql_query($sql_insert);
