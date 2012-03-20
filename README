@@ -1,3 +1,5 @@
+==== Design Challenges ====
+
 Right now, we're seeding the restaurant ratings with those from Yelp and Google Places. Terms of usage might limit this functionality, so we might want to think about taking this out. In the limit (10k+ users / city), we won't need any data from Google or Yelp
 
 
