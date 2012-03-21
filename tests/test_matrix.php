@@ -59,12 +59,9 @@ function populateBusRatTable($dbname, $conn)
 			else
 			{
 				echo("Pair already exists. Update possibly");
-			}
-			
+			}		
 		}
-	
 	}
-	
 }
 
 $dbname = "nightout1";
