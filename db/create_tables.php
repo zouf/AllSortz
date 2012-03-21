@@ -4,32 +4,51 @@
 </head>
 <body>
  <?php
+require_once('utilities.php');
 
-
-function createDynamicUserCharacteristics($dbname, $conn)
+function createBusinessRatingTable($dbname,$conn)
 {
-	$tblname = "usercharac_tbl";
+	$tblname = "busrat_tbl";
 	if(checkIfExists($tblname,$dbname))
 	{
+		echo('<p> '.$tblname.' already exist!</p>');
 		return;		
 	}
 	mysql_select_db($dbname);
-	//Creates User (Row) -> Characteristic (Col)
-	$result = mysql_query("SELECT charac_name FROM characteristics_tbl");
-	
-	$sql_create_dyn_table = "CREATE TABLE ".$tblname."( uchr_id INT NOT NULL AUTO_INCREMENT, ";
-	while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
-		$str = $row["charac_name"];
-		$sql_create_dyn_table = $sql_create_dyn_table. $str." VARCHAR(100) NOT NULL, ";
-	}
-	$sql_create_dyn_table = $sql_create_dyn_table. " PRIMARY KEY (uchr_id ) );";
+	$sql_create_dyn_table = "CREATE TABLE ".$tblname."(usr_id INT, bus_id INT, rating INT, ".
+		" INDEX user_ind (usr_id), FOREIGN KEY (usr_id) REFERENCES user_tbl(usr_id)     ON DELETE CASCADE ,".
+		" INDEX bus_ind  (bus_id), FOREIGN KEY (bus_id) REFERENCES business_tbl(bus_id) ON DELETE CASCADE) ".
+		" ENGINE=INNODB;";
+		
 	mysql_select_db($dbname);
 	$retval = mysql_query( $sql_create_dyn_table, $conn );
 	if(! $retval )
 	{
 	  die('Could not create table: ' . mysql_error());
 	}
-	echo($sql_create_dyn_table);
+
+}
+
+function createUserCharacteristicsTable($dbname, $conn)
+{
+	$tblname = "usercharac_tbl";
+	if(checkIfExists($tblname,$dbname))
+	{
+		echo('<p> '.$tblname.' already exist!</p>');
+		return;		
+	}
+	mysql_select_db($dbname);
+	$sql_create_dyn_table = "CREATE TABLE ".$tblname."(usr_id INT, charac_id INT, rating INT, ".
+		" INDEX user_ind (usr_id), FOREIGN KEY (usr_id) REFERENCES user_tbl(usr_id)     ON DELETE CASCADE ,".
+		" INDEX charac_ind  (charac_id), FOREIGN KEY (charac_id) REFERENCES characteristics_tbl(charac_id) ON DELETE CASCADE) ".
+		" ENGINE=INNODB;";
+		
+	mysql_select_db($dbname);
+	$retval = mysql_query( $sql_create_dyn_table, $conn );
+	if(! $retval )
+	{
+	  die('Could not create table: ' . mysql_error());
+	}
 	
 }
 
@@ -80,7 +99,7 @@ function createCharaceristicsTable($dbname, $conn)
 	}
 	else
 	{
-		echo('<p> Characteristics already exist!</p>');
+		echo('<p> '.$tableName.' already exist!</p>');
 	}
 	return;
 }
@@ -97,7 +116,7 @@ function createUserTable($dbname, $conn)
 		  " usr_fullname VARCHAR(100) NOT NULL, ".
 		  " usr_email VARCHAR(40) NOT NULL,   ".
 		  " usr_uname VARCHAR(40),	 ".
-		  " PRIMARY KEY ( usr_id ) );   ";
+		  " PRIMARY KEY ( usr_id ) ) ENGINE=INNODB;   ";
 
 		mysql_select_db($dbname);
 		$retval = mysql_query( $sql_create_user, $conn );
@@ -115,18 +134,6 @@ function createUserTable($dbname, $conn)
 }
 
 
-function checkIfExists($name,$dbname ) {
-	$sql = "SHOW TABLES FROM $dbname";
-	$result = mysql_query($sql);
-	$fd = False;
-	while ($row = mysql_fetch_row($result)) {
-		if(!strcmp($row[0], $name))
-		{
-			$fd = True;
-		}
-	}
-	return $fd;
-}
 	$dbname = "nightout1";
  	$conn = mysql_connect("localhost","root","new-password");
  	if (!$conn)
@@ -136,7 +143,8 @@ function checkIfExists($name,$dbname ) {
 	createUserTable($dbname,$conn);
 	createCharaceristicsTable($dbname,$conn);
 	createBusinessTable($dbname,$conn);
-	createDynamicUserCharacteristics($dbname,$conn);
+	createUserCharacteristicsTable($dbname,$conn);
+	createBusinessRatingTable($dbname,$conn);
  	mysql_close($conn);
  ?>
 </body>
