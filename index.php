@@ -45,6 +45,11 @@
 <div>
 <p id="message"></p>
 </div>
+<div>
+	<a href="display/viewtable.php?table=business_tbl">Businesses</a><br>
+	<a href="display/viewtable.php?table=user_tbl">Users</a><br>
+	<a href="display/viewtable.php?table=busrat_tbl">Business Ratings</a>
+</div>
 
 
 </body>
