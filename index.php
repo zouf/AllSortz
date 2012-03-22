@@ -50,7 +50,8 @@
 <div>
 	<a href="display/viewtable.php?table=business_tbl">Businesses</a><br>
 	<a href="display/viewtable.php?table=user_tbl">Users</a><br>
-	<a href="display/viewtable.php?table=busrat_tbl">Business Ratings</a>
+	<a href="display/viewtable.php?table=busrat_tbl">Business Ratings</a><br>
+	<a href="ratings/userdiff.php">Diff Between Users</a>
 </div>
 
 <?php
