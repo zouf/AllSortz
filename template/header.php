@@ -24,7 +24,7 @@
 
 <?php
 
-		echo('<div id="accountbar"><a href="/index.php">Nightout</a> Account Bar</div>');
+		echo('<div id="accountbar"><a href="/index.php">Nightout</a> Account Bar</div><a href="/login.php">Login</a>');
 	
 
 ?>

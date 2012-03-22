@@ -62,6 +62,25 @@ function userNameExists($name,$conn)
 	return True;
 }
 
+function getNameFromUname($uname,$conn)
+{
+	$result = mysql_query("SELECT * FROM user_tbl WHERE usr_uname='$uname'");
+	if($result)
+	{
+		$username = mysql_fetch_array($result);
+		return $username['usr_fullname'];
+	}
+
+}
+
+function checkUnamePassword($uname,$password,$conn)
+{
+	$result = mysql_query("SELECT * FROM user_tbl WHERE usr_uname='$uname' and usr_password='$password'");
+	if(!mysql_num_rows($result))
+		return False;
+	return True;
+}
+
 
 /* Inserts user (handles any problems with the formatting too) */
 function addUser($name, $email, $uname, $password, $conn)

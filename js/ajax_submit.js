@@ -69,13 +69,39 @@ $(document).ready(function(){
 		return false;
 	});
 	
+	$('#loginUser').click(function() {
+
+			$.ajax({
+				type : 'POST',
+				url : 'handler/login.php',
+				dataType : 'json',
+				data: {
+					username : $('#uname').val(), password : $('#password').val()
+				},
+				success : function(data){
+						alert('good');
+					$('#waiting').hide(500);
+					$('#message').removeClass().addClass((data.error === true) ? 'error' : 'success')
+						.text(data.msg).show(500);
+					if (data.error === true)
+						$('#demoForm').show(500);
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					alert(errorThrown);
+					$('#waiting').hide(500);
+					$('#message').removeClass().addClass('error')
+						.text('There was an error.').show(500);
+					$('#demoForm').show(500);
+				}
+			});
+		
+		return false;
+
+	});
+	
+	
 	$('#submitUser').click(function() {
 
-
-			
-	//	$('#waiting').show(500);
-	//	$('#demoForm').hide(0);
-	//	$('#message').hide(0);
 		$('#email').removeClass('error');
 		$('#uname').removeClass('error');
 		$('#fullName').removeClass('error');
@@ -110,7 +136,7 @@ $(document).ready(function(){
 
 			$.ajax({
 				type : 'POST',
-				url : '../db/dbadd.php',
+				url : '../handler/dbadd.php',
 				dataType : 'json',
 				data: {
 					fullname : $('#fullName').val(), email : $('#email').val(),	uname : $('#uname').val(),	password : $('#password').val()

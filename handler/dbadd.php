@@ -11,7 +11,7 @@ if (!$conn)
 
 
 
-	require_once('dblib.php');
+	require_once('../db/dblib.php');
 if (empty($_POST['fullname']) || empty($_POST['email']) || empty($_POST['uname']) || empty($_POST['password'])) {
 	$return['error'] = true;
 	$return['msg'] = 'You missed something!';
