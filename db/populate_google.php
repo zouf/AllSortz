@@ -17,6 +17,7 @@ function googleAddTypeByCity($dbname, $city, $type)
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	$data = curl_exec($ch); 
+	echo($data);
 	curl_close($ch);
 	
 	$response = json_decode($data,true);
@@ -31,27 +32,30 @@ function googleAddTypeByCity($dbname, $city, $type)
 	$ch = curl_init($CityRestauarants);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	$data = curl_exec($ch); // Yelp response
-	curl_close($ch);
+	//echo "<br><br>".curl_error($ch);
+	//echo($data);
 	
 	$response = json_decode($data,true);
 
 	mysql_select_db($dbname);
+	echo($response['results'][1]);
 	foreach($response['results'] as $bus)
-	{
+	{	
 		$nm = mysql_real_escape_string($bus['name']);
 		if(!businessExists($nm,$conn))
 		{
 			if(isset($bus['rating']))  // if possible seed with businesses
 			{
 				$rating = $bus['rating'];
-				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_keyword, bus_descr, bus_rating) VALUES ('$nm',  '$type' , 'test desc', '$rating' ); ";
+				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_rating) VALUES ('$nm',  'test desc', '$rating' ); ";
 			}
 			else
 			{
-				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_keyword, bus_descr) VALUES ('$nm', '$type', 'test desc' ); ";
+				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr) VALUES ('$nm', 'test desc' ); ";
 			}
-
+			echo($sql_insert);
 			$res = mysql_query($sql_insert);
 			if(!$res)
 			{
