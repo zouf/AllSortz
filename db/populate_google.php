@@ -25,7 +25,9 @@ function googleAddTypeByCity($dbname, $city, $type)
 	
 
 	$CityRestauarants = "https://maps.googleapis.com/maps/api/place/search/json?location=".$lat.",".$lng."&radius=500&types=".$type."&sensor=false&key=".$APIKey;
-
+	
+	
+	echo($CityRestauarants);
 	$ch = curl_init($CityRestauarants);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -54,6 +56,20 @@ function googleAddTypeByCity($dbname, $city, $type)
 			if(!$res)
 			{
 			 	die('Invalid query: ' . mysql_error());
+			}
+			$types = $bus['types'];
+			foreach($types as &$t)
+			{
+				$typenm = mysql_real_escape_string($t);
+				echo($typenm);
+				echo('\n        ');
+				if(!businessTypeExists($typenm,$conn))  //create type if it doesnt exist
+				{
+					insertBusType($typenm,$conn);
+				}
+				$typeId = getBusTypeIdFromName($typenm,$conn);
+				$busId = getBusIdFromName($nm, $conn);
+				insertBusTypeRelPair($busId,$typeId,$conn);
 			}
 		}
 	}

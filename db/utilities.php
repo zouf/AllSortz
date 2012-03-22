@@ -60,6 +60,66 @@ function array2table($array, $recursive = false, $null = '&nbsp;')
     return $table;
 }
 
+
+function insertBusType($name,$conn)
+{
+		$sql_insert_type = "INSERT INTO bustype_tbl (bustype_name, bustype_descr) VALUES ('$name', '$name'); ";
+		$res = mysql_query($sql_insert_type);
+		if(!$res)
+		{
+		 	die('Invalid query: ' . mysql_error());
+		}
+
+}
+
+function getNameFromBusTypeId($bustypeid, $conn)
+{
+		$resultingName = mysql_query("SELECT * from bustype_tbl where bustype_id='$bustypeid'");
+		if(!$resultingName)
+		{
+		 	die('Invalid query: ' . mysql_error());
+		}
+		$rname = mysql_fetch_array($resultingName, MYSQL_BOTH);
+		$bustypename = $rname['bustype_name'];
+
+	return $bustypename;
+}
+function getBusTypeIdFromName($name,$conn)
+{
+		$resultingId = mysql_query("SELECT * from bustype_tbl where bustype_name='$name'");
+		if(!$resultingId)
+		{
+		 	die('Invalid query: ' . mysql_error());
+		}
+		$rid = mysql_fetch_array($resultingId, MYSQL_BOTH);
+		$bustypeid = $rid['bustype_id'];
+	return $bustypeid;
+}
+
+
+// table to characterize all businesses
+function insertBusTypeRelPair($busid, $typeid, $conn)
+{
+	$mysql_insert_pair = "INSERT INTO bustyperel_tbl (bus_id, bustype_id, rating) VALUES ('$busid', '$typeid', 1); ";
+	$res = mysql_query($mysql_insert_pair);
+	if(!$res)
+	{
+	 	die('Invalid query: ' . mysql_error());
+	}
+}
+
+function getBusIdFromName($name,$conn)
+{
+		$resultingId = mysql_query("SELECT * from business_tbl where bus_name='$name'");
+		if(!$resultingId)
+		{
+		 	die('Invalid query: ' . mysql_error());
+		}
+		$rid = mysql_fetch_array($resultingId, MYSQL_BOTH);
+		return $rid['bus_id'];
+}
+
+
 function businessExists($name,$conn)
 {	
 
@@ -69,6 +129,13 @@ function businessExists($name,$conn)
 	return True;
 }
 
+function businessTypeExists($name,$conn)
+{
+	$result = mysql_query("SELECT * FROM bustype_tbl WHERE bustype_name='$name'");
+	if(!mysql_num_rows($result))
+		return False;
+	return True;
+}
 
 function userExists($name,$conn)
 {	

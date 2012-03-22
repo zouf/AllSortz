@@ -8,14 +8,14 @@ require_once('utilities.php');
 
 function createBusinessRatingTable($dbname,$conn)
 {
-	$tblname = "busrat_tbl";
-	if(checkIfExists($tblname,$dbname))
+	$tablename = "busrat_tbl";
+	if(checkIfExists($tablename,$dbname))
 	{
-		echo('<p> '.$tblname.' already exist!</p>');
+		echo('<p> '.$tablename.' already exist!</p>');
 		return;		
 	}
 	mysql_select_db($dbname);
-	$sql_create_dyn_table = "CREATE TABLE ".$tblname."(usr_id INT, bus_id INT, rating INT, ".
+	$sql_create_dyn_table = "CREATE TABLE ".$tablename."(usr_id INT, bus_id INT, rating INT, ".
 		" INDEX user_ind (usr_id), FOREIGN KEY (usr_id) REFERENCES user_tbl(usr_id)     ON DELETE CASCADE ,".
 		" INDEX bus_ind  (bus_id), FOREIGN KEY (bus_id) REFERENCES business_tbl(bus_id) ON DELETE CASCADE) ".
 		" ENGINE=INNODB;";
@@ -30,18 +30,19 @@ function createBusinessRatingTable($dbname,$conn)
 }
 
 
-function createBusinessCharacteristicsTable($dbname, $conn)
+
+function createBusinessTypesRelTable($dbname, $conn)
 {
-	$tblname = "buscharac_tbl";
-	if(checkIfExists($tblname,$dbname))
+	$tablename = "bustyperel_tbl";
+	if(checkIfExists($tablename,$dbname))
 	{
-		echo('<p> '.$tblname.' already exist!</p>');
+		echo('<p> '.$tablename.' already exist!</p>');
 		return;		
 	}
 	mysql_select_db($dbname);
-	$sql_create_dyn_table = "CREATE TABLE ".$tblname."(bus_id INT, charac_id INT, rating INT, ".
+	$sql_create_dyn_table = "CREATE TABLE ".$tablename."(bus_id INT, bustype_id INT, rating INT, ".
 		" INDEX bus_ind (bus_id), FOREIGN KEY (bus_id) REFERENCES business_tbl(bus_id)     ON DELETE CASCADE ,".
-		" INDEX charac_ind  (charac_id), FOREIGN KEY (charac_id) REFERENCES characteristics_tbl(charac_id) ON DELETE CASCADE) ".
+		" INDEX bustype_ind  (bustype_id), FOREIGN KEY (bustype_id) REFERENCES bustype_tbl(bustype_id) ON DELETE CASCADE) ".
 		" ENGINE=INNODB;";
 		
 	mysql_select_db($dbname);
@@ -53,16 +54,43 @@ function createBusinessCharacteristicsTable($dbname, $conn)
 	
 }
 
-function createUserCharacteristicsTable($dbname, $conn)
+function createBusTypeTable($dbname, $conn)
 {
-	$tblname = "usercharac_tbl";
-	if(checkIfExists($tblname,$dbname))
+	$tablename = "bustype_tbl";
+	if(checkIfExists($tablename,$dbname))
 	{
-		echo('<p> '.$tblname.' already exist!</p>');
+		echo('<p> '.$tablename.' already exist!</p>');
 		return;		
 	}
 	mysql_select_db($dbname);
-	$sql_create_dyn_table = "CREATE TABLE ".$tblname."(usr_id INT, charac_id INT, rating INT, ".
+	$sql_create_type =  
+		  " CREATE TABLE ".$tablename."( ".
+		  " bustype_id INT NOT NULL AUTO_INCREMENT, ".
+		  " bustype_name VARCHAR(200) NOT NULL, ".
+		  " bustype_descr VARCHAR(200) NOT NULL,   ".
+		  " PRIMARY KEY ( bustype_id ) );   ";
+		mysql_select_db($dbname);
+		$retval = mysql_query( $sql_create_type, $conn );
+		if(! $retval )
+		{
+		  die('Could not create table: ' . mysql_error());
+		}
+		echo "Table for characteristics created successfully\n";
+		
+
+	
+}
+
+function createUserCharacteristicsTable($dbname, $conn)
+{
+	$tablename = "usercharac_tbl";
+	if(checkIfExists($tablename,$dbname))
+	{
+		echo('<p> '.$tablename.' already exist!</p>');
+		return;		
+	}
+	mysql_select_db($dbname);
+	$sql_create_dyn_table = "CREATE TABLE ".$tablename."(usr_id INT, charac_id INT, rating INT, ".
 		" INDEX user_ind (usr_id), FOREIGN KEY (usr_id) REFERENCES user_tbl(usr_id)     ON DELETE CASCADE ,".
 		" INDEX charac_ind  (charac_id), FOREIGN KEY (charac_id) REFERENCES characteristics_tbl(charac_id) ON DELETE CASCADE) ".
 		" ENGINE=INNODB;";
@@ -86,7 +114,6 @@ function createBusinessTable($dbname, $conn)
 				" CREATE TABLE ".$tableName."(  ".
 				" bus_id INT NOT NULL AUTO_INCREMENT, ".
 				" bus_name  VARCHAR(200) NOT NULL, ".
-				" bus_keyword  VARCHAR(500) NOT NULL, ".
 				" bus_descr VARCHAR(500) NOT NULL, ".
 				" bus_rating FLOAT(2,1), ".
 				" PRIMARY KEY ( bus_id ) );   ";
@@ -119,7 +146,7 @@ function createCharaceristicsTable($dbname, $conn)
 		{
 		  die('Could not create table: ' . mysql_error());
 		}
-		echo "Table for interests created successfully\n";
+		echo "Table for characteristics created successfully\n";
 	}
 	else
 	{
@@ -166,9 +193,12 @@ function createUserTable($dbname, $conn)
 	}
 	createUserTable($dbname,$conn);
 	createCharaceristicsTable($dbname,$conn);
+	createBusTypeTable($dbname,$conn);
 	createBusinessTable($dbname,$conn);
+	
+	//create the one-to-many mappings here
 	createUserCharacteristicsTable($dbname,$conn);
-	createBusinessCharacteristicsTable($dbname,$conn);
+	createBusinessTypesRelTable($dbname,$conn);
 	createBusinessRatingTable($dbname,$conn);
  	mysql_close($conn);
  ?>

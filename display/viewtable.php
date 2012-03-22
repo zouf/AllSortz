@@ -12,7 +12,6 @@
 		die('Could not connect: ' . mysql_error());
 	}
 	
-	
 	if(!isset($_GET['table']))
 	{
 			echo('Invalid URL!');  // redirect to error pag
@@ -21,18 +20,25 @@
 	
 	$table = $_GET['table'];
 
+
+	
 	//switch
 	switch($table)
 	{
 		case "busrat_tbl":
-			printBusRatTable($dbname);
+			printBusRatTable($dbname,$conn);
 			break;
 		case "user_tbl":
-			printUserTable($dbname);
+			printUserTable($dbname,$conn);
 			break;
-		case "business_tbl";
-			printBusinessTable($dbname);
+		case "business_tbl":
+			printBusinessTable($dbname,$conn);
 			break;
+		 default:
+				echo('Invalid URL!');  // redirect to error pag
+				die('<a href="javascript:history.go(-1)" title="Return to the previous page">&laquo; Go back</a>');	
+				break;
+			
 	}
 		
 	mysql_close($conn);
