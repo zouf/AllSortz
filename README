@@ -1,6 +1,6 @@
 ==== Design Challenges ====
 
-aRight now, we're seeding the restaurant ratings with those from Yelp and Google Places. Terms of usage might limit this functionality, so we might want to think about taking this out. In the limit (10k+ users / city), we won't need any data from Google or Yelp
+Right now, we're seeding the restaurant ratings with those from Yelp and Google Places. Terms of usage might limit this functionality, so we might want to think about taking this out. In the limit (10k+ users / city), we won't need any data from Google or Yelp
 
 
 Current plan is to have several  different kinds of tables (in addition to the user table which should be self explanatory)

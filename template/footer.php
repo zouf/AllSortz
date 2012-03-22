@@ -1,5 +1,5 @@
 <?php
 
-		echo('<div id="footerbar">Footer info</div>');
+		echo('</div><footer id="footerbar">Footer info</footer>');
 		
 ?>

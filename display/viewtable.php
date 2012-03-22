@@ -1,6 +1,7 @@
 <?php
 	require_once('../db/utilities.php');
 	require_once('viewlib.php');
+	include('../template/header.php');
 
 	
 	

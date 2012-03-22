@@ -1,5 +1,6 @@
 <?php
 	require_once('../db/utilities.php');
+	include('../template/header.php');
 function getUserDiff($dbname,$conn)
 {
 	mysql_select_db($dbname);
@@ -54,7 +55,7 @@ function getUserDiff($dbname,$conn)
 				$bus++;
 			}
 			$u2++;
-			echo("<p>Diff between User ".(string)$u1." and user ".(string)$u2." is ".(string)$diff."</p>");
+			echo("<p>Difference in interest ".(string)$ratArr[$u1]['Name']." and ".(string)$ratArr[$u2]['Name']." is ".(string)$diff."</p>");
 		}
 		$u1++;
 	}

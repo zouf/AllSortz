@@ -66,8 +66,9 @@ function printBusinessTable($dbname,$conn)
 
 	$i = 0;
 	while($userrow = mysql_fetch_array($users, MYSQL_BOTH)) { 
-		$ratArr[$i]['Name'] = $userrow['bus_name'];
+	
 		$ratArr[$i]['ID'] = $userrow['bus_id'];
+		$ratArr[$i]['Name'] = "<a href=../bus/view.php?id=".$userrow['bus_id'].">".$userrow['bus_name']."</a>";
 		$ratArr[$i]['Description'] = $userrow['bus_descr'];
 		$bus_id = $userrow['bus_id'];
 		$mysql_get_keywords = "SELECT * FROM bustyperel_tbl where bus_id='$bus_id'";

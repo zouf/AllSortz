@@ -48,9 +48,10 @@ function array2table($array, $recursive = false, $null = '&nbsp;')
                 $table .= "\n" . array2table($cell, true, true) . "\n";
             } else {
                 $table .= (strlen($cell) > 0) ?
-                    htmlspecialchars((string) $cell) :
+                    ((string) $cell) :
                     $null;
-            }
+            
+				}
  
             $table .= '</td>';
         }
