@@ -1,5 +1,7 @@
 <?php 
 
+//  These are mostly internal utilitiy functions (e.g. checking if a particular keyword exists or not)  Functionality for adding a user, etc. should be in dblib.php
+
 /**
  * Translate a result array into a HTML table
  *

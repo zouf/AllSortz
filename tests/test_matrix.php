@@ -15,7 +15,7 @@ function insertUser($name,$conn)
 		echo('User '.$name.' already exists!\n');
 		return;
 	}
-	$ret = mysql_query("INSERT INTO user_tbl (usr_fullname, usr_email, usr_uname) VALUES ('$name', 'test@gmail.com', '$name')");
+	$ret = mysql_query("INSERT INTO user_tbl (usr_fullname, usr_email, usr_uname, usr_password) VALUES ('$name', 'test@gmail.com', '$name', 'test')");
 	if(!$ret)
 	{
 		die('Could not create table: ' . mysql_error());

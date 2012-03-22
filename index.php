@@ -20,12 +20,14 @@
 <title>Nightout App</title>
 </head>
 <body>
-
+	
  <?php
- $con = mysql_connect("localhost","root","new-password");
- if (!$con)
+	include('template/header.php');
+
+ $conn = mysql_connect("localhost","root","new-password");
+ if (!$conn)
    {
-   		die('Could not connect: ' . mysql_error());
+   		die('Could not connnect: ' . mysql_error());
    }
 	else
 	{
@@ -37,7 +39,7 @@
 		echo('<div class="formbutton"><input type="submit" name="submit" id="submit" value="Find me something to do" /></div>');
 		echo('</form>');
 	}
- mysql_close($con);
+ mysql_close($conn);
 
  ?>
 
@@ -51,6 +53,9 @@
 	<a href="display/viewtable.php?table=busrat_tbl">Business Ratings</a>
 </div>
 
+<?php
+	include('template/footer.php');
 
+?>
 </body>
 </html>

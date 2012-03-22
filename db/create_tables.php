@@ -167,6 +167,7 @@ function createUserTable($dbname, $conn)
 		  " usr_fullname VARCHAR(100) NOT NULL, ".
 		  " usr_email VARCHAR(40) NOT NULL,   ".
 		  " usr_uname VARCHAR(40),	 ".
+		  " usr_password VARCHAR(40),	 ".
 		  " PRIMARY KEY ( usr_id ) ) ENGINE=INNODB;   ";
 
 		mysql_select_db($dbname);
