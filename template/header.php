@@ -31,7 +31,9 @@
 	}
 	else
 	{
-		echo('<a href="/index.php">Nightout</a>   <br>  <a href="/login.php">Login</a><br>');
+		echo('<a href="/index.php">Nightout</a><br>');
+		echo('<a href="/login.php">Login</a><br>');
+		echo('<a href="/display/add.php?user">Create</a><br>');
 	}
 
 ?>
