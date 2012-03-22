@@ -47,6 +47,8 @@ function yelpAddTypeByCity($dbname, $city, $type)
 	curl_close($ch);
 
 	// Handle Yelp response data
+	
+
 	$response = json_decode($data,true);
 
 	// Print it for debugging

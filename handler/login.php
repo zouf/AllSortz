@@ -1,5 +1,18 @@
 <?php
 
+	if(isset($_GET['logout']))
+	{
+		session_unset();
+		session_destroy();
+		session_write_close();
+		setcookie(session_name(),'',0,'/');
+		session_regenerate_id(true);
+ 		header("Location: /");
+	}
+	
+	
+	
+	
 	$dbname = "nightout1";
 	$conn = mysql_connect("localhost","root","new-password");
 	mysql_select_db($dbname);
@@ -14,8 +27,10 @@
 	if (empty($_POST['uname']) || empty($_POST['password']) ) {
 		$return['error'] = true;
 		$return['msg'] = 'You didn\'t enter anything.';
+	
 	}
-	else    {
+	else    
+	{
 		$return['error'] = false;
 		$uname = $_POST['uname'];
 		$password = $_POST['password'];
@@ -28,8 +43,9 @@
 		{
 			//login successful
 			session_start();
-			$return['error'] = false;
-			$return['msg'] = getNameFromUname($uname,$conn);
+			$_SESSION['uname'] = getNameFromUname($uname,$conn);
+			mysql_close($conn);
+			header("Location: /");
 		}
 		//check password
 	}

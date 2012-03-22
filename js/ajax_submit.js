@@ -69,22 +69,55 @@ $(document).ready(function(){
 		return false;
 	});
 	
-	$('#loginUser').click(function() {
-
+	
+	$('#logoutUser').click(function() {
 			$.ajax({
 				type : 'POST',
 				url : 'handler/login.php',
 				dataType : 'json',
-				data: {
-					username : $('#uname').val(), password : $('#password').val()
+				data: {	
+						logout : 1
 				},
 				success : function(data){
-						alert('good');
+					alert(data.msg)
 					$('#waiting').hide(500);
 					$('#message').removeClass().addClass((data.error === true) ? 'error' : 'success')
 						.text(data.msg).show(500);
 					if (data.error === true)
 						$('#demoForm').show(500);
+						window.location= "../index.php";
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					alert(errorThrown);
+					$('#waiting').hide(500);
+					$('#message').removeClass().addClass('error')
+						.text('There was an error.').show(500);
+					$('#demoForm').show(500);
+				}
+			});
+		
+		return false;
+
+	});
+	
+	
+	$('#loginUser').click(function() {
+			
+			$.ajax({
+				type : 'POST',
+				url : 'handler/login.php',
+				dataType : 'json',
+				data: {
+					uname : $('#uname').val(), password : $('#password').val()
+				},
+				success : function(data){
+					alert(data.msg);
+					$('#waiting').hide(500);
+					$('#message').removeClass().addClass((data.error === true) ? 'error' : 'success')
+						.text(data.msg).show(500);
+					if (data.error === true)
+						$('#demoForm').show(500);
+						window.location= "../index.php";
 				},
 				error : function(XMLHttpRequest, textStatus, errorThrown) {
 					alert(errorThrown);

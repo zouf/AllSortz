@@ -23,8 +23,15 @@
 <body>
 
 <?php
-
-		echo('<div id="accountbar"><a href="/index.php">Nightout</a> Account Bar</div><a href="/login.php">Login</a>');
-	
+	session_start();
+	if(isset($_SESSION['uname']))
+	{
+		echo('<p>Welcome '.$_SESSION['uname'].'</p>');
+		echo('<a href="/handler/login.php?logout=1">Logout</a>');
+	}
+	else
+	{
+		echo('<a href="/index.php">Nightout</a>   <br>  <a href="/login.php">Login</a><br>');
+	}
 
 ?>

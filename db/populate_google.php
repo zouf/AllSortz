@@ -34,9 +34,10 @@ function googleAddTypeByCity($dbname, $city, $type)
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	$data = curl_exec($ch); // Yelp response
-	//echo "<br><br>".curl_error($ch);
-	//echo($data);
-	
+
+	curl_close($ch);
+	echo($data);
+
 	$response = json_decode($data,true);
 
 	mysql_select_db($dbname);
