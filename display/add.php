@@ -46,7 +46,16 @@ if(isset($_GET['user']))
 }
 else if(isset($_GET['business']))
 {
-	
+	echo('<form action="" id="addBusinessForm" method="post">');
+	echo('<h1>Nightout Add Business</h1>');
+	echo('<br />');
+	echo('<br />');
+	echo('<p>Name: <input type="text" name="busName" id="busName" class="adduser" value="" /></p>');
+	echo('<br />');
+	echo('<p>City / State: <input type="text" name="busCity" id="busCity" class="adduser" value="" /></p>');
+	echo('<br />');
+	echo('<div class="formbutton"><input type="submit" name="submit" id="submitUser" value="Add By Region & Keyword!" /></div>');
+	echo('</form>');
 }
 
 

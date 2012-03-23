@@ -1,7 +1,4 @@
-body
-{
-	text-align: center;
-}
+
 
 div#container
 {
@@ -29,26 +26,19 @@ font-family: 'Trykker', serif;
 font-size:15px;
 }
 
-#mainform
+#ratingList
 {
-	border:0;
+	margin-left:40%;
 }
+
+
 
 .error
 {
 	background-color:red;
 }
 
-#footerbar
-{
-	padding-top:500px;
-}
 
-#accountbar
-{
-	font-size:24px;
-	
-}
 
 
 
@@ -76,6 +66,8 @@ font-size:15px;
 		margin-bottom:5px;
 		border-radius: 5px;
 }
+
+
 
 .adduser
 {

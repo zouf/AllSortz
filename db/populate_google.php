@@ -41,20 +41,20 @@ function googleAddTypeByCity($dbname, $city, $type)
 	$response = json_decode($data,true);
 
 	mysql_select_db($dbname);
-	echo($response['results'][1]);
 	foreach($response['results'] as $bus)
 	{	
 		$nm = mysql_real_escape_string($bus['name']);
-		if(!businessExists($nm,$conn))
+		$addr = mysql_real_escape_string($bus['vicinity']);
+		if(!businessExists($nm,$addr,$conn))
 		{
 			if(isset($bus['rating']))  // if possible seed with businesses
 			{
 				$rating = $bus['rating'];
-				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_rating) VALUES ('$nm',  'test desc', '$rating' ); ";
+				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_rating, bus_addr, bus_city) VALUES ('$nm',  'test desc', '$rating', '$addr', '$city'); ";
 			}
 			else
 			{
-				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr) VALUES ('$nm', 'test desc' ); ";
+				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_addr, bus_city) VALUES ('$nm', 'test desc', '$addr', '$city' ); ";
 			}
 			echo($sql_insert);
 			$res = mysql_query($sql_insert);
@@ -82,11 +82,19 @@ function googleAddTypeByCity($dbname, $city, $type)
 	mysql_close($conn);
 }
 
-$dbname = "nightout1";
-$city = "New+York,+NY";
-$type = "bar";
+$locations = array(urlencode("Brooklyn, NY"), urlencode("Flushing, NY"), urlencode("Bayside, NY"));
+$keywords = array(urlencode("night_club"), urlencode("bar"), urlencode("restaurant"), urlencode("sushi"), urlencode("lunch"), urlencode("brunch"));
 
-googleAddTypeByCity($dbname, $city, $type);
+		$dbname = "nightout1";
+foreach($locations as $l)
+{
+	foreach($keywords as $k)
+	{
+		googleAddTypeByCity($dbname, $l, $k);
+	}
+}
+
+
  ?>
 </body>
 </html>

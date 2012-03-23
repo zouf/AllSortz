@@ -44,10 +44,10 @@ function handleError($msg)
 
 
 
-function businessExists($name,$conn)
+function businessExists($name,$addr, $conn)
 {	
 
-	$result = mysql_query("SELECT * FROM business_tbl WHERE bus_name='$name'");
+	$result = mysql_query("SELECT * FROM business_tbl WHERE bus_name='$name', bus_addr='$addr'");
 	if(!mysql_num_rows($result))
 		return False;
 	return True;

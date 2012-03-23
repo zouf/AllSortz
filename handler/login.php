@@ -44,6 +44,8 @@
 			//login successful
 			session_start();
 			$_SESSION['uname'] = getNameFromUname($uname,$conn);
+			
+			setcookie("uname", $_SESSION['uname'], time()+60*60*24*100, "/");
 			mysql_close($conn);
 			header("Location: /");
 		}
