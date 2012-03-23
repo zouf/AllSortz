@@ -130,6 +130,16 @@ function addBusiness($name, $keywords, $description, $avgRating, $streetAddress,
 }
 
 
+function getAllKeywords($dbname,$conn)
+{
+	$res = mysql_query("SELECT * from bustype_tbl");
+	if(!$res)
+	{
+		die('Bad query '.mysql_error());
+	}
+	return $res;
+}
+
 
 
 

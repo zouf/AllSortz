@@ -22,15 +22,16 @@
 <body>
 
 <?php 
-
+include('../template/header.php');
 require_once('viewlib.php');
+require_once('../db/dblib.php');
 
 
 
 if(isset($_GET['user']))
 {
 	echo('<form action="" id="addUserForm" method="post">');
-	echo('<h1>Nightout Add User</h1>');
+	echo('<h2>Create your Account!</h2>');
 	echo('<br />');
 	echo('<br />');
 	echo('<p>Name: <input type="text" name="fullName" id="fullName" class="adduser" value="" /></p>');
@@ -47,14 +48,34 @@ if(isset($_GET['user']))
 else if(isset($_GET['business']))
 {
 	echo('<form action="" id="addBusinessForm" method="post">');
-	echo('<h1>Nightout Add Business</h1>');
+	echo('<h1>Add a business!</h1>');
 	echo('<br />');
-	echo('<br />');
-	echo('<p>Name: <input type="text" name="busName" id="busName" class="adduser" value="" /></p>');
-	echo('<br />');
-	echo('<p>City / State: <input type="text" name="busCity" id="busCity" class="adduser" value="" /></p>');
-	echo('<br />');
-	echo('<div class="formbutton"><input type="submit" name="submit" id="submitUser" value="Add By Region & Keyword!" /></div>');
+	echo('<p><input type="text" name="busName" id="busName" class="adduser" value="Name" onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;" /></p>');
+	echo('<p><input type="text" name="busAddr" id="busAddr" class="adduser" value="Address" onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;"/></p>');
+	echo('<p><input type="text" name="busCity" id="busCity" class="adduser" value="City, State" onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;"/></p>');
+	echo('<p><input type="text" name="busCity" id="busCity" class="adduser" value="Description" onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;"/></p>');
+	
+
+	$conn = mysql_connect("localhost","root","new-password");
+	if (!$conn)
+	{
+		die('Could not connnect: ' . mysql_error());
+	}
+	$dbname = "nightout1";
+	mysql_select_db($dbname);
+	$allKeywords = getAllKeywords($dbname,$conn);
+	$i = 0;
+	echo('<p>Attributes (select multiple)</p>');
+	echo('<select multiple="multiple" class="selecttype" name="cars">');
+	while($k = mysql_fetch_array($allKeywords, MYSQL_BOTH))
+	{
+		echo('<option value=\'key'.$i.'\'>'.$k['bustype_name']."</option>");
+		$i++;
+	}
+	echo('</select>');
+	
+	
+	echo('<div class="formbutton"><input type="submit" name="submit" id="submitUser" value="Add" /></div>');
 	echo('</form>');
 }
 
@@ -67,5 +88,8 @@ else if(isset($_GET['business']))
 <div>
 <p id="message"></p>
 </div>
-
+<?php
+	include('template/footer.php');
+?>
 </body>
+</html>

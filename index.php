@@ -23,6 +23,7 @@
 <div>
 <p id="message"></p>
 </div>
+
 <?php
 	include('template/footer.php');
 
