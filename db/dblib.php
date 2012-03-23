@@ -1,5 +1,6 @@
 <?php
 
+require_once('utilities.php');
 function connectToDatabase()
 {
 	$dbname = "nightout1";
@@ -8,7 +9,7 @@ function connectToDatabase()
 	{
 		die('Could not connect: ' . mysql_error());
 	}
-		mysql_select_db($dbname);
+	mysql_select_db($dbname);
 	return $conn;
 
 }
@@ -166,12 +167,15 @@ function addBusiness($name, $keywords, $description, $avgRating, $streetAddress,
 
 function getRatingIfExists($busid,$uname)
 {
+
 	$conn = connectToDatabase();
+
 	if(userNameExists($uname,$conn))
 	{
 		$usrid = getIdFromUname($uname,$conn);
 		if(businessIdExists($busid,$conn))
 		{
+			
 			$get_rating = "SELECT * FROM  busrat_tbl WHERE usr_id = '$usrid' AND bus_id='$busid'";
 			$result = mysql_query($get_rating);
 			if(!mysql_num_rows($result))
@@ -182,6 +186,7 @@ function getRatingIfExists($busid,$uname)
 		return -1;
 	}
 	return -1;
+	mysql_close($conn);
 
 }
 
@@ -201,13 +206,22 @@ function rateBusinessIfExists($busid,$rating,$uname)
 			else if($rating=="hate")
 			{
 				$rating = 0;
-				
 			}
 			else
 			{
 				$rating = 1;
 			}
-			$insert_rating = "INSERT INTO busrat_tbl (usr_id, bus_id, rating) VALUES ('$usrid', '$busid', '$rating')";
+			$insert_rating = "";
+			
+			if(!checkIfRatingPairExists($usrid, $busid, $conn))
+			{
+				echo("insert");
+				$insert_rating = "INSERT INTO busrat_tbl (usr_id, bus_id, rating) VALUES ('$usrid', '$busid', '$rating')";
+			}
+			else
+			{
+				$insert_rating = "UPDATE  busrat_tbl SET rating='$rating' WHERE usr_id='$usrid' and bus_id='$busid'";
+			}
 			if(!mysql_query($insert_rating))
 			{
 				echo("MYSQL ERROR IN INSERT!");
@@ -231,7 +245,6 @@ function getAllKeywords($dbname,$conn)
 	}
 	return $res;
 }
-
 
 
 

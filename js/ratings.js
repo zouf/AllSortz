@@ -1,8 +1,7 @@
 function postRating(rating)
 {
 	var busid =  getUrlParams().id;
-	var uname = getCookie('uname');
-	alert('click'); 
+	var uname = getCookie('uname'); 
 	$.ajax({
 		type : 'POST',
 		url : '/handler/addrating.php',
@@ -11,7 +10,6 @@ function postRating(rating)
 				busid : busid, uname : uname, rating : rating
 		},
 		success : function(data){
-			alert(data.msg)
 			$('#waiting').hide(500);
 			$('#message').removeClass().addClass((data.error === true) ? 'error' : 'success')
 				.text(data.msg).show(500);
@@ -20,7 +18,6 @@ function postRating(rating)
 				
 		},
 		error : function(XMLHttpRequest, textStatus, errorThrown) {
-			
 			alert(errorThrown);
 			$('#waiting').hide(500);
 			$('#message').removeClass().addClass('error')
@@ -32,28 +29,6 @@ function postRating(rating)
 	
 }
 
-function getRating(rating)
-{
-	var busid =  getUrlParams().id;
-	var uname = getCookie('uname');
-	alert('getRating'); 
-	$.ajax({
-		type : 'POST',
-		url : '/handler/addrating.php',
-		dataType : 'json',
-		data: {	
-				busid : busid, uname : uname
-		},
-		success : function(data){
-			return(data.msg)				
-		},
-		error : function(XMLHttpRequest, textStatus, errorThrown) {
-			alert(errorThrown);
-		}
-	});
-	return true;
-	
-}
 
 
 function getCookie(c_name)

@@ -3,6 +3,7 @@
 include('../db/dblib.php');
 
 
+
 session_start();
 if (empty($_POST['uname']) || $_POST['uname'] != $_SESSION['uname']) {
 	$return['error'] = true;
@@ -24,21 +25,18 @@ else
 	$busid = $_POST['busid'];
 	$rating = $_POST['rating'];
 	$uname = $_POST['uname'];
-	
-	if(rateBusinessIfExists($busid,$rating,$uname))
+	$response = rateBusinessIfExists($busid,$rating,$uname);
+	if($response != "")
 	{	
-		$return['error'] = false;
-		$return['msg'] = "thanks for the rating ".$uname;
+		$return['error'] = true;
+		$return['msg'] = mysql_real_escape_string($response);
 	}
 	else
 	{
-		
 		$return['error'] = true;
-		$return['msg'] = "There was a problem with your rating";
+		$return['msg'] = mysql_real_escape_string($response);
 
 	}
-	
-
 }
 
 echo json_encode($return); 
