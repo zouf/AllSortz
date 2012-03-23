@@ -47,7 +47,7 @@ function array2table($array, $recursive = false, $null = '&nbsp;')
                 // Recursive mode
                 $table .= "\n" . array2table($cell, true, true) . "\n";
             } else {
-                $table .= (strlen($cell) > 0) ?
+                $table .= (is_string($cell) && strlen($cell) > 0) ?
                     ((string) $cell) :
                     $null;
             

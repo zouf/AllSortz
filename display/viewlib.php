@@ -77,7 +77,8 @@ function printBusinessTable($dbname,$conn)
 			$uid = getIdFromUname($_SESSION["uname"],$conn);
 			$uname = $_SESSION["uname"];
 			$rating = mysql_query("SELECT * FROM busrat_tbl WHERE usr_id='$uid' and bus_id='$busid'");
-			$ratArr[$i]["Your Rating"] = $rating[0]["rating"];
+			$rating = mysql_fetch_array($rating, MYSQL_BOTH);
+			$ratArr[$i]["Your Rating"] = $rating["rating"];
 		}
 		$bus_id = $busrow['bus_id'];
 		$mysql_get_keywords = "SELECT * FROM bustyperel_tbl where bus_id='$bus_id'";
