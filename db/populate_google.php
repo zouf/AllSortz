@@ -4,7 +4,7 @@
 </head>
 <body>
  <?php
-
+require_once('dblib.php');
 require_once('utilities.php');
 function googleAddTypeByCity($dbname, $city, $type)
 {
@@ -45,9 +45,9 @@ function googleAddTypeByCity($dbname, $city, $type)
 	{	
 		$nm = mysql_real_escape_string($bus['name']);
 		$addr = mysql_real_escape_string($bus['vicinity']);
-		if(!businessExists($nm,$addr,$conn))
+		if(!businessAddrExists($nm,$addr,$conn))
 		{
-			if(isset($bus['rating']))  // if possible seed with businesses
+		/*	if(isset($bus['rating']))  // if possible seed with businesses
 			{
 				$rating = $bus['rating'];
 				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_rating, bus_addr, bus_city) VALUES ('$nm',  'test desc', '$rating', '$addr', '$city'); ";
@@ -55,8 +55,8 @@ function googleAddTypeByCity($dbname, $city, $type)
 			else
 			{
 				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_addr, bus_city) VALUES ('$nm', 'test desc', '$addr', '$city' ); ";
-			}
-			echo($sql_insert);
+			}*/
+			$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_rating, num_ratings, bus_addr, bus_city) VALUES ('$nm',  'test desc', '0','0', '$addr', '$city'); ";
 			$res = mysql_query($sql_insert);
 			if(!$res)
 			{

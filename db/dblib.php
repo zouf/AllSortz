@@ -191,6 +191,29 @@ function getRatingIfExists($busid,$uname)
 }
 
 
+/* add 1 to the number of ratings if rating is not 1 (meh). Add 1 to likes if rating == 2*/
+
+function updateBusinessStats($busid, $rating)
+{
+	if($rating == 1)
+		return;
+	
+	$update_str = "UPDATE business_tbl SET num_ratings=num_ratings+1 Where bus_id='$busid'";
+	if(!mysql_query($update_str))
+	{
+		die("zouf in mysql update".mysql_error() ); 
+	}
+	if($rating==2)
+	{
+		$update_str = "UPDATE business_tbl SET bus_rating=bus_rating+1 Where bus_id='$busid'";
+		if(!mysql_query($update_str))
+		{
+			die("zouf2 in mysql update".mysql_error() ); 
+		}
+	}
+}
+
+
 function rateBusinessIfExists($busid,$rating,$uname)
 {
 	$conn = connectToDatabase();
@@ -215,13 +238,14 @@ function rateBusinessIfExists($busid,$rating,$uname)
 			
 			if(!checkIfRatingPairExists($usrid, $busid, $conn))
 			{
-				echo("insert");
 				$insert_rating = "INSERT INTO busrat_tbl (usr_id, bus_id, rating) VALUES ('$usrid', '$busid', '$rating')";
 			}
 			else
 			{
 				$insert_rating = "UPDATE  busrat_tbl SET rating='$rating' WHERE usr_id='$usrid' and bus_id='$busid'";
 			}
+			
+			updateBusinessStats($busid, $rating);
 			if(!mysql_query($insert_rating))
 			{
 				echo("MYSQL ERROR IN INSERT!");

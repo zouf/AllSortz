@@ -72,13 +72,27 @@ function printBusinessTable($dbname,$conn)
 		$ratArr[$i]['ID'] = $busid;
 		$ratArr[$i]['Name'] = "<a href=../bus/view.php?id=".$busrow['bus_id'].">".$busrow['bus_name']."</a>";
 		$ratArr[$i]['Description'] = $busrow['bus_descr'];
-		$ratArr[$i]['Rating'] = $busrow['bus_rating'];
+		if($busrow['num_ratings'] != 0)
+		{
+				$ratArr[$i]['Likes'] = (string)((int)($busrow['bus_rating'] / $busrow['num_ratings'] * 100))."%";
+		}
+		else
+		{
+				$ratArr[$i]['Likes'] = "None Yet!";
+		}
+	
 		if(isset($_SESSION["uname"])){
 			$uid = getIdFromUname($_SESSION["uname"],$conn);
 			$uname = $_SESSION["uname"];
 			$rating = mysql_query("SELECT * FROM busrat_tbl WHERE usr_id='$uid' and bus_id='$busid'");
-			$rating = mysql_fetch_array($rating, MYSQL_BOTH);
-			$ratArr[$i]["Your Rating"] = $rating["rating"];
+
+			if(!$rating)
+			{
+				die("Error in mysql query to get rating". mysql_error());
+			}
+			$rat = mysql_fetch_array($rating);
+			$ratArr[$i]["Your Rating"] = $rat['rating'];
+
 		}
 		$bus_id = $busrow['bus_id'];
 		$mysql_get_keywords = "SELECT * FROM bustyperel_tbl where bus_id='$bus_id'";

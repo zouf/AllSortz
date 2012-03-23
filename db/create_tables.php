@@ -115,7 +115,8 @@ function createBusinessTable($dbname, $conn)
 				" bus_id INT NOT NULL AUTO_INCREMENT, ".
 				" bus_name  VARCHAR(200) NOT NULL, ".
 				" bus_descr VARCHAR(500) NOT NULL, ".
-				" bus_rating FLOAT(2,1), ".
+				" bus_rating INT, ".
+				" num_ratings INT, ".
 				" PRIMARY KEY ( bus_id ) );   ";
 			mysql_select_db($dbname);
 			$retval = mysql_query( $sql_create_table, $conn );
