@@ -14,15 +14,20 @@
 </style>
 <script>
 $(function() {
+	$(document).ready(function(){
+		
+		alert('ready'+getRating());
+		
+	}
+	
+	
 	$("#selectable").selectable({
 	    selected: function (event, ui) {
+			alert('post');
 	       if(!postRating(ui.selected.id))
 			{
 				alert('error in posting a rating');
 			}
-	    },
-	    unselected: function (event, ui) {
-	        $(ui.unselected).removeClass('selectedfilter');
 	    }
 	});
 });

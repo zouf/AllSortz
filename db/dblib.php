@@ -1,5 +1,18 @@
 <?php
 
+function connectToDatabase()
+{
+	$dbname = "nightout1";
+	$conn = mysql_connect("localhost","root","new-password");
+	if (!$conn)
+	{
+		die('Could not connect: ' . mysql_error());
+	}
+		mysql_select_db($dbname);
+	return $conn;
+
+}
+
 function validateEmail($email)
 {
 	
@@ -44,6 +57,15 @@ function handleError($msg)
 
 
 
+function businessIdExists($busid, $conn)
+{	
+	$result = mysql_query("SELECT * FROM business_tbl WHERE bus_id='$busid'");
+	if(!mysql_num_rows($result))
+		return False;
+	return True;
+}
+
+
 function businessExists($name,$addr, $conn)
 {	
 
@@ -61,6 +83,18 @@ function userNameExists($name,$conn)
 		return False;
 	return True;
 }
+
+function getIdFromUname($uname,$conn)
+{
+	$result = mysql_query("SELECT * FROM user_tbl WHERE usr_uname='$uname'");
+	if($result)
+	{
+		$username = mysql_fetch_array($result);
+		return $username['usr_id'];
+	}
+
+}
+
 
 function getNameFromUname($uname,$conn)
 {
@@ -127,6 +161,64 @@ function addUser($name, $email, $uname, $password, $conn)
 function addBusiness($name, $keywords, $description, $avgRating, $streetAddress, $city,$conn)
 {
 	
+}
+
+
+function getRatingIfExists($busid,$uname)
+{
+	$conn = connectToDatabase();
+	if(userNameExists($uname,$conn))
+	{
+		$usrid = getIdFromUname($uname,$conn);
+		if(businessIdExists($busid,$conn))
+		{
+			$get_rating = "SELECT * FROM  busrat_tbl WHERE usr_id = '$usrid' AND bus_id='$busid'";
+			$result = mysql_query($get_rating);
+			if(!mysql_num_rows($result))
+				return -1;
+			$res = mysql_fetch_array($result);
+			return $res['rating'];
+		}
+		return -1;
+	}
+	return -1;
+
+}
+
+
+function rateBusinessIfExists($busid,$rating,$uname)
+{
+	$conn = connectToDatabase();
+	if(userNameExists($uname,$conn))
+	{
+		$usrid = getIdFromUname($uname,$conn);
+		if(businessIdExists($busid,$conn))
+		{
+			if($rating=="love")
+			{
+				$rating = 2;
+			}
+			else if($rating=="hate")
+			{
+				$rating = 0;
+				
+			}
+			else
+			{
+				$rating = 1;
+			}
+			$insert_rating = "INSERT INTO busrat_tbl (usr_id, bus_id, rating) VALUES ('$usrid', '$busid', '$rating')";
+			if(!mysql_query($insert_rating))
+			{
+				echo("MYSQL ERROR IN INSERT!");
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+	return false;
+
 }
 
 
