@@ -66,7 +66,7 @@ function businessIdExists($busid, $conn)
 }
 
 
-function businessExists($name,$addr, $conn)
+function businessAddrExists($name,$addr, $conn)
 {	
 
 	$result = mysql_query("SELECT * FROM business_tbl WHERE bus_name='$name', bus_addr='$addr'");

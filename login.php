@@ -50,6 +50,6 @@
 
 
 <?php
-	include('tmeplate/footer.php');
+	include('template/footer.php');
 
 ?>

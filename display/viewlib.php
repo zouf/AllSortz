@@ -1,4 +1,5 @@
 <?php
+require_once('../db/dblib.php');
 function printBusRatTable($dbname,$conn)
 {
 	mysql_select_db($dbname);
@@ -62,15 +63,23 @@ function printBusinessTable($dbname,$conn)
 	// Get all user_ids so we can populate the rows of this matrix
 	$ratArr = array();
 
-	$users = mysql_query("SELECT * from business_tbl");
+	$buses = mysql_query("SELECT * from business_tbl");
 
 	$i = 0;
-	while($userrow = mysql_fetch_array($users, MYSQL_BOTH)) { 
+	while($busrow = mysql_fetch_array($buses, MYSQL_BOTH)) { 
 	
-		$ratArr[$i]['ID'] = $userrow['bus_id'];
-		$ratArr[$i]['Name'] = "<a href=../bus/view.php?id=".$userrow['bus_id'].">".$userrow['bus_name']."</a>";
-		$ratArr[$i]['Description'] = $userrow['bus_descr'];
-		$bus_id = $userrow['bus_id'];
+		$busid=$busrow['bus_id'];
+		$ratArr[$i]['ID'] = $busid;
+		$ratArr[$i]['Name'] = "<a href=../bus/view.php?id=".$busrow['bus_id'].">".$busrow['bus_name']."</a>";
+		$ratArr[$i]['Description'] = $busrow['bus_descr'];
+		$ratArr[$i]['Rating'] = $busrow['bus_rating'];
+		if(isset($_SESSION["uname"])){
+			$uid = getIdFromUname($_SESSION["uname"],$conn);
+			$uname = $_SESSION["uname"];
+			$rating = mysql_query("SELECT * FROM busrat_tbl WHERE usr_id='$uid' and bus_id='$busid'");
+			$ratArr[$i]["Your Rating"] = $rating[0]["rating"];
+		}
+		$bus_id = $busrow['bus_id'];
 		$mysql_get_keywords = "SELECT * FROM bustyperel_tbl where bus_id='$bus_id'";
 		$type_results = mysql_query($mysql_get_keywords);
 		if(!$type_results)
