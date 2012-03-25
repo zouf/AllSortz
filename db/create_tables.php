@@ -40,10 +40,7 @@ function createBusinessTypesRelTable($dbname, $conn)
 		return;		
 	}
 	mysql_select_db($dbname);
-	$sql_create_dyn_table = "CREATE TABLE ".$tablename."(bus_id INT, bustype_id INT, rating INT, ".
-		" INDEX bus_ind (bus_id), FOREIGN KEY (bus_id) REFERENCES business_tbl(bus_id)     ON DELETE CASCADE ,".
-		" INDEX bustype_ind  (bustype_id), FOREIGN KEY (bustype_id) REFERENCES bustype_tbl(bustype_id) ON DELETE CASCADE) ".
-		" ENGINE=INNODB;";
+	$sql_create_dyn_table = "CREATE TABLE ".$tablename."(bus_id INT, bustype_id INT, rating INT);";
 		
 	mysql_select_db($dbname);
 	$retval = mysql_query( $sql_create_dyn_table, $conn );

@@ -10,7 +10,8 @@
 	{
 		echo('<div id="formdiv">');
 		echo('<form action="" id="mainform" method="post">');
-		echo('<input type="text" name="search" id="search" class="bigsearch" value="" />');
+		echo('<input type="text" name="search" id="search" class="bigsearch" value="Type"  onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;" /> ');
+		echo('<input type="text" name="search" id="location" class="bigsearch" value="Location"  onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;" />');
 		echo('<div class="formbutton"><input type="submit" name="submit" id="submit" value="Find me something to do" /></div>');
 		echo('</form>');
 		echo('</div>');

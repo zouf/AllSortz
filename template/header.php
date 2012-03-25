@@ -12,7 +12,9 @@
 	<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
 	<script type="text/javascript" src="/js/jquery-ui-1.8.18.custom.min.js"></script>
 	<script type="text/javascript" src="/js/ajax_submit.js"></script>
+	<script type="text/javascript" src="/js/mainsearch.js"></script>
 	<script type="text/javascript" src="/js/ratings.js"></script>
+	<script type="text/javascript" src="/js/addbusiness.js"></script>
 	<script>
 		$(function() {
 			$( "input:submit, a, button", ".formbutton" ).button();
@@ -50,10 +52,10 @@
 	echo('<div id="nav-bar">');
 		echo('<ul id="list-nav">');
 		echo('<li><a  id="nightoutHome" href="/index.php"><h1>Nightout</h1></a></li>');
-	   	echo('<li><a href="/display/viewtable.php?table=business_tbl">Business List</a></li>');
+	   	echo('<li><a href="/display/view.php?table=business_tbl">Business List</a></li>');
 	    echo('<li><a href="/display/add.php?business">Add Business</a><li>');
-	   	echo('<li><a href="/display/viewtable.php?table=user_tbl">Users</a><li>');
-	   	echo('<li><a href="/display/viewtable.php?table=busrat_tbl">Business Ratings</a><li>');
+	   	echo('<li><a href="/display/view.php?table=user_tbl">Users</a><li>');
+	   	echo('<li><a href="/display/view.php?table=busrat_tbl">Business Ratings</a><li>');
 	   	echo('<li><a href="/ratings/userdiff.php">Diff Between Users</a></li>');
 		echo('</ul>');	
 	echo('</div>');

@@ -66,7 +66,8 @@ function array2table($array, $recursive = false, $null = '&nbsp;')
 
 function insertBusType($name,$conn)
 {
-		$sql_insert_type = "INSERT INTO bustype_tbl (bustype_name, bustype_descr) VALUES ('$name', '$name'); ";
+	
+		$sql_insert_type = "INSERT INTO bustype_tbl (bustype_name, bustype_descr) VALUES (TRIM('$name'), '$name'); ";
 		$res = mysql_query($sql_insert_type);
 		if(!$res)
 		{
@@ -75,7 +76,7 @@ function insertBusType($name,$conn)
 
 }
 
-function getNameFromBusTypeId($bustypeid, $conn)
+function getNameFromBusTypeId($bustypeid)
 {
 		$resultingName = mysql_query("SELECT * from bustype_tbl where bustype_id='$bustypeid'");
 		if(!$resultingName)
@@ -87,15 +88,15 @@ function getNameFromBusTypeId($bustypeid, $conn)
 
 	return $bustypename;
 }
-function getBusTypeIdFromName($name,$conn)
+function getBusTypeIdFromName($name)
 {
-		$resultingId = mysql_query("SELECT * from bustype_tbl where bustype_name='$name'");
-		if(!$resultingId)
-		{
-		 	die('Invalid query: ' . mysql_error());
-		}
-		$rid = mysql_fetch_array($resultingId, MYSQL_BOTH);
-		$bustypeid = $rid['bustype_id'];
+	$resultingId = mysql_query("SELECT * from bustype_tbl where bustype_name=TRIM('$name')");
+	if(!$resultingId)
+	{
+		return -1;
+	}
+	$rid = mysql_fetch_array($resultingId, MYSQL_BOTH);
+	$bustypeid = $rid['bustype_id'];
 	return $bustypeid;
 }
 
@@ -134,7 +135,7 @@ function businessExists($name,$conn)
 
 function businessTypeExists($name,$conn)
 {
-	$result = mysql_query("SELECT * FROM bustype_tbl WHERE bustype_name='$name'");
+	$result = mysql_query("SELECT * FROM bustype_tbl WHERE bustype_name=TRIM('$name')");
 	if(!mysql_num_rows($result))
 		return False;
 	return True;
@@ -166,6 +167,14 @@ function checkIfExists($name,$dbname ) {
 function checkIfRatingPairExists($usr_id, $bus_id, $conn)
 {
 	$result = mysql_query("SELECT * FROM busrat_tbl WHERE usr_id='$usr_id' AND bus_id='$bus_id'");
+	if(!mysql_num_rows($result))
+		return False;
+	return True;
+}
+
+function checkIfBusContainsType($busid, $typeid)
+{
+	$result = mysql_query("SELECT * FROM bustyperel_tbl WHERE bus_id='$busid' AND bustype_id='$typeid'");
 	if(!mysql_num_rows($result))
 		return False;
 	return True;

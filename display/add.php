@@ -53,8 +53,8 @@ else if(isset($_GET['business']))
 	echo('<p><input type="text" name="busName" id="busName" class="adduser" value="Name" onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;" /></p>');
 	echo('<p><input type="text" name="busAddr" id="busAddr" class="adduser" value="Address" onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;"/></p>');
 	echo('<p><input type="text" name="busCity" id="busCity" class="adduser" value="City, State" onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;"/></p>');
-	echo('<p><input type="text" name="busCity" id="busCity" class="adduser" value="Description" onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;"/></p>');
-	
+	echo('<p><input type="text" name="busDesc" id="busDesc" class="adduser" value="Description" onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;"/></p>');
+	/*
 
 	$conn = mysql_connect("localhost","root","new-password");
 	if (!$conn)
@@ -74,8 +74,11 @@ else if(isset($_GET['business']))
 	}
 	echo('</select>');
 	
+	*/
+	echo('<p><input type="text" name="busKey" id="busKey" class="adduser" value="Keywords" onfocus="if(!this._haschanged){this.value=\'\'};this._haschanged=true;"/></p>');
 	
-	echo('<div class="formbutton"><input type="submit" name="submit" id="submitUser" value="Add" /></div>');
+	
+	echo('<div class="formbutton"><input type="submit" name="submit" id="submitBusiness" value="Add" /></div>');
 	echo('</form>');
 }
 
@@ -89,7 +92,7 @@ else if(isset($_GET['business']))
 <p id="message"></p>
 </div>
 <?php
-	include('template/footer.php');
+	include('../template/footer.php');
 ?>
 </body>
 </html>

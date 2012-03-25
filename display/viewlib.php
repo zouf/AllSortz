@@ -1,5 +1,6 @@
 <?php
 require_once('../db/dblib.php');
+require_once('../search/searchlib.php');
 function printBusRatTable($dbname,$conn)
 {
 	mysql_select_db($dbname);
@@ -82,7 +83,7 @@ function printBusinessTable($dbname,$conn)
 		}
 	
 		if(isset($_SESSION["uname"])){
-			$uid = getIdFromUname($_SESSION["uname"],$conn);
+			$uid = getIdFromUname($_SESSION["uname"]);
 			$uname = $_SESSION["uname"];
 			$rating = mysql_query("SELECT * FROM busrat_tbl WHERE usr_id='$uid' and bus_id='$busid'");
 

@@ -69,8 +69,7 @@ function businessIdExists($busid, $conn)
 
 function businessAddrExists($name,$addr, $conn)
 {	
-
-	$result = mysql_query("SELECT * FROM business_tbl WHERE bus_name='$name', bus_addr='$addr'");
+	$result = mysql_query("SELECT * FROM business_tbl WHERE bus_name='$name' AND bus_addr='$addr'");
 	if(!mysql_num_rows($result))
 		return False;
 	return True;
@@ -85,7 +84,7 @@ function userNameExists($name,$conn)
 	return True;
 }
 
-function getIdFromUname($uname,$conn)
+function getIdFromUname($uname)
 {
 	$result = mysql_query("SELECT * FROM user_tbl WHERE usr_uname='$uname'");
 	if($result)
@@ -159,9 +158,43 @@ function addUser($name, $email, $uname, $password, $conn)
 	return $ret;
 }
 
-function addBusiness($name, $keywords, $description, $avgRating, $streetAddress, $city,$conn)
-{
+function addBusiness($name, $keywords, $description, $addr, $city)
+{ 
+	$conn = connectToDatabase();
+
 	
+	if(businessAddrExists($name,$addr, $conn))
+	{
+		$ret['error'] = true;
+		$ret['msg'] = "Business already exists!";
+		return $ret;
+	}
+	else
+	{
+		$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_rating, num_ratings, bus_addr, bus_city) VALUES ('$name',  '$description', '0','0', '$addr', '$city'); ";
+		$res = mysql_query($sql_insert);
+		if(!$res)
+		{
+		 	die('Invalid query: ' . mysql_error());
+		}
+		foreach($keywords as &$t)
+		{
+			$typenm = mysql_real_escape_string($t);
+			if(!businessTypeExists($typenm,$conn))  //create type if it doesnt exist
+			{
+				insertBusType($typenm,$conn);
+			}
+			$ret['msg'] = $typenm;
+			$typeId = getBusTypeIdFromName($typenm);
+			$busId = getBusIdFromName($name, $conn);
+			insertBusTypeRelPair($busId,$typeId,$conn);
+		}
+		$ret['error'] = false;
+	//	$ret['msg'] = "added";
+		
+	}
+	mysql_close($conn);
+	return $ret;
 }
 
 
@@ -172,7 +205,7 @@ function getRatingIfExists($busid,$uname)
 
 	if(userNameExists($uname,$conn))
 	{
-		$usrid = getIdFromUname($uname,$conn);
+		$usrid = getIdFromUname($uname);
 		if(businessIdExists($busid,$conn))
 		{
 			
@@ -219,7 +252,7 @@ function rateBusinessIfExists($busid,$rating,$uname)
 	$conn = connectToDatabase();
 	if(userNameExists($uname,$conn))
 	{
-		$usrid = getIdFromUname($uname,$conn);
+		$usrid = getIdFromUname($uname);
 		if(businessIdExists($busid,$conn))
 		{
 			if($rating=="love")

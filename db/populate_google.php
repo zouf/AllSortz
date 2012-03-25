@@ -56,7 +56,8 @@ function googleAddTypeByCity($dbname, $city, $type)
 			{
 				$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_addr, bus_city) VALUES ('$nm', 'test desc', '$addr', '$city' ); ";
 			}*/
-			$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_rating, num_ratings, bus_addr, bus_city) VALUES ('$nm',  'test desc', '0','0', '$addr', '$city'); ";
+			$cityDecoded = urldecode($city);
+			$sql_insert = "INSERT INTO business_tbl (bus_name, bus_descr, bus_rating, num_ratings, bus_addr, bus_city) VALUES ('$nm',  'test desc', '0','0', '$addr', '$cityDecoded'); ";
 			$res = mysql_query($sql_insert);
 			if(!$res)
 			{
@@ -72,7 +73,7 @@ function googleAddTypeByCity($dbname, $city, $type)
 				{
 					insertBusType($typenm,$conn);
 				}
-				$typeId = getBusTypeIdFromName($typenm,$conn);
+				$typeId = getBusTypeIdFromName($typenm);
 				$busId = getBusIdFromName($nm, $conn);
 				insertBusTypeRelPair($busId,$typeId,$conn);
 			}
@@ -82,8 +83,8 @@ function googleAddTypeByCity($dbname, $city, $type)
 	mysql_close($conn);
 }
 
-$locations = array(urlencode("Brooklyn, NY"), urlencode("Flushing, NY"), urlencode("Bayside, NY"));
-$keywords = array(urlencode("night_club"), urlencode("bar"), urlencode("restaurant"), urlencode("sushi"), urlencode("lunch"), urlencode("brunch"));
+$locations = array(urlencode("Princeton, NJ"));
+$keywords = array(urlencode("food"),  urlencode("restaurant"), urlencode("sushi"), urlencode("lunch"));
 
 		$dbname = "nightout1";
 foreach($locations as $l)
