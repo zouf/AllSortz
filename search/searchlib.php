@@ -1,5 +1,7 @@
 <?php
 require_once('../db/dblib.php');
+require_once('../display/viewlib.php');
+
 
 function searchKeywordCity($keyword, $city, $uname)
 {
@@ -35,8 +37,10 @@ function searchKeywordCity($keyword, $city, $uname)
 	mysql_close($conn);	
 	return $html;
 }
-
-//echo(searchKeywordCity("sandwiches", "Princeton, NJ",""));
+/*
+session_start();
+	$_SESSION['uname']= "Tychus";
+(searchKeywordCity("sandwiches", "Princeton, NJ",""));*/
 //echo(searchKeywordCity("a", "b", "c"));
 
 function dumpBusiness($queryResult, $typeid)
@@ -63,8 +67,7 @@ function dumpBusiness($queryResult, $typeid)
 		else
 		{
 				$ratArr[$i]['Likes'] = "None Yet!";
-		}
-		
+			}
 		if(isset($_SESSION["uname"])){
 			
 			$uid = getIdFromUname($_SESSION["uname"]);
@@ -77,11 +80,12 @@ function dumpBusiness($queryResult, $typeid)
 				die("Error in mysql query to get rating". mysql_error());
 			}
 			$rat = mysql_fetch_array($rating);
-			$ratArr[$i]["Your Rating"] = $rat['rating'];
+	//		echo(dumpRatingList($busid, $rat['rating']));
+			$ratArr[$i]["Your Rating"] = dumpRatingList($busid, $rat['rating']);
 
 		}
 		
-		$bus_id = $busrow['bus_id'];
+		$bus_id = $busid;
 		$mysql_get_keywords = "SELECT * FROM bustyperel_tbl where bus_id='$bus_id'";
 		$type_results = mysql_query($mysql_get_keywords);
 		if(!$type_results)
@@ -98,7 +102,7 @@ function dumpBusiness($queryResult, $typeid)
 		$ratArr[$i]['Keywords'] = $types;
 		$i++;
 	}
-	return array2table($ratArr);	
+	return array2table($ratArr,true);	
 }
 
 ?>

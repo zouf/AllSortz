@@ -18,8 +18,6 @@ else    {
 	
 	$return['msg'] = searchKeywordCity(mysql_real_escape_string($searchTerm), mysql_real_escape_string($city), $uname);
 }
-//echo (searchKeywordCity(mysql_real_escape_string("a"), mysql_real_escape_string("b"), "c"));
-
 
 echo json_encode($return);
 

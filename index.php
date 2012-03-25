@@ -1,6 +1,16 @@
 <?php
 	include('template/header.php');
 
+?>
+	<style>
+	#feedback { font-size: 1.em; }
+	#selectable .ui-selecting { background: #FECA40; }
+	#selectable .ui-selected { background: #F39814; color: white; }
+	#selectable { list-style-type: none; margin: 0; padding: 0; text-align:center; }
+	#selectable li { margin: 3px; padding: 1px; float: left; width: 100px; height: 80px; font-size: 2em; text-align: center; }
+	</style>
+
+<?php
  $conn = mysql_connect("localhost","root","new-password");
  if (!$conn)
    {

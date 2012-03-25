@@ -255,11 +255,12 @@ function rateBusinessIfExists($busid,$rating,$uname)
 		$usrid = getIdFromUname($uname);
 		if(businessIdExists($busid,$conn))
 		{
-			if($rating=="love")
+			
+			if($rating=="love" || $rating == 2)
 			{
 				$rating = 2;
 			}
-			else if($rating=="hate")
+			else if($rating=="hate" || $rating == 0)
 			{
 				$rating = 0;
 			}
@@ -272,13 +273,14 @@ function rateBusinessIfExists($busid,$rating,$uname)
 			if(!checkIfRatingPairExists($usrid, $busid, $conn))
 			{
 				$insert_rating = "INSERT INTO busrat_tbl (usr_id, bus_id, rating) VALUES ('$usrid', '$busid', '$rating')";
+				updateBusinessStats($busid, $rating);  // once for each user
 			}
 			else
 			{
 				$insert_rating = "UPDATE  busrat_tbl SET rating='$rating' WHERE usr_id='$usrid' and bus_id='$busid'";
 			}
 			
-			updateBusinessStats($busid, $rating);
+
 			if(!mysql_query($insert_rating))
 			{
 				echo("MYSQL ERROR IN INSERT!");

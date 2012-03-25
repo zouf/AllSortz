@@ -3,7 +3,7 @@ $(document).ready(function(){
 
 	$('#submitBusiness').click(function() {
 	var uname = getCookie('uname'); 
-	alert(uname);
+	
 			$.ajax({
 				type : 'POST',
 				url : '../handler/addbusiness.php',
@@ -12,7 +12,7 @@ $(document).ready(function(){
 				uname : uname, 	name : $('#busName').val(), city : $('#busCity').val(),	desc : $('#busDesc').val(),	addr : $('#busAddr').val(), keywords : $('#busKey').val()
 				},
 				success : function(data){
-					alert(data.msg);
+				
 					$('#waiting').hide(500);
 					$('#message').removeClass().addClass((data.error === true) ? 'error' : 'success')
 						.text(data.msg).show(500);

@@ -30,6 +30,63 @@ function postRating(rating)
 }
 
 
+function selectButton(rating, busid)
+{
+	$('#hate'+busid).removeClass("selectedLike");		
+
+	$('#meh'+busid).removeClass("selectedLike");		
+
+	$('#love'+busid).removeClass("selectedLike");
+	if(rating == 0)
+	{
+		$('#hate'+busid).addClass("selectedLike");		
+	}
+	else if(rating == 1)
+	{
+		$('#meh'+busid).addClass("selectedLike");		
+
+	}
+	else
+	{
+
+		$('#love'+busid).addClass("selectedLike");		
+	}
+}
+
+
+function postRating2(busid, rating)
+{
+
+	var uname = getCookie('uname'); 
+
+	$.ajax({
+		type : 'POST',
+		url : '/handler/addrating.php',
+		dataType : 'json',
+		data: {	
+				busid : busid, uname : uname, rating : rating
+		},
+		success : function(data){
+
+			selectButton(rating, busid);
+	
+				
+		},
+		error : function(XMLHttpRequest, textStatus, errorThrown) {
+			alert(errorThrown);
+			$('#waiting').hide(500);
+			$('#message').removeClass().addClass('error')
+				.text('There was an error.').show(500);
+			$('#demoForm').show(500);
+		}
+	});
+	return true;
+	
+}
+
+
+
+
 
 function getCookie(c_name)
 {

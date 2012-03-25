@@ -54,9 +54,9 @@
 		echo('<li><a  id="nightoutHome" href="/index.php"><h1>Nightout</h1></a></li>');
 	   	echo('<li><a href="/display/view.php?table=business_tbl">Business List</a></li>');
 	    echo('<li><a href="/display/add.php?business">Add Business</a><li>');
-	   	echo('<li><a href="/display/view.php?table=user_tbl">Users</a><li>');
-	   	echo('<li><a href="/display/view.php?table=busrat_tbl">Business Ratings</a><li>');
-	   	echo('<li><a href="/ratings/userdiff.php">Diff Between Users</a></li>');
+//	   	echo('<li><a href="/display/view.php?table=user_tbl">Users</a><li>');
+//	   	echo('<li><a href="/display/view.php?table=busrat_tbl">Business Ratings</a><li>');
+//	   	echo('<li><a href="/ratings/userdiff.php">Diff Between Users</a></li>');
 		echo('</ul>');	
 	echo('</div>');
 	

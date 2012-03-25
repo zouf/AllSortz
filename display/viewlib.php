@@ -38,6 +38,59 @@ function printBusRatTable($dbname,$conn)
 	echo array2table($ratArr);	
 }
 
+function dumpRatingList($busId, $uname)
+{
+	$rating = getRatingIfExists($busId,$_SESSION['uname']);
+
+	
+	$html = '<style>';
+
+	$html = $html.'#like-buttons		';
+	$html = $html.'{						';
+	$html = $html.'	margin: 0 auto;      ';
+	$html = $html.'	text-align:center;   ';
+	$html = $html.'	width:50px;          ';
+	$html = $html.'}                      ';
+	$html = $html.'                       ';
+	$html = $html.'ul#like-buttons {      ';
+	$html = $html.'margin:0 0;            ';
+	$html = $html.'width:150px;           ';
+	$html = $html.'}                      ';
+    $html = $html.'                       ';
+	$html = $html.'ul#ike-buttons li {    ';
+	$html = $html.'display:inline         ';
+	$html = $html.'}                      ';
+    $html = $html.'                       ';
+    $html = $html.'                       ';
+	$html = $html.'ul#ike-buttons li a {  ';
+	$html = $html.'padding-left: 20px;    ';
+	$html = $html.'padding-right	: 20px;  ';
+	$html = $html.'width:150px;           ';
+	$html = $html.'}                      ';
+	$html = $html.'                       ';
+	$html = $html.'                       ';
+	$html = $html.'ul#like-buttons li {   ';
+	$html = $html.'	color:navy;          ';
+	$html = $html.'display:inline         ';
+	$html = $html.'}                      ';
+	$html = $html.'</style>               ';
+	
+	
+
+	
+	
+	$html = $html.'<div id="like-buttons-div">';
+		$html = $html.'<ul id="like-buttons">';
+		$html = $html.'<li><a id="hate'.$busId.'" onclick="postRating2('.$busId.', 0);">Hate!</a>&nbsp </li>';
+	   	$html = $html.'<li><a id="meh'.$busId.'" onclick="postRating2('.$busId.', 1);">Meh. </a>&nbsp </li>';
+	    $html = $html.'<li><a id="love'.$busId.'" onclick="postRating2('.$busId.', 2);">Love! </a>&nbsp </li>';
+		$html = $html.'</ul>';
+		$html = $html.'</div>';
+		$html = $html. '<script> selectButton('.$rating.','.$busId.') </script>';
+	return $html;
+}
+
+
 function printUserTable($dbname,$conn)
 {
 	mysql_select_db($dbname);
@@ -60,6 +113,7 @@ function printUserTable($dbname,$conn)
 
 function printBusinessTable($dbname,$conn)
 {
+
 	mysql_select_db($dbname);
 	// Get all user_ids so we can populate the rows of this matrix
 	$ratArr = array();
@@ -92,7 +146,8 @@ function printBusinessTable($dbname,$conn)
 				die("Error in mysql query to get rating". mysql_error());
 			}
 			$rat = mysql_fetch_array($rating);
-			$ratArr[$i]["Your Rating"] = $rat['rating'];
+		//	$ratArr[$i]["Your Rating"] = $rat['rating'];
+			$ratArr[$i]["Your Rating"] = dumpRatingList($busid, $uname);
 
 		}
 		$bus_id = $busrow['bus_id'];

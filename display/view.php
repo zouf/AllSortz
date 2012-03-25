@@ -26,9 +26,9 @@
 	//switch
 	switch($table)
 	{
-		case "busrat_tbl":
-			printBusRatTable($dbname,$conn);
-			break;
+//		case "busrat_tbl":
+//			printBusRatTable($dbname,$conn);
+//			break;
 		case "user_tbl":
 			printUserTable($dbname,$conn);
 			break;

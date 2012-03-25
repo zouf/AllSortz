@@ -33,6 +33,14 @@ font-size:15px;
 
 
 
+
+.selectedLike
+{
+	font-size: 18px;
+	font-weight:bold;
+
+}
+
 .error
 {
 	background-color:red;
