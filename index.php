@@ -9,7 +9,7 @@
 	#selectable { list-style-type: none; margin: 0; padding: 0; text-align:center; }
 	#selectable li { margin: 3px; padding: 1px; float: left; width: 100px; height: 80px; font-size: 2em; text-align: center; }
 	</style>
-
+hello!
 <?php
  $conn = mysql_connect("localhost","root","new-password");
  if (!$conn)
