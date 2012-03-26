@@ -46,7 +46,7 @@ function selectButton(rating, busid)
 		$('#meh'+busid).addClass("selectedLike");		
 
 	}
-	else
+	else if(rating == 2)
 	{
 
 		$('#love'+busid).addClass("selectedLike");		

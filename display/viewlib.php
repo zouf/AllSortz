@@ -1,6 +1,7 @@
 <?php
 require_once('../db/dblib.php');
 require_once('../search/searchlib.php');
+require_once('../ratings/ratinglib.php');
 function printBusRatTable($dbname,$conn)
 {
 	mysql_select_db($dbname);
@@ -149,9 +150,15 @@ function printBusinessTable($dbname,$conn)
 		//	$ratArr[$i]["Your Rating"] = $rat['rating'];
 			$ratArr[$i]["Your Rating"] = dumpRatingList($busid, $uname);
 
+			
+			$ratArr[$i]["Recommendation"] = "<p>".getRecommendationFor($busid)."</p>";
+		
 		}
-		$bus_id = $busrow['bus_id'];
-		$mysql_get_keywords = "SELECT * FROM bustyperel_tbl where bus_id='$bus_id'";
+		
+		
+		
+		
+		$mysql_get_keywords = "SELECT * FROM bustyperel_tbl where bus_id='$busid'";
 		$type_results = mysql_query($mysql_get_keywords);
 		if(!$type_results)
 		{

@@ -1,9 +1,11 @@
 <?php
 	require_once('../db/utilities.php');
 	include('../template/header.php');
-function getUserDiff($dbname,$conn)
+	require_once('../db/dblib.php');
+	require_once('ratinglib.php');
+function getUserDiff()
 {
-	mysql_select_db($dbname);
+	$conn = connectToDatabase();
 	// Get all user_ids so we can populate the rows of this matrix
 	$ratArr = array();
 	$i = 0;
@@ -22,12 +24,14 @@ function getUserDiff($dbname,$conn)
 		{
 			$col++;		
 		}
+
 		$busid = $ratingRow["bus_id"];  
 		if(isset($usrid) && $ratingRow["usr_id"] != $usrid)
 		{
 			$row++;
 			$col = 1;
 		}
+
 		$usrid = $ratingRow["usr_id"];  
 		$rating = $ratingRow["rating"];  
 		$getbus = "SELECT * FROM business_tbl where bus_id=$busid;";
@@ -59,20 +63,15 @@ function getUserDiff($dbname,$conn)
 		}
 		$u1++;
 	}
-
-}
-$dbname = "nightout1";
-$conn = mysql_connect("localhost","root","new-password");
-if (!$conn)
-{
-	die('Could not connect: ' . mysql_error());
+	mysql_close($conn);
 }
 
 
-getUserDiff($dbname,$conn);
+getDiffForSignedInUser();
 
 
 
-mysql_close($conn);
+
+
 
 ?>

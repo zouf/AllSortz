@@ -77,7 +77,6 @@ function businessAddrExists($name,$addr, $conn)
 
 function userNameExists($name,$conn)
 {	
-
 	$result = mysql_query("SELECT * FROM user_tbl WHERE usr_uname='$name'");
 	if(!mysql_num_rows($result))
 		return False;
@@ -91,6 +90,31 @@ function getIdFromUname($uname)
 	{
 		$username = mysql_fetch_array($result);
 		return $username['usr_id'];
+	}
+
+}
+
+
+function getBusNameFromId($bus_id)
+{
+	$result = mysql_query("SELECT * FROM business_tbl WHERE bus_id='$bus_id'");
+	if($result)
+	{
+		$username = mysql_fetch_array($result);
+		return $username['bus_name'];
+	}
+
+}
+
+
+
+function getUnameFromId($usr_id)
+{
+	$result = mysql_query("SELECT * FROM user_tbl WHERE usr_id='$usr_id'");
+	if($result)
+	{
+		$username = mysql_fetch_array($result);
+		return $username['usr_uname'];
 	}
 
 }
