@@ -1,11 +1,14 @@
-from django.template import Context, loader
 from ratings.models import Business
 from django.http import HttpResponse
-
+from django.template import Context, loader
+from django.template import RequestContext
+from django.views.generic import DetailView, ListView
+from django.shortcuts import render_to_response, get_object_or_404
 
 def detail(request, bus_id):
-    return HttpResponse("You're looking at business %s." % bus_id)
-
+    p = get_object_or_404(Business, pk=bus_id)
+    return render_to_response('ratings/detail.html', {'business': p},
+                               context_instance=RequestContext(request))
 
 def rate(request, bus_id):
     return HttpResponse("You're rating for business %s." % bus_id)

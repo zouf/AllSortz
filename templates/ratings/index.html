@@ -1,7 +1,7 @@
 {% if business_list %}
     <ul>
-    {% for poll in business_list %}
-        <li><a href="/polls/{{ business.id }}/">{{ business.name }}</a></li>
+    {% for bus in business_list %}
+        <li><a href="/ratings/{{ bus.id }}/">{{ bus.name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
