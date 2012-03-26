@@ -1,5 +1,6 @@
 {% if business_list %}
-    <ul>
+<h1>List of Businesses</h1>    
+	<ul>
     {% for bus in business_list %}
         <li><a href="/ratings/{{ bus.id }}/">{{ bus.name }}</a></li>
     {% endfor %}
