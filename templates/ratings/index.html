@@ -1,0 +1,9 @@
+{% if business_list %}
+    <ul>
+    {% for poll in business_list %}
+        <li><a href="/polls/{{ business.id }}/">{{ business.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No businesses are available.</p>
+{% endif %}
