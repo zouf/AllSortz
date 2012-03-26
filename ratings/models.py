@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 class Keyword(models.Model):
     name = models.CharField(max_length=50)
-    
     def __unicode__(self):
         return self.name
 
@@ -23,8 +22,6 @@ class Rating(models.Model):
     business = models.ForeignKey(Business)
     username = models.ForeignKey(User)
     rating = models.IntegerField()
-    
-
 
 
 class Grouping(models.Model):
