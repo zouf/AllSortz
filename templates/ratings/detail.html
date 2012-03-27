@@ -1,6 +1,25 @@
-<h1>{{ business.name }}</h1>
-<h1>{{ rating.rating }}</h1>
-<form action="." method="post">{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="Submit" />
-</form>
+{% extends "base.html" %}
+
+{% block body %}
+{% if business %}
+    <h1>{{ business.name }}</h1>
+
+    <div id="businessDetail">
+		{% if rating %}
+			<p> Your rating is {{ rating.rating }}</p>
+		{% endif %}
+	</div>
+	{% if user.is_authenticated %}
+	<form action="." method="post">{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" value="Submit" />
+	{% endif %}
+	
+	{% if not user.is_authenticated %}
+		<p>Login to rate</p>
+	{% endif %}
+	</form>
+{% else %}
+    <p>Invalid business!.</p>
+{% endif %}
+{% endblock %}

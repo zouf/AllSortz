@@ -1,5 +1,8 @@
 from django import forms
-
+from django.forms import ModelForm
+from django.contrib.localflavor.us.forms import USStateField
+from ratings.models import Keyword
+from ratings.models import Business
 
 RATING_CHOICES = (
     (0, 0),
@@ -9,4 +12,9 @@ RATING_CHOICES = (
 
 class RatingForm(forms.Form):
 	rating = forms.ChoiceField(choices=RATING_CHOICES)
-#	rating = forms.DecimalField()
+
+
+class BusinessForm(ModelForm):
+	class Meta:
+	        model = Business
+	        exclude = ('keywords',)

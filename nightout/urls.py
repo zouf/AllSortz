@@ -14,22 +14,18 @@ urlpatterns = patterns('',
     url(r'^$', 'ratings.views.index'),
     url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.detail'),
     url(r'^ratings/(?P<bus_id>\d+)/rate/$', 'ratings.views.rate'),
+	url(r'^ratings/add_business/$', 'ratings.views.add_business'),
     url(r'^admin/', include(admin.site.urls)),
     # Login / logout.
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', logout_page),
+	(r'^accounts/', include('registration.urls')),
 
 )
 
 if settings.DEBUG:
     urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve',  
-         {'document_root':     settings.MEDIA_ROOT}),
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root':     settings.MEDIA_ROOT}),
+		(r'^(?P<path>.*)$', 'django.views.static.serve',  {'document_root':     settings.MEDIA_ROOT}),
     )
 
-urlpatterns += patterns('',
-
-    # Main web portal entrance.
-    (r'^$', portal_main_page),
-
-)
