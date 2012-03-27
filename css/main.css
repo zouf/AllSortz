@@ -1,0 +1,116 @@
+div#container
+{
+	margin-left: auto;
+	margin-right: auto;
+	width: 50em;
+}
+
+div#businessList a
+{
+	font-family: 'Helvetica', sans-serif;
+	font-size:18px;
+}
+
+h1
+{
+
+	font-family: 'Trykker', sans-serif;
+	font-size:32px;
+}
+
+p
+{
+font-family: 'Helvetica', sans-serif;
+font-size:18px;
+}
+
+li
+{
+font-family: 'Trykker', serif;
+font-size:15px;
+}
+
+#ratingList
+{
+	margin-left:40%;
+}
+
+
+
+
+.selectedLike
+{
+	font-size: 18px;
+	font-weight:bold;
+
+}
+
+.error
+{
+	background-color:red;
+}
+
+
+.userLogin
+{
+		width: 300px;
+		font-size:24px;
+		color : #747862;
+		height:30px;
+		border:1;
+		padding:4px 8px;
+		margin-bottom:5px;
+		border-radius: 5px;
+}
+
+
+.bigsearch
+{
+		width: 300px;
+		font-size:24px;
+		color : #747862;
+		height:30px;
+		border:1;
+		padding:4px 8px;
+		margin-bottom:5px;
+		border-radius: 5px;
+	
+}
+
+
+
+.selecttype
+{
+	width: 200px;
+	font-size:18px;
+	color : #747862;
+	height:200px;
+	border:1;
+	padding:4px 8px;
+	margin-bottom:5px;
+	border-radius: 5px;
+}
+
+
+.descriptionbox
+{
+	width: 200px;
+	font-size:24px;
+	color : #747862;
+	height:200px;
+	border:1;
+	border-radius: 5px;
+}
+
+.adduser
+{
+	width: 300px;
+
+	font-size:24px;
+	color : #747862;
+	height:30px;
+	border:1;
+	padding:4px 8px;
+	margin-bottom:5px;
+	border-radius: 5px;
+}

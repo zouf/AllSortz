@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+
+	{% block body %}
+{% if business_list %}
+    <h1>Businessess</h1>
+
+
+    <div id="businessList">
+		<ul>
+	    {% for bus in business_list %}
+	        <li><a href="/ratings/{{ bus.id }}/">{{ bus.name }}</a></li>
+	    {% endfor %}
+	    </ul>
+	</div>
+
+{% else %}
+    <p>No businesses are available.</p>
+{% endif %}
+	{% endblock %}

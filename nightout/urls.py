@@ -1,4 +1,11 @@
 from django.conf.urls import patterns, include, url
+from django.conf.urls.defaults import *
+from django.views.generic.simple import direct_to_template
+from django.contrib import admin
+from nightout import settings
+from ratings.views import *
+
+
 
 from django.contrib import admin
 admin.autodiscover()
@@ -8,4 +15,21 @@ urlpatterns = patterns('',
     url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.detail'),
     url(r'^ratings/(?P<bus_id>\d+)/rate/$', 'ratings.views.rate'),
     url(r'^admin/', include(admin.site.urls)),
+    # Login / logout.
+    url(r'^login/$', 'django.contrib.auth.views.login'),
+    url(r'^logout/$', logout_page),
+
+)
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve',  
+         {'document_root':     settings.MEDIA_ROOT}),
+    )
+
+urlpatterns += patterns('',
+
+    # Main web portal entrance.
+    (r'^$', portal_main_page),
+
 )
