@@ -1,5 +1,8 @@
 from ratings.models import Business
 from ratings.models import Rating
+from ratings.models import Grouping
+
+from django.core import serializers
 from django.http import HttpResponse
 from django.template import Context, loader
 from django.template import RequestContext
@@ -8,21 +11,72 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
+from django.utils import simplejson
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from ratings.forms import RatingForm
 from ratings.forms import BusinessForm
+from ratings.forms import KeywordForm
 from django.db.models import F
+from array import array
+
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from operator import itemgetter
 
 
+@csrf_exempt
+def ajax_query(request):
+	results = {'success':True}
+	json = simplejson.dumps(results)
+	return HttpResponse(json, mimetype='application/json')
 
 
+def get_rating_table():
+	allRatings = Rating.objects.all()
+	ratingTable = dict()
+	for r in allRatings:
+		if  not r.username in ratingTable:
+			ratingTable[r.username] = {}
+		ratingTable[r.username][r.business] = r.rating
+	return ratingTable
+
+def get_listof_most_similar_users(ratingTable, user):
+	thisUserRatings = ratingTable[user]			# get this users ratings
+	diffBetween = dict()
+	for key, ratarr in ratingTable.iteritems(): 	# iterate through all ratings in teh array
+		if key != user:							#except for the users
+			diff = 0
+			for bus  in ratarr:			# now go through all their ratings
+				rating = ratingTable[key][bus]
+				if bus in thisUserRatings:  		#if the user has rated something they've rated
+					diff += abs(rating - thisUserRatings[bus])		#add to diff
+			diffBetween[key] = diff
+	diffBetweenSorted = sorted(diffBetween.iteritems(), key=lambda (k,v): (v,k))
+	return diffBetweenSorted
+
+
+#Right now this is incredibly naive and stupid since it just returns the
+# rating of the most similar user. This won't work for anything even reasonably complicated
+def get_recommendation(business, user):
+	ratingTable = get_rating_table()
+	if not user in  ratingTable: 	# only works if the user has made some kind of rating
+		return -1;
+	else:				
+		mostSimilarUsers = get_listof_most_similar_users(ratingTable, user)
+		if mostSimilarUsers:
+			for simUser,rating in mostSimilarUsers:
+				if business in ratingTable[simUser]:
+					return ratingTable[simUser][business]
+	return -2
+	
+	
 def detail(request, bus_id):
 	if request.user.is_authenticated():
 		b = get_object_or_404(Business, pk=bus_id)
 		try: 
 			r = Rating.objects.get(username=request.user, business=bus_id)	 #rating exists
-			if request.method == 'POST':  #display rating if it exists
+			if request.method == 'POST':  #posting an existing rating
 				form = RatingForm(request.POST)
 				if form.is_valid():
 					cd = form.cleaned_data
@@ -32,7 +86,7 @@ def detail(request, bus_id):
 			f2 = RatingForm();
 			return render_to_response('ratings/detail.html', {'business': b,'rating': r, 'form' : f2}, context_instance=RequestContext(request))
 		except:	#rating doesnt exist
-			if request.method == 'POST':  #display rating if it exists
+			if request.method == 'POST':  # posting a new rating
 				form = RatingForm(request.POST)
 				if form.is_valid():
 					cd = form.cleaned_data
@@ -42,19 +96,33 @@ def detail(request, bus_id):
 					f2 = RatingForm();			
 					return render_to_response('ratings/detail.html', {'business': b,'rating': r , 'form' : f2}, context_instance=RequestContext(request))
 			else:
-				f2 = RatingForm();			
-				return render_to_response('ratings/detail.html', {'business': b, 'form' : f2}, context_instance=RequestContext(request))
+				f2 = RatingForm();		
+				r = get_recommendation(b, request.user)	
+				return render_to_response('ratings/detail.html', {'business': b, 'form' : f2, 'recommendation': r}, context_instance=RequestContext(request))
 	else:    # Not logged in
 		p = get_object_or_404(Business, pk=bus_id)
 		return render_to_response('ratings/detail.html', {'business': p}, context_instance=RequestContext(request))
 		
-		
+	
+def add_keyword(request):
+	if request.method == 'POST':  #add a business
+		form = KeywordForm(request.POST)
+		new_key = form.save()
+		return HttpResponseRedirect('/')
+	else: #add a form
+		f = KeywordForm();			
+		return render_to_response('ratings/add_keyword.html', {'form' : f}, context_instance=RequestContext(request))	
+
+
 
 
 def add_business(request):
 	if request.method == 'POST':  #add a business
 		form = BusinessForm(request.POST)
-		new_article = form.save()
+		new_business = form.save(commit=False)
+		new_business.save()
+		for key_id in request.POST.getlist('keywords'):
+			grouping = Grouping.objects.create(keyword_id = int(key_id), business = new_business)
 		return HttpResponseRedirect('/')
 
 	else: #add a form

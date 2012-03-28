@@ -17,4 +17,11 @@ class RatingForm(forms.Form):
 class BusinessForm(ModelForm):
 	class Meta:
 	        model = Business
-	        exclude = ('keywords',)
+	        #exclude = ('keywords',)
+	
+
+
+
+class KeywordForm(ModelForm):
+	class Meta:
+	        model = Keyword

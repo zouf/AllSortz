@@ -2,6 +2,9 @@
 <html lang="en">
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/main.css" />
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/header_footer.css" />
+<script type="text/javascript"  src="{{STATIC_URL}}js/jquery.js" /></script>
+<script type="text/javascript"  src="{{STATIC_URL}}js/jquery-ui.js" /></script>
+
 
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
@@ -14,8 +17,12 @@
 	{% endif %}
 
 	{% if user.is_authenticated %}
-		<p>Welcome, {{ user }}</p><a href="/accounts/logout/?next=/">logout</a>
+		Welcome, {{ user }} | <a href="/">Nightout</a> | <a href="/accounts/logout/?next=/">logout</a> 
 	{% endif %}
     {% block body %}{% endblock %}
+	<footer>
+		<p> Copyright info </p>
+	</footer>
 </body>
+
 </html>

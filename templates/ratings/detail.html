@@ -5,16 +5,35 @@
     <h1>{{ business.name }}</h1>
 
     <div id="businessDetail">
+		<p> {{ business.address }}, {{ business.city }}, {{business.state}}</p>
+		
+	
+		<div id="busKeywords">
+				<p> Keywords </p>
+			<ul>
+			{% for key in business.keywords.all %}
+				<li>{{ key }}</li>
+			{% endfor %}
+			</ul>
+		</div>
+	
+		
+		<div id="busRating">
 		{% if rating %}
 			<p> Your rating is {{ rating.rating }}</p>
 		{% endif %}
+		{% if not rating %}
+			<p> Recommendation: {{ recommendation}} </p>
+		{% endif %}
+		</div>
 	</div>
-	{% if user.is_authenticated %}
-	<form action="." method="post">{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" value="Submit" />
-	{% endif %}
 	
+	
+	{% if user.is_authenticated %}
+		<form action="." method="post">{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" value="Submit" />
+	{% endif %}
 	{% if not user.is_authenticated %}
 		<p>Login to rate</p>
 	{% endif %}
