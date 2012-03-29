@@ -1,0 +1,8 @@
+Ideas for converting from 5 star to hate, meh, love
+
+if rat < 1
+	hate
+else if rat < 3
+	meh
+else
+	love 
