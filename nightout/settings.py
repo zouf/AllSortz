@@ -139,6 +139,15 @@ INSTALLED_APPS = (
 )
 
 ACCOUNT_ACTIVATION_DAYS = 7
+
+import logging
+logging.basicConfig(
+	level=logging.DEBUG,
+	format='%(asctime)s %(levelname)s %(message)s',
+	filename='/tmp/django.log',
+	filemode='w'
+)
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.

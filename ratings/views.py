@@ -1,4 +1,5 @@
 from ratings.models import Business
+from django.contrib.auth.models import User
 from ratings.models import Rating
 from ratings.models import Grouping
 
@@ -20,9 +21,15 @@ from ratings.forms import KeywordForm
 from django.db.models import F
 from array import array
 
+import math
+import logging
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from operator import itemgetter
+from scipy.stats.stats import pearsonr
+import scipy
+import random 
+
 
 
 @csrf_exempt
@@ -33,33 +40,58 @@ def ajax_query(request):
 
 
 def get_rating_table():
-	allRatings = Rating.objects.all()
 	ratingTable = dict()
-	for r in allRatings:
-		if  not r.username in ratingTable:
-			ratingTable[r.username] = {}
-		ratingTable[r.username][r.business] = r.rating
+	allBusinesses = Business.objects.all()
+	allUsers = User.objects.all()
+	
+	for u in allUsers:
+		ratingTable[u] = {}
+		for b in allBusinesses:
+			r = Rating.objects.filter(username=u, business=b)
+			if r:
+				r = Rating.objects.get(username=u, business=b)
+				ratingTable[u][b] = r.rating
+			else:
+				ratingTable[u][b] = 0
 	return ratingTable
 
 def get_listof_most_similar_users(ratingTable, user):
-	thisUserRatings = ratingTable[user]			# get this users ratings
+
+	thisUserRatings = scipy.zeros(len(ratingTable[user]), float)
+	j = 0
+	# For some reason, I could not get append to work
+	for r in ratingTable[user]:
+		thisUserRatings[j] = float(ratingTable[user][r])
+		j = j + 1
+	
 	diffBetween = dict()
+	correlationArray = {}
 	for key, ratarr in ratingTable.iteritems(): 	# iterate through all ratings in teh array
 		if key != user:							#except for the users
 			diff = 0
 			for bus  in ratarr:			# now go through all their ratings
-				rating = ratingTable[key][bus]
-				if bus in thisUserRatings:  		#if the user has rated something they've rated
-					diff += abs(rating - thisUserRatings[bus])		#add to diff
-			diffBetween[key] = diff
-	diffBetweenSorted = sorted(diffBetween.iteritems(), key=lambda (k,v): (v,k))
-	return diffBetweenSorted
+				newArr = scipy.zeros(len(ratingTable[key]), float)
+				i = 0
+				for r in ratingTable[key]:
+					newArr[i] = float(ratingTable[key][r])
+					i = i + 1
+				correlation = pearsonr(newArr, thisUserRatings)[0]
+			print correlation
+			if math.isnan(correlation):
+				correlation = 0
+			correlationArray[key] = correlation
+	correlationArraySorted = sorted(correlationArray.iteritems(), key=lambda (k,v): (v,k))
+	print "\n\n\n\n\n"
+	print correlationArraySorted
+	
+	return correlationArraySorted
 
 
 #Right now this is incredibly naive and stupid since it just returns the
 # rating of the most similar user. This won't work for anything even reasonably complicated
 def get_recommendation(business, user):
 	ratingTable = get_rating_table()
+	print ratingTable
 	if not user in  ratingTable: 	# only works if the user has made some kind of rating
 		return -1;
 	else:				
