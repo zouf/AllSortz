@@ -1,0 +1,6 @@
+install SciPy (incl. NumPy)
+	+ scipy.org
+	
+Install Celery and RabbitMQ for asynchronous tasks
+	+ http://www.turnkeylinux.org/blog/django-celery-rabbitmq
+	

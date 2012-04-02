@@ -1,36 +1,39 @@
-from ratings.models import Business
-from django.contrib.auth.models import User
-from ratings.models import Rating
-from ratings.models import Grouping
-
-from django.core import serializers
-from django.http import HttpResponse
-from django.template import Context, loader
-from django.template import RequestContext
-from django.views.generic import DetailView, ListView
-from django.shortcuts import render_to_response, get_object_or_404
-from django.contrib.auth import logout
-from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.utils import simplejson
-from django.shortcuts import render_to_response
-from django.contrib.auth.decorators import login_required
-from ratings.forms import RatingForm
-from ratings.forms import BusinessForm
-from ratings.forms import KeywordForm
-from django.db.models import F
 from array import array
-
-import math
-import logging
-from django.http import HttpResponse
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core import serializers
+from django.db.models import F
+from django.http import HttpResponse, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render_to_response, render_to_response, \
+	render_to_response, get_object_or_404
+from django.template import Context, loader, RequestContext
+from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.generic import DetailView, ListView
 from operator import itemgetter
+from ratings.forms import BusinessForm, KeywordForm, RatingForm
+from ratings.models import Business, Grouping, Rating
+
 from scipy.stats.stats import pearsonr
+import logging
+import math
+import random
 import scipy
-import random 
 
 
+
+#for async queueing
+
+from ratings.tasks import add
+from celery.execute import send_task
+
+
+def foo(request):
+	print "zouf";
+	result = send_task("tasks.add", [2, 2])
+	print result.get()
+	print "zouf2"
 
 @csrf_exempt
 def ajax_query(request):
@@ -166,6 +169,7 @@ def rate(request, bus_id):
     return HttpResponse("You're rating for business %s." % bus_id)
 
 def index(request):
+		foo(request)
 #	if request.user.is_authenticated():
 		business_list = Business.objects.all()
 		c = Context({
@@ -175,7 +179,6 @@ def index(request):
 	#else:
 	#	return HttpResponse("log in dawg");
    
-
 
 
 

@@ -15,3 +15,5 @@ Joey + Matt Discussion
 - This is going to require  a ton of computation, so we're going to have a permanent background task running (maybe it runs every 5 minutes on a copy of the table). 
 - We should figure out how to really optimize the Python to do this quickly (cough cough, parallelizing python code, cough cough :) )
 
+- Must install Celery and RabbitMQ on your machine!
+	+
