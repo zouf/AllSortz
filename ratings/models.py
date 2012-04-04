@@ -31,3 +31,11 @@ class Grouping(models.Model):
     keyword = models.ForeignKey(Keyword)
 
 
+
+class Recommendation(models.Model):
+    business = models.ForeignKey(Business)
+    username = models.ForeignKey(User)
+    recommendation = models.IntegerField()
+    def __unicode__(self):
+      return self.business.name
+
