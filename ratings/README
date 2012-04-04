@@ -1,0 +1,19 @@
+Ideas for converting from 5 star to hate, meh, love
+
+if rat < 1
+	hate
+else if rat < 3
+	meh
+else
+	love 
+	
+	
+Joey + Matt Discussion
+
+- For recommendations: don't just take the rating of the most similar person. 
+- We can use the Peasron correlation to determine "how similar" (positive corr.) and "how disimilar" (negative corr.) users are. We can look at users with 0.75-1.0 positive correlation (let's say) and -.9 to -1.0 negative correlation. We take a weighted average between these (naturally flipping the negativity of the negative correlation). Figuring out the thresholds will be a big part of the model.
+- This is going to require  a ton of computation, so we're going to have a permanent background task running (maybe it runs every 5 minutes on a copy of the table). 
+- We should figure out how to really optimize the Python to do this quickly (cough cough, parallelizing python code, cough cough :) )
+
+- Must install Celery and RabbitMQ on your machine!
+	+

@@ -9,6 +9,17 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+BROKER_HOST = "127.0.0.1"
+BROKER_PORT = 5672
+BROKER_VHOST = "/"
+BROKER_USER = "guest"
+BROKER_PASSWORD = "guest"
+CELERY_IMPORTS = ("ratings.tasks", )
+CELERY_RESULT_BACKEND = "amqp"
+import djcelery
+djcelery.setup_loader()
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -129,7 +140,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 	'ratings',
 	'registration', 
-	
+	 'celery',
+     'djcelery',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
 	'django.contrib.contenttypes',
@@ -147,6 +159,8 @@ ACCOUNT_ACTIVATION_DAYS = 7
 #	filename='/tmp/django.log',
 #	filemode='w'
 #)
+
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

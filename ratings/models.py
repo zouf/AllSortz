@@ -22,10 +22,20 @@ class Rating(models.Model):
     business = models.ForeignKey(Business)
     username = models.ForeignKey(User)
     rating = models.IntegerField()
+    def __unicode__(self):
+      return self.business.name
 
 
 class Grouping(models.Model):
     business = models.ForeignKey(Business)
     keyword = models.ForeignKey(Keyword)
 
+
+
+class Recommendation(models.Model):
+    business = models.ForeignKey(Business)
+    username = models.ForeignKey(User)
+    recommendation = models.IntegerField()
+    def __unicode__(self):
+      return self.business.name
 
