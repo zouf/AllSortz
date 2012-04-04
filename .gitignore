@@ -1,1 +1,5 @@
 /*.pyc
+/.project
+/.pydevproject
+nightout/settings.pyc
+nightout/settings.py
