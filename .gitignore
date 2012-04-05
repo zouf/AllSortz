@@ -1,5 +1,10 @@
+<<<<<<< HEAD
+*.pyc
+nightout/settings.py
+=======
 /*.pyc
 /.project
 /.pydevproject
 nightout/settings.pyc
 nightout/settings.py
+>>>>>>> d41815cdf9cf7d8e9574fe727f3b682f1265ba91
