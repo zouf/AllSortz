@@ -5,4 +5,8 @@
 - Webcrawler:
 	- Need to crawl Yelp and Google in a separate 
 
-- 
+- Add reviews
+
+- Searching in MySql
+	+ figure out a way to use keywords
+	

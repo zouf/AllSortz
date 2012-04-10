@@ -70,16 +70,12 @@ def build_recommendations():
     for user in corArr:
         for bus in ratingTable[user]:
             rec = calculate_recommendation(user,corArr, ratingTable)
-            try:
-                print("here")
-                r1 = Recommendation.objects.get(username=user, business=bus)
-                print r1.username
-                r1.recommendation = rec
-                r1.save()
-            except:
-                print("jumped")
-                r1 = Recommendation(username=user, business=bus,recommendation=rec)
-                r1.save()
+            queryset = Recommendation.objects.filter(username=user, business=bus)
+            if queryset.count() >= 1:
+                queryset.delete()
+            r1 = Recommendation(username=user, business=bus,recommendation=rec)
+            r1.save()
+
                 
     
             
