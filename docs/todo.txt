@@ -1,0 +1,8 @@
+- In tasks.py:
+	+ calculate_recommendation needs to be implemented
+	+ Given a matrix of related users, calculate a new rating for a business
+	
+- Webcrawler:
+	- Need to crawl Yelp and Google in a separate 
+
+- 
