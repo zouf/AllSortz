@@ -5,3 +5,5 @@ nightout/settings.pyc
 /*.pyc
 settings.pyc
 nighout/settings.py
+.project
+.pydevproject
