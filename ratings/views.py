@@ -16,6 +16,8 @@ from operator import itemgetter
 from ratings.forms import BusinessForm, KeywordForm, RatingForm
 from ratings.models import Business, Grouping, Rating
 from ratings.recengine import RecEngine
+from ratings.populate import populate_test_data
+
 
 
 re = RecEngine() 
@@ -26,6 +28,14 @@ def ajax_query(request):
 	json = simplejson.dumps(results)
 	return HttpResponse(json, mimetype='application/json')
 
+
+def pop_test_data(request):
+	print('Populating with test data')
+	numUsers = 5
+	numBusinesses =5 
+	populate_test_data(numUsers, numBusinesses)
+	return HttpResponseRedirect('/')
+	
 
 	
 def detail(request, bus_id):
