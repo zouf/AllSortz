@@ -3,6 +3,14 @@
 	+ Given a matrix of related users, calculate a new rating for a business
 	+ A big part is going to be cutting off users that don't have sufficient positive or negative correlation
 	+ global variable for the correlation threshold?
+	+ weight by the correlation as well as the number of users that are related
+	
+
+- Rating system
+	+ We have to come up with a simpler way of "switiching around" the rating system. 
+		Especially when calculating the Pearson correlation, the size of the matirx (and thus the ratings given)
+		matter a lot
+	
 	
 - Webcrawler:
 	- Need to crawl Yelp and Google in a separate 
@@ -21,3 +29,7 @@
 		Location-based problems. For example, users from SF and NY aren't going to have a lot of overlap
 		
 + Add support for "Trending" restaraunts (those that have gotten dozens of reviews recently)
+
+
++ Potential optimizations:
+	- Calculating recommendations needs to be iterative

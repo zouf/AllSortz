@@ -1,3 +1,16 @@
+
+
 4/13/2012
 -Joey and Matt meet to work on calculate_rec
 - Figure out git issues
+- Made some progress, there is a triply nested loop:
+	users, correlated users, then all businesses then calc rating
+- Right now, it just takes the average of all those users who are sufficiently correlated. 
+- if the average of likes > dislikes, then select it. This rating system seems a little primitive, maybe rethink
+-There's also a bug in tasks.py caused by the fact we're using conflicting rating systems.
+	+ Establish a concrete mapping (e.g.  like-> 1, hate ->-1, meh ->0)
+	
+
+
+5/15/2012
+- DEAN'S DATE
