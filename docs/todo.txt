@@ -2,6 +2,7 @@
 	+ calculate_recommendation needs to be implemented
 	+ Given a matrix of related users, calculate a new rating for a business
 	+ A big part is going to be cutting off users that don't have sufficient positive or negative correlation
+	+ global variable for the correlation threshold?
 	
 - Webcrawler:
 	- Need to crawl Yelp and Google in a separate 

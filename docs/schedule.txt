@@ -1,0 +1,3 @@
+4/13/2012
+-Joey and Matt meet to work on calculate_rec
+- Figure out git issues
