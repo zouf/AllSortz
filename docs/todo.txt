@@ -1,6 +1,7 @@
 - In tasks.py:
 	+ calculate_recommendation needs to be implemented
 	+ Given a matrix of related users, calculate a new rating for a business
+	+ A big part is going to be cutting off users that don't have sufficient positive or negative correlation
 	
 - Webcrawler:
 	- Need to crawl Yelp and Google in a separate 
@@ -10,3 +11,12 @@
 - Searching in MySql
 	+ figure out a way to use keywords
 	
+	
+-Create a way to test functionality	
+	+ Presumably, Deep will not be done with the web crawler for a little bit, so we should come up with a way to actually
+	create fake data and test on it
+	+ We're going to have to think about common food-rating situations you might come across.
+		for example, a new place opens and you don't want it to get lost in the realm of older more established places
+		Location-based problems. For example, users from SF and NY aren't going to have a lot of overlap
+		
++ Add support for "Trending" restaraunts (those that have gotten dozens of reviews recently)
