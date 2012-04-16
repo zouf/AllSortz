@@ -11,6 +11,13 @@
 	+ Establish a concrete mapping (e.g.  like-> 1, hate ->-1, meh ->0)
 	
 
+4/16/2012
+- Figured out numbering system / way to do conversion from db to python (do it all at once and use sentinel negative values to 
+ account for no rating and neutral rating
+- For correlation, no rating (g_NoR == -1) is treated the same as neutral rating (g_NeuR == -2). THus, the correlation
+only works on a subset of the data
+
+
 
 5/15/2012
 - DEAN'S DATE

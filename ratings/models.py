@@ -11,9 +11,10 @@ class Business(models.Model):
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
+    average_rating = models.FloatField()
     state = USStateField() # Yes, this is America-centric...
     keywords = models.ManyToManyField(Keyword, through='Grouping')
-    average_rating = models.FloatField()
+
 
     def __unicode__(self):
         return self.name

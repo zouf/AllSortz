@@ -1,0 +1,4 @@
+- To reset the database
+	+ manage.py sqlclear ratings     will PRINT THE STATEMENT NECESSARY TO DROP ALL TABLES NOT DELETE THEM
+	+ To delete, run mysql -u root -p  (new-password is my password). Then set FOREIGN_KEY_CHECKS = 0;, run command above
+		and then FOREIGN_KEY_CHECKS=11;

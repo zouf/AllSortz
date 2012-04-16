@@ -11,7 +11,9 @@ from ratings.models import Rating
 from ratings.models import DontCare
 from ratings.models import Recommendation
 from django.contrib.auth.models import User
-
+from django.db.models import Avg
+from django.db.models import Count
+from django.db.models import Sum
 
 
 import ratings.recengine
@@ -107,7 +109,14 @@ def sufficiently_correlated(corValue):
 	if corValue >= corPositiveBound or corValue <= corNegativeBound:
 		return True
 	return False
-		
+	
+	
+def insertAverage(bus, avg):
+	queryset = Business.objects.filter( business=bus)
+	if queryset.count() >= 1:
+		queryset.delete()
+	#r1 = Business( business=bus, average_rating=avg)
+	#r1.save()	
 		
 def insertRecommendation(user, bus, rec):
 	queryset = Recommendation.objects.filter(username=user, business=bus)
@@ -186,7 +195,16 @@ def build_recommendations():
 
 	#3.)  #calculate average ratings for businesses
 	#Book.objects.all().aggregate(Avg('price'))
-
+	all_businesses = Business.objects.all
+	for bus in all_businesses:
+		print(bus)
+		ratingFilter = Rating.objects.filter(business=bus).aggregate(Sum('rating'), Count('rating'))
+		sumRating = ratingFilter[0]
+		countRating = ratingFilter[1]
+		avg = ci_lowerbound(sumRating, countRating)
+		insertAverage(bus,avg)
+			
+			
 				
 	
 			
