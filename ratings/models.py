@@ -13,15 +13,21 @@ class Business(models.Model):
     city = models.CharField(max_length=50)
     state = USStateField() # Yes, this is America-centric...
     keywords = models.ManyToManyField(Keyword, through='Grouping')
-    
+    average_rating = models.FloatField()
+
     def __unicode__(self):
         return self.name
 
 
+class DontCare(models.Model):
+    business = models.ForeignKey(Business)
+    username = models.ForeignKey(User)
+    
+
 class Rating(models.Model):
     business = models.ForeignKey(Business)
     username = models.ForeignKey(User)
-    rating = models.IntegerField()
+    rating = models.FloatField()
     def __unicode__(self):
       return self.business.name
 

@@ -8,6 +8,7 @@ from celery.decorators import periodic_task
 from datetime import timedelta
 from ratings.models import Business
 from ratings.models import Rating
+from ratings.models import DontCare
 from ratings.models import Recommendation
 from django.contrib.auth.models import User
 
@@ -18,9 +19,9 @@ import ratings.recengine
 corPositiveBound = 0.5
 corNegativeBound = -0.5
 
-g_NegR = -1 #negative
+g_NegR = 0 #negative
 g_PosR = 1 #positive
-g_NeuR = 0 #neutral
+g_NeuR = -1 #neutral
 g_NoR = -2 #no rating
 
 
@@ -48,31 +49,45 @@ def get_rating_table_working_copy():
 			r = Rating.objects.filter(username=u, business=b)
 			if r:
 				r = Rating.objects.get(username=u, business=b)
-				ratingTable[u][b] = r.rating
+				dc = DontCare.objects.filter(username=u, business=b)
+				if dc:
+					ratingTable[u][b] = g_NeuR
+				else:
+					ratingTable[u][b] = r.rating
 			else:
 				ratingTable[u][b] = g_NoR
 	return ratingTable
 
-def get_listof_most_similar_users(ratingTable, user):
-	thisUserRatings = scipy.zeros(len(ratingTable[user]), float)
-	j = 0
-	# For some reason, I could not get append to work
-	for r in ratingTable[user]:
-		thisUserRatings[j] = float(ratingTable[user][r])
-		j = j + 1
-	
+
+
+def get_listof_most_similar_users(ratingTable, thisUser):
+	#an array of correlations indexed by "other users
 	correlationArray = {}
-	for key, ratarr in ratingTable.iteritems():	 # iterate through all ratings in teh array
-		if key != user:							#except for the users
-			newArr = scipy.zeros(len(ratingTable[key]), float)
-			i = 0
-			for r in ratingTable[key]:
-				newArr[i] = float(ratingTable[key][r])
-				i = i + 1
-			correlation = pearsonr(newArr, thisUserRatings)[0]
-			if math.isnan(correlation):
-				correlation = 0
-			correlationArray[key] = correlation
+	
+	#iterate through all other users
+	for otherUser, ratingArr in ratingTable.iteritems():	 
+		thisUserOverlapRatings = []
+		otherUserOverlapRatings = []
+		if otherUser != thisUser:			#except for the current user
+			#Get all the businesses and ratings of the other user
+			for business, otherUserRating in ratingArr:
+				thisUserRating = ratingTable[thisUser][business]
+				#only use ratings both users have rated
+				if otherUserRating >=0 and thisUserRating >= 0:
+					#for later conversion to scipy.array
+					thisUserOverlapRatings.append(thisUserRating)
+					otherUserOverlapRatings.append(otherUserRating)
+		ratings1 = scipy.array(thisUserOverlapRatings)
+		ratings2 = scipy.array(otherUserOverlapRatings)
+		
+		#ratings1 and ratings2 are arrays of floats which represent ratings for businesses
+		# both this user and otherUser have rated
+		correlation = pearsonr(ratings1, ratings2)[0]
+		
+		#since stdev can be 0
+		if math.isnan(correlation):
+			correlation = 0
+		correlationArray[otherUser] = correlation
 	correlationArraySorted = sorted(correlationArray.iteritems(), key=lambda (k, v): (v, k))
 	return correlationArraySorted
 
@@ -110,29 +125,21 @@ def calculate_recommendation_allbusinesses(user, corUser, corValue, ratingTable,
 	global g_NoR
 	for bus in ratingTable[corUser]: #go through all of the correlated user's businesses
 		print("Iterate over businesses for "+corUser.username+ " w.r.t. "+user.username)
-		if bus not in ratingTable[user]:   #If the user hasn't rated it yet
+		if ratingTable[user][bus] == g_NoR:   #If the user hasn't rated it yet
 			# now it's time for a recommendation!
 			print("give a rating")
 			correlatedUserRating = ratingTable[corUser][bus] 
 			
 			if corValue < 0:
 				#flip the correlatedUserRating since its negative
-				if correlatedUserRating == g_PosR:
-					correlatedUserRating = g_NegR
-				elif correlatedUserRating == g_NegR:
-					correlatedUserRating =g_PosR
-					
+				correlatedUserRating = 1-ratingTable[corUser][bus]  
 					
 			if bus not  in recArr:
 				recArr[bus] = {}
-				recArr[bus]['pos'] = 0
-				recArr[bus]['tot'] = 0
-				recArr[bus]['neg'] = 0			
+				recArr[bus]['sum'] = 0
+				recArr[bus]['tot'] = 0			
 			recArr[bus]['tot'] = recArr[bus]['tot'] + 1
-			if correlatedUserRating == g_PosR:
-				recArr[bus]['pos'] = recArr[bus]['pos'] + 1
-			elif correlatedUserRating == g_NegR:
-				recArr[bus]['neg'] = recArr[bus]['neg'] + 1 
+			recArr[bus]['sum'] = recArr[bus]['sum'] + correlatedUserRating
 
 
 @periodic_task(name="tasks.build_recommendations", run_every=timedelta(seconds=10))
@@ -160,7 +167,6 @@ def build_recommendations():
 				calculate_recommendation_allbusinesses(user, corUser, corValue, ratingTable, runRec)
 		#now we have a running recommendation vector filled with everything we need. We simply plug it into 
 		# the ci_lowerbound func
-		print('here')
 		for bus in ratingTable[user]:
 			if bus in runRec:
 				print("there is some")
@@ -178,6 +184,8 @@ def build_recommendations():
 					
 				
 
+	#3.)  #calculate average ratings for businesses
+	#Book.objects.all().aggregate(Avg('price'))
 
 				
 	
