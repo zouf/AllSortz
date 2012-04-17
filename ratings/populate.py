@@ -8,6 +8,13 @@ from django.contrib.auth.models import User
 from ratings.models import Business, Rating
 from random import Random
 
+
+def generateTest():
+    # generate 2 binomials centered a a random business
+    # one represents whether its been rated, the other what the rating was (like dislike)
+    
+
+
 def createusers(n):
     for i in range(n):
         queryset = User.objects.filter(username=("user" + str(i)))

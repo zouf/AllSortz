@@ -195,7 +195,7 @@ def build_recommendations():
 
 	#3.)  #calculate average ratings for businesses
 	#Book.objects.all().aggregate(Avg('price'))
-	all_businesses = Business.objects.all
+	all_businesses = Business.objects.all()
 	for bus in all_businesses:
 		print(bus)
 		ratingFilter = Rating.objects.filter(business=bus).aggregate(Sum('rating'), Count('rating'))

@@ -10,7 +10,11 @@
 	+ We have to come up with a simpler way of "switiching around" the rating system. 
 		Especially when calculating the Pearson correlation, the size of the matirx (and thus the ratings given)
 		matter a lot
+
+s	
 	
+
+- "Users who like x will also like y"
 	
 -TESTING
 	+ Need better test scripts
