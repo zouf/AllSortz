@@ -114,10 +114,25 @@ def index(request):
 	#	return HttpResponse("log in dawg");
 
 def display_table(request):
-	ratings_list = Rating.objects.all()
 	business_list = Business.objects.all()
 	user_list = User.objects.all()
-	return	render_to_response('ratings/rating_table.html', {'ratings_list': ratings_list, 'business_list' :business_list, 'user_list': user_list}, context_instance=RequestContext(request))
+	all_ratings = []
+	userno = 0
+	for user in user_list:
+		businessno = 0
+		all_ratings.append([user.username])
+		for business in business_list:
+			try:
+				r = Rating.objects.get(username=user, business=business).rating
+				all_ratings[userno].append(r)
+			except:
+				r="--"
+				all_ratings[userno].append(r)
+			businessno = businessno+1
+		userno = userno + 1
+	
+	print(all_ratings)
+	return	render_to_response('ratings/rating_table.html', {'ratings_list': all_ratings, 'business_list' :business_list, 'user_list': user_list}, context_instance=RequestContext(request))
 
 
 def logout_page(request):

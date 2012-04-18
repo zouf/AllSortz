@@ -24,7 +24,7 @@ def generateTest():
     r = Random()
     NumBusiness = Business.objects.count()
     rating_given_sd = NumBusiness / 4
-    pos_rating_sd = NumBusiness   / 2
+    pos_rating_sd = NumBusiness   / 4
     for user in User.objects.all():
         i = 0
         center = r.randint(0, NumBusiness-1)
@@ -86,9 +86,8 @@ def addRandomRatings():
 
 def populate_test_data(numUsers, numBusinesses):
     Rating.objects.all().delete()
-    User.objects.exclude(username="zouf").delete()
+    User.objects.exclude(username="joey").exclude(username="zouf").delete()
     Business.objects.all().delete()
-    
     createbusinesses(numBusinesses) 
     createusers(numUsers)
     generateTest()

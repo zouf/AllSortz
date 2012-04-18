@@ -15,7 +15,6 @@ class Business(models.Model):
     state = USStateField() # Yes, this is America-centric...
     keywords = models.ManyToManyField(Keyword, through='Grouping')
 
-
     def __unicode__(self):
         return self.name
 
