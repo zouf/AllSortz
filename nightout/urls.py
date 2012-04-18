@@ -17,6 +17,7 @@ urlpatterns = patterns('',
 	url(r'^ratings/add_keyword/$', 'ratings.views.add_keyword'),
 	url(r'^ajax_query/$','ratings.views.ajax_query'),
 	url(r'^ratings/add_business/$', 'ratings.views.add_business'),
+    url(r'^ratings/view_ratings*$', 'ratings.views.display_table'),
     url(r'^ratings/pop_test_data/$', 'ratings.views.pop_test_data'),
     url(r'^admin/', include(admin.site.urls)),
     # Login / logout.

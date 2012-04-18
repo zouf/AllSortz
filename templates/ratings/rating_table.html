@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+{% if rating_list %}
+    
+	<h1>Ratings</h1>
+	HTML sucks
+    <div id="ratingList">
+		<ul>
+	    {% for rat in rating_list %}
+	        <li><a href="/ratings/{{ bus.id }}/">{{ bus.name }}</a></li>
+	    {% endfor %}
+			<li><a href="/ratings/add_business/">Add a business</a></li>
+	    </ul>
+	</div>
+	<script type="text/javascript"/>
+			$.ajax({
+				type : 'POST',
+				url : '/ajax_query/',
+				dataType : 'json',
+				data: {	
+						val : 1
+				},
+				success : function(data){
+		
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+						
+				}
+			});
+
+	</script>
+{% else %}
+    <p>No ratings  are available.</p>
+{% endif %}
+{% endblock %}

@@ -31,8 +31,8 @@ def ajax_query(request):
 
 def pop_test_data(request):
 	print('Populating with test data')
-	numUsers = 5
-	numBusinesses =5 
+	numUsers = 10
+	numBusinesses =20
 	populate_test_data(numUsers, numBusinesses)
 	return HttpResponseRedirect('/')
 	
@@ -112,6 +112,13 @@ def index(request):
 		return	render_to_response('ratings/index.html', {'business_list': business_list}, context_instance=RequestContext(request))
 	#else:
 	#	return HttpResponse("log in dawg");
+
+def display_table(request):
+	ratings_list = Rating.objects.all()
+	business_list = Business.objects.all()
+	user_list = User.objects.all()
+	return	render_to_response('ratings/rating_table.html', {'ratings_list': ratings_list, 'business_list' :business_list, 'user_list': user_list}, context_instance=RequestContext(request))
+
 
 def logout_page(request):
 	logout(request)

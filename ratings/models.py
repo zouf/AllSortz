@@ -30,7 +30,7 @@ class Rating(models.Model):
     username = models.ForeignKey(User)
     rating = models.FloatField()
     def __unicode__(self):
-      return self.business.name
+      return self.username.username +  " " + self.business.name + " " + str(self.rating)
 
 
 class Grouping(models.Model):
