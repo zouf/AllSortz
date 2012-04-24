@@ -16,7 +16,17 @@
  account for no rating and neutral rating
 - For correlation, no rating (g_NoR == -1) is treated the same as neutral rating (g_NeuR == -2). THus, the correlation
 only works on a subset of the data
-- 
+
+4/24/2012
+-	Joey and Matt refactored code s.t. Pearson was in own module. 
+- Added support for NMF (basic support)
+- Will need to figure out the best "latent K" to use 
+	+ idea: just use the number of distinct categories from Yelp
+- Sparseness is a problem. If there's NO overlap, recommendations are NaN
+- See test cases for how to use NMF
+
+5/7/2012 
+- Poster session
 
 
 5/15/2012

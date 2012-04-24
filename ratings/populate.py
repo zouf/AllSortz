@@ -73,13 +73,11 @@ def addRandomRatings():
     r = Random();
     for user in User.objects.all():
         for business in Business.objects.all():
-            rating = Random.randint(r, -1, 2)
+            rating = Random.randint(r, 0, 2)
             queryset = Rating.objects.filter(username=user, business=business)
             if queryset.count() >= 1:
                 queryset.delete()
             
-            if rating==-1 : 
-                rating = -2
             rat = Rating(business=business, username=user, rating=float(rating))
             rat.save()
 
