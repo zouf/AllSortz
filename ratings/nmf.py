@@ -15,9 +15,73 @@ from django.contrib.auth.models import User
 from ratings.models import Business
 from ratings.models import Rating
 
+
+
+def get_for_fold(f):
+    ratingTable = dict()
+    allBusinesses = Business.objects.all()
+    allUsers = User.objects.all()
+    inFoldData = []
+    id2bus = dict()
+    id2usr = dict()
+    
+    random.seed = 666
+    i = 0
  
+    for u in allUsers:
+        j = 0
+        ratingTable[i] = {}
+        id2usr[u] = i
+        for b in allBusinesses:
+        #    print(b)
+            id2bus[b] = j
+            r = Rating.objects.filter(username=u, business=b)
+            if r:
+                foldId = random.randint(1,5)
+                r = Rating.objects.get(username=u, business=b)
+                if foldId == f:
+                    ratingTable[i][j] = 0
+                    inFoldData.append(r)
+                else:
+                    ratingTable[i][j] = r.rating                
+            else:
+                ratingTable[i][j] = 0
+            j=j+1
+        i=i+1
+    return ratingTable, inFoldData, id2usr, id2bus
+ 
+
+
+def get_rating_folds():
+    #loop over K
+    for k in range(1,10,2):
+        
+        sumDist = 0
+        for f in range(1,6): 
+            ratingTable,inFoldData,id2usr,id2bus = get_for_fold(f)
+            nR = run_nmf(ratingTable, k)
+            # call matrix factorization
+            dist = 0
+            for r in inFoldData:
+                #print("Username " + str(r.username))
+                #print("Business " + str(r.business.name))
+                #print("Rating " + str(r.rating))
+                user = r.username
+                business = r.business
+                rat = r.rating
+                prediction = nR[id2usr[user]][id2bus[business]]
+                #print("Prediction " + str(prediction))
+                #print("")
+                #print("")
+                dist = dist + math.pow(abs(float(prediction) - float(rat)),2)
+            sumDist = sumDist + dist / len(inFoldData)
+            print("For fold = "+str(f)+" dist = "+str(dist/len(inFoldData)))
+        print("Average Distance for K= "+str(k) + " is " + str(sumDist/5))
+        
+        
+  
  # http://www.albertauyeung.com/mf.php
-def matrix_factorization(R, P, Q, K, steps=5000, alpha=0.0002, beta=0.02):
+def matrix_factorization(R, P, Q, K, steps=500, alpha=0.0002, beta=0.02):
     Q = Q.T
     for step in xrange(steps):
         for i in xrange(len(R)):
@@ -40,15 +104,15 @@ def matrix_factorization(R, P, Q, K, steps=5000, alpha=0.0002, beta=0.02):
     return P, Q.T
 
 
-def run_nmf(R, K):
+def run_nmf(R,K):
+    
     N = len(R)
     M = len(R[0])
-
+    
     P = numpy.random.rand(N,K)
     Q = numpy.random.rand(M,K)
      
     nP, nQ = matrix_factorization(R, P, Q, K)
     nR = numpy.dot(nP, nQ.T)
 
-    return
-    #matrix_factorization(R, P, Q, K, steps=5000, alpha=0.0002, beta=0.02):
+    return nR

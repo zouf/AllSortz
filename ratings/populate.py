@@ -6,9 +6,10 @@ Created on Apr 2, 2012
 
 from django.contrib.auth.models import User
 from ratings.models import Business, Rating
-from random import Random
+
+import random
 from scipy.stats import norm
-from numpy.random import *
+from numpy.random import binomial
 import numpy
 import scipy.stats
 
@@ -21,13 +22,14 @@ def generateTest():
     Rating.objects.all().delete()
     
     
-    r = Random()
+    random.seed(666)
+    
     NumBusiness = Business.objects.count()
-    rating_given_sd = NumBusiness / 4
+    rating_given_sd = NumBusiness / 2
     pos_rating_sd = NumBusiness   / 4
     for user in User.objects.all():
         i = 0
-        center = r.randint(0, NumBusiness-1)
+        center = random.randint(0, NumBusiness-1)
         
         for business in Business.objects.all():
             
@@ -46,8 +48,13 @@ def generateTest():
                 norm_pos_rat = scipy.stats.norm(center,pos_rating_sd)
                 prob_pos_rat =  norm_pos_rat.pdf(i)  *  1/norm_pos_rat.pdf(center)
                 pos_rat_rv = binomial(1, prob_pos_rat, size=1) #1 if positive, 0 negative
-
-                rat = Rating(business=business, username=user, rating=float(pos_rat_rv[0]))
+                rating_scaled = 0
+                
+                if pos_rat_rv[0] == 1:
+                    rating_scaled = random.randint(3,5)
+                else:
+                    rating_scaled = random.randint(1,2)
+                rat = Rating(business=business, username=user, rating=float(rating_scaled))
                 rat.save()
             #no rating        
             i=i+1
@@ -68,19 +75,6 @@ def createbusinesses(n):
             queryset.delete()
         b = Business(name="business" + str(i), address="street" + str(i), city="princeton", state="NJ",average_rating=-1)
         b.save()
-
-def addRandomRatings():
-    r = Random();
-    for user in User.objects.all():
-        for business in Business.objects.all():
-            rating = Random.randint(r, 0, 2)
-            queryset = Rating.objects.filter(username=user, business=business)
-            if queryset.count() >= 1:
-                queryset.delete()
-            
-            rat = Rating(business=business, username=user, rating=float(rating))
-            rat.save()
-
 
 def populate_test_data(numUsers, numBusinesses):
     Rating.objects.all().delete()

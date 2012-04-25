@@ -7,6 +7,8 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from ratings.nmf import matrix_factorization
+from ratings.nmf import get_rating_folds
+from ratings.populate import populate_test_data
 import numpy
 
 
@@ -20,6 +22,35 @@ class SimpleTest(TestCase):
 
 
 class TestNMF(TestCase):
+    
+    def test_real_model(self):
+        populate_test_data(numUsers=30, numBusinesses=20)
+        get_rating_folds()
+    
+    def test_bin_nmf(self):
+        R = [
+             [2,1,0,2],
+             [1,0,2,1],
+             [2,1,0,2],
+             [2,0,0,1],
+             [0,1,2,2],
+            ]
+         
+        R = numpy.array(R)
+         
+        N = len(R)
+        M = len(R[0])
+        K = 2
+
+        P = numpy.random.rand(N,K)
+        Q = numpy.random.rand(M,K)
+         
+        nP, nQ = matrix_factorization(R, P, Q, K)
+        nR = numpy.dot(nP, nQ.T)
+        print(nR)
+        return
+    
+    
     def test_basic_nmf(self):
         R = [
              [5,3,0,1],

@@ -1,6 +1,4 @@
-
-
-4/13/2012
+ 4/13/2012
 -Joey and Matt meet to work on calculate_rec
 - Figure out git issues
 - Made some progress, there is a triply nested loop:
@@ -24,6 +22,10 @@ only works on a subset of the data
 	+ idea: just use the number of distinct categories from Yelp
 - Sparseness is a problem. If there's NO overlap, recommendations are NaN
 - See test cases for how to use NMF
+
+4/25/2012
+- Figured out a way to do folds and at least evaluate how well our recommendations work
+- nmf.py has a function get_rating_folds() that loops over k (1,2,4,6,8,10) and does 5 fold cross validation
 
 5/7/2012 
 - Poster session
