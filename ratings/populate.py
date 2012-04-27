@@ -10,6 +10,7 @@ from ratings.models import Business, Rating
 import random
 from scipy.stats import norm
 from numpy.random import binomial
+from numpy import dot
 import numpy
 import scipy.stats
 
@@ -76,6 +77,49 @@ def createbusinesses(n):
         b = Business(name="business" + str(i), address="street" + str(i), city="princeton", state="NJ",average_rating=-1)
         b.save()
 
+def generate_nmf_test(numFactors, density):
+    allUsers = User.objects.all()
+    allBusinsses = Business.objects.all()
+    random.seed(666)
+    newP = []
+    for u in range(0,allUsers.count()):
+        if u not in newP:
+            newP.append([])
+        for k in range(0,numFactors):
+            rif = random.uniform(0,1)
+            newP[u].append(rif)
+    
+    newQ = []     
+    for k in range(0,numFactors):
+        newQ.append([])
+        for j in range(0,allBusinsses.count()):
+            rif = random.uniform(0,1)
+            newQ[k].append(rif)
+    
+    initR = dot(newP,newQ)
+    
+    i = 0
+    for u in allUsers:
+        j = 0
+        for b in allBusinsses:
+            chance = random.uniform(0,1)
+            if(chance < density):
+                rat = Rating(business=b, username=u, rating=float(initR[i][j]))
+                rat.save()
+            j = j + 1
+    i = i + 1
+    
+    
+    
+def pop_test_user_bus_data(numUsers, numBusinesses):
+    Rating.objects.all().delete()
+    User.objects.exclude(username="joey").exclude(username="zouf").delete()
+    Business.objects.all().delete()
+    createbusinesses(numBusinesses) 
+    createusers(numUsers)   
+    return
+    
+    
 def populate_test_data(numUsers, numBusinesses):
     Rating.objects.all().delete()
     User.objects.exclude(username="joey").exclude(username="zouf").delete()

@@ -9,6 +9,8 @@ from django.test import TestCase
 from ratings.nmf import matrix_factorization
 from ratings.nmf import get_rating_folds
 from ratings.populate import populate_test_data
+from ratings.populate import pop_test_user_bus_data
+from ratings.populate import  generate_nmf_test
 import numpy
 
 
@@ -22,6 +24,12 @@ class SimpleTest(TestCase):
 
 
 class TestNMF(TestCase):
+    
+    
+    def test_gen_model(self):
+        pop_test_user_bus_data(numUsers=30, numBusinesses=20)
+        generate_nmf_test(numFactors=4, density=.3)
+        get_rating_folds()
     
     def test_real_model(self):
         populate_test_data(numUsers=30, numBusinesses=20)

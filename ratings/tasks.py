@@ -6,7 +6,7 @@ from ratings.models import Rating
 from ratings.models import DontCare
 from ratings.models import Recommendation
 from django.contrib.auth.models import User
-from ratings.nmf import run_nmf
+from ratings.nmf import get_rating_folds
 from django.db.models import Avg
 from django.db.models import Count
 from django.db.models import Sum
@@ -80,7 +80,7 @@ def insertRecommendation(user, bus, rec):
 
 @periodic_task(name="tasks.build_recommendations", run_every=timedelta(seconds=10))
 def build_recommendations():
-	working_copy = get_rating_table_working_copy()
-	run_nmf()  
+	#working_copy = get_rating_table_working_copy()
+	get_rating_folds()
 	buildAverageRatings()
 	

@@ -5,6 +5,7 @@ import math
 import random
 import scipy
 import numpy
+
 from celery.decorators import periodic_task
 from datetime import timedelta
 from ratings.models import Business
@@ -54,7 +55,7 @@ def get_for_fold(f):
 
 def get_rating_folds():
     #loop over K
-    for k in range(1,10,2):
+    for k in range(1,15,3):
         
         sumDist = 0
         for f in range(1,6): 
@@ -81,7 +82,7 @@ def get_rating_folds():
         
   
  # http://www.albertauyeung.com/mf.php
-def matrix_factorization(R, P, Q, K, steps=500, alpha=0.0002, beta=0.02):
+def matrix_factorization(R, P, Q, K, steps=50, alpha=0.0002, beta=0.02):
     Q = Q.T
     for step in xrange(steps):
         for i in xrange(len(R)):
