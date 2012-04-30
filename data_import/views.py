@@ -66,6 +66,8 @@ def read_dataset():
             u = create_user(name)
             ourID = u.pk
             users.append(u)
+            if(len(users)==10085):
+                print(u.username)
             yelpUIDtoID[yelpID] = ourID
         elif o['type'] == 'business':
             yelpID = o['business_id']
