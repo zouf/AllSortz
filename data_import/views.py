@@ -47,11 +47,12 @@ def read_dataset():
     
     clear_all_tables()
     
-    #fp = open('/Users/zouf/Sites/nightout/data_import/little.json')
-    fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
+    fp = open('/Users/zouf/Sites/nightout/data_import/medium.json')
+    #fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
     objs = json.load(fp)
     #pprint(objs)
     c=0;
+
     businesses = []
     users =[]
     print("json read\n");
@@ -61,7 +62,7 @@ def read_dataset():
         c=c+1
         if o['type'] == 'user':
             yelpID = o['user_id']
-            name = o['name']
+            name = str(o['name'])+str(c)
             u = create_user(name)
             ourID = u.pk
             users.append(u)
