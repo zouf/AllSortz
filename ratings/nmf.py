@@ -4,8 +4,9 @@ import logging
 import math
 import random
 import scipy
-import numpy
 
+import numpy
+import sys
 from celery.decorators import periodic_task
 from datetime import timedelta
 from ratings.models import Business
@@ -17,34 +18,86 @@ from ratings.models import Business
 from ratings.models import Rating
 
 
-
-def get_for_fold(f):
+def get_for_fold_new(f):
     ratingTable = dict()
     allBusinesses = Business.objects.all()
+    numBusinesses = allBusinesses.count()
+    
+    
     allUsers = User.objects.all()
+    numUsers = allUsers.count()
+    
+    allRatings = Rating.objects.all()
     inFoldData = []
     id2bus = dict()
     id2usr = dict()
+    
+    inMemRat = dict()
+    
+   # ratAsArray = numpy.empty((numUsers,numBusinesses))
+    ratAsArray = numpy.empty((numUsers,numBusinesses),dtype=numpy.uint8)
+    print(numUsers)
+    print(numBusinesses)
+    ratAsArray.fill(0)
+    ctr = 0
+    for r in allRatings:
+        if ctr % 500 == 0:
+            print(ctr)
+        ctr = ctr + 1
+        uid = r.username.id
+        bid = r.business.id
+        foldId = random.randint(1,5)
+        if foldId == f:
+            ratAsArray[uid-1][bid-1] = 0
+            inFoldData.append(r)
+        else:
+            try:
+                ratAsArray[uid-1][bid-1] = r.rating 
+            except:
+                print(uid)
+                print(bid) 
+    print(ratAsArray)   
+    sys.exit()
+    
+    
+def get_for_fold(f):
+    ratingTable = dict()
+    allBusinesses = Business.objects.all()
+    numBusinesses = allBusinesses.count()
+    
+    
+    allUsers = User.objects.all()
+    numUsers = allUsers.count()
+    
+    allRatings = Rating.objects.all()
+    inFoldData = []
+    id2bus = dict()
+    id2usr = dict()
+    
     
     random.seed = 666
     i = 0
  
     for u in allUsers:
+        
         j = 0
         ratingTable[i] = {}
         id2usr[u] = i
         for b in allBusinesses:
+            
         #    print(b)
             id2bus[b] = j
-            r = Rating.objects.filter(username=u, business=b)
-            if r:
-                foldId = random.randint(1,5)
-                r = Rating.objects.get(username=u, business=b)
-                if foldId == f:
-                    ratingTable[i][j] = 0
-                    inFoldData.append(r)
+            if u in inMemRat:
+                if b in inMemRat[u]:
+                    foldId = random.randint(1,5)
+                    r = allRatings.values(username=u, business=b)
+                    if foldId == f:
+                        ratingTable[i][j] = 0
+                        inFoldData.append(r)
+                    else:
+                        ratingTable[i][j] = r.rating                
                 else:
-                    ratingTable[i][j] = r.rating                
+                    ratingTable[i][j] = 0
             else:
                 ratingTable[i][j] = 0
             j=j+1
@@ -59,8 +112,10 @@ def get_rating_folds():
         
         sumDist = 0
         for f in range(1,6): 
+            print("Running for fold "+str(f))
             ratingTable,inFoldData,id2usr,id2bus = get_for_fold(f)
-            nR = run_nmf(ratingTable, k)
+            
+            nR = run_nmf_internal(ratingTable, k)
             # call matrix factorization
             dist = 0
             for r in inFoldData:
@@ -82,9 +137,10 @@ def get_rating_folds():
         
   
  # http://www.albertauyeung.com/mf.php
-def matrix_factorization(R, P, Q, K, steps=50, alpha=0.0002, beta=0.02):
+def matrix_factorization(R, P, Q, K, steps=2, alpha=0.0002, beta=0.02):
     Q = Q.T
     for step in xrange(steps):
+        print("Beginning step"+str(step))
         for i in xrange(len(R)):
             for j in xrange(len(R[i])):
                 if R[i][j] > 0:
@@ -92,7 +148,10 @@ def matrix_factorization(R, P, Q, K, steps=50, alpha=0.0002, beta=0.02):
                     for k in xrange(K):
                         P[i][k] = P[i][k] + alpha * (2 * eij * Q[k][j] - beta * P[i][k])
                         Q[k][j] = Q[k][j] + alpha * (2 * eij * P[i][k] - beta * Q[k][j])
+                print("\t\tOne iteration of small-ass loop: "+str(j))
+            print("\tOne iteration of big-ass loop: "+str(i))
         eR = numpy.dot(P,Q)
+        
         e = 0
         for i in xrange(len(R)):
             for j in xrange(len(R[i])):
@@ -105,8 +164,8 @@ def matrix_factorization(R, P, Q, K, steps=50, alpha=0.0002, beta=0.02):
     return P, Q.T
 
 
-def run_nmf(R,K):
-    
+def run_nmf_internal(R,K):
+
     N = len(R)
     M = len(R[0])
     

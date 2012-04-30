@@ -122,7 +122,8 @@ def pop_test_user_bus_data(numUsers, numBusinesses):
 
 def clear_all_tables():
     Rating.objects.all().delete()
-    User.objects.exclude(username="joey").exclude(username="zouf").delete()
+    User.objects.all().delete()
+    #User.objects.exclude(username="joey").exclude(username="zouf").delete()
     Business.objects.all().delete()
     
 def populate_test_data(numUsers, numBusinesses):

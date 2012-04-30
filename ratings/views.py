@@ -144,6 +144,8 @@ def display_table(request, maxc):
 	return	render_to_response('ratings/rating_table.html', {'ratings_list': all_ratings, 'business_list' :business_list, 'user_list': user_list}, context_instance=RequestContext(request))
 
 
+
+
 def logout_page(request):
 	logout(request)
 	return HttpResponseRedirect('/')
