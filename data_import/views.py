@@ -16,7 +16,7 @@ def create_user(username):
     #queryset = User.objects.filter(username=(username))
     #if queryset.count() >= 1:
     #    queryset.delete()
-    u = User(username=(username),password="test")
+    u = User(username=(username.decode()),password="test")
     #u.save()
     return u
     
@@ -47,8 +47,8 @@ def read_dataset():
     
     clear_all_tables()
     
-    fp = open('/Users/zouf/Sites/nightout/data_import/medium.json')
-    #fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
+    #fp = open('/Users/zouf/Sites/nightout/data_import/medium.json')
+    fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
     objs = json.load(fp)
     #pprint(objs)
     c=0;
