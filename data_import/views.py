@@ -10,13 +10,15 @@ from ratings.models import Business
 from ratings.models import Rating
 from django.db import transaction
 from ratings.populate import clear_all_tables
-
+import string
 
 def create_user(username):
     #queryset = User.objects.filter(username=(username))
     #if queryset.count() >= 1:
     #    queryset.delete()
+
     u = User(username=(username.decode()),password="test")
+
     #u.save()
     return u
     
@@ -47,8 +49,13 @@ def read_dataset():
     
     clear_all_tables()
     
+<<<<<<< HEAD
     #fp = open('/Users/zouf/Sites/nightout/data_import/medium.json')
     fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
+=======
+    fp = open('/Users/zouf/Sites/nightout/data_import/michigan_dataset.json')
+    #fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
+>>>>>>> Trying to fix mysql bugs
     objs = json.load(fp)
     #pprint(objs)
     c=0;
