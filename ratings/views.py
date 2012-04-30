@@ -17,6 +17,7 @@ from ratings.forms import BusinessForm, KeywordForm, RatingForm
 from ratings.models import Business, Grouping, Rating
 from ratings.recengine import RecEngine
 from ratings.populate import populate_test_data
+import sys
 
 
 
@@ -113,7 +114,11 @@ def index(request):
 	#else:
 	#	return HttpResponse("log in dawg");
 
-def display_table(request):
+def display_table_full(request):
+	return display_table(request, 500)
+
+def display_table(request, maxc):
+	maxc=int(maxc)
 	business_list = Business.objects.all()
 	user_list = User.objects.all()
 	all_ratings = []
@@ -129,9 +134,13 @@ def display_table(request):
 				r="--"
 				all_ratings[userno].append(r)
 			businessno = businessno+1
+			if(businessno > maxc):
+				break
 		userno = userno + 1
+		if(userno >maxc):
+			break
 	
-	print(all_ratings)
+	#print(all_ratings)
 	return	render_to_response('ratings/rating_table.html', {'ratings_list': all_ratings, 'business_list' :business_list, 'user_list': user_list}, context_instance=RequestContext(request))
 
 
