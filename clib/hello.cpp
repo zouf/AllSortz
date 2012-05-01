@@ -2,6 +2,20 @@
 #include <iostream>
 #include <string>
 
+using namespace boost::python;
+
+list test_extract(list& ls)
+{
+	list newList;
+	for(int i = 0; i < len(ls); ++i)
+  {
+    std::cout << boost::python::extract<int>(ls[i]) << std::endl;
+    newList.append(i);
+  }
+	return newList;
+}
+
+
 char const* greet(unsigned x)
 {
    static char const* const msgs[] = { "hello", "Boost.Python", "world!" };
@@ -16,5 +30,5 @@ using namespace boost::python;
 
 BOOST_PYTHON_MODULE(hello)
 {
-    def("greet", greet, "return one of 3 parts of a greeting");
+    def("test_extract", test_extract, "return list");
 }

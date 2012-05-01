@@ -5,20 +5,20 @@
 #include <vector>
 #include <stdio.h>
 
-#define DEBUG
+//#define DEBUG
 
 struct rating_t
 {
 	int uid;
 	int bid;
-	uint8_t rat; 
+	uint8_t rat;
 };
 
 using namespace std;
 using namespace boost::python;
 
-static const int steps = 100;
-static const double alpha = 0.2;
+static const int steps = 500;
+static const double alpha = 0.02;
 static const double beta = 0.02;
 static const double threshold = 0.001;
 static int g_K = 0;
@@ -33,7 +33,7 @@ vector<vector<double> > Q;
 inline double dot_prod(int uid, int bid)
 {
 	double result = 0;
-	for(int i = 0; i < P[uid].size(); i++)
+	for(int i = 0; i < g_K; i++)
 	{
 		result += P[uid][i]*Q[bid][i];
 	}
@@ -51,21 +51,21 @@ void initialize_p_q(int N, int M, int K)
 		vector<double> tmp;
 		for(int k = 0; k < K; ++k)
 		{
-			double r = rand();
+			double r = (double)((double)rand() / (double)(RAND_MAX + 1.0));
 			tmp.push_back(r);
 		}
-		P.push_back(tmp);	
+		P.push_back(tmp);
 	}
-	
+
 	for(int i = 0; i < M; i++)
 	{
 		vector<double> tmp;
 		for(int k = 0; k < K; ++k)
 		{
-			double r = rand();
+			double r = (double)((double)rand() / (double)(RAND_MAX + 1.0));
 			tmp.push_back(r);
 		}
-		Q.push_back(tmp);	
+		Q.push_back(tmp);
 	}
 	#ifdef DEBUG
 	printf("Done with intialize P and Q!\n");
@@ -75,9 +75,14 @@ void initialize_p_q(int N, int M, int K)
 void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 {
 	g_K = K;
+	
+	allRatings.clear();
+	P.clear();
+	Q.clear();
 	int numRatings = len(ratings);
 	#ifdef DEBUG
 	printf("run_nmf_c with N=%d M=%d K=%d\n",N,M,K);
+	
 	#endif
 	for(int i = 0; i < numRatings; ++i)
 	{
@@ -92,12 +97,13 @@ void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 	printf("Ratings copied!\n");
 	#endif
 	initialize_p_q(N,M,K);
-	
+
+	double thresh_met = 0;
 	for(int s = 0; s < steps; ++s)
 	{
-		#ifdef DEBUG
-		printf("Step s = %d!\n",s);
-		#endif
+
+
+
 		for(int r = 0; r < numRatings; ++r)
 		{
 			int uid = allRatings[r].uid;
@@ -107,11 +113,12 @@ void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 			for(int k = 0; k < K; ++k)
 			{
 				P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[bid][k] - beta * P[uid][k]);
-				printf("------------%ld\n", P[uid][k] );
+				
 				Q[bid][k] = Q[bid][k] + alpha * (2 * eij * P[uid][k] - beta * Q[bid][k]);
-			}		
+			
+				//printf("%lf\n",P[uid][k] );
+			}
 		}
-		
 		double e = 0;
 		for(int r = 0; r < numRatings; ++r)
 		{
@@ -133,16 +140,25 @@ void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 			#endif
 		}
 		if(e < threshold)
+		{
+			printf("Reached threshold at step = %d\n", s);
+			thresh_met = 0;
 			break;
+		}
+		thresh_met = e;
 	}
-	
+	if(thresh_met)
+	{
+		printf("Did not reach threshold and used all steps. Got to %lf\n",thresh_met);
+	}
+
 	for(int i = 0; i < N; ++i)
 	{
 	    list tmp;
 	    for(int k = 0; k < K; ++k)
 		{
 			tmp.append(P[i][k]);
-	    }   
+	    }
 	    p_P.append(tmp);
 	 }
 	for(int i = 0; i < M; ++i)
@@ -151,16 +167,16 @@ void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 	    for(int k = 0; k < K; ++k)
 		{
 			tmp.append(Q[i][k]);
-	    }   
+	    }
 	    p_Q.append(tmp);
 	}
-	return;	
+	return;
 }
 
 
 using namespace boost::python;
 
-BOOST_PYTHON_MODULE(nmf)
+BOOST_PYTHON_MODULE(fastnmf)
 {
     def("run_nmf_c", run_nmf_c, "Runs NMF in C");
 }

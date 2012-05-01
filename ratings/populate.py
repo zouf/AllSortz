@@ -62,13 +62,13 @@ def generateTest():
         
 
 def createusers(n):
-    for i in range(n):
+    for i in range(1,n+1):
         u = create_user("tst"+str(i))
         u.id = i        
         u.save()
 
 def  createbusinesses(n):
-    for i in range(1,n):
+    for i in range(1,n+1):
         b =  create_business('b'+str(i), "tst", "NY", "tst", 0, 0)
         b.id = i
         b.save()
@@ -124,7 +124,8 @@ def create_business(name, address, state, city, lat, lon):
     
 def pop_test_user_bus_data(numUsers, numBusinesses):
     Rating.objects.all().delete()
-    User.objects.exclude(username="joey").exclude(username="zouf").delete()
+    #User.objects.exclude(username="joey").exclude(username="zouf").delete()
+    User.objects.all().delete()
     Business.objects.all().delete()
     createbusinesses(numBusinesses) 
     createusers(numUsers)   
@@ -139,7 +140,7 @@ def clear_all_tables():
     
 def populate_test_data(numUsers, numBusinesses):
     Rating.objects.all().delete()
-    User.objects.exclude(username="joey").exclude(username="zouf").delete()
+    User.objects.all().delete()
     Business.objects.all().delete()
     createbusinesses(numBusinesses) 
     createusers(numUsers)

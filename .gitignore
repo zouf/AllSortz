@@ -8,3 +8,5 @@ nighout/settings.py
 .project
 .pydevproject
 clib/boost_1_49_0
+*.o
+*.so

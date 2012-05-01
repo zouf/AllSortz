@@ -16,6 +16,9 @@ from ratings.models import Recommendation
 from django.contrib.auth.models import User
 from ratings.models import Business
 from ratings.models import Rating
+import fastnmf
+
+
 
 
 #def get_for_fold_new(f):
@@ -140,20 +143,20 @@ def run_nmf_mult_k(K):
     fp.write("#NumRatings = "+str(allRatings.count())+"\n")
     allRatMatrix = []
     for r in allRatings:
-        allRatMatrix.append(r)
+        allRatMatrix.append([r.username.id-1, r.business.id-1, r.rating])
     folds = get_folds(allRatMatrix)
     for k in K:
         sumDist = 0
         for f in range(0,5): 
-            print("Running for fold "+str(f))
+           # print("Running for fold "+str(f))
             outFold = get_outfold_data(folds, f)
             inFold = folds[f]
             nP, nQ = run_nmf_internal(outFold,N,M,k,fp=fp)
             # call matrix factorization
             dist = 0
             for r in inFold:
-                uid = r.username.id - 1
-                bid = r.business.id -1
+                uid = r[0] - 1
+                bid = r[1] -1
                 #print("Username " + str(r.username))
                 #print("Business " + str(r.business.name))
                 #print("Rating " + str(r.rating))
@@ -161,7 +164,7 @@ def run_nmf_mult_k(K):
                 #print("Prediction " + str(prediction))
                 #print("")
                 #print("")
-                dist = dist + math.pow(abs(float(prediction) - float(r.rating)),2)
+                dist = dist + math.pow(abs(float(prediction) - float(r[2])),2)
             sumDist = sumDist + dist / len(inFold)
             print("For fold = "+str(f)+" dist = "+str(dist/len(inFold)))
         fp.write(str(k) + " " + str(sumDist/5)+ "\n")
@@ -236,11 +239,18 @@ def matrix_factorization_new(allRatings,  P, Q, K, fp, steps=500, alpha=0.02, be
 
 
 def run_nmf_internal(R,N,M, K,fp):
-    P = numpy.random.rand(N,K)
-    Q = numpy.random.rand(M,K)
-     
-    nP, nQ = matrix_factorization_new(R, P, Q, K,fp=fp)
-    return nP, nQ
+   # P = numpy.random.rand(N,K)
+    #Q = numpy.random.rand(M,K)
+    
+    P=[]
+    Q=[]
+    
+    #run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
+    
+    fastnmf.run_nmf_c(R,N,M,K,P,Q)
+
+  #  nP, nQ = matrix_factorization_new(R, P, Q, K,fp=fp)
+    return P, Q
     #nR = numpy.dot(nP, nQ.T)
 
     #return nR
