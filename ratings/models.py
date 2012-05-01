@@ -35,7 +35,7 @@ class Rating(models.Model):
     username = models.ForeignKey(User)
     rating = models.PositiveSmallIntegerField()
     def __unicode__(self):
-      return self.username.username +  " " + self.business.name + " " + str(self.rating)
+        return self.username.username +  " " + self.business.name + " " + str(self.rating)
 
 
 

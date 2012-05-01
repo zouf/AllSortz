@@ -15,8 +15,8 @@ from django.views.generic import DetailView, ListView
 from operator import itemgetter
 from ratings.forms import BusinessForm, KeywordForm, RatingForm
 from ratings.models import Business, Grouping, Rating
-from ratings.recengine import RecEngine
 from ratings.populate import populate_test_data
+from ratings.recengine import RecEngine
 import sys
 
 

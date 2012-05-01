@@ -1,6 +1,9 @@
 # Create your views here.
-from ratings.nmf import get_rating_folds
+from ratings.models import User
+from ratings.models import Business
+from ratings.models import Rating
+from ratings.nmf import run_nmf_mult_k
 
-def run_nmf(request):
-    print("In run_nmf")
-    get_rating_folds()
+def validate_production_data():
+    K = [13,15,17]
+    run_nmf_mult_k(K)

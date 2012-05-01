@@ -6,68 +6,36 @@ Created on Apr 30, 2012
 import simplejson as json
 from pprint import pprint
 from ratings.models import User
+
 from ratings.models import Business
 from ratings.models import Rating
 from django.db import transaction
+from ratings.populate import  create_user
+from ratings.populate import  create_rating
+from ratings.populate import  create_business
 from ratings.populate import clear_all_tables
- 
-import string
-
-def create_user(username):
-    #queryset = User.objects.filter(username=(username))
-    #if queryset.count() >= 1:
-    #    queryset.delete()
-
-    u = User(username=(username.decode()),password="test")
-
-    #u.save()
-    return u
-    
-
-def create_rating(user,business,rating):
-    #queryset = Rating.objects.filter(username=uid,business=bid)
-    #if queryset.count() >=1:
-    #    queryset.delete()
-  #  queryuser= User.objects.filter(pk=uid)
-   # querybusiness = Business.objects.filter(id=bid)
-
-   
-  
-   # else:
-   #     print(str(uid)+" Not found")
-        
-    return -1
-    
-    
-def create_business(name, address, state, city, lat, lon):
-    #queryset = Business.objects.filter(name=name, city=city, state=state)
-    #if queryset.count >= 1:
-    #    queryset.delete()
-    b = Business(name=name.decode(),city=city.decode(),state=state.decode(),address=address.decode(),lat=lat,lon=lon,average_rating=0)
-    #b.save()
-    return b
  
 
 def read_dataset():
     yelpUIDtoID = dict()
     yelpBIDtoID = dict()
-    
     clear_all_tables()
-    
-
     fp = open('/Users/zouf/Sites/nightout/data_import/michigan_dataset.json')
     #fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
 
     objs = json.load(fp)
     #pprint(objs)
-    c=0;
 
     businesses = []
     users =[]
     
     unique_uid = 1
     unique_bid = 1
+    bus_rating_threshold = 250
+    user_rating_threshold = 25
+    
     print("json read\n");
+    c=0;
     for o in objs:
         if(c%100==0):
             print(c)
@@ -75,6 +43,9 @@ def read_dataset():
         if o['type'] == 'user':
             yelpID = o['user_id']
             name = "u"+str(c)
+            rev_count = o['review_count']
+            if rev_count < user_rating_threshold:
+                continue
             u = create_user(name)           
             u.id = unique_uid
             users.append(u)
@@ -83,6 +54,9 @@ def read_dataset():
             yelpUIDtoID[yelpID] = u 
         elif o['type'] == 'business':
             yelpID = o['business_id']
+            rev_count = o['review_count']
+            if rev_count < bus_rating_threshold:
+                continue
             name = "b"+str(c)
             state = "NY" #"o['state']
             longitude = o['longitude']
@@ -114,7 +88,7 @@ def read_dataset():
                 if bid in yelpBIDtoID:
                     usr = yelpUIDtoID[uid]
                     bus = yelpBIDtoID[bid]
-                    r = Rating(username=usr, business=bus, rating=stars)
+                    r = create_rating(usr, bus, stars)
                     ratings.append(r)
     Rating.objects.bulk_create(ratings)
     transaction.commit();
