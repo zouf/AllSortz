@@ -202,7 +202,8 @@ def matrix_factorization_new(allRatings,  P, Q, K, fp, steps=500, alpha=0.02, be
     Q = Q.T
     for step in xrange(steps):
         ct = 0
-        for r in allRatings:
+        for iter in range(0,len(allRatings)):
+            r = allRatings[iter]
             uid = r.username.id -1
             bid = r.business.id -1
             eij = r.rating - numpy.dot(P[uid,:],Q[:,bid])
@@ -216,7 +217,8 @@ def matrix_factorization_new(allRatings,  P, Q, K, fp, steps=500, alpha=0.02, be
         #print("First loop done")
         #eR = numpy.dot(P,Q)
         e = 0
-        for r in allRatings:
+        for iter in range(0,len(allRatings)):
+            r = allRatings[iter]
             uid = r.username.id -1
             bid = r.business.id -1
             e = e + pow(r.rating - numpy.dot(P[uid,:],Q[:,bid]), 2)
