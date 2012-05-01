@@ -105,6 +105,12 @@ def get_for_fold(f):
     return ratingTable, inFoldData, id2usr, id2bus
  
 
+def test_matrix_fact():
+    N = User.objects.count()
+    M = Business.objects.count()
+    allRatings = Rating.objects.all()
+    nR = run_nmf_internal(allRatings,N,M, 2)
+
 
 def get_rating_folds():
     #loop over K
@@ -164,15 +170,47 @@ def matrix_factorization(R, P, Q, K, steps=2, alpha=0.0002, beta=0.02):
     return P, Q.T
 
 
-def run_nmf_internal(R,K):
 
-    N = len(R)
-    M = len(R[0])
+def matrix_factorization_new(allRatings,  P, Q, K, steps=2, alpha=0.0002, beta=0.02):
+    Q = Q.T
+    for step in xrange(steps):
+        ct = 0
+        for r in allRatings:
+            uid = r.username.id -1
+            bid = r.business.id -1
+            eij = r.rating - numpy.dot(P[uid,:],Q[:,bid])
+        
+            for k in xrange(K):
+                P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[k][bid] - beta * P[uid][k])
+                Q[k][bid] = Q[k][bid] + alpha * (2 * eij * P[uid][k] - beta * Q[k][bid])
+            if ct % 100 == 0:
+                print(ct)
+            ct = ct + 1
+        print("First loop done")
+        eR = numpy.dot(P,Q)
+        e = 0
+        for r in allRatings:
+            uid = r.username.id -1
+            bid = r.business.id -1
+            eij = r.rating - numpy.dot(P[uid,:],Q[:,bid])
+            e = e + pow(r.rating - numpy.dot(P[uid,:],Q[:,bid]), 2)
+            for k in xrange(K):
+                e = e + (beta/2) * (pow(P[uid][k],2) + pow(Q[k][bid],2))
+        if e < 0.001:
+            break
+    return P, Q.T
+
+
+
+def run_nmf_internal(R,N,M, K):
+    
+    
+
     
     P = numpy.random.rand(N,K)
     Q = numpy.random.rand(M,K)
      
-    nP, nQ = matrix_factorization(R, P, Q, K)
+    nP, nQ = matrix_factorization_new(R, P, Q, K)
     nR = numpy.dot(nP, nQ.T)
 
     return nR
