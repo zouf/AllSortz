@@ -48,20 +48,17 @@ def read_dataset():
     yelpBIDtoID = dict()
     
     clear_all_tables()
-    
-<<<<<<< HEAD
+
     #fp = open('/Users/zouf/Sites/nightout/data_import/medium.json')
-    fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
-=======
-    fp = open('/Users/zouf/Sites/nightout/data_import/michigan_dataset.json')
-    #fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
->>>>>>> Trying to fix mysql bugs
+    fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset.json')
+
     objs = json.load(fp)
     #pprint(objs)
     c=0;
 
     businesses = []
     users =[]
+    enoughReviews=0
     print("json read\n");
     for o in objs:
         if(c%100==0):
@@ -73,8 +70,6 @@ def read_dataset():
             u = create_user(name)
             ourID = u.pk
             users.append(u)
-            if(len(users)==10085):
-                print(u.username)
             yelpUIDtoID[yelpID] = ourID
         elif o['type'] == 'business':
             yelpID = o['business_id']
@@ -84,6 +79,8 @@ def read_dataset():
             latitude = o['latitude']
             full_address = o['full_address']
             city = o['city']
+            if(o['reviewcount'] >=5):
+                enoughReviews = enoughReviews + 1
             b = create_business(name=name,address=full_address,state=state,city=city,lat=latitude,lon=longitude)
             businesses.append(b)
             yelpBIDtoID[yelpID] = b.id
@@ -91,6 +88,7 @@ def read_dataset():
     User.objects.bulk_create(users)
     Business.objects.bulk_create(businesses)
     c=0
+    print("Enough Reviews")
     print("Users and businesses read");
     for o in objs:
         if(c%100==0):
