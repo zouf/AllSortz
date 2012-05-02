@@ -1,0 +1,20 @@
+Below are the ideas we have for the individual pages for the poster
+session. Each block starts off with the sort of theme for that group,
+then each - represents a page.
+
+Problem and Algorithm
+- description of the problem
+- description of NMF and SVD
+- Talk about alpha, beta, k values (related to results)
+- Talk RBM and that we might implement (but we won't)
+
+Data/Challenges/Ongoing issues
+- Yelp data set, some users/business have 1 rating (etc)
+- Have been training and working with Michigan data, plan to test on Princeton
+- Speed: talk about moving to C++ from python and the speedup?
+
+Results
+- graph of RSS vs varying k value
+- graph of run times for alpha/beta values
+- graph/table of the latent variables and the tags it finds
+- Show comparison to simple P correlation?
