@@ -23,7 +23,7 @@ using namespace std;
 using namespace boost::python;
 
 static const int steps = 20000;
-static double alpha = 0.002;
+static double alpha = 0;
 static double beta = 0.00001;
 static double threshold = 0.001;
 static int K = 0;
@@ -165,10 +165,12 @@ void run_nmf_from_python(list& ratings, int p_N, int p_M, int p_K, list& p_P, li
 }
 
 
-
+static double prev_e = 0;
 
 void run_nmf_c()
 {
+	prev_e = 0;
+  alpha =  0.003;
 	int numRatings = allRatings.size();
 	#ifdef DEBUG
 	printf("run_nmf_c with N=%d M=%d K=%d\n",N,M,K);
@@ -220,6 +222,14 @@ void run_nmf_c()
 				e = e + (beta/2)* (P[uid][k]*P[uid][k] + Q[bid][k]*Q[bid][k]);
 			}
 		}
+    if(e > prev_e && prev_e != 0)
+    {
+      //alpha = alpha - 0.002;
+		  alpha = alpha * 0.95;
+      printf("Changing alpha to %lf\n",alpha);
+    }
+    prev_e = e;
+    //e = e / numRatings;
 		if(s %100 == 0)
 		{
 			#ifdef DEBUG
