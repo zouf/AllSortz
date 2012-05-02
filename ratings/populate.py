@@ -7,7 +7,7 @@ Created on Apr 2, 2012
 from django.contrib.auth.models import User
 from numpy import dot
 from numpy.random import binomial
-from ratings.models import Business, Rating
+from ratings.models import Business, Rating, Keyword, Grouping
 import numpy
 import random
 import scipy.stats
@@ -105,10 +105,17 @@ def generate_nmf_test(numFactors, density):
             j = j + 1
     i = i + 1
     
-def create_user(username):
-    u = User(username=(username.decode()),password="test")
+def create_user(username,uid):
+    u = User(username=("u"+str(uid)), first_name=(username.encode("utf8")),password="test")
     return u
     
+def create_category(name):
+    k = Keyword(name=name)
+    return k
+
+def create_grouping(cat,bus):
+    g = Grouping(business=bus, keyword=cat)
+    return g
 
 def create_rating(user,business,rating):
     r = Rating(username=user, business=business, rating=rating)
@@ -116,7 +123,7 @@ def create_rating(user,business,rating):
     
     
 def create_business(name, address, state, city, lat, lon):
-    b = Business(name=name.decode(),city=city.decode(),state=state.decode(),address=address.decode(),lat=lat,lon=lon,average_rating=0)
+    b = Business(name=name.encode("utf8"),city=city.encode("utf8"),state=state,address=address.encode("utf8"),lat=lat,lon=lon,average_rating=0)
     return b
  
 
@@ -134,6 +141,8 @@ def pop_test_user_bus_data(numUsers, numBusinesses):
 def clear_all_tables():
     Rating.objects.all().delete()
     User.objects.all().delete()
+    Grouping.objects.all().delete()
+    Keyword.objects.all().delete()
     #User.objects.exclude(username="joey").exclude(username="zouf").delete()
     Business.objects.all().delete()
     

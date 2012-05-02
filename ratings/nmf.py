@@ -7,6 +7,8 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from ratings.models import Business
 from ratings.models import Rating
+from data_import.views import user_rating_threshold
+from data_import.views import bus_rating_threshold
 
 import time
 
@@ -40,17 +42,22 @@ def run_nmf_mult_k(K,Steps,Alpha):
     M = Business.objects.count()
     allRatings = Rating.objects.all()
     
-    resultFile = settings.RESULTS_DIR+"u"+str(N+1)+"_b"+str(M+1)+"_s"+str(Steps)+"_k"+str(K[0])+"-"+str(K[len(K)-1]);
+    resultFile = settings.RESULTS_DIR+"u"+str(user_rating_threshold)+"_b"+str(bus_rating_threshold)+"_s"+str(Steps)+"_k"+str(K[0])+"-"+str(K[len(K)-1]);
     print(resultFile)
     fp = open(resultFile,"w")
+    
+
     fp.write("#NumUsers = "+str(N+1)+'\n')
     fp.write("#NumBusinesses = "+str(M+1)+'\n')
+    fp.write("#UserThresh = "+str(user_rating_threshold)+ '\n')
+    fp.write("#BusinessThresh = "+str(bus_rating_threshold)+ '\n')
     fp.write("#NumRatings = "+str(allRatings.count())+'\n')
     fp.write("#Steps = " + str(Steps)+'\n')
     fp.write("#Alpha = " + str(Alpha)+'\n')
-    fp.write("#Time = "+str(time.asctime())+'\n')
+    fp.write("#TimeStart = "+str(time.asctime())+'\n')
     fp.write('#\n')
     fp.write('#K, AvgRSS, AvgDist\n')
+    fp.flush()
     allRatMatrix = []
     print("Moving data to an array...")
     for r in allRatings:
@@ -59,13 +66,17 @@ def run_nmf_mult_k(K,Steps,Alpha):
     folds = get_folds(allRatMatrix)
     print("Fold Generation Complete...")
     for k in K:
+        print("Running on K="+str(k)+" Starting at time= "+ time.asctime())
         sumDist = 0
         sumRSS = 0
         for f in range(0,5):    
             # print("Running for fold "+str(f))
             outFold = get_outfold_data(folds, f)
             inFold = folds[f]
+            time_before = time.clock()
             nP, nQ = run_nmf_internal(outFold,N,M,k, Steps, Alpha, fp=fp)
+            elapsed = time.clock() - time_before;
+            print("\tK="+str(k)+" Fold=" +str(f)+" TimeElapsed="+ str(elapsed/60) + " minutes")
             # call matrix factorization
             dist = 0
             rss = 0
@@ -90,7 +101,6 @@ def run_nmf_mult_k(K,Steps,Alpha):
                     roundP = 1.0
                     
                 
-                
                 #print("Prediction " + str(prediction))
                 #print("")
                 #print("")
@@ -99,11 +109,13 @@ def run_nmf_mult_k(K,Steps,Alpha):
 
             sumDist = sumDist + dist / len(inFold)
             sumRSS = sumRSS + rss/ len(inFold)
-            print("For fold = "+str(f)+" rss = "+str(rss/len(inFold)) + " dist = " + str(dist/len(inFold)))
+            print("\tK="+str(k)+" Fold=" +str(f)+" RSS="+str(rss/len(inFold)) + " Distance=" + str(dist/len(inFold)))
         fp.write(str(k) + ", " + str(sumRSS/5)+ " , " + str(sumDist/5) + '\n')
-        print("Average Distance for K= "+str(k) + " is " + str(sumDist/5))
+        fp.flush()
+        print("K="+str(k) + " AverageDist=" + str(sumDist/5)+ " AverageRSS="+str(sumRSS/5))
         
-        
+    fp.write("#TimeEnd = "+str(time.asctime())+'\n')
+    fp.flush()
   
 # # http://www.albertauyeung.com/mf.php
 #def matrix_factorization(R, P, Q, K, steps=2, alpha=0.0002, beta=0.02):
