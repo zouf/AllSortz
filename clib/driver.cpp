@@ -2,6 +2,8 @@
 #include <vector>
 #include <iostream>
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
 
 using namespace std;
 

@@ -1,13 +1,10 @@
 
-from celery.decorators import task
 import logging
 import math
 import random
-import scipy
 
 import numpy
 import sys
-from celery.decorators import periodic_task
 from datetime import timedelta
 from ratings.models import Business
 from ratings.models import Rating
@@ -16,6 +13,8 @@ from ratings.models import Recommendation
 from django.contrib.auth.models import User
 from ratings.models import Business
 from ratings.models import Rating
+
+sys.path.append('clib')
 import fastnmf
 
 
