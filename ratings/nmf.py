@@ -141,14 +141,17 @@ def run_nmf_mult_k(K):
     allRatings = Rating.objects.all()
     fp.write("#NumRatings = "+str(allRatings.count())+"\n")
     allRatMatrix = []
+    print("Moving data to an array...")
     for r in allRatings:
         allRatMatrix.append([r.username.id-1, r.business.id-1, r.rating])
+    print("Generating Folds...");
     folds = get_folds(allRatMatrix)
+    print("Fold Generation Complete...")
     for k in K:
         sumDist = 0
         sumRSS = 0
-        for f in range(0,5): 
-           # print("Running for fold "+str(f))
+        for f in range(0,5):    
+            # print("Running for fold "+str(f))
             outFold = get_outfold_data(folds, f)
             inFold = folds[f]
             nP, nQ = run_nmf_internal(outFold,N,M,k,fp=fp)
@@ -162,11 +165,26 @@ def run_nmf_mult_k(K):
                 #print("Business " + str(r.business.name))
                 #print("Rating " + str(r.rating))
                 prediction = numpy.dot(nP[uid],nQ[bid])
+                
+                roundR = round(r[2])
+                roundP = round(prediction)
+                if r[2] > 5:
+                    roundR = 5.0;
+                elif r[2] < 1:
+                    roundR = 1.0
+                    
+                if prediction > 5:
+                    roundP = 5.0
+                elif prediction < 1:
+                    roundP = 1.0
+                    
+                
+                
                 #print("Prediction " + str(prediction))
                 #print("")
                 #print("")
-                rss = rss + math.pow(abs(float(prediction) - float(r[2])),2)
-                dist = dist + abs(float(prediction) - float(r[2]))
+                rss = rss + math.pow(abs(roundP - roundR),2)
+                dist = dist + abs(roundP - roundR)
 
             sumDist = sumDist + dist / len(inFold)
             sumRSS = sumRSS + rss/ len(inFold)
