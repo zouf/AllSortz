@@ -3,7 +3,7 @@ from django.contrib.localflavor.us.models import USStateField
 from django.contrib.auth.models import User
 
 class Keyword(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     def __unicode__(self):
         return self.name
 
@@ -39,11 +39,9 @@ class Rating(models.Model):
 
 
 
-
 class Grouping(models.Model):
     business = models.ForeignKey(Business)
     keyword = models.ForeignKey(Keyword)
-
 
 
 class Recommendation(models.Model):

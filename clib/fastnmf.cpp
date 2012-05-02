@@ -177,10 +177,9 @@ void run_nmf_c()
   alpha =  0.003;
 	int numRatings = allRatings.size();
 	#ifdef DEBUG
-	printf("run_nmf_c with N=%d M=%d K=%d\n",N,M,K);
+	printf("run_nmf_c with N=%d M=%d K=%d numRatings=%d\n",N,M,K,numRatings);
+  printf("\talpha=%lf, beta=%lf,steps = %d\n", alpha,beta,steps);
 	#endif
-
-  printf("Num Ratings %d\n", numRatings);
 
 	double thresh_met = 0;
 	for(int s = 0; s < steps; ++s)
@@ -230,7 +229,9 @@ void run_nmf_c()
     {
       //alpha = alpha - 0.002;
 		  alpha = alpha * 0.95;
+      #ifdef DEBUG
       printf("Changing alpha to %lf\n",alpha);
+      #endif
     }
     prev_e = e;
     //e = e / numRatings;
