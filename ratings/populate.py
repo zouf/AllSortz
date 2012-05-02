@@ -62,20 +62,17 @@ def generateTest():
         
 
 def createusers(n):
-    for i in range(n):
-        queryset = User.objects.filter(username=("user" + str(i)))
-        if queryset.count() >= 1:
-            queryset.delete()
-        u = User.objects.create_user(username=("user" + str(i)),password="test")
+    for i in range(1,n+1):
+        u = create_user("tst"+str(i))
+        u.id = i        
         u.save()
 
-def createbusinesses(n):
-    for i in range(n):
-        queryset = Business.objects.filter(name="business" + str(i), address="street" + str(i), city="princeton", state="NJ")
-        if queryset.count() >= 1:
-            queryset.delete()
-        b = Business(name="business" + str(i), address="street" + str(i), city="princeton", state="NJ",average_rating=-1)
+def  createbusinesses(n):
+    for i in range(1,n+1):
+        b =  create_business('b'+str(i), "tst", "NY", "tst", 0, 0)
+        b.id = i
         b.save()
+        
 
 def generate_nmf_test(numFactors, density):
     allUsers = User.objects.all()
@@ -109,11 +106,26 @@ def generate_nmf_test(numFactors, density):
             j = j + 1
     i = i + 1
     
+def create_user(username):
+    u = User(username=(username.decode()),password="test")
+    return u
     
+
+def create_rating(user,business,rating):
+    r = Rating(username=user, business=business, rating=rating)
+    return r
+    
+    
+def create_business(name, address, state, city, lat, lon):
+    b = Business(name=name.decode(),city=city.decode(),state=state.decode(),address=address.decode(),lat=lat,lon=lon,average_rating=0)
+    return b
+ 
+
     
 def pop_test_user_bus_data(numUsers, numBusinesses):
     Rating.objects.all().delete()
-    User.objects.exclude(username="joey").exclude(username="zouf").delete()
+    #User.objects.exclude(username="joey").exclude(username="zouf").delete()
+    User.objects.all().delete()
     Business.objects.all().delete()
     createbusinesses(numBusinesses) 
     createusers(numUsers)   
@@ -122,12 +134,13 @@ def pop_test_user_bus_data(numUsers, numBusinesses):
 
 def clear_all_tables():
     Rating.objects.all().delete()
-    User.objects.exclude(username="joey").exclude(username="zouf").delete()
+    User.objects.all().delete()
+    #User.objects.exclude(username="joey").exclude(username="zouf").delete()
     Business.objects.all().delete()
     
 def populate_test_data(numUsers, numBusinesses):
     Rating.objects.all().delete()
-    User.objects.exclude(username="joey").exclude(username="zouf").delete()
+    User.objects.all().delete()
     Business.objects.all().delete()
     createbusinesses(numBusinesses) 
     createusers(numUsers)

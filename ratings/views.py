@@ -15,8 +15,8 @@ from django.views.generic import DetailView, ListView
 from operator import itemgetter
 from ratings.forms import BusinessForm, KeywordForm, RatingForm
 from ratings.models import Business, Grouping, Rating
-from ratings.recengine import RecEngine
 from ratings.populate import populate_test_data
+from ratings.recengine import RecEngine
 import sys
 
 
@@ -142,6 +142,8 @@ def display_table(request, maxc):
 	
 	#print(all_ratings)
 	return	render_to_response('ratings/rating_table.html', {'ratings_list': all_ratings, 'business_list' :business_list, 'user_list': user_list}, context_instance=RequestContext(request))
+
+
 
 
 def logout_page(request):
