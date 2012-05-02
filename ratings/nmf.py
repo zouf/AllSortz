@@ -246,7 +246,7 @@ def run_nmf_internal(R,N,M, K,fp):
     Q=[]
     
     #run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
-    
+
     fastnmf.run_nmf_c(R,N,M,K,P,Q)
 
   #  nP, nQ = matrix_factorization_new(R, P, Q, K,fp=fp)

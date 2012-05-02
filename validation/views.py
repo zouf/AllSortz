@@ -16,5 +16,6 @@ def validate_production_data():
 def simple_validate():
     pop_test_user_bus_data(numUsers=30, numBusinesses=20)
     generate_nmf_test(numFactors=6, density=.3)
+    print("here?")
     K = [1,3,6,9,12]
     run_nmf_mult_k(K)
