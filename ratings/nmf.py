@@ -1,111 +1,17 @@
-
-import logging
 import math
 import random
 
 import numpy
 import sys
-from datetime import timedelta
-from ratings.models import Business
-from ratings.models import Rating
-from ratings.models import DontCare
-from ratings.models import Recommendation
+from django.conf import settings
 from django.contrib.auth.models import User
 from ratings.models import Business
 from ratings.models import Rating
 
-sys.path.append('clib')
+import time
+
+sys.path.append(settings.CLIB_DIR)
 import fastnmf
-
-
-
-
-#def get_for_fold_new(f):
-#    ratingTable = dict()
-#    allBusinesses = Business.objects.all()
-#    numBusinesses = allBusinesses.count()
-#    
-#    
-#    allUsers = User.objects.all()
-#    numUsers = allUsers.count()
-#    
-#    allRatings = Rating.objects.all()
-#    inFoldData = []
-#    id2bus = dict()
-#    id2usr = dict()
-#    
-#    inMemRat = dict()
-#    
-#   # ratAsArray = numpy.empty((numUsers,numBusinesses))
-#    ratAsArray = numpy.empty((numUsers,numBusinesses),dtype=numpy.uint8)
-#    print(numUsers)
-#    print(numBusinesses)
-#    ratAsArray.fill(0)
-#    ctr = 0
-#    for r in allRatings:
-#        if ctr % 500 == 0:
-#            print(ctr)
-#        ctr = ctr + 1
-#        uid = r.username.id
-#        bid = r.business.id
-#        foldId = random.randint(1,5)
-#        if foldId == f:
-#            ratAsArray[uid-1][bid-1] = 0
-#            inFoldData.append(r)
-#        else:
-#            try:
-#                ratAsArray[uid-1][bid-1] = r.rating 
-#            except:
-#                print(uid)
-#                print(bid) 
-#    print(ratAsArray)   
-#    sys.exit()
-#    
-    
-#def get_for_fold(f):
-#    ratingTable = dict()
-#    allBusinesses = Business.objects.all()
-#    numBusinesses = allBusinesses.count()
-#    
-#    
-#    allUsers = User.objects.all()
-#    numUsers = allUsers.count()
-#    
-#    allRatings = Rating.objects.all()
-#    inFoldData = []
-#    id2bus = dict()
-#    id2usr = dict()
-#    
-#    
-#    random.seed = 666
-#    i = 0
-# 
-#    for u in allUsers:
-#        
-#        j = 0
-#        ratingTable[i] = {}
-#        id2usr[u] = i
-#        for b in allBusinesses:
-#            
-#        #    print(b)
-#            id2bus[b] = j
-#            if u in inMemRat:
-#                if b in inMemRat[u]:
-#                    foldId = random.randint(1,5)
-#                    r = allRatings.values(username=u, business=b)
-#                    if foldId == f:
-#                        ratingTable[i][j] = 0
-#                        inFoldData.append(r)
-#                    else:
-#                        ratingTable[i][j] = r.rating                
-#                else:
-#                    ratingTable[i][j] = 0
-#            else:
-#                ratingTable[i][j] = 0
-#            j=j+1
-#        i=i+1
-#    return ratingTable, inFoldData, id2usr, id2bus
- 
 
 def get_folds(allRatings):
     folds = [[],[],[],[],[]]
@@ -129,17 +35,22 @@ def get_outfold_data(folds,thisFold):
             outFold = outFold + folds[f]
     return outFold
 
-def run_nmf_mult_k(K):
-    #loop over K
-    resultFile = "/tmp/results.dat"
-    fp = open(resultFile,"w")
-
+def run_nmf_mult_k(K,Steps,Alpha):
     N = User.objects.count()
     M = Business.objects.count()
-    fp.write("#NumUsers = "+str(N+1)+"\n")
-    fp.write("#NumBusinesses = "+str(M+1)+"\n")
     allRatings = Rating.objects.all()
-    fp.write("#NumRatings = "+str(allRatings.count())+"\n")
+    
+    resultFile = settings.RESULTS_DIR+"u"+str(N+1)+"_b"+str(M+1)+"_s"+str(Steps)+"_k"+str(K[0])+"-"+str(K[len(K)-1]);
+    print(resultFile)
+    fp = open(resultFile,"w")
+    fp.write("#NumUsers = "+str(N+1)+'\n')
+    fp.write("#NumBusinesses = "+str(M+1)+'\n')
+    fp.write("#NumRatings = "+str(allRatings.count())+'\n')
+    fp.write("#Steps = " + str(Steps)+'\n')
+    fp.write("#Alpha = " + str(Alpha)+'\n')
+    fp.write("#Time = "+str(time.asctime())+'\n')
+    fp.write('#\n')
+    fp.write('#K, AvgRSS, AvgDist\n')
     allRatMatrix = []
     print("Moving data to an array...")
     for r in allRatings:
@@ -154,7 +65,7 @@ def run_nmf_mult_k(K):
             # print("Running for fold "+str(f))
             outFold = get_outfold_data(folds, f)
             inFold = folds[f]
-            nP, nQ = run_nmf_internal(outFold,N,M,k,fp=fp)
+            nP, nQ = run_nmf_internal(outFold,N,M,k, Steps, Alpha, fp=fp)
             # call matrix factorization
             dist = 0
             rss = 0
@@ -189,7 +100,7 @@ def run_nmf_mult_k(K):
             sumDist = sumDist + dist / len(inFold)
             sumRSS = sumRSS + rss/ len(inFold)
             print("For fold = "+str(f)+" rss = "+str(rss/len(inFold)) + " dist = " + str(dist/len(inFold)))
-        fp.write(str(k) + " " + str(sumDist/5)+ "\n")
+        fp.write(str(k) + ", " + str(sumRSS/5)+ " , " + str(sumDist/5) + '\n')
         print("Average Distance for K= "+str(k) + " is " + str(sumDist/5))
         
         
@@ -222,57 +133,51 @@ def run_nmf_mult_k(K):
 #    return P, Q.T
 
 
+#
+#def matrix_factorization_new(allRatings,  P, Q, K, fp, steps=500, alpha=0.02, beta=0.02 ):
+#    Q = Q.T
+#    for step in xrange(steps):
+#        ct = 0
+#        for iter in range(0,len(allRatings)):
+#            r = allRatings[iter]
+#            uid = r.username.id -1
+#            bid = r.business.id -1
+#            eij = r.rating - numpy.dot(P[uid,:],Q[:,bid])
+#        
+#            for k in xrange(K):
+#                P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[k][bid] - beta * P[uid][k])
+#                Q[k][bid] = Q[k][bid] + alpha * (2 * eij * P[uid][k] - beta * Q[k][bid])
+#            #if ct % 100 == 0:
+#            #    print(ct)
+#            ct = ct + 1
+#        #print("First loop done")
+#        #eR = numpy.dot(P,Q)
+#        e = 0
+#        for iter in range(0,len(allRatings)):
+#            r = allRatings[iter]
+#            uid = r.username.id -1
+#            bid = r.business.id -1
+#            e = e + pow(r.rating - numpy.dot(P[uid,:],Q[:,bid]), 2)
+#            for k in xrange(K):
+#                e = e + (beta/2) * (P[uid][k]*P[uid][k] + Q[k][bid]*Q[k][bid])
+#        
+#        fp.write(str(e))
+#        print(e)
+#        if e < 0.001:
+#            print("CONVERGED at:" + str(step))
+#            break
+#    print(str(e))
+#    return P, Q.T
 
-def matrix_factorization_new(allRatings,  P, Q, K, fp, steps=500, alpha=0.02, beta=0.02 ):
-    Q = Q.T
-    for step in xrange(steps):
-        ct = 0
-        for iter in range(0,len(allRatings)):
-            r = allRatings[iter]
-            uid = r.username.id -1
-            bid = r.business.id -1
-            eij = r.rating - numpy.dot(P[uid,:],Q[:,bid])
-        
-            for k in xrange(K):
-                P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[k][bid] - beta * P[uid][k])
-                Q[k][bid] = Q[k][bid] + alpha * (2 * eij * P[uid][k] - beta * Q[k][bid])
-            #if ct % 100 == 0:
-            #    print(ct)
-            ct = ct + 1
-        #print("First loop done")
-        #eR = numpy.dot(P,Q)
-        e = 0
-        for iter in range(0,len(allRatings)):
-            r = allRatings[iter]
-            uid = r.username.id -1
-            bid = r.business.id -1
-            e = e + pow(r.rating - numpy.dot(P[uid,:],Q[:,bid]), 2)
-            for k in xrange(K):
-                e = e + (beta/2) * (P[uid][k]*P[uid][k] + Q[k][bid]*Q[k][bid])
-        
-        fp.write(str(e))
-        print(e)
-        if e < 0.001:
-            print("CONVERGED at:" + str(step))
-            break
-    print(str(e))
-    return P, Q.T
 
 
-
-def run_nmf_internal(R,N,M, K,fp):
-   # P = numpy.random.rand(N,K)
-    #Q = numpy.random.rand(M,K)
-    
+def run_nmf_internal(R,N,M, K, Steps, Alpha, fp):
+    # P = numpy.random.rand(N,K)
+    #Q = numpy.random.rand(M,K)    
     P=[]
-    Q=[]
-    
-    #run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
-
-    fastnmf.run_nmf_from_python(R,N,M,K,P,Q)
-
-  #  nP, nQ = matrix_factorization_new(R, P, Q, K,fp=fp)
+    Q=[]    
+    #run_nmf_c(list& ratings, int N, int M, int K, int p_Steps, double p_Alpha, list& p_P, list &p_Q)
+    fastnmf.run_nmf_from_python(R,N,M,K, Steps, Alpha, P,Q)
     return P, Q
     #nR = numpy.dot(nP, nQ.T)
-
     #return nR

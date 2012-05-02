@@ -6,7 +6,7 @@ Created on Apr 30, 2012
 import simplejson as json
 from pprint import pprint
 from ratings.models import User
-
+from django.conf import settings
 from ratings.models import Business
 from ratings.models import Rating
 from django.db import transaction
@@ -20,7 +20,7 @@ def read_dataset():
     yelpUIDtoID = dict()
     yelpBIDtoID = dict()
     clear_all_tables()
-    fp = open('/Users/zouf/Sites/nightout/data_import/michigan_dataset.json')
+    fp = open(settings.DATASET_LOCATION)
     #fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
 
     objs = json.load(fp)

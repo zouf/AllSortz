@@ -8,7 +8,7 @@
 #include "fastnmf.h"
 
 
-#define DEBUG
+//#define DEBUG
 
 
 struct args_t
@@ -22,7 +22,7 @@ struct args_t
 using namespace std;
 using namespace boost::python;
 
-static const int steps = 20000;
+static  int steps = 20000;
 static double alpha = 0;
 static double beta = 0.00001;
 static double threshold = 0.001;
@@ -118,6 +118,9 @@ void run_nmf_from_c(vector<rating_t>  ratings, int p_N, int p_M, int p_K)
   P.clear();
   Q.clear();
 
+	alpha = 0.0035;
+	steps = 20000;
+
   allRatings = ratings;
 	initialize_p_q();
   run_nmf_c();
@@ -126,12 +129,13 @@ void run_nmf_from_c(vector<rating_t>  ratings, int p_N, int p_M, int p_K)
 }
 
 
-void run_nmf_from_python(list& ratings, int p_N, int p_M, int p_K, list& p_P, list &p_Q)
+void run_nmf_from_python(list& ratings, int p_N, int p_M, int p_K, int p_Steps, double p_Alpha, list& p_P, list &p_Q)
 {
   K = p_K;
   N = p_N;
   M = p_M;
-
+  alpha = p_Alpha;
+  steps = p_Steps;
   allRatings.clear();
   P.clear();
   Q.clear();
@@ -230,12 +234,13 @@ void run_nmf_c()
     }
     prev_e = e;
     //e = e / numRatings;
-		if(s %100 == 0)
+
+	  #ifdef DEBUG
+    if(s %100 == 0)
 		{
-			#ifdef DEBUG
 			printf("Step s = %d e = %lf!\n",s, e);
-			#endif
 		}
+		#endif
 		if(e < threshold)
 		{
 			printf("Reached threshold at step = %d\n", s);

@@ -19,7 +19,6 @@ driver.o:
 	g++ -g  -O3 -I$(PYTHON) -I$(BOOST_INC) -c -fPIC driver.cpp -o driver.o
 
 
-
 fastnmf.so: fastnmf.o
 	g++ -g  -shared -O3 -dynamic  \
 	fastnmf.o -L$(BOOST_LIB) -lboost_python \
@@ -29,3 +28,6 @@ fastnmf.so: fastnmf.o
 
 fastnmf.o: fastnmf.cpp
 	g++ -g  -O3 -I$(PYTHON) -I$(BOOST_INC) -c -fPIC fastnmf.cpp -o fastnmf.o
+
+clean:
+	rm *.o  driver *.so
