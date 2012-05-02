@@ -31,7 +31,7 @@ def read_dataset():
     
     unique_uid = 1
     unique_bid = 1
-    bus_rating_threshold = 250
+    bus_rating_threshold = 100
     user_rating_threshold = 25
     
     print("json read\n");

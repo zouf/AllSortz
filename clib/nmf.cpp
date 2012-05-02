@@ -11,13 +11,13 @@ struct rating_t
 {
 	int uid;
 	int bid;
-	uint8_t rat; 
+	uint8_t rat;
 };
 
 using namespace std;
 using namespace boost::python;
 
-static const int steps = 100;
+static const int steps = 5000;
 static const double alpha = 0.2;
 static const double beta = 0.02;
 static const double threshold = 0.001;
@@ -54,9 +54,9 @@ void initialize_p_q(int N, int M, int K)
 			double r = rand();
 			tmp.push_back(r);
 		}
-		P.push_back(tmp);	
+		P.push_back(tmp);
 	}
-	
+
 	for(int i = 0; i < M; i++)
 	{
 		vector<double> tmp;
@@ -65,7 +65,7 @@ void initialize_p_q(int N, int M, int K)
 			double r = rand();
 			tmp.push_back(r);
 		}
-		Q.push_back(tmp);	
+		Q.push_back(tmp);
 	}
 	#ifdef DEBUG
 	printf("Done with intialize P and Q!\n");
@@ -92,7 +92,7 @@ void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 	printf("Ratings copied!\n");
 	#endif
 	initialize_p_q(N,M,K);
-	
+
 	for(int s = 0; s < steps; ++s)
 	{
 		#ifdef DEBUG
@@ -109,9 +109,9 @@ void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 				P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[bid][k] - beta * P[uid][k]);
 				printf("------------%ld\n", P[uid][k] );
 				Q[bid][k] = Q[bid][k] + alpha * (2 * eij * P[uid][k] - beta * Q[bid][k]);
-			}		
+			}
 		}
-		
+
 		double e = 0;
 		for(int r = 0; r < numRatings; ++r)
 		{
@@ -135,14 +135,14 @@ void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 		if(e < threshold)
 			break;
 	}
-	
+
 	for(int i = 0; i < N; ++i)
 	{
 	    list tmp;
 	    for(int k = 0; k < K; ++k)
 		{
 			tmp.append(P[i][k]);
-	    }   
+	    }
 	    p_P.append(tmp);
 	 }
 	for(int i = 0; i < M; ++i)
@@ -151,10 +151,10 @@ void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 	    for(int k = 0; k < K; ++k)
 		{
 			tmp.append(Q[i][k]);
-	    }   
+	    }
 	    p_Q.append(tmp);
 	}
-	return;	
+	return;
 }
 
 

@@ -9,7 +9,8 @@ import sys
 def validate_production_data():
 
     read_dataset()
-    K = [13,15,17]
+   # K = [12,13,14,15,16,17,18]
+    K = [22,24]
     run_nmf_mult_k(K)
 
 def simple_validate():

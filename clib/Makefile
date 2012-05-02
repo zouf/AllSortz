@@ -10,11 +10,11 @@ ALL= fastnmf.so
 all: $(ALL)
 
 fastnmf.so: fastnmf.o
-	g++ -shared -dynamic  \
+	g++ -shared -O3 -dynamic  \
 	fastnmf.o -L$(BOOST_LIB) -lboost_python \
 	-L/usr/lib/python2.7/config -lpython2.7 \
 	-o fastnmf.so
 
 
 fastnmf.o: fastnmf.cpp
-	g++ -I$(PYTHON) -I$(BOOST_INC) -c -fPIC fastnmf.cpp -o fastnmf.o
+	g++ -O3 -I$(PYTHON) -I$(BOOST_INC) -c -fPIC fastnmf.cpp -o fastnmf.o

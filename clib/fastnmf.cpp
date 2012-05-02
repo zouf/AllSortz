@@ -17,7 +17,7 @@ struct rating_t
 using namespace std;
 using namespace boost::python;
 
-static const int steps = 500;
+static const int steps = 20000;
 static const double alpha = 0.02;
 static const double beta = 0.02;
 static const double threshold = 0.001;
@@ -75,14 +75,14 @@ void initialize_p_q(int N, int M, int K)
 void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 {
 	g_K = K;
-	
+
 	allRatings.clear();
 	P.clear();
 	Q.clear();
 	int numRatings = len(ratings);
 	#ifdef DEBUG
 	printf("run_nmf_c with N=%d M=%d K=%d\n",N,M,K);
-	
+
 	#endif
 	for(int i = 0; i < numRatings; ++i)
 	{
@@ -113,9 +113,9 @@ void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 			for(int k = 0; k < K; ++k)
 			{
 				P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[bid][k] - beta * P[uid][k]);
-				
+
 				Q[bid][k] = Q[bid][k] + alpha * (2 * eij * P[uid][k] - beta * Q[bid][k]);
-			
+
 				//printf("%lf\n",P[uid][k] );
 			}
 		}
@@ -149,7 +149,7 @@ void run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 	}
 	if(thresh_met)
 	{
-		printf("Did not reach threshold and used all steps. Got to %lf\n",thresh_met);
+		printf("Did not reach threshold and %d steps. Got to %lf\n", steps, thresh_met);
 	}
 
 	for(int i = 0; i < N; ++i)
