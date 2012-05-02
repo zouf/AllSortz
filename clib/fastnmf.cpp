@@ -23,13 +23,15 @@ using namespace std;
 using namespace boost::python;
 
 static const int steps = 20000;
-static double alpha = 0.5;
-static double beta = 0.02;
+static double alpha = 0.03;
+static double beta = 0.000;
 static double threshold = 0.001;
 static int K = 0;
 static int N = 0;
 static int M = 0;
 
+
+static double really_small_num = 0.00000001;
 
 vector<rating_t> allRatings;
 vector<vector<double> > P;
@@ -43,7 +45,7 @@ inline double dot_prod(int uid, int bid)
 	double result = 0;
 	for(int i = 0; i < K; i++)
 	{
-		result += P[uid][i]*Q[bid][i];
+		result += P[uid][i]*Q[bid][i] + really_small_num;
 	}
 	return result;
 }
@@ -87,9 +89,9 @@ void * calc_p_q(void *param)
 	int bid = args->bid;
 	int k = args->k;
 	double eij = args->eij;
-	P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[bid][k] - beta * P[uid][k]);
+	P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[bid][k] - beta * P[uid][k]) + really_small_num;
 
-	Q[bid][k] = Q[bid][k] + alpha * (2 * eij * P[uid][k] - beta * Q[bid][k]);
+	Q[bid][k] = Q[bid][k] + alpha * (2 * eij * P[uid][k] - beta * Q[bid][k]) + really_small_num;
 }
 
 
@@ -211,10 +213,10 @@ void run_nmf_c()
 			int bid = allRatings[r].bid;
 			uint8_t rat = allRatings[r].rat;
 			double eij = (double)rat - dot_prod(uid,bid);
-			e = e + eij*eij;
+			e = e + eij*eij + really_small_num;
 			for(int k = 0; k < K; ++k)
 			{
-				e = e + (beta/2)* (P[uid][k]*P[uid][k] + Q[bid][k]*Q[bid][k]);
+				e = e + (beta/2)* (P[uid][k]*P[uid][k] + Q[bid][k]*Q[bid][k]) + really_small_num;
 			}
 		}
 		if(s %100 == 0)
