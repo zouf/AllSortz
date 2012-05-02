@@ -23,8 +23,8 @@ using namespace std;
 using namespace boost::python;
 
 static const int steps = 20000;
-static double alpha = 0.03;
-static double beta = 0.000;
+static double alpha = 0.002;
+static double beta = 0.00001;
 static double threshold = 0.001;
 static int K = 0;
 static int N = 0;
@@ -45,7 +45,7 @@ inline double dot_prod(int uid, int bid)
 	double result = 0;
 	for(int i = 0; i < K; i++)
 	{
-		result += P[uid][i]*Q[bid][i] + really_small_num;
+		result += P[uid][i]*Q[bid][i];
 	}
 	return result;
 }
@@ -89,9 +89,9 @@ void * calc_p_q(void *param)
 	int bid = args->bid;
 	int k = args->k;
 	double eij = args->eij;
-	P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[bid][k] - beta * P[uid][k]) + really_small_num;
+	P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[bid][k] - beta * P[uid][k]);
 
-	Q[bid][k] = Q[bid][k] + alpha * (2 * eij * P[uid][k] - beta * Q[bid][k]) + really_small_num;
+	Q[bid][k] = Q[bid][k] + alpha * (2 * eij * P[uid][k] - beta * Q[bid][k]);
 }
 
 
@@ -186,7 +186,7 @@ void run_nmf_c()
 			uint8_t rat = allRatings[r].rat;
 			double eij = (double)rat - dot_prod(uid,bid);
 			//vector<std::future<void > > futures;
-			pthread_t threads[K];
+//			pthread_t threads[K];
 			for(int k = 0; k < K; ++k)
 			{
 				args_t args;
@@ -194,16 +194,17 @@ void run_nmf_c()
 				args.bid = bid;
 				args.k = k;
 				args.eij = eij;
-				int td = pthread_create(&threads[k], NULL, calc_p_q, (void*)&args);
+			  calc_p_q(&args);
+      //	int td = pthread_create(&threads[k], NULL, calc_p_q, (void*)&args);
 				//std::future calcTask = calc_p_q(int uid, int bid, int k, double eij);
 				//	futures.push_back(calcTask);
 				//printf("%lf\n",P[uid][k] );
 			}
-			for(int k = 0; k < K; ++k)
-			{
+	//		for(int k = 0; k < K; ++k)
+		//	{
 			//	futures[k].get();
-				pthread_join(threads[k],NULL);
-			}
+			//	pthread_join(threads[k],NULL);
+		//	}
 		}
 		double e = 0;
 		for(int r = 0; r < numRatings; ++r)
@@ -213,10 +214,10 @@ void run_nmf_c()
 			int bid = allRatings[r].bid;
 			uint8_t rat = allRatings[r].rat;
 			double eij = (double)rat - dot_prod(uid,bid);
-			e = e + eij*eij + really_small_num;
+			e = e + eij*eij;
 			for(int k = 0; k < K; ++k)
 			{
-				e = e + (beta/2)* (P[uid][k]*P[uid][k] + Q[bid][k]*Q[bid][k]) + really_small_num;
+				e = e + (beta/2)* (P[uid][k]*P[uid][k] + Q[bid][k]*Q[bid][k]);
 			}
 		}
 		if(s %100 == 0)

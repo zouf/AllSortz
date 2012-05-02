@@ -11,21 +11,21 @@ all: $(ALL)
 
 
 driver: driver.o fastnmf.o
-	g++ -g  -O0 -dynamic driver.o fastnmf.o -L$(BOOST_LIB) \
+	g++ -g  -O3 -dynamic driver.o fastnmf.o -L$(BOOST_LIB) \
 	-lboost_python -L/usr/lib/python2.7/config \
 	-lpython2.7 -o driver
 
 driver.o:
-	g++ -g  -O0 -I$(PYTHON) -I$(BOOST_INC) -c -fPIC driver.cpp -o driver.o
+	g++ -g  -O3 -I$(PYTHON) -I$(BOOST_INC) -c -fPIC driver.cpp -o driver.o
 
 
 
 fastnmf.so: fastnmf.o
-	g++ -g  -shared -O0 -dynamic  \
+	g++ -g  -shared -O3 -dynamic  \
 	fastnmf.o -L$(BOOST_LIB) -lboost_python \
 	-L/usr/lib/python2.7/config -lpython2.7 \
 	-o fastnmf.so
 
 
 fastnmf.o: fastnmf.cpp
-	g++ -g  -O0 -I$(PYTHON) -I$(BOOST_INC) -c -fPIC fastnmf.cpp -o fastnmf.o
+	g++ -g  -O3 -I$(PYTHON) -I$(BOOST_INC) -c -fPIC fastnmf.cpp -o fastnmf.o

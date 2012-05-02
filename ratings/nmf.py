@@ -147,6 +147,7 @@ def run_nmf_mult_k(K):
     folds = get_folds(allRatMatrix)
     for k in K:
         sumDist = 0
+        sumRSS = 0
         for f in range(0,5): 
            # print("Running for fold "+str(f))
             outFold = get_outfold_data(folds, f)
@@ -154,6 +155,7 @@ def run_nmf_mult_k(K):
             nP, nQ = run_nmf_internal(outFold,N,M,k,fp=fp)
             # call matrix factorization
             dist = 0
+            rss = 0
             for r in inFold:
                 uid = r[0] - 1
                 bid = r[1] -1
@@ -164,9 +166,12 @@ def run_nmf_mult_k(K):
                 #print("Prediction " + str(prediction))
                 #print("")
                 #print("")
-                dist = dist + math.pow(abs(float(prediction) - float(r[2])),2)
+                rss = rss + math.pow(abs(float(prediction) - float(r[2])),2)
+                dist = dist + abs(float(prediction) - float(r[2]))
+
             sumDist = sumDist + dist / len(inFold)
-            print("For fold = "+str(f)+" dist = "+str(dist/len(inFold)))
+            sumRSS = sumRSS + rss/ len(inFold)
+            print("For fold = "+str(f)+" rss = "+str(rss/len(inFold)) + " dist = " + str(dist/len(inFold)))
         fp.write(str(k) + " " + str(sumDist/5)+ "\n")
         print("Average Distance for K= "+str(k) + " is " + str(sumDist/5))
         
@@ -247,7 +252,7 @@ def run_nmf_internal(R,N,M, K,fp):
     
     #run_nmf_c(list& ratings, int N, int M, int K, list& p_P, list &p_Q)
 
-    fastnmf.run_nmf_c(R,N,M,K,P,Q)
+    fastnmf.run_nmf_from_python(R,N,M,K,P,Q)
 
   #  nP, nQ = matrix_factorization_new(R, P, Q, K,fp=fp)
     return P, Q
