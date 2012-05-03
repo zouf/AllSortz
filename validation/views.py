@@ -25,14 +25,20 @@ def find_categories_best_k(k):
       # print out all of the labels associated with these businesses
 
 
-         
+     
+def run_for_specific_k(k):
+  K=[k]
+  Steps = 30000
+  Alpha = 0.004
+  run_nmf_mult_k(K,Steps,Alpha)
 
 
 def validate_production_data():
 
-    read_dataset()
+#    read_dataset()
     # K = [12,13,14,15,16,17,18]
-    K = [12,14,16,18,20,22,24,26]
+#    K = [12,14,16,18,20,22,24,26]
+    K = [28,30,32]
     Steps = 30000
     Alpha = 0.004
     run_nmf_mult_k(K,Steps,Alpha)
