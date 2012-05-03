@@ -18,7 +18,7 @@ import fastnmf
 def get_folds(allRatings):
     folds = [[],[],[],[],[]]
     numRatings = len(allRatings)
-    
+    random.seed(666) 
     fld = []
     for i in range(0, numRatings):
         fld.append(i%5)
@@ -56,10 +56,11 @@ def run_nmf_mult_k(K,Steps,Alpha):
     allRatings = Rating.objects.all()
     
     resultFile = settings.RESULTS_DIR+"u"+str(user_rating_threshold)+"_b"+str(bus_rating_threshold)+"_s"+str(Steps)+"_k"+str(K[0])+"-"+str(K[len(K)-1]);
+    predictionFile = settings.RESULTS_DIR+"predictions_"+"u"+str(user_rating_threshold)+"_b"+str(bus_rating_threshold)+"_s"+str(Steps)+"_k"+str(K[0])+"-"+str(K[len(K)-1]);
     print(resultFile)
     fp = open(resultFile,"w")
-    
-
+    pred_fp = open(predictionFile, "w") 
+    pred_fp.write("#K, f, Difference, Actual, Predicted");
     fp.write("#NumUsers = "+str(N+1)+'\n')
     fp.write("#NumBusinesses = "+str(M+1)+'\n')
     fp.write("#UserThresh = "+str(user_rating_threshold)+ '\n')
@@ -84,6 +85,7 @@ def run_nmf_mult_k(K,Steps,Alpha):
         sumRSSRounded = 0
         sumDistFloat = 0.0
         sumRSSFloat = 0.0
+        ctr = 0
         for f in range(0,5):    
             outFold = get_outfold_data(folds, f)
             inFold = folds[f]
@@ -97,6 +99,7 @@ def run_nmf_mult_k(K,Steps,Alpha):
             rssFloat = 0.0
             rssRounded = 0
             distRounded = 0
+            inFoldLen = len(inFold)
             for r in inFold:
                 uid = r[0] - 1
                 bid = r[1] - 1
@@ -122,22 +125,26 @@ def run_nmf_mult_k(K,Steps,Alpha):
                     roundP = 1
                     floatP = 1.0
 
+
                 #print("Username " + str(r.username))
                 #print("Business " + str(r.business.name))
                 #print("Rating " + str(r.rating))
                 #print("Prediction " + str(prediction))
-                
+                      
                 rssFloat +=    math.pow(abs(floatP - floatR),2)
                 distFloat +=   abs(floatP - floatR)
                 rssRounded +=  math.pow(abs(roundP - roundR),2)
                 distRounded += abs(roundP - roundR)
-
-            sumDistRounded +=  distRounded / len(inFold)
-            sumRSSRounded += rssRounded/ len(inFold)
-            sumDistFloat +=  distFloat / len(inFold)
-            sumRSSFloat +=  rssFloat/ len(inFold)
-            print("\t\t RSS_float="  + str(rssFloat/len(inFold))   + " Distance_float=" + str(distFloat/len(inFold)))
-            print("\t\t RSS_rounded="+ str(rssRounded/len(inFold)) + " Distance_rounded=" + str(distRounded/len(inFold)))
+                pred_fp.write(str(abs(floatP - floatR)) + ", " + str(floatR) + ", " + str(floatP) + ", " +str(k) + ", " + str(f) +  '\n');
+                if ctr % 1000 == 0:
+                  pred_fp.flush()
+                ctr += 1
+            sumDistRounded +=  distRounded / inFoldLen
+            sumRSSRounded += rssRounded/ inFoldLen
+            sumDistFloat +=  distFloat / inFoldLen
+            sumRSSFloat +=  rssFloat/ inFoldLen
+            print("\t\t RSS_float="  + str(rssFloat/inFoldLen)   + " Distance_float=" + str(distFloat/inFoldLen))
+            print("\t\t RSS_rounded="+ str(rssRounded/inFoldLen) + " Distance_rounded=" + str(distRounded/inFoldLen))
         result_1 = str(sumRSSRounded/5)+ ", " + str(sumDistRounded/5) 
         result_2 = str(sumRSSFloat/5)+ ", " + str(sumDistFloat/5) 
         fp.write(str(k) + ", " + result_1 + ", " + result_2 + '\n')
@@ -145,7 +152,10 @@ def run_nmf_mult_k(K,Steps,Alpha):
         print("K="+str(k) + "Rounded: " + result_1 + " Float: " + result_2)
         
     fp.write("#TimeEnd = "+str(time.asctime())+'\n')
+    pred_fp.flush()
     fp.flush()
+    fp.close()
+    pred_fp.close()
   
 
 

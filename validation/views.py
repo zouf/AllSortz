@@ -3,10 +3,11 @@ from data_import.views import read_dataset
 from ratings.nmf import run_nmf_mult_k,get_p_q_best
 from ratings.populate import pop_test_user_bus_data, generate_nmf_test
 
-Steps = 20000
-Alpha = 0.0035
+
 
 def find_categories_best_k(k):
+    Steps = 1000
+    Alpha = 0.0035
     P, Q = get_p_q_best(k, Steps, Alpha)
     zipQ = zip(*Q)
     for l in zipQ:
@@ -25,10 +26,16 @@ def find_categories_best_k(k):
       # print out all of the labels associated with these businesses
 
 
-     
-def run_for_specific_k(k):
+
+def init():
+  read_dataset()
+  
+def val_nmf(K,Steps):
+  Alpha = 0.004
+  run_nmf_mult_k(K,Steps,Alpha)
+
+def nmf_specific_k(k,Steps):
   K=[k]
-  Steps = 30000
   Alpha = 0.004
   run_nmf_mult_k(K,Steps,Alpha)
 

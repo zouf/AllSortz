@@ -7,6 +7,10 @@ class Keyword(models.Model):
     def __unicode__(self):
         return self.name
 
+class UserMeta(models.Model):
+    average_rating = models.FloatField()
+    user = models.ForeignKey(User, unique=True)
+
 class Business(models.Model):
     name = models.CharField(max_length=250)
     

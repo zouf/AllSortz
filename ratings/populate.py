@@ -7,7 +7,7 @@ Created on Apr 2, 2012
 from django.contrib.auth.models import User
 from numpy import dot
 from numpy.random import binomial
-from ratings.models import Business, Rating, Keyword, Grouping
+from ratings.models import Business, Rating, Keyword, Grouping, UserMeta
 import numpy
 import random
 import scipy.stats
@@ -143,6 +143,7 @@ def clear_all_tables():
     User.objects.all().delete()
     Grouping.objects.all().delete()
     Keyword.objects.all().delete()
+    UserMeta.objects.all().delete()
     #User.objects.exclude(username="joey").exclude(username="zouf").delete()
     Business.objects.all().delete()
     
