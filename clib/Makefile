@@ -30,4 +30,4 @@ fastnmf.o: fastnmf.cpp
 	g++ -g  -O3 -I$(PYTHON) -I$(BOOST_INC) -c -fPIC fastnmf.cpp -o fastnmf.o
 
 clean:
-	rm *.o  driver *.so
+	rm -f *.o  driver *.so

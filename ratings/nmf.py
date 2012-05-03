@@ -37,6 +37,19 @@ def get_outfold_data(folds,thisFold):
             outFold = outFold + folds[f]
     return outFold
 
+def get_p_q_best(k, steps, alpha):
+    N = User.objects.count()
+    M = Business.objects.count()
+    print("Get ratings from DB")
+    allRatings = Rating.objects.all()
+    print("Moving data to an array...")
+    allRatMatrix = []
+    for r in allRatings:
+        allRatMatrix.append([r.username.id-1, r.business.id-1, r.rating])
+    nP, nQ = run_nmf_internal(allRatMatrix,N,M,k,steps,alpha,0)
+    return nP, nQ
+
+
 def run_nmf_mult_k(K,Steps,Alpha):
     N = User.objects.count()
     M = Business.objects.count()
