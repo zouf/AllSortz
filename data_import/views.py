@@ -53,6 +53,7 @@ def read_dataset():
             u.id = unique_uid
             users.append(u)
             unique_uid = unique_uid + 1
+            #u.save()
             #print(u)
             yelpUIDtoID[yelpID] = u 
         elif o['type'] == 'business':
