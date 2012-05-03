@@ -5,7 +5,7 @@ Created on Apr 30, 2012
 '''
 from django.conf import settings
 from django.db import transaction
-from pprint import pprint
+from pprint import pprint 
 from ratings.models import Business, Rating, User, Keyword, Grouping
 from ratings.populate import create_business, create_rating, create_user, \
     create_grouping, clear_all_tables, create_category, create_grouping
