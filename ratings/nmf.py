@@ -69,7 +69,7 @@ def run_nmf_mult_k(K,Steps,Alpha):
     fp.write("#Alpha = " + str(Alpha)+'\n')
     fp.write("#TimeStart = "+str(time.asctime())+'\n')
     fp.write('#\n')
-    fp.write('#K, AvgRSS, AvgDist\n')
+    fp.write('#K, AvgRSSRounded, AvgDistRounded, AvgRSSFloat, AvgDistFloat\n')
     fp.flush()
     allRatMatrix = []
     print("Moving data to an array...")
@@ -80,120 +80,73 @@ def run_nmf_mult_k(K,Steps,Alpha):
     print("Fold Generation Complete...")
     for k in K:
         print("Running on K="+str(k)+" Starting at time= "+ time.asctime())
-        sumDist = 0
-        sumRSS = 0
+        sumDistRounded = 0
+        sumRSSRounded = 0
+        sumDistFloat = 0.0
+        sumRSSFloat = 0.0
         for f in range(0,5):    
-            # print("Running for fold "+str(f))
             outFold = get_outfold_data(folds, f)
             inFold = folds[f]
             time_before = time.clock()
             nP, nQ = run_nmf_internal(outFold,N,M,k, Steps, Alpha, fp=fp)
             elapsed = time.clock() - time_before;
             print("\tK="+str(k)+" Fold=" +str(f)+" TimeElapsed="+ str(elapsed/60) + " minutes")
-            # call matrix factorization
-            dist = 0
-            rss = 0
+            
+            #for keeping track of rss, average distance for floats and rounded
+            distFloat = 0.0
+            rssFloat = 0.0
+            rssRounded = 0
+            distRounded = 0
             for r in inFold:
                 uid = r[0] - 1
-                bid = r[1] -1
-                #print("Username " + str(r.username))
-                #print("Business " + str(r.business.name))
-                #print("Rating " + str(r.rating))
+                bid = r[1] - 1
+
                 prediction = numpy.dot(nP[uid],nQ[bid])
                 
                 roundR = round(r[2])
                 roundP = round(prediction)
+                
+                floatR = float(r[2])
+                floatP = float(prediction)
                 if r[2] > 5:
-                    roundR = 5.0;
+                    floatR = 5.0
+                    roundR = 5;
                 elif r[2] < 1:
-                    roundR = 1.0
+                    roundR = 1;
+                    floatR = 1.0
                     
                 if prediction > 5:
-                    roundP = 5.0
+                    roundP = 5
+                    floatP = 5.0
                 elif prediction < 1:
-                    roundP = 1.0
-                    
-                
-                #print("Prediction " + str(prediction))
-                #print("")
-                #print("")
-                rss = rss + math.pow(abs(roundP - roundR),2)
-                dist = dist + abs(roundP - roundR)
+                    roundP = 1
+                    floatP = 1.0
 
-            sumDist = sumDist + dist / len(inFold)
-            sumRSS = sumRSS + rss/ len(inFold)
-            print("\tK="+str(k)+" Fold=" +str(f)+" RSS="+str(rss/len(inFold)) + " Distance=" + str(dist/len(inFold)))
-        fp.write(str(k) + ", " + str(sumRSS/5)+ " , " + str(sumDist/5) + '\n')
+                #print("Username " + str(r.username))
+                #print("Business " + str(r.business.name))
+                #print("Rating " + str(r.rating))
+                #print("Prediction " + str(prediction))
+                
+                rssFloat +=    math.pow(abs(floatP - floatR),2)
+                distFloat +=   abs(floatP - floatR)
+                rssRounded +=  math.pow(abs(roundP - roundR),2)
+                distRounded += abs(roundP - roundR)
+
+            sumDistRounded +=  distRounded / len(inFold)
+            sumRSSRounded += rssRounded/ len(inFold)
+            sumDistFloat +=  distFloat / len(inFold)
+            sumRSSFloat +=  rssFloat/ len(inFold)
+            print("\t\t RSS_float="  + str(rssFloat/len(inFold))   + " Distance_float=" + str(distFloat/len(inFold)))
+            print("\t\t RSS_rounded="+ str(rssRounded/len(inFold)) + " Distance_rounded=" + str(distRounded/len(inFold)))
+        result_1 = str(sumRSSRounded/5)+ ", " + str(sumDistRounded/5) 
+        result_2 = str(sumRSSFloat/5)+ ", " + str(sumDistFloat/5) 
+        fp.write(str(k) + ", " + result_1 + ", " + result_2 + '\n')
         fp.flush()
-        print("K="+str(k) + " AverageDist=" + str(sumDist/5)+ " AverageRSS="+str(sumRSS/5))
+        print("K="+str(k) + "Rounded: " + result_1 + " Float: " + result_2)
         
     fp.write("#TimeEnd = "+str(time.asctime())+'\n')
     fp.flush()
   
-# # http://www.albertauyeung.com/mf.php
-#def matrix_factorization(R, P, Q, K, steps=2, alpha=0.0002, beta=0.02):
-#    Q = Q.T
-#    for step in xrange(steps):
-#        print("Beginning step"+str(step))
-#        for i in xrange(len(R)):
-#            for j in xrange(len(R[i])):
-#                if R[i][j] > 0:
-#                    eij = R[i][j] - numpy.dot(P[i,:],Q[:,j])
-#                    for k in xrange(K):
-#                        P[i][k] = P[i][k] + alpha * (2 * eij * Q[k][j] - beta * P[i][k])
-#                        Q[k][j] = Q[k][j] + alpha * (2 * eij * P[i][k] - beta * Q[k][j])
-#                print("\t\tOne iteration of small-ass loop: "+str(j))
-#            print("\tOne iteration of big-ass loop: "+str(i))
-#        eR = numpy.dot(P,Q)
-#        
-#        e = 0
-#        for i in xrange(len(R)):
-#            for j in xrange(len(R[i])):
-#                if R[i][j] > 0:
-#                    e = e + pow(R[i][j] - numpy.dot(P[i,:],Q[:,j]), 2)
-#                    for k in xrange(K):
-#                        e = e + (beta/2) * (pow(P[i][k],2) + pow(Q[k][j],2))
-#        if e < 0.001:
-#            break
-#    return P, Q.T
-
-
-#
-#def matrix_factorization_new(allRatings,  P, Q, K, fp, steps=500, alpha=0.02, beta=0.02 ):
-#    Q = Q.T
-#    for step in xrange(steps):
-#        ct = 0
-#        for iter in range(0,len(allRatings)):
-#            r = allRatings[iter]
-#            uid = r.username.id -1
-#            bid = r.business.id -1
-#            eij = r.rating - numpy.dot(P[uid,:],Q[:,bid])
-#        
-#            for k in xrange(K):
-#                P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[k][bid] - beta * P[uid][k])
-#                Q[k][bid] = Q[k][bid] + alpha * (2 * eij * P[uid][k] - beta * Q[k][bid])
-#            #if ct % 100 == 0:
-#            #    print(ct)
-#            ct = ct + 1
-#        #print("First loop done")
-#        #eR = numpy.dot(P,Q)
-#        e = 0
-#        for iter in range(0,len(allRatings)):
-#            r = allRatings[iter]
-#            uid = r.username.id -1
-#            bid = r.business.id -1
-#            e = e + pow(r.rating - numpy.dot(P[uid,:],Q[:,bid]), 2)
-#            for k in xrange(K):
-#                e = e + (beta/2) * (P[uid][k]*P[uid][k] + Q[k][bid]*Q[k][bid])
-#        
-#        fp.write(str(e))
-#        print(e)
-#        if e < 0.001:
-#            print("CONVERGED at:" + str(step))
-#            break
-#    print(str(e))
-#    return P, Q.T
-
 
 
 def run_nmf_internal(R,N,M, K, Steps, Alpha, fp):

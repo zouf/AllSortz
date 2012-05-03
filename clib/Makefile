@@ -1,7 +1,7 @@
 PYTHON= /usr/include/python2.7
 
-BOOST_INC= /Users/zouf/pool/include
-BOOST_LIB= /Users/zouf/pool/lib
+BOOST_INC= /usr/include
+BOOST_LIB= /usr/lib
 
 OBJ= fastnmf
 
