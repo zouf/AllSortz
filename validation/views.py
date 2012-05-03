@@ -6,11 +6,11 @@ from ratings.populate import pop_test_user_bus_data, generate_nmf_test
 
 def validate_production_data():
 
-    #read_dataset()
+    read_dataset()
     # K = [12,13,14,15,16,17,18]
-    K = [18,20,22,24,26,28,30]
-    Steps = 20000
-    Alpha = 0.0035
+    K = [12,14,16,18,20,22,24,26]
+    Steps = 30000
+    Alpha = 0.004
     run_nmf_mult_k(K,Steps,Alpha)
 
 def simple_validate():
