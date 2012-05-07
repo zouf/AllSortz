@@ -111,27 +111,38 @@ def display_table(request, maxc):
 	maxc=int(maxc)
 	business_list = Business.objects.all()
 	user_list = User.objects.all()
+	bus_to_display = []
 	all_ratings = []
 	userno = 0
+	
+	c = 0
+	for b in business_list:
+		if  c > maxc:
+			break
+		c+=1
+		bus_to_display.append(b)
+	
 	for user in user_list:
+		if(userno >maxc):
+			break
 		businessno = 0
 		all_ratings.append([user.username])
 		for business in business_list:
+			if(businessno > maxc):
+				break
 			try:
 				r = Rating.objects.get(username=user, business=business).rating
 				all_ratings[userno].append(r)
 			except:
 				r="--"
 				all_ratings[userno].append(r)
+
 			businessno = businessno+1
-			if(businessno > maxc):
-				break
 		userno = userno + 1
-		if(userno >maxc):
-			break
+
 	
 	#print(all_ratings)
-	return	render_to_response('ratings/rating_table.html', {'ratings_list': all_ratings, 'business_list' :business_list, 'user_list': user_list}, context_instance=RequestContext(request))
+	return	render_to_response('ratings/rating_table.html', {'ratings_list': all_ratings, 'business_list' :bus_to_display, 'user_list': user_list}, context_instance=RequestContext(request))
 
 
 

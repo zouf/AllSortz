@@ -7,7 +7,8 @@ Created on Apr 2, 2012
 from django.contrib.auth.models import User
 from numpy import dot
 from numpy.random import binomial
-from ratings.models import Business, Rating, Keyword, Grouping, UserMeta
+from ratings.models import Business, Rating, Keyword, Grouping, UserMeta, \
+    Recommendation
 import numpy
 import random
 import scipy.stats
@@ -106,7 +107,8 @@ def generate_nmf_test(numFactors, density):
     i = i + 1
     
 def create_user(username,uid):
-    u = User(username=("u"+str(uid)), first_name=(username.encode("utf8")),password="test")
+    u = User(username=("u"+str(uid)), first_name=(username.encode("utf8")))
+    u.set_password("test")
     return u
     
 def create_category(name):
@@ -144,6 +146,7 @@ def clear_all_tables():
     Grouping.objects.all().delete()
     Keyword.objects.all().delete()
     UserMeta.objects.all().delete()
+    Recommendation.objects.all().delete()
     #User.objects.exclude(username="joey").exclude(username="zouf").delete()
     Business.objects.all().delete()
     
