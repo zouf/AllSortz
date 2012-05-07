@@ -6,14 +6,15 @@
 
 {% if business_list %}
     
-	<h1>Businesses</h1>
+	<h1>Nightout</h1>
     <div id="businessList">
-		<ul>
+		<p>
 	    {% for bus in business_list %}
-	        <li><a href="/ratings/{{ bus.id }}/">{{ bus.name }}</a></li>
+	        <a href="/ratings/{{ bus.id }}/">{{ bus.name }}</a>
+	        <br>
 	    {% endfor %}
 			<li><a href="/ratings/add_business/">Add a business</a></li>
-	    </ul>
+	    </p>
 	</div>
 	<script type="text/javascript"/>
 			$.ajax({

@@ -25,10 +25,12 @@ class RecEngine:
                 
     # CALLED BY THE VIEW TO GET THE BES    T CURRENT RECOMMENDATION
     def get_best_current_recommendation(self, business, user):
-        try:
-            rec = Recommendation.objects.get(username=user, business=business)
-            return rec.recommendation
-        except:
-            return -5 
+      
+            print(user)
+            print(business)
+            recset = Recommendation.objects.filter(username=user, business=business)
+            print(recset[0])
+            return recset[0].recommendation
+         
     
         

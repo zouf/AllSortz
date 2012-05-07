@@ -1,10 +1,33 @@
 # Create your views here.
 from data_import.views import read_dataset
 from django.conf import settings
-from ratings.nmf import run_nmf_mult_k,get_p_q_best
+from django.db import transaction
+from ratings.models import Business, Recommendation, User
+from ratings.nmf import run_nmf_mult_k, get_p_q_best
 from ratings.populate import pop_test_user_bus_data, generate_nmf_test
-from ratings.models import Business
+import numpy
 
+def build_pred_server():
+    k=30
+    Steps = 1000
+    Alpha = 0.004
+    P, Q = get_p_q_best(k, Steps, Alpha)
+    Predictions = numpy.dot(P,numpy.transpose(Q))
+    i = 1
+    predictions = []
+    for row in Predictions:
+        print(len(row))
+        j = 1
+        bus = Business.objects.get(id=j)
+        for cell in row:
+            usr = User.objects.get(id=i)
+            p = Recommendation(business=bus,recommendation=cell,username=usr)
+            predictions.append(p)
+            j+=1
+        i+=1
+    Recommendation.objects.bulk_create(predictions)
+    transaction.commit();
+    
 
 def find_categories_best_k(k):
     Steps = 1000
@@ -56,8 +79,6 @@ def nmf_specific_k(k,Steps):
 
 
 def validate_production_data():
-
-    read_dataset()
     # K = [12,13,14,15,16,17,18]
 #    K = [12,14,16,18,20,22,24,26]
     #K = [2,5,10,15,20,25,30,35,40]

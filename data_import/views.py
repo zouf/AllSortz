@@ -11,8 +11,8 @@ from ratings.populate import create_business, create_rating, create_user, \
     create_grouping, clear_all_tables, create_category, create_grouping
 import simplejson as json
 
-bus_rating_threshold = 25
-user_rating_threshold = 25
+bus_rating_threshold = 150
+user_rating_threshold = 750
 average_total_rating = 0
 
 
