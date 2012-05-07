@@ -3,20 +3,24 @@ from django.contrib.localflavor.us.models import USStateField
 from django.contrib.auth.models import User
 
 class Keyword(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     def __unicode__(self):
         return self.name
 
+class UserMeta(models.Model):
+    average_rating = models.FloatField()
+    user = models.ForeignKey(User, unique=True)
+
 class Business(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=250)
     
     average_rating = models.FloatField()
 
     lat = models.FloatField()
     lon = models.FloatField()
     
-    address = models.CharField(max_length=100)
-    city = models.CharField(max_length=50)
+    address = models.CharField(max_length=250)
+    city = models.CharField(max_length=100)
     state = USStateField() # Yes, this is America-centric..
     
     keywords = models.ManyToManyField(Keyword, through='Grouping')
@@ -39,11 +43,9 @@ class Rating(models.Model):
 
 
 
-
 class Grouping(models.Model):
     business = models.ForeignKey(Business)
     keyword = models.ForeignKey(Keyword)
-
 
 
 class Recommendation(models.Model):
@@ -51,5 +53,5 @@ class Recommendation(models.Model):
     username = models.ForeignKey(User)
     recommendation = models.IntegerField()
     def __unicode__(self):
-      return self.business.name
+        return self.business.name
 

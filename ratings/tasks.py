@@ -1,8 +1,11 @@
 from celery.decorators import periodic_task
 from datetime import timedelta
+from django.db import transaction
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum
-from ratings.models import Business, DontCare, Rating, Recommendation
+from ratings.models import Business, DontCare, Rating, Recommendation, UserMeta
+from data_import.views import average_total_rating
+from data_import.views import average_total_rating
 from ratings.nmf import run_nmf_mult_k
 import math
 
@@ -49,6 +52,7 @@ def ci_lowerbound(numPosRev, numTotalRev):
 
 def buildAverageRatings():
 	all_businesses = Business.objects.all()
+  insBus = []
 	for bus in all_businesses:
 		print(bus)
 		ratingFilter = Rating.objects.filter(business=bus).aggregate(Sum('rating'), Count('rating'))
@@ -56,13 +60,29 @@ def buildAverageRatings():
 		countRating = ratingFilter[1]
 		avg = ci_lowerbound(sumRating, countRating)
 		insertAverage(bus,avg)
+    queryset = Business.objects.filter( business=bus)
+	  if queryset.count() >= 1:
+	  	queryset.delete()
+	  r1 = Business( business=bus, average_rating=avg)
+    insBus.append(r1)
+  Business.objects.bulk_create(insBus)
+    
+  
+  usermeta = []
+  for user in User.objects.all():
+		ratingFilter = Rating.objects.filter(username=user).aggregate(Sum('rating'), Count('rating'))
+    sumRating = ratingFilter[0]
+    countRating = ratingFilter[1]
+    avg = ci_lowerbound(sumRating,countRating)
+    meta = UserMeta(average_rating=avg, user=user)
+    usermeta.append(meta)
+  UserMeta.objects.bulk_create(usermeta)
+  
+  average_total_rating = Rating.objects.all().aggregate(Sum('rating'),Count('rating'))
+  
+  transaction.commit();
 
-def insertAverage(bus, avg):
-	queryset = Business.objects.filter( business=bus)
-	if queryset.count() >= 1:
-		queryset.delete()
-	r1 = Business( business=bus, average_rating=avg)
-	r1.save()	
+
 		
 def insertRecommendation(user, bus, rec):
 	queryset = Recommendation.objects.filter(username=user, business=bus)

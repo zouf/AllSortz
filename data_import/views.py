@@ -3,24 +3,24 @@ Created on Apr 30, 2012
 
 @author: zouf
 '''
-import simplejson as json
-from pprint import pprint
-from ratings.models import User
-
-from ratings.models import Business
-from ratings.models import Rating
+from django.conf import settings
+from pprint import pprint 
 from django.db import transaction
-from ratings.populate import  create_user
-from ratings.populate import  create_rating
-from ratings.populate import  create_business
-from ratings.populate import clear_all_tables
- 
+from ratings.models import Business, Rating, User, Keyword, Grouping
+from ratings.populate import create_business, create_rating, create_user, \
+    create_grouping, clear_all_tables, create_category, create_grouping
+import simplejson as json
+
+bus_rating_threshold = 25
+user_rating_threshold = 25
+average_total_rating = 0
+
 
 def read_dataset():
     yelpUIDtoID = dict()
     yelpBIDtoID = dict()
     clear_all_tables()
-    fp = open('/Users/zouf/Sites/nightout/data_import/michigan_dataset.json')
+    fp = open(settings.DATASET_LOCATION)
     #fp = open('C:\Users/Joey/nightout/data_import/michigan_dataset1.json')
 
     objs = json.load(fp)
@@ -29,10 +29,14 @@ def read_dataset():
     businesses = []
     users =[]
     
+    cats2bus = dict()
+    uniquecats = dict()
+    
     unique_uid = 1
     unique_bid = 1
-    bus_rating_threshold = 100
-    user_rating_threshold = 25
+
+    global bus_rating_threshold
+    global user_rating_threshold
     
     print("json read\n");
     c=0;
@@ -42,38 +46,59 @@ def read_dataset():
         c=c+1
         if o['type'] == 'user':
             yelpID = o['user_id']
-            name = "u"+str(c)
+            #name = "u"+str(c)
+            name = o['name']
             rev_count = o['review_count']
             if rev_count < user_rating_threshold:
                 continue
-            u = create_user(name)           
+            u = create_user(name,unique_uid)           
             u.id = unique_uid
             users.append(u)
             unique_uid = unique_uid + 1
+            #u.save()
             #print(u)
             yelpUIDtoID[yelpID] = u 
-        elif o['type'] == 'business':
-            yelpID = o['business_id']
-            rev_count = o['review_count']
-            if rev_count < bus_rating_threshold:
-                continue
-            name = "b"+str(c)
-            state = "NY" #"o['state']
-            longitude = o['longitude']
-            latitude = o['latitude']
-            full_address = "test st" #"o['full_address']
-            city = "New York" #"o['city']
-            b = create_business(name=name,address=full_address,state=state,city=city,lat=latitude,lon=longitude)
-            b.id = unique_bid
-            businesses.append(b)
-            unique_bid = unique_bid + 1
-            yelpBIDtoID[yelpID] = b
-            
-            
-            
     User.objects.bulk_create(users)
+    business_set = set()
+    for o in objs:
+        if o['type'] == 'review':
+            uid = o['user_id']
+            bid = o['business_id']
+            if uid in yelpUIDtoID:
+                if bid not in business_set:
+                    business_set.add(bid)
+    for o in objs:
+        if o['type'] == 'business':
+            yelpID = o['business_id']
+            if yelpID in business_set:
+                rev_count = o['review_count']
+    
+                if rev_count < bus_rating_threshold:
+                    continue
+
+                cats = o['categories']
+            
+                
+                name = o['name']
+                state =  o['state']
+                longitude = o['longitude']
+                latitude = o['latitude']
+                full_address = o['full_address']
+                city = o['city']
+                b = create_business(name=name,address=full_address,state=state,city=city,lat=latitude,lon=longitude)
+                b.id = unique_bid
+                cats2bus[b] = []
+                for append_cat in cats:
+                    if append_cat not in uniquecats:
+                        uniquecats[append_cat] = 1
+                    cats2bus[b].append(append_cat)
+                businesses.append(b)
+                unique_bid = unique_bid + 1
+                yelpBIDtoID[yelpID] = b       
+   
     Business.objects.bulk_create(businesses)
     c=0
+    
     print("Users and businesses read");
     ratings = []
     for o in objs:
@@ -91,5 +116,23 @@ def read_dataset():
                     r = create_rating(usr, bus, stars)
                     ratings.append(r)
     Rating.objects.bulk_create(ratings)
+
+ #   create_cat_list = []
+    cat_name_to_obj = {}
+    for cat_name in uniquecats:
+        k = create_category(name=cat_name)
+        k.save()
+        cat_name_to_obj[cat_name] = k
+  #      create_cat_list.append(k)
+  #  Keyword.objects.bulk_create(create_cat_list)
+    
+    create_grouping_list = []
+    for b in Business.objects.all():
+        for cat_name in cats2bus[b]:
+            g = create_grouping(cat_name_to_obj[cat_name],b)
+            create_grouping_list.append(g)
+    Grouping.objects.bulk_create(create_grouping_list)
+
+    
     transaction.commit();
     

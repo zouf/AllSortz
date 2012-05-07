@@ -1,13 +1,10 @@
-from django.conf.urls import patterns, include, url
-from django.conf.urls.defaults import *
-from django.views.generic.simple import direct_to_template
+from django.conf.urls import url, patterns, include
 from django.contrib import admin
 from nightout import settings
-from ratings.views import *
+from ratings.views import logout_page
 
 
 
-from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',

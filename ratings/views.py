@@ -1,24 +1,14 @@
-from array import array
-from celery.execute import send_task
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core import serializers
-from django.db.models import F
-from django.http import HttpResponse, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response, render_to_response, \
-	render_to_response, get_object_or_404
-from django.template import Context, loader, RequestContext
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import Context, RequestContext
 from django.utils import simplejson
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.views.generic import DetailView, ListView
-from operator import itemgetter
+from django.views.decorators.csrf import csrf_exempt
 from ratings.forms import BusinessForm, KeywordForm, RatingForm
 from ratings.models import Business, Grouping, Rating
 from ratings.populate import populate_test_data
 from ratings.recengine import RecEngine
-import sys
-
 
 
 re = RecEngine() 

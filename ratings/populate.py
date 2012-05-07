@@ -5,14 +5,13 @@ Created on Apr 2, 2012
 '''
 
 from django.contrib.auth.models import User
-from ratings.models import Business, Rating
-
-import random
-from scipy.stats import norm
-from numpy.random import binomial
 from numpy import dot
+from numpy.random import binomial
+from ratings.models import Business, Rating, Keyword, Grouping, UserMeta
 import numpy
+import random
 import scipy.stats
+
 
 def getPdfOf(mu, stdev, x):
     return(1/((stdev)*numpy.sqrt(2*numpy.pi)) * numpy.exp(((-(x-mu))**2) * 1/(2*(stdev**2))))
@@ -36,13 +35,13 @@ def generateTest():
             
             norm_given_rat = scipy.stats.norm(center,rating_given_sd)
             prob_rat_given =   norm_given_rat.pdf(i)  *  1/norm_given_rat.pdf(center)
-           # print('\n')
-           # print("Mu is " + str(center))
-           # print("pos_rating_stdev is " + str(rating_given_sd))
-           # print("x is " + str(i))
-           # print("Prob LHS " + str(prob_lhs))
-           # print("Prob RHS " + str(prob_rhs))
-           # print("result is " + str(prob_sel))
+            # print('\n')
+            # print("Mu is " + str(center))
+            # print("pos_rating_stdev is " + str(rating_given_sd))
+            # print("x is " + str(i))
+            # print("Prob LHS " + str(prob_lhs))
+            # print("Prob RHS " + str(prob_rhs))
+            # print("result is " + str(prob_sel))
             
             rat_given_rv = binomial(1, prob_rat_given, size=1) #1 if rated, 0 otherwise
             if rat_given_rv[0] != 0:
@@ -106,10 +105,17 @@ def generate_nmf_test(numFactors, density):
             j = j + 1
     i = i + 1
     
-def create_user(username):
-    u = User(username=(username.decode()),password="test")
+def create_user(username,uid):
+    u = User(username=("u"+str(uid)), first_name=(username.encode("utf8")),password="test")
     return u
     
+def create_category(name):
+    k = Keyword(name=name)
+    return k
+
+def create_grouping(cat,bus):
+    g = Grouping(business=bus, keyword=cat)
+    return g
 
 def create_rating(user,business,rating):
     r = Rating(username=user, business=business, rating=rating)
@@ -117,7 +123,7 @@ def create_rating(user,business,rating):
     
     
 def create_business(name, address, state, city, lat, lon):
-    b = Business(name=name.decode(),city=city.decode(),state=state.decode(),address=address.decode(),lat=lat,lon=lon,average_rating=0)
+    b = Business(name=name.encode("utf8"),city=city.encode("utf8"),state=state,address=address.encode("utf8"),lat=lat,lon=lon,average_rating=0)
     return b
  
 
@@ -135,6 +141,9 @@ def pop_test_user_bus_data(numUsers, numBusinesses):
 def clear_all_tables():
     Rating.objects.all().delete()
     User.objects.all().delete()
+    Grouping.objects.all().delete()
+    Keyword.objects.all().delete()
+    UserMeta.objects.all().delete()
     #User.objects.exclude(username="joey").exclude(username="zouf").delete()
     Business.objects.all().delete()
     

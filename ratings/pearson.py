@@ -3,20 +3,10 @@ Created on Apr 24, 2012
 
 @author: zouf
 '''
-from ratings.tasks import  get_rating_table_working_copy
-from ratings.tasks import  insertAverage
-from ratings.tasks import  insertRecommendation
-from ratings.models import Business
-from ratings.models import User
-from ratings.models import Rating
-from django.db.models import Avg
-from django.db.models import Count
-from django.db.models import Sum
-
-import scipy
-import numpy
-import math
+from ratings.tasks import get_rating_table_working_copy, insertRecommendation
 from scipy.stats.stats import pearsonr
+import math
+import scipy
 
 
 corPositiveBound = 0.5
@@ -121,7 +111,7 @@ def pearson_correlation():
                 # no recommmendation, o well
                 numPositive = runRec[bus]['pos']
                 numNegative = runRec[bus]['neg']
-                numTotal = runRec[bus]['tot']
+                #numTotal = runRec[bus]['tot']
                 rec = -1
                 if numPositive > numNegative:
                     rec = g_PosR
