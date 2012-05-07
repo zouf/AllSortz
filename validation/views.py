@@ -50,6 +50,7 @@ def val_nmf(K,Steps):
 
 def nmf_specific_k(k,Steps):
   K=[k]
+  read_dataset()
   Alpha = 0.004
   run_nmf_mult_k(K,Steps,Alpha)
 
