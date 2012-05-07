@@ -135,7 +135,8 @@ def run_nmf_mult_k(K,Steps,Alpha):
                 distFloat +=   abs(floatP - floatR)
                 rssRounded +=  math.pow(abs(roundP - roundR),2)
                 distRounded += abs(roundP - roundR)
-                pred_fp.write(str(abs(floatP - floatR)) + ", " + str(floatR) + ", " + str(floatP) + ", " +str(k) + ", " + str(f) +  '\n');
+                #pred_fp.write(str(abs(floatP - floatR)) + ", " + str(floatR) + ", " + str(floatP) + ", " +str(k) + ", " + str(f) +  '\n');
+                pred_fp.write(str(abs(floatP-floatR)) + " " + str(floatR) + " " + str(floatP) + " " + '\n');
                 if ctr % 1000 == 0:
                   pred_fp.flush()
                 ctr += 1
