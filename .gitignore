@@ -16,5 +16,3 @@ docs/.DS_Store
 .DS_Store
 
 clib/Makefile
-
-clib/Makefile
