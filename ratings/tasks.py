@@ -38,13 +38,6 @@ def get_rating_table_working_copy():
 				ratingTable[u][b] = g_NoR
 	return ratingTable
 
-#from http://www.evanmiller.org/how-not-to-sort-by-average-rating.html
-def ci_lowerbound(numPosRev, numTotalRev):
-    z = 1.96 #for confidence of 0.95
-    if numTotalRev == 0:
-        return 0
-    p_hat = 1.0 * numPosRev / numTotalRev
-    return(p_hat + z * z / (2 * numTotalRev) - z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * numTotalRev) / numTotalRev) / (1 + z * z / numTotalRev)))
 
 #
 #
@@ -96,6 +89,6 @@ def insertRecommendation(user, bus, rec):
 def build_recommendations():
 	#working_copy = get_rating_table_working_copy()
 	K = [1,5,10,15,20]
-	run_nmf_mult_k()
+	#run_nmf_mult_k()
 	#buildAverageRatings()
 	

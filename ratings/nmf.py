@@ -11,11 +11,11 @@ from data_import.views import user_rating_threshold
 from data_import.views import bus_rating_threshold
 
 import time
+from ratings.normalization import getNormFactors
 
 sys.path.append(settings.CLIB_DIR)
 import fastnmf
 
-OFFSET=-2
 
 def get_folds(allRatings):
     folds = [[],[],[],[],[]]
@@ -77,7 +77,8 @@ def run_nmf_mult_k(K,Steps,Alpha):
     allRatMatrix = []
     print("Moving data to an array...")
     for r in allRatings:
-        allRatMatrix.append([r.username.id-1, r.business.id-1, (r.rating + OFFSET)])
+        NormFactor = getNormFactors(r.username.id, r.business.id)
+        allRatMatrix.append([r.username.id-1, r.business.id-1, (r.rating - NormFactor)])
     print("Generating Folds...");
     folds = get_folds(allRatMatrix)
     print("Fold Generation Complete...")
@@ -105,8 +106,10 @@ def run_nmf_mult_k(K,Steps,Alpha):
             for r in inFold:
                 uid = r[0] - 1
                 bid = r[1] - 1
-                r[2] = r[2] - OFFSET
-                prediction = numpy.dot(nP[uid],nQ[bid]) - OFFSET
+                
+                NormFactor = getNormFactors(uid, bid)
+                r[2] = r[2] + NormFactor
+                prediction = numpy.dot(nP[uid],nQ[bid]) + NormFactor
                 
                 roundR = round(r[2])
                 roundP = round(prediction)
