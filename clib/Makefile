@@ -26,7 +26,6 @@ fastnmf.so: fastnmf.o
 
 fastnmf.so: fastnmf.o
 	g++  -shared -O3 -dynamic  \
->>>>>>> probably should be excluded?
 	fastnmf.o -L$(BOOST_LIB) -lboost_python \
 	-L/usr/lib/python2.7/config -lpython2.7 \
 	-o fastnmf.so

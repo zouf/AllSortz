@@ -15,6 +15,8 @@ import time
 sys.path.append(settings.CLIB_DIR)
 import fastnmf
 
+OFFSET=-2
+
 def get_folds(allRatings):
     folds = [[],[],[],[],[]]
     numRatings = len(allRatings)
@@ -75,7 +77,7 @@ def run_nmf_mult_k(K,Steps,Alpha):
     allRatMatrix = []
     print("Moving data to an array...")
     for r in allRatings:
-        allRatMatrix.append([r.username.id-1, r.business.id-1, r.rating])
+        allRatMatrix.append([r.username.id-1, r.business.id-1, (r.rating + OFFSET)])
     print("Generating Folds...");
     folds = get_folds(allRatMatrix)
     print("Fold Generation Complete...")
@@ -104,7 +106,8 @@ def run_nmf_mult_k(K,Steps,Alpha):
                 uid = r[0] - 1
                 bid = r[1] - 1
 
-                prediction = numpy.dot(nP[uid],nQ[bid])
+                r[2] = r[2] - OFFSET
+                prediction = numpy.dot(nP[uid],nQ[bid]) - OFFSET
                 
                 roundR = round(r[2])
                 roundP = round(prediction)
