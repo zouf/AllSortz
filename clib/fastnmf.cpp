@@ -7,8 +7,8 @@
 #include <pthread.h>
 #include "fastnmf.h"
 
-
-//#define DEBUG
+#undef DEBUG
+#define DEBUG
 
 
 struct args_t
