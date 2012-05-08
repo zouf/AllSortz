@@ -78,7 +78,11 @@ def run_nmf_mult_k(K,Steps,Alpha):
     print("Moving data to an array...")
     for r in allRatings:
 <<<<<<< HEAD
+<<<<<<< HEAD
         allRatMatrix.append([r.username.id-1, r.business.id-1, r.rating] + OFFSET)
+=======
+        allRatMatrix.append([r.username.id-1, r.business.id-1, (r.rating + OFFSET)])
+>>>>>>> ff0597e87bde90e78c9842c41db8183581411643
 =======
         allRatMatrix.append([r.username.id-1, r.business.id-1, (r.rating + OFFSET)])
 >>>>>>> ff0597e87bde90e78c9842c41db8183581411643
@@ -113,6 +117,9 @@ def run_nmf_mult_k(K,Steps,Alpha):
                 
 =======
 
+<<<<<<< HEAD
+>>>>>>> ff0597e87bde90e78c9842c41db8183581411643
+=======
 >>>>>>> ff0597e87bde90e78c9842c41db8183581411643
                 r[2] = r[2] - OFFSET
                 prediction = numpy.dot(nP[uid],nQ[bid]) - OFFSET
