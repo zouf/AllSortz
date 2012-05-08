@@ -6,14 +6,16 @@ Created on Apr 30, 2012
 from django.conf import settings
 from pprint import pprint 
 from django.db import transaction
+from django.db.models.aggregates import Count
 from ratings.models import Business, Rating, User, Keyword, Grouping
 from ratings.populate import create_business, create_rating, create_user, \
     create_grouping, clear_all_tables, create_category, create_grouping
 import simplejson as json
 
-bus_rating_threshold = 150
-user_rating_threshold = 750
+bus_rating_threshold = 100
+user_rating_threshold = 10
 average_total_rating = 0
+
 
 
 def read_dataset():
@@ -98,7 +100,7 @@ def read_dataset():
    
     Business.objects.bulk_create(businesses)
     c=0
-    
+   
     print("Users and businesses read");
     ratings = []
     for o in objs:
@@ -135,4 +137,13 @@ def read_dataset():
 
     
     transaction.commit();
-    
+   
+    # All the ratings are in the DB at this point, out of laziness we now
+    # go through again and delete any user that doesn't have enough reviews
+    # for the businesses that actually got added
+    usrs = Users.objects.all()
+    for u in usrs:
+      c = Rating.objects.filter(username=u.id).aggregate(Count('username'))
+      if c < user_rating_threshold:
+        u.delete()
+
