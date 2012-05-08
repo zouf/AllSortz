@@ -10,3 +10,7 @@ nighout/settings.py
 clib/boost_1_49_0
 *.o
 *.so
+
+docs/.DS_Store
+
+.DS_Store
