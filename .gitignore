@@ -14,3 +14,5 @@ clib/boost_1_49_0
 docs/.DS_Store
 
 .DS_Store
+
+clib/Makefile
