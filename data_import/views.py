@@ -12,10 +12,8 @@ from ratings.populate import create_business, create_rating, create_user, \
     create_grouping, clear_all_tables, create_category, create_grouping
 import simplejson as json
 
-bus_rating_threshold = 100
+bus_rating_threshold = 50
 user_rating_threshold = 10
-average_total_rating = 0
-
 
 
 def read_dataset():
@@ -134,16 +132,37 @@ def read_dataset():
             g = create_grouping(cat_name_to_obj[cat_name],b)
             create_grouping_list.append(g)
     Grouping.objects.bulk_create(create_grouping_list)
-
-    
     transaction.commit();
-   
+    pare_dataset()
+
+
+def pare_dataset():
     # All the ratings are in the DB at this point, out of laziness we now
     # go through again and delete any user that doesn't have enough reviews
     # for the businesses that actually got added
-    usrs = Users.objects.all()
-    for u in usrs:
-      c = Rating.objects.filter(username=u.id).aggregate(Count('username'))
-      if c < user_rating_threshold:
-        u.delete()
+  print("Ratings before - "+str(Rating.objects.count()))
+
+  numRatings = Rating.objects.count()
+  numUsers  = User.objects.count()
+  numBusinesses = Business.objects.count()
+  print("Average ratings/user = " + str(numRatings/numUsers) + " avg rat / bus is " + str(numRatings / numBusinesses))   
+
+  usrs = User.objects.all()
+  for u in usrs:
+    c = Rating.objects.filter(username=u.id).aggregate(Count('rating'))
+    if c['rating__count'] < user_rating_threshold:
+      Rating.objects.filter(username=u.id).delete()
+      u.delete()
+  print("Ratings after user delete - "+str(Rating.objects.count()))
+  businesses = Business.objects.all()
+  for b in businesses:
+    c = Rating.objects.filter(business=b.id).aggregate(Count('rating'))
+    if c['rating__count'] < bus_rating_threshold:
+      Rating.objects.filter(business=b.id).delete()
+      b.delete()
+      #c.delete()
+  
+
+  
+  print("Ratings after bus delete - "+str(Rating.objects.count()))
 

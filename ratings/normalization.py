@@ -22,7 +22,10 @@ def buildAverageRatings():
         ratingFilter = Rating.objects.filter(business=bus).aggregate(Sum('rating'), Count('rating'))
         sumRating = ratingFilter['rating__sum']
         countRating = ratingFilter['rating__count']
-        avg = ci_lowerbound(sumRating, countRating)
+        if countRating == 0:
+          avg = 0
+        else:
+          avg = sumRating / countRating #ci_lowerbound(sumRating,countRating)
         b = Business.objects.get( id=bus.id)
         b.average_rating = avg
         b.save()
@@ -31,7 +34,10 @@ def buildAverageRatings():
         ratingFilter = Rating.objects.filter(username=user).aggregate(Sum('rating'), Count('rating'))
         sumRating = ratingFilter['rating__sum']
         countRating = ratingFilter['rating__count']
-        avg = ci_lowerbound(sumRating,countRating)
+        if countRating == 0:
+          avg = 0
+        else:
+          avg = sumRating / countRating #ci_lowerbound(sumRating,countRating)
         meta = UserMeta(average_rating=avg, user=user)
         usermeta.append(meta)
     UserMeta.objects.bulk_create(usermeta)
@@ -42,14 +48,15 @@ def getBusAvg(bid):
     return b.average_rating
 
 def getUserAvg(uid):
-    u = User.objects.get(id=uid)
+    u = UserMeta.objects.get(user=User.objects.get(id=uid))
     return u.average_rating
 
 def getNormFactors(uid,bid):
     glb = getGlobalAverage()
     usr = getUserAvg(uid)
     bus = getBusAvg(bid)
-    return (glb + usr + bus)
+    fct = (glb + usr + bus)
+    return(fct)
 
 def getGlobalAverage():
     res = Rating.objects.all().aggregate(Sum('rating'),Count('rating'))

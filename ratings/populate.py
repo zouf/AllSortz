@@ -107,8 +107,8 @@ def generate_nmf_test(numFactors, density):
     i = i + 1
     
 def create_user(username,uid):
-    u = User(username=("u"+str(uid)), first_name=(username.encode("utf8")))
-    u.set_password("test")
+    u = User(username=("u"+str(uid)), first_name=(username.encode("utf8")),password="")
+    #u.set_password("test")
     return u
     
 def create_category(name):

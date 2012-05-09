@@ -67,8 +67,7 @@ def find_categories_best_k(k):
 def init():
   read_dataset()
   
-def val_nmf(K,Steps):
-  Alpha = 0.004
+def val_nmf(K,Steps,Alpha):
   run_nmf_mult_k(K,Steps,Alpha)
 
 def nmf_specific_k(k,Steps):
@@ -85,7 +84,7 @@ def validate_production_data():
     K = [30]
     #Steps = 30000
     Steps = 1000
-    Alpha = 0.004
+    Alpha = 0.0003
     run_nmf_mult_k(K,Steps,Alpha)
 
 def simple_validate():
@@ -94,5 +93,5 @@ def simple_validate():
     print("here?")
     K = [1,3,6,9,12]
     Steps = 20000
-    Alpha = 0.0035
+    Alpha = 0.0004
     run_nmf_mult_k(K,Steps,Alpha)

@@ -76,9 +76,42 @@ def run_nmf_mult_k(K,Steps,Alpha):
     fp.flush()
     allRatMatrix = []
     print("Moving data to an array...")
+    
+    arrID2uid = dict()
+    arrID2bid = dict()
+    bid2arrID = dict()
+    uid2arrID = dict()
+    i =0
+    j = 0
     for r in allRatings:
         NormFactor = getNormFactors(r.username.id, r.business.id)
-        allRatMatrix.append([r.username.id-1, r.business.id-1, (r.rating - NormFactor)])
+
+        #Need to keep a mapping from the position in the 
+        # array to the actual business and user ID
+
+        #arr2...  keeps mapping of array position to actual IDs in database
+        #uid2 and bid2 keeps mapping of database IDs to the array IDS
+        #this is used to get the normalization factor and can be used
+        # later to get back recommendations
+        
+        bPos = 0
+        if r.business.id in bid2arrID:
+          bPos = bid2arrID[r.business.id]
+        else:
+          bPos = j
+          bid2arrID[r.business.id] = bPos
+          arrID2bid[j] = r.business.id
+          j += 1
+
+        uPos = 0
+        if r.username.id in uid2arrID:
+          uPos = uid2arrID[r.username.id]
+        else:
+          uPos = i
+          uid2arrID[r.username.id] = uPos
+          arrID2uid[i] = r.username.id
+          i += 1
+        allRatMatrix.append([uPos, bPos, (r.rating - NormFactor)])
     print("Generating Folds...");
     folds = get_folds(allRatMatrix)
     print("Fold Generation Complete...")
@@ -104,10 +137,10 @@ def run_nmf_mult_k(K,Steps,Alpha):
             distRounded = 0
             inFoldLen = len(inFold)
             for r in inFold:
-                uid = r[0] - 1
-                bid = r[1] - 1
-                
-                NormFactor = getNormFactors(uid, bid)
+                uid = r[0] 
+                bid = r[1] 
+               
+                NormFactor = getNormFactors(arrID2uid[uid], arrID2bid[bid])
                 r[2] = r[2] + NormFactor
                 prediction = numpy.dot(nP[uid],nQ[bid]) + NormFactor
                 
@@ -171,6 +204,10 @@ def run_nmf_internal(R,N,M, K, Steps, Alpha, fp):
     P=[]
     Q=[]    
     #run_nmf_c(list& ratings, int N, int M, int K, int p_Steps, double p_Alpha, list& p_P, list &p_Q)
+    print(N)
+    print(M)
+    print(K)
+    print(R)
     fastnmf.run_nmf_from_python(R,N,M,K, Steps, Alpha, P,Q)
     return P, Q
     #nR = numpy.dot(nP, nQ.T)

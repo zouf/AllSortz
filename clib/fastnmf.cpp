@@ -25,7 +25,8 @@ using namespace boost::python;
 static  int steps = 20000;
 static double alpha = 0;
 static double beta = 0.00001;
-static double threshold = 0.001;
+//static double beta = 0.002;
+double threshold = 0.1;
 static int K = 0;
 static int N = 0;
 static int M = 0;
@@ -103,7 +104,7 @@ void extractList(list & ratings)
 		list rating = extract<list>(ratings[i]);
 		r.uid = (int)extract<int>(rating[0]);
 		r.bid = (int)extract<int>(rating[1]);
-		r.rat = (uint8_t)extract<int>(rating[2]);
+		r.rat = (double)extract<double>(rating[2]);
 		allRatings.push_back(r);
 	}
 }
@@ -187,7 +188,7 @@ void run_nmf_c()
 		{
 			int uid = allRatings[r].uid;
 			int bid = allRatings[r].bid;
-			uint8_t rat = allRatings[r].rat;
+			double rat = allRatings[r].rat;
 			double eij = (double)rat - dot_prod(uid,bid);
 			//vector<std::future<void > > futures;
 //			pthread_t threads[K];
@@ -216,7 +217,7 @@ void run_nmf_c()
 
 			int uid = allRatings[r].uid;
 			int bid = allRatings[r].bid;
-			uint8_t rat = allRatings[r].rat;
+			double rat = allRatings[r].rat;
 			double eij = (double)rat - dot_prod(uid,bid);
 			e = e + eij*eij;
 			for(int k = 0; k < K; ++k)
@@ -227,7 +228,7 @@ void run_nmf_c()
     if(e > prev_e && prev_e != 0)
     {
       //alpha = alpha - 0.002;
-		  alpha = alpha * 0.95;
+		  alpha = alpha * 0.8;
       #ifdef DEBUG
       printf("Changing alpha to %lf\n",alpha);
       #endif
