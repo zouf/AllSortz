@@ -72,8 +72,7 @@ def val_nmf(K,Steps,Alpha):
 
 def nmf_specific_k(k,Steps):
   K=[k]
-  read_dataset()
-  Alpha = 0.004
+  Alpha = 0.003
   run_nmf_mult_k(K,Steps,Alpha)
 
 
@@ -83,8 +82,8 @@ def validate_production_data():
     #K = [2,5,10,15,20,25,30,35,40]
     K = [30]
     #Steps = 30000
-    Steps = 1000
-    Alpha = 0.0003
+    Steps =1500
+    Alpha = 0.1
     run_nmf_mult_k(K,Steps,Alpha)
 
 def simple_validate():
@@ -93,5 +92,5 @@ def simple_validate():
     print("here?")
     K = [1,3,6,9,12]
     Steps = 20000
-    Alpha = 0.0004
+    Alpha = 0.001
     run_nmf_mult_k(K,Steps,Alpha)

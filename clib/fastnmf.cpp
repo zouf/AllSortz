@@ -24,8 +24,8 @@ using namespace boost::python;
 
 static  int steps = 20000;
 static double alpha = 0;
-static double beta = 0.00001;
-//static double beta = 0.002;
+//static double beta = 0.00001;
+static double beta = 0.02;
 double threshold = 0.1;
 static int K = 0;
 static int N = 0;
@@ -46,7 +46,14 @@ inline double dot_prod(int uid, int bid)
 	double result = 0;
 	for(int i = 0; i < K; i++)
 	{
-		result += P[uid][i]*Q[bid][i];
+    double tmp = P[uid][i]*Q[bid][i];
+     if(tmp > 5.0)
+    {
+      tmp = 5.0;
+    }
+    else if (tmp < -5.0)
+      tmp = -5.0;
+		result += tmp;
 	}
 	return result;
 }
@@ -90,9 +97,9 @@ void * calc_p_q(void *param)
 	int bid = args->bid;
 	int k = args->k;
 	double eij = args->eij;
-	P[uid][k] = P[uid][k] + alpha * (2 * eij * Q[bid][k] - beta * P[uid][k]);
+	P[uid][k] = P[uid][k] + alpha * (eij * Q[bid][k] - beta * P[uid][k]);
 
-	Q[bid][k] = Q[bid][k] + alpha * (2 * eij * P[uid][k] - beta * Q[bid][k]);
+	Q[bid][k] = Q[bid][k] + alpha * (eij * P[uid][k] - beta * Q[bid][k]);
 }
 
 
@@ -104,8 +111,8 @@ void extractList(list & ratings)
 		list rating = extract<list>(ratings[i]);
 		r.uid = (int)extract<int>(rating[0]);
 		r.bid = (int)extract<int>(rating[1]);
-		r.rat = (double)extract<double>(rating[2]);
-		allRatings.push_back(r);
+		r.rat = (double)extract<float>(rating[2]);
+    allRatings.push_back(r);
 	}
 }
 
@@ -189,27 +196,14 @@ void run_nmf_c()
 			int uid = allRatings[r].uid;
 			int bid = allRatings[r].bid;
 			double rat = allRatings[r].rat;
-			double eij = (double)rat - dot_prod(uid,bid);
-			//vector<std::future<void > > futures;
-//			pthread_t threads[K];
+      double dp = dot_prod(uid,bid);
+			double eij = (double)rat - dp;
 			for(int k = 0; k < K; ++k)
-			{
-				args_t args;
-				args.uid = uid;
-				args.bid = bid;
-				args.k = k;
-				args.eij = eij;
-			  calc_p_q(&args);
-      //	int td = pthread_create(&threads[k], NULL, calc_p_q, (void*)&args);
-				//std::future calcTask = calc_p_q(int uid, int bid, int k, double eij);
-				//	futures.push_back(calcTask);
-				//printf("%lf\n",P[uid][k] );
-			}
-	//		for(int k = 0; k < K; ++k)
-		//	{
-			//	futures[k].get();
-			//	pthread_join(threads[k],NULL);
-		//	}
+      {
+        double uv = P[uid][k];
+        P[uid][k] +=  alpha * (eij * Q[bid][k] - beta * P[uid][k]);
+        Q[bid][k] +=  alpha * (eij * uv - beta * Q[bid][k]);
+      }
 		}
 		double e = 0;
 		for(int r = 0; r < numRatings; ++r)
@@ -228,9 +222,9 @@ void run_nmf_c()
     if(e > prev_e && prev_e != 0)
     {
       //alpha = alpha - 0.002;
-		  alpha = alpha * 0.8;
+		   //alpha = alpha * 0.95;
       #ifdef DEBUG
-      printf("Changing alpha to %lf\n",alpha);
+     // printf("Changing alpha to %lf\n",alpha);
       #endif
     }
     prev_e = e;

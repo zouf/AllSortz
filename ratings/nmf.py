@@ -1,7 +1,7 @@
 import math
 import random
-
 import numpy
+from numpy.ma.core import floor
 import sys
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -111,7 +111,8 @@ def run_nmf_mult_k(K,Steps,Alpha):
           uid2arrID[r.username.id] = uPos
           arrID2uid[i] = r.username.id
           i += 1
-        allRatMatrix.append([uPos, bPos, (r.rating - NormFactor)])
+        #print("Rating is " + str(r.rating) + " Norm factor is " + str(NormFactor))
+        allRatMatrix.append([uPos, bPos, float(r.rating - NormFactor)])
     print("Generating Folds...");
     folds = get_folds(allRatMatrix)
     print("Fold Generation Complete...")
@@ -188,7 +189,7 @@ def run_nmf_mult_k(K,Steps,Alpha):
         result_2 = str(sumRSSFloat/5)+ ", " + str(sumDistFloat/5) 
         fp.write(str(k) + ", " + result_1 + ", " + result_2 + '\n')
         fp.flush()
-        print("K="+str(k) + "Rounded: " + result_1 + " Float: " + result_2)
+        print("\n\n\nK="+str(k) + "Rounded: " + result_1 + " Float: " + result_2)
         
     fp.write("#TimeEnd = "+str(time.asctime())+'\n')
     pred_fp.flush()
@@ -203,11 +204,8 @@ def run_nmf_internal(R,N,M, K, Steps, Alpha, fp):
     #Q = numpy.random.rand(M,K)    
     P=[]
     Q=[]    
+    #print(R)
     #run_nmf_c(list& ratings, int N, int M, int K, int p_Steps, double p_Alpha, list& p_P, list &p_Q)
-    print(N)
-    print(M)
-    print(K)
-    print(R)
     fastnmf.run_nmf_from_python(R,N,M,K, Steps, Alpha, P,Q)
     return P, Q
     #nR = numpy.dot(nP, nQ.T)

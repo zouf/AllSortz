@@ -11,7 +11,7 @@ struct rating_t
 {
 	int uid;
 	int bid;
-	uint8_t rat;
+  double rat;
 };
 
 
