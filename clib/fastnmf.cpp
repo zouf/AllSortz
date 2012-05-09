@@ -105,7 +105,7 @@ void * calc_p_q(void *param)
 
 void extractList(list & ratings)
 {
-	for(int i = 0; i < len(ratings); ++i)
+  for(int i = 0; i < len(ratings); ++i)
 	{
 		rating_t r;
 		list rating = extract<list>(ratings[i]);

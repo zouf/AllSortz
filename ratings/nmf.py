@@ -83,6 +83,8 @@ def run_nmf_mult_k(K,Steps,Alpha):
     uid2arrID = dict()
     i =0
     j = 0
+    fp2 = open("/tmp/debug-ratings.txt","w")
+
     for r in allRatings:
         NormFactor = getNormFactors(r.username.id, r.business.id)
 
@@ -111,8 +113,12 @@ def run_nmf_mult_k(K,Steps,Alpha):
           uid2arrID[r.username.id] = uPos
           arrID2uid[i] = r.username.id
           i += 1
-        #print("Rating is " + str(r.rating) + " Norm factor is " + str(NormFactor))
+        fp2.write("Rating is " + str(r.rating) + " Norm factor is " + str(NormFactor)+ "\n")
+        
+
         allRatMatrix.append([uPos, bPos, float(r.rating - NormFactor)])
+    
+    fp2.close()
     print("Generating Folds...");
     folds = get_folds(allRatMatrix)
     print("Fold Generation Complete...")
@@ -198,13 +204,13 @@ def run_nmf_mult_k(K,Steps,Alpha):
     pred_fp.close()
   
 
-
 def run_nmf_internal(R,N,M, K, Steps, Alpha, fp):
     # P = numpy.random.rand(N,K)
     #Q = numpy.random.rand(M,K)    
     P=[]
     Q=[]    
     #print(R)
+          
     #run_nmf_c(list& ratings, int N, int M, int K, int p_Steps, double p_Alpha, list& p_P, list &p_Q)
     fastnmf.run_nmf_from_python(R,N,M,K, Steps, Alpha, P,Q)
     return P, Q

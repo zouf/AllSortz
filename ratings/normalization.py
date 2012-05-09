@@ -23,7 +23,7 @@ def calcStdev():
     
     stdevAllRat = std(bList)
     stdevURat = std(uList)
-    return float(stdevAllRat**2)/float(stdevURat**2)
+    return float(stdevURat**2)/float(stdevAllRat**2)
                        
                        
 #from http://www.evanmiller.org/how-not-to-sort-by-average-rating.html
@@ -75,7 +75,7 @@ def getBusAvg(bid):
     sumRating = ratingFilter['rating__sum']
     countRating = ratingFilter['rating__count']
     avg = 0
-    K = 25
+    K = 5#calcStdev()
     if countRating != 0:
       glb = getGlobalAverage()
       avg = (glb * K + float(sumRating)) / (K + float(countRating)) #ci_lowerbound(sumRating,countRating)
@@ -88,15 +88,16 @@ def getUserAvg(uid):
     sumRating = ratingFilter['rating__sum']
     countRating = ratingFilter['rating__count']
     avg = 0
-    K = 25
+    K = 5#calcStdev()
     if countRating != 0:
       glb = getGlobalAverage()
-      avg = (glb * K + float(sumRating)) / (K + float(countRating)) #ci_lowerbound(sumRating,countRating)
+      avg = (float(glb * K) + float(sumRating)) / (float(K) + float(countRating)) #ci_lowerbound(sumRating,countRating)
     return avg
     #u = UserMeta.objects.get(user=User.objects.get(id=uid))
     #return u.average_rating
 
 def getNormFactors(uid,bid):
+    return(0)
     glb = getGlobalAverage()
     usr = getUserAvg(uid)
     bus = getBusAvg(bid)
