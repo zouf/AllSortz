@@ -97,7 +97,6 @@ def getUserAvg(uid):
     #return u.average_rating
 
 def getNormFactors(uid,bid):
-    return(0)
     glb = getGlobalAverage()
     usr = getUserAvg(uid)
     bus = getBusAvg(bid)

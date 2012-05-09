@@ -32,12 +32,18 @@ def get_folds(allRatings):
         folds[ind].append(allRatings.pop())
     return(folds)
     
-def get_outfold_data(folds,thisFold):
-    outFold = []
+def get_outfold_data(folds,thisFold,fp):
+    outFoldDat = []
     for f in range(0,5):
         if f != thisFold:
-            outFold = outFold + folds[f]
-    return outFold
+            for s in folds[f]:
+              fp.write(str(s)+"\n")
+              outFoldDat.append(s)
+  
+    fp.write("verify....\n\n\n\n\n\n\n\n")
+    for v in outFoldDat:
+      fp.write(str(v)+"\n")
+    return outFoldDat
 
 def get_p_q_best(k, steps, alpha):
     N = User.objects.count()
@@ -113,14 +119,16 @@ def run_nmf_mult_k(K,Steps,Alpha):
           uid2arrID[r.username.id] = uPos
           arrID2uid[i] = r.username.id
           i += 1
-        fp2.write("Rating is " + str(r.rating) + " Norm factor is " + str(NormFactor)+ "\n")
+#        fp2.write("Rating is " + str(r.rating) + " after normalization " +  str(float(r.rating - NormFactor))+ "\n")
         
 
         allRatMatrix.append([uPos, bPos, float(r.rating - NormFactor)])
     
-    fp2.close()
     print("Generating Folds...");
     folds = get_folds(allRatMatrix)
+    for f in folds:
+      for s in f:
+        fp2.write(str(s[0]) + " " + str(s[1]) + " " + str(s[2]) +"\n")
     print("Fold Generation Complete...")
     for k in K:
         print("Running on K="+str(k)+" Starting at time= "+ time.asctime())
@@ -130,10 +138,23 @@ def run_nmf_mult_k(K,Steps,Alpha):
         sumRSSFloat = 0.0
         ctr = 0
         for f in range(0,5):    
-            outFold = get_outfold_data(folds, f)
+            fp2.write("F="+str(f) + "-----------------------------\n\n\n\n\n\n\n\n\n\n")
+            #outFold = get_outfold_data(folds, f, fp2)
+            outFold = []
+            for iterF in range(0,5):
+              if iterF != f:
+                for subelement in folds[iterF]:
+                  outFold.append(subelement)
+            for v in outFold:
+              fp2.write(str(v)+"\n")
+
+
+            
             inFold = folds[f]
+
             time_before = time.clock()
-            nP, nQ = run_nmf_internal(outFold,N,M,k, Steps, Alpha, fp=fp)
+            nP, nQ = run_nmf_internal(outFold,N,M,k, Steps, Alpha, fp=fp2)
+            del outFold
             elapsed = time.clock() - time_before;
             print("\tK="+str(k)+" Fold=" +str(f)+" TimeElapsed="+ str(elapsed/60) + " minutes")
             
@@ -201,6 +222,7 @@ def run_nmf_mult_k(K,Steps,Alpha):
     pred_fp.flush()
     fp.flush()
     fp.close()
+    fp2.close()
     pred_fp.close()
   
 
@@ -209,8 +231,9 @@ def run_nmf_internal(R,N,M, K, Steps, Alpha, fp):
     #Q = numpy.random.rand(M,K)    
     P=[]
     Q=[]    
+#    for r in R:
+#      fp.write(str(r[2])+"\n")
     #print(R)
-          
     #run_nmf_c(list& ratings, int N, int M, int K, int p_Steps, double p_Alpha, list& p_P, list &p_Q)
     fastnmf.run_nmf_from_python(R,N,M,K, Steps, Alpha, P,Q)
     return P, Q
