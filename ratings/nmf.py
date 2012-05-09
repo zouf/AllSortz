@@ -1,5 +1,6 @@
 import math
 import random
+import copy
 import numpy
 from numpy.ma.core import floor
 import sys
@@ -126,9 +127,9 @@ def run_nmf_mult_k(K,Steps,Alpha):
     
     print("Generating Folds...");
     folds = get_folds(allRatMatrix)
-    for f in folds:
-      for s in f:
-        fp2.write(str(s[0]) + " " + str(s[1]) + " " + str(s[2]) +"\n")
+   # for f in folds:
+   #   for s in f:
+   #     fp2.write(str(s[0]) + " " + str(s[1]) + " " + str(s[2]) +"\n")
     print("Fold Generation Complete...")
     for k in K:
         print("Running on K="+str(k)+" Starting at time= "+ time.asctime())
@@ -138,19 +139,15 @@ def run_nmf_mult_k(K,Steps,Alpha):
         sumRSSFloat = 0.0
         ctr = 0
         for f in range(0,5):    
-            fp2.write("F="+str(f) + "-----------------------------\n\n\n\n\n\n\n\n\n\n")
+            #fp2.write("F="+str(f) + "-----------------------------\n\n\n\n\n\n\n\n\n\n")
             #outFold = get_outfold_data(folds, f, fp2)
             outFold = []
             for iterF in range(0,5):
               if iterF != f:
                 for subelement in folds[iterF]:
-                  outFold.append(subelement)
-            for v in outFold:
-              fp2.write(str(v)+"\n")
-
-
+                  outFold.append((subelement))
             
-            inFold = folds[f]
+            inFold = copy.deepcopy(folds[f])
 
             time_before = time.clock()
             nP, nQ = run_nmf_internal(outFold,N,M,k, Steps, Alpha, fp=fp2)
