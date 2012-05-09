@@ -67,7 +67,8 @@ def find_categories_best_k(k):
 def init():
   read_dataset()
   
-def val_nmf(K,Steps,Alpha):
+def val_nmf(K,Steps):
+  Alpha=0.1
   run_nmf_mult_k(K,Steps,Alpha)
 
 def nmf_specific_k(k,Steps):
