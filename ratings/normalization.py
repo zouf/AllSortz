@@ -5,9 +5,27 @@ Created on May 8, 2012
 '''
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Sum, Count
+from numpy.ma.core import std
 from ratings.models import Business, Rating, UserMeta
 import math
+import numpy
 
+def calcStdev():
+    businesses = Business.objects.all()
+    bList = []
+    for b in businesses:
+        bList.append(b.average_rating)
+
+    users = UserMeta.objects.all()
+    uList = []
+    for u in users:
+        uList.append(u.average_rating)
+    
+    stdevAllRat = std(bList)
+    stdevURat = std(uList)
+    return float(stdevAllRat**2)/float(stdevURat**2)
+                       
+                       
 #from http://www.evanmiller.org/how-not-to-sort-by-average-rating.html
 def ci_lowerbound(numPosRev, numTotalRev):
     z = 1.96 #for confidence of 0.95
