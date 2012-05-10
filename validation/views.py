@@ -34,28 +34,38 @@ def find_categories_best_k(k):
     Alpha = 0.05
     #arrID2... are maps from the array indicies to the business and user id
     P, Q, arrID2bid, arrID2uid= get_p_q_best(k, Steps, Alpha)
-    print(arrID2bid)
     zipQ = zip(*Q)
     latentNum = 0
     for l in zipQ: #{
       maxVal = max(l)
-      cutOff = 0.8 * maxVal
-      #print "  Cutoff is: " + str(cutOff)
+      cutOff = 0.5 * maxVal
+      print "  Cutoff is: " + str(cutOff)
 
       relevantBus = []
       for i in xrange(0, len(l)):
         if l[i] > cutOff:
           # this business is relevant to this latent variable
           # save the id (index is id-1) to use in db look up later
-          relevantBus.append(arrID2bid[i]) 
+          for elemI in xrange(0, len(relevantBus)):
+            if relevantBus[elemI][1] < l[i]:
+              relevantBus.insert(elemI, [arrID2bid[i],l[i]]) 
+          if len(relevantBus) == 0:
+            relevantBus.append([arrID2bid[i],l[i]])
       
       
-      
+      otherList =[]
+      for r in relevantBus:
+        print(r[1])
+        otherList.append(r[0])
+      print("\n")
+      print("\n")
+      print("\n")
+
       #print "    " + str(len(relevantBus)) + " businesses past cutoff"
       # For this latent variable, we now have all businesses IDs,
       # print out all of the labels associated with these businesses
       fp = open(settings.RESULTS_DIR + "latent_" + str(latentNum), 'w')
-      buses = Business.objects.filter(pk__in=relevantBus)
+      buses = Business.objects.filter(pk__in=otherList)
       for b in buses:
         keywords = b.keywords.all()
         #print "      " + str(len(keywords)) + " keywords for business"

@@ -8,7 +8,7 @@
 #include "fastnmf.h"
 
 #undef DEBUG
-#define DEBUG
+//#define DEBUG
 
 
 struct args_t
