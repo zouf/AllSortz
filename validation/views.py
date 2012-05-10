@@ -31,30 +31,37 @@ def build_pred_server():
 
 def find_categories_best_k(k):
     Steps = 1000
-    Alpha = 0.004
-    P, Q = get_p_q_best(k, Steps, Alpha)
+    Alpha = 0.05
+    #arrID2... are maps from the array indicies to the business and user id
+    P, Q, arrID2bid, arrID2uid= get_p_q_best(k, Steps, Alpha)
+    print(arrID2bid)
     zipQ = zip(*Q)
     latentNum = 0
     for l in zipQ: #{
       maxVal = max(l)
       cutOff = 0.8 * maxVal
-      print "  Cutoff is: " + str(cutOff)
+      #print "  Cutoff is: " + str(cutOff)
 
       relevantBus = []
       for i in xrange(0, len(l)):
         if l[i] > cutOff:
           # this business is relevant to this latent variable
           # save the id (index is id-1) to use in db look up later
-          relevantBus.append(i+1) 
+          relevantBus.append(arrID2bid[i]) 
       
-      print "    " + str(len(relevantBus)) + " businesses past cutoff"
+      
+      
+      #print "    " + str(len(relevantBus)) + " businesses past cutoff"
       # For this latent variable, we now have all businesses IDs,
       # print out all of the labels associated with these businesses
       fp = open(settings.RESULTS_DIR + "latent_" + str(latentNum), 'w')
       buses = Business.objects.filter(pk__in=relevantBus)
       for b in buses:
         keywords = b.keywords.all()
-        print "      " + str(len(keywords)) + " keywords for business"
+        #print "      " + str(len(keywords)) + " keywords for business"
+        nm = b.name
+        fp.write(nm.encode("utf8")+"\n")
+        fp.write(b.address.encode("utf8")+"\n")
         for k in keywords:
           fp.write(str(k) + "\n")
         fp.write("\n")
@@ -68,7 +75,7 @@ def init():
   read_dataset()
   
 def val_nmf(K,Steps):
-  Alpha=0.1
+  Alpha=0.05
   run_nmf_mult_k(K,Steps,Alpha)
 
 def nmf_specific_k(k,Steps):

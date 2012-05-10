@@ -52,12 +52,54 @@ def get_p_q_best(k, steps, alpha):
     print("Get ratings from DB")
     allRatings = Rating.objects.all()
     print("Moving data to an array...")
-    allRatMatrix = []
-    for r in allRatings:
-        allRatMatrix.append([r.username.id-1, r.business.id-1, r.rating])
+    allRatMatrix, bid2arrID, uid2arrID, arrID2bid, arrID2uid = getAllRatMatrix(allRatings)
     nP, nQ = run_nmf_internal(allRatMatrix,N,M,k,steps,alpha,0)
-    return nP, nQ
+    return nP, nQ, arrID2bid, arrID2uid
 
+
+def getAllRatMatrix(allRatings):
+  arrID2uid = dict()
+  arrID2bid = dict()
+  bid2arrID = dict()
+  uid2arrID = dict()
+  allRatMatrix = []
+  i = 0
+  j = 0
+  for r in allRatings:
+    NormFactor = getNormFactors(r.username.id, r.business.id)
+
+    #Need to keep a mapping from the position in the 
+    # array to the actual business and user ID
+
+    #arr2...  keeps mapping of array position to actual IDs in database
+    #uid2 and bid2 keeps mapping of database IDs to the array IDS
+    #this is used to get the normalization factor and can be used
+    # later to get back recommendations
+    
+    bPos = 0
+    if r.business.id in bid2arrID:
+      bPos = bid2arrID[r.business.id]
+    else:
+          bPos = j
+          bid2arrID[r.business.id] = bPos
+          arrID2bid[j] = r.business.id
+          j += 1
+
+        uPos = 0
+        if r.username.id in uid2arrID:
+          uPos = uid2arrID[r.username.id]
+        else:
+          uPos = i
+          uid2arrID[r.username.id] = uPos
+          arrID2uid[i] = r.username.id
+          i += 1
+#        fp2.write("Rating is " + str(r.rating) + " after normalization " +  str(float(r.rating - NormFactor))+ "\n")
+        
+
+        allRatMatrix.append([uPos, bPos, float(r.rating - NormFactor)])
+      return allRatMatrix, bid2arrID, uid2arrID, arrID2bid, arrID2uid
+    
+ 
 
 def run_nmf_mult_k(K,Steps,Alpha):
     N = User.objects.count()
@@ -81,50 +123,9 @@ def run_nmf_mult_k(K,Steps,Alpha):
     fp.write('#\n')
     fp.write('#K, AvgRSSRounded, AvgDistRounded, AvgRSSFloat, AvgDistFloat\n')
     fp.flush()
-    allRatMatrix = []
     print("Moving data to an array...")
-    
-    arrID2uid = dict()
-    arrID2bid = dict()
-    bid2arrID = dict()
-    uid2arrID = dict()
-    i =0
-    j = 0
     fp2 = open("/tmp/debug-ratings.txt","w")
-
-    for r in allRatings:
-        NormFactor = getNormFactors(r.username.id, r.business.id)
-
-        #Need to keep a mapping from the position in the 
-        # array to the actual business and user ID
-
-        #arr2...  keeps mapping of array position to actual IDs in database
-        #uid2 and bid2 keeps mapping of database IDs to the array IDS
-        #this is used to get the normalization factor and can be used
-        # later to get back recommendations
-        
-        bPos = 0
-        if r.business.id in bid2arrID:
-          bPos = bid2arrID[r.business.id]
-        else:
-          bPos = j
-          bid2arrID[r.business.id] = bPos
-          arrID2bid[j] = r.business.id
-          j += 1
-
-        uPos = 0
-        if r.username.id in uid2arrID:
-          uPos = uid2arrID[r.username.id]
-        else:
-          uPos = i
-          uid2arrID[r.username.id] = uPos
-          arrID2uid[i] = r.username.id
-          i += 1
-#        fp2.write("Rating is " + str(r.rating) + " after normalization " +  str(float(r.rating - NormFactor))+ "\n")
-        
-
-        allRatMatrix.append([uPos, bPos, float(r.rating - NormFactor)])
-    
+    allRatMatrix, bid2arrID, uid2arrID, arrID2bid, arrID2uid = getAllRatMatrix(allRatings)
     print("Generating Folds...");
     folds = get_folds(allRatMatrix)
    # for f in folds:
