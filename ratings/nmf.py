@@ -53,7 +53,10 @@ def get_p_q_best(k, steps, alpha):
     allRatings = Rating.objects.all()
     print("Moving data to an array...")
     allRatMatrix, bid2arrID, uid2arrID, arrID2bid, arrID2uid = getAllRatMatrix(allRatings)
+    print(len(allRatMatrix))
+    print("Running nmf...")
     nP, nQ = run_nmf_internal(allRatMatrix,N,M,k,steps,alpha,0)
+    print(len(nQ))
     return nP, nQ, arrID2bid, arrID2uid
 
 
@@ -65,7 +68,11 @@ def getAllRatMatrix(allRatings):
       allRatMatrix = []
       i = 0
       j = 0
+      c = 0
       for r in allRatings:
+            if c % 100 == 0:
+              print(c)
+            c+=1
             NormFactor = getNormFactors(r.username.id, r.business.id)
         
             #Need to keep a mapping from the position in the 
