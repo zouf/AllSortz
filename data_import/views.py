@@ -13,8 +13,8 @@ from ratings.populate import create_business, create_rating, create_user, \
 from ratings.normalization import buildAverageRatings
 import simplejson as json
 
-bus_rating_threshold = 50
-user_rating_threshold = 10
+bus_rating_threshold = 100
+user_rating_threshold = 30
 
 
 def read_dataset():
