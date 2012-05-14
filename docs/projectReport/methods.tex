@@ -35,29 +35,29 @@ The goal of SVD is that the given matrix $M$ should be decomposed into
 matrices $P$ and $Q$ such that $P \times Q \approx M $. This means that if
 matrix $M$ has dimensions $u \times b$, $P$ should be $u \times K$ and $Q$
 should be $k \times b$. We know that $b$ and $u$ should be the number and
-businesses and users respectively, but what is $K$? In NMF $K$ corresponds to
+businesses and users respectively, but what is $K$? In SVD $K$ corresponds to
 the number of \emph{latent factors} we believe determine the relationship
 between users and businesses.
 
-The only input to the NMF algorithm is a matrix $M$ of size $b \times u$ and the
-integer $K$. The output of NMF is then matrices $P$ and $Q$. $P$ contains a
+The only input to the SVD algorithm is a matrix $M$ of size $b \times u$ and the
+integer $K$. The output of SVD is then matrices $P$ and $Q$. $P$ contains a
 relationship between every user and every latent factor. Similarly $Q$ describes
 relationships between businesses and latent factors. These relationships aren't
 on the same scale as the input ratings of $M$, if everything worked correctly
 they should be smaller. They are relative however. A value of $.9$ between a
 user and a factor suggests that that user has a stronger relationship to the
 factor than a value of $.4$. Because $P \times Q$ is an approximation for $M$,
-$P_u \cdot Q_b$ approximates a rating for user $u$ on business $b$
+$P_u \cdot Q_b$ approximates a rating for user $u$ on business $b$. This is
+referred to as Standard SVD~\cite{netflix paper}.
 
-The equation for calculating NMF unfortunately doesn't have a closed form, so we
-need to use an iterative gradient descent approach to discover good values for
-$P$ and $Q$. This means that we initialize $P$ and $Q$ to some values, and then
-calculate the distance from $P \times Q$ to $M$. We then move the values in $P$
-and $Q$ in the correct direction to decrease the distance between $P \times Q$
-and $M$. This means that the value of $P \times Q$ should move closer to $M$
-with each iteration. At the end of each iteration we measure the difference
-between the previous distance and the current one. When we make a small enough
-change the algorithm terminates.
+SVD is calculated using an iterative gradient descent approach to discover good
+values for $P$ and $Q$. This means that we initialize $P$ and $Q$ to some
+values, and then calculate the distance from $P \times Q$ to $M$. We then move
+the values in $P$ and $Q$ in the correct direction to decrease the distance
+between $P \times Q$ and $M$. This means that the value of $P \times Q$ should
+move closer to $M$ with each iteration. At the end of each iteration we measure
+the difference between the previous distance and the current one. When we make
+a small enough change the algorithm terminates.
 
 Our goal in each iteration is given some $P$ and $Q$, for every $i$ and $j$ for
 which there exists a rating $M_{ij}$ and for every latent variable $k$ from
@@ -66,28 +66,58 @@ following equations
 
 \[
 \begin{array}{c}
-P'_{ik}=P_{ik} + \alpha(2E_{ij}Q_{kj}-\beta P_{ik}) \\
-Q'_{kj}=Q_{kj} + \alpha(2E_{ij}P_{ik}-\beta Q_{kj})
+P'_{ik}=P_{ik} + \alpha(E_{ij}Q_{kj}-\beta P_{ik}) \\
+Q'_{kj}=Q_{kj} + \alpha(E_{ij}P_{ik}-\beta Q_{kj})
 \end{array}
 \]
 
 \noindent where $E$ is the error between $P \times Q$ and the actual value. What
 we are doing here is modifying each user and business association in a direction
 that improves the distance between $M$ and $P \times Q$. The term multiplied by
-$\beta$ is the normalization term. This term keeps the values from changing too
+$\beta$ is the regularization term. This term keeps the values from changing too
 quickly relative to how large they already are. This restricts values in $P$ and
 $Q$ from growing too large to avoid overfitting the data.
 
-%%regularization here
-
 You can see that each iteration is controlled by two additional parameters.
-$\alpha$ scales the amount that we increase or decrease the values in $P$ and $Q$. A larger $\alpha$
-can lead to faster convergence, but if $\alpha$ gets too big, it is possible that
-we will greatly overshoot the answer and simply oscillate around it without ever
-reaching convergence, or just reach convergence much slower than we would with a
-more appropriate value for $\alpha$. We also use $\beta$ to control the effect
-of our normalization term. A larger $\beta$ will decrease the chance of
-overfitting but make convergence slower.
+$\alpha$ scales the amount that we increase or decrease the values in $P$ and
+$Q$. A larger $\alpha$ can lead to faster convergence, but if $\alpha$ gets too
+big, it is possible that we will greatly overshoot the answer and simply
+oscillate around it without ever reaching convergence, or just reach
+convergence much slower than we would with a more appropriate value for
+$\alpha$. We also use $\beta$ to control the effect of our regularization term.
+A larger $\beta$ will decrease the chance of overfitting but make convergence
+slower.
+
+\subsubsection{Normalization}
+
+Our ratings data comes from a 5-star, which everyone can treat slightly
+differently.  For example, perhaps some users are particularly harsh and rarely
+give out 5-star ratings, or others are particularly kind and rarely give any
+business less than 3-stars. To account for this we normalize our data by
+considering each rating to be composed of four factors.
+
+\begin{description}
+
+  \item[Global Baseline] This is the global average of all ratings on the site
+and serves as a baseline for all ratings.
+
+  \item[User Specific] This is the different between the global average and
+this users average, and serves to account for the users particular bias.
+
+  \item[Business Specific] Same as \bf{User Specific}, but for the business
+
+  \item[User-Business Interaction] This is the specific interaction between this
+user and this business. This is the term that we try to identify through SVD. 
+
+\end{description}
+
+By attempting to identify specifically the User-Business Interaction, we remove
+the bias in the system, with the users, and with the businesses to more
+accurately predict the user's rating of the business. 
+
+
+\subsubsection{Capping}
+
 
 \subsection{Framework}
 
@@ -119,19 +149,12 @@ C++. To do this we used the Boost library to compile C++ code into a python
 plugin. Once this was done we could call our C++ code as if it were python code.
 This gave a significant speedup and got us to the point where we could execute
 tests in a reasonable amount of time. To improve the speed of tests even more we
-implemented task-level paralellism, allowing us to run tests for different
+implemented task-level parallelism, allowing us to run tests for different
 values of $K$ simultaneously.
 
 The dataset presented some challenges as well. The first challenge we dealt with
 is that some users and businesses had a very limited number of reviews. Users
 and Business with only a single review don't add any information to the
 algorithm, so we removed those. We also added a method for removing users and
-buinesses with fewer than an arbitrary number of reviews. The effect of this is
+businesses with fewer than an arbitrary number of reviews. The effect of this is
 shown in the results section.
-
-The next challenge presented by the dataset is that the reviews use a five-star
-rating system. There is rarely much consistency between users on exactly how to
-use such a system, so we needed to \emph{normalize global effects}. This helps
-to deal with any biases that tend to develop around certain users and
-businesses. 
-
