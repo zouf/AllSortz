@@ -10,17 +10,17 @@ import numpy
 def build_pred_server():
     k=30
     Steps = 1000
-    Alpha = 0.004
-    P, Q = get_p_q_best(k, Steps, Alpha)
+    Alpha = 0.5
+    P, Q, arrID2bid, arrID2uid = get_p_q_best(k, Steps, Alpha)
     Predictions = numpy.dot(P,numpy.transpose(Q))
-    i = 1
+    i = 0
     predictions = []
     for row in Predictions:
         print(len(row))
-        j = 1
-        bus = Business.objects.get(id=j)
+        j = 0
+        bus = Business.objects.get(id=arrID2bid[j])
         for cell in row:
-            usr = User.objects.get(id=i)
+            usr = User.objects.get(id=arrID2uid[i])
             p = Recommendation(business=bus,recommendation=cell,username=usr)
             predictions.append(p)
             j+=1
@@ -88,11 +88,11 @@ def val_nmf(K,Steps):
   Alpha=0.05
   run_nmf_mult_k(K,Steps,Alpha)
 
-def nmf_specific_k(k,Steps):
-  K=[k]
-  Steps = 5000
-  Alpha = 0.05
-  run_nmf_mult_k(K,Steps,Alpha)
+#def nmf_specific_k(k,Steps):
+#  K=[k]
+#  Steps = 5000
+#  Alpha = 0.05
+#  run_nmf_mult_k(K,Steps,Alpha)
 
 
 def validate_production_data():
