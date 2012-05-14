@@ -61,7 +61,7 @@ change the algorithm terminates.
 
 Our goal in each iteration is given some $P$ and $Q$, for every $i$ and $j$ for
 which there exists a rating $M_{ij}$ and for every latent variable $k$ from
-$0\ldots K$, we should determine a new $P_ik$ and $Q_kj$. We do this using the
+$0\ldots K$, we should determine a new $P_{ik}$ and $Q_{kj}$. We do this using the
 following equations
 
 \[
@@ -76,7 +76,7 @@ we are doing here is modifying each user and business association in a direction
 that improves the distance between $M$ and $P \times Q$. The term multiplied by
 $\beta$ is the normalization term. This term keeps the values from changing too
 quickly relative to how large they already are. This restricts values in $P$ and
-$Q$ from growing too large to avoid overfitting the data.
+$Q$ from growing too large to avoid over-fitting the data.
 
 %%regularization here
 
@@ -87,7 +87,7 @@ we will greatly overshoot the answer and simply oscillate around it without ever
 reaching convergence, or just reach convergence much slower than we would with a
 more appropriate value for $\alpha$. We also use $\beta$ to control the effect
 of our normalization term. A larger $\beta$ will decrease the chance of
-overfitting but make convergence slower.
+over-fitting but make convergence slower.
 
 \subsection{Framework}
 
@@ -119,14 +119,14 @@ C++. To do this we used the Boost library to compile C++ code into a python
 plugin. Once this was done we could call our C++ code as if it were python code.
 This gave a significant speedup and got us to the point where we could execute
 tests in a reasonable amount of time. To improve the speed of tests even more we
-implemented task-level paralellism, allowing us to run tests for different
+implemented task-level parallelism, allowing us to run tests for different
 values of $K$ simultaneously.
 
 The dataset presented some challenges as well. The first challenge we dealt with
 is that some users and businesses had a very limited number of reviews. Users
 and Business with only a single review don't add any information to the
 algorithm, so we removed those. We also added a method for removing users and
-buinesses with fewer than an arbitrary number of reviews. The effect of this is
+businesses with fewer than an arbitrary number of reviews. The effect of this is
 shown in the results section.
 
 The next challenge presented by the dataset is that the reviews use a five-star
