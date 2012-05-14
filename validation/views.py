@@ -1,4 +1,4 @@
-# Create your views here.
+#Create your views here.
 from data_import.views import read_dataset
 from django.conf import settings
 from django.db import transaction
@@ -10,17 +10,17 @@ import numpy
 def build_pred_server():
     k=30
     Steps = 1000
-    Alpha = 0.004
-    P, Q = get_p_q_best(k, Steps, Alpha)
+    Alpha = 0.5
+    P, Q, arrID2bid, arrID2uid = get_p_q_best(k, Steps, Alpha)
     Predictions = numpy.dot(P,numpy.transpose(Q))
-    i = 1
+    i = 0
     predictions = []
     for row in Predictions:
         print(len(row))
-        j = 1
-        bus = Business.objects.get(id=j)
+        j = 0
+        bus = Business.objects.get(id=arrID2bid[j])
         for cell in row:
-            usr = User.objects.get(id=i)
+            usr = User.objects.get(id=arrID2uid[i])
             p = Recommendation(business=bus,recommendation=cell,username=usr)
             predictions.append(p)
             j+=1
@@ -30,7 +30,7 @@ def build_pred_server():
     
 
 def find_categories_best_k(k):
-    Steps = 1000
+    Steps = 5000
     Alpha = 0.05
     #arrID2... are maps from the array indicies to the business and user id
     P, Q, arrID2bid, arrID2uid= get_p_q_best(k, Steps, Alpha)
@@ -38,7 +38,7 @@ def find_categories_best_k(k):
     latentNum = 0
     for l in zipQ: #{
       maxVal = max(l)
-      cutOff = 0.5 * maxVal
+      cutOff = 0.1 * maxVal
       print "  Cutoff is: " + str(cutOff)
 
       relevantBus = []
@@ -88,20 +88,25 @@ def val_nmf(K,Steps):
   Alpha=0.05
   run_nmf_mult_k(K,Steps,Alpha)
 
-def nmf_specific_k(k,Steps):
-  K=[k]
-  Alpha = 0.003
-  run_nmf_mult_k(K,Steps,Alpha)
+#def nmf_specific_k(k,Steps):
+#  K=[k]
+#  Steps = 5000
+#  Alpha = 0.05
+#  run_nmf_mult_k(K,Steps,Alpha)
 
 
 def validate_production_data():
     # K = [12,13,14,15,16,17,18]
 #    K = [12,14,16,18,20,22,24,26]
     #K = [2,5,10,15,20,25,30,35,40]
-    K = [30]
+    K = [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60]
+    #K = [32, 34, 36, 38, 40, 42, 44, 46, 48, 50]
+    #K = [46,48,50]
+    #K = [62,64,66,68,70,72,74,76,78,80]
+    #K = [50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90]
     #Steps = 30000
-    Steps =1500
-    Alpha = 0.1
+    Steps =5000
+    Alpha = 0.05
     run_nmf_mult_k(K,Steps,Alpha)
 
 def simple_validate():
