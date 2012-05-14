@@ -159,19 +159,19 @@ def pare_dataset():
  
   for b in businesses:
     c = Rating.objects.filter(business=b.id).aggregate(Count('rating'))
-    if c['rating__count'] < bus_rating_threshold:
+    if c['rating__count'] < 2: #bus_rating_threshold:
       Rating.objects.filter(business=b.id).delete()
       b.delete()
       continue
-    #kwds = b.keywords
-    #qual = False
-    #for k in kwds.all():
-    #  if k.name == u'Restaurants':
-    #    qual = True
-    #  elif k.name == u'Food':
-    #     qual = True 
-    #if qual == False:
-    #  b.delete()
+    kwds = b.keywords
+    qual = False
+    for k in kwds.all():
+      if k.name == u'Restaurants':
+        qual = True
+      elif k.name == u'Food':
+         qual = True 
+    if qual == False:
+      b.delete()
   
   print("Ratings after bus delete - "+str(Rating.objects.count()))
 
