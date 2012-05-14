@@ -1,1 +1,137 @@
-\subsection{Collaborative Filtering}To give predicted ratings we decided to use a form of \emph{CollaborativeFiltering} (CF). CF techniques use the tastes of a large collection of users topredict the taste of a single user.A very simple example of collaborative filtering would be to use a method suchas difference squared to measure the distance between the ratings of any twousers. Once we have defined our distance function, if we want to predict arating of user $b$ on business $b$ we can do the following: Find the distancebetween $u$ and each user with a rating for $b$, choosing the user $v$ with theshortest distance to $u$. Now we say that since $u$ and $v$ usually have verysimilar ratings, $u$ will probably feel the same about $b$ as $v$ does. This isa very naive method, that can be improved by things like taking more relatedusers into account and averaging their rating for $b$.Even with improvements to the previous method, we don't really take the waypeople make decisions about businesses into account. It won't be terriblyaccurate, and there are a number of situations in which you won't be able to geta rating at all. If none of the users related to a user have a rating for abusiness we wish to predict for, we will be unable to make any prediction forthat business at all. \subsection{Non-negative Matrix Factorization}To correct for these problems we decided to use non-negative matrixfactorization (NMF). NMF fixes both of the problems that are mentioned above. Itdecomposes relationships between users and businesses into some number offactors that influence the relationship. Because of this it ends up being a muchbetter model for why people actually like businesses that they like. It can useless direct relationships between users, so even if closely related users don'thave a rating for a business, we can still give a prediction for it. NMF is one of many methods that solve the matrix factorization problem. The goalof matrix factorization is that given matrix $M$ should be decomposed intomatrices $P$ and $Q$ such that $P \times Q \approx M $. This means that ifmatrix $M$ has dimensions $u \times b$, $P$ should be $u \times k$ and $Q$should be $k \times b$. We know that $b$ and $u$ should be the number andbusinesses and users respectively, but what is $K$? In NMF $K$ corresponds tothe number of \emph{latent factors} we believe determine the relationshipbetween users and businesses.The only input to the NMF algorithm is a matrix $M$ of size $b \times u$ and theinteger $K$. The output of NMF is then matrices $P$ and $Q$. $P$ contains arelationship between every user and every latent factor. Similarly $Q$ describesrelationships between businesses and latent factors. These relationships aren'ton the same scale as the input ratings of $M$, if everything worked correctlythey should be smaller. They are relative however. A value of $.9$ between auser and a factor suggests that that user has a stronger relationship to thefactor than a value of $.4$. Because $P \times Q$ is an approximation for $M$,$P_u \cdot Q_b$ approximates a rating for user $u$ on business $b$The equation for calculating NMF unfortunately doesn't have a closed form, so weneed to use an iterative gradient descent approach to discover good values for$P$ and $Q$. This means that we initialize $P$ and $Q$ to some values, and thencalculate the distance from $P \times Q$ to $M$. We then move the values in $P$and $Q$ in the correct direction to decrease the distance between $P \times Q$and $M$. This means that the value of $P \times Q$ should move closer to $M$with each iteration. At the end of each iteration we measure the differencebetween the previous distance and the current one. When we make a small enoughchange the algorithm terminates.Our goal in each iteration is given some $P$ and $Q$, for every $i$ and $j$ forwhich there exists a rating $M_{ij}$ and for every latent variable $k$ from$0\ldots K$, we should determine a new $P_ik$ and $Q_kj$. We do this using thefollowing equations\[\begin{array}{c}P'_{ik}=P_{ik} + \alpha(2E_{ij}Q_{kj}-\beta P_{ik}) \\Q'_{kj}=Q_{kj} + \alpha(2E_{ij}P_{ik}-\beta Q_{kj})\end{array}\]\noindent where $E$ is the error between $P \times Q$ and the actual value. Whatwe are doing here is modifying each user and business association in a directionthat improves the distance between $M$ and $P \times Q$. The term multiplied by$\beta$ is the normalization term. This term keeps the values from changing tooquickly relative to how large they already are. This restricts values in $P$ and$Q$ from growing too large to avoid overfitting the data.%%regularization hereYou can see that each iteration is controlled by two additional parameters.$\alpha$ scales the amount that we increase or decrease the values in $P$ and $Q$. A larger $\alpha$can lead to faster convergence, but if $\alpha$ gets too big, it is possible thatwe will greatly overshoot the answer and simply oscillate around it without everreaching convergence, or just reach convergence much slower than we would with amore appropriate value for $\alpha$. We also use $\beta$ to control the effectof our normalization term. A larger $\beta$ will decrease the chance ofoverfitting but make convergence slower.\subsection{Framework}Because we actually want to build a usable system on top of our recommendationengine, we built a prototype website in Django. Django is a python library thatmakes it easy to build a website. Django separates implementation from designand also provides convenient abstractions on top of databases. We use a MySQLdatabase to hold information about users, businesses, and ratings, but theDjango abstraction allows us to manage all of our data without having tomanually write any SQL queries.\subsection{Challenges}Our initial implementation had two problems: it used a dense matrixrepresentation, and it was implemented in Python. Because the gradient descentalgorithm only operates on non-zero ratings, a dense matrix representation wasextremely expensive, both in memory and computationally. Because most of theratings are zeroes, our first large performance improvement came from switchingto a sparse representation. Instead of creating a 2-dimensional array containingevery rating weather it existed or not, we created a 1-dimensional array whereeach cell contained a username, a business name, and a rating. This allowed usto use only a fraction of the memory, and to save a large number of wasted loopiterations. We can't accurately analyze the speedup given by this step becausethe dense matrix representation was never able to start because it was using toomuch memory. The next step we took to improve performance was to move our algorithm code intoC++. To do this we used the Boost library to compile C++ code into a pythonplugin. Once this was done we could call our C++ code as if it were python code.This gave a significant speedup and got us to the point where we could executetests in a reasonable amount of time. To improve the speed of tests even more weimplemented task-level paralellism, allowing us to run tests for differentvalues of $K$ simultaneously.The dataset presented some challenges as well. The first challenge we dealt withis that some users and businesses had a very limited number of reviews. Usersand Business with only a single review don't add any information to thealgorithm, so we removed those. We also added a method for removing users andbuinesses with fewer than an arbitrary number of reviews. The effect of this isshown in the results section.The next challenge presented by the dataset is that the reviews use a five-starrating system. There is rarely much consistency between users on exactly how touse such a system, so we needed to \emph{normalize global effects}. This helpsto deal with any biases that tend to develop around certain users andbusinesses. 
+\subsection{Collaborative Filtering}
+
+To give predicted ratings we decided to use a form of \emph{Collaborative
+Filtering} (CF). CF techniques use the tastes of a large collection of users to
+predict the taste of a single user.
+
+A very simple example of collaborative filtering would be to use a method such
+as difference squared to measure the distance between the ratings of any two
+users. Once we have defined our distance function, if we want to predict a
+rating of user $b$ on business $b$ we can do the following: Find the distance
+between $u$ and each user with a rating for $b$, choosing the user $v$ with the
+shortest distance to $u$. Now we say that since $u$ and $v$ usually have very
+similar ratings, $u$ will probably feel the same about $b$ as $v$ does. This is
+a very naive method, that can be improved by things like taking more related
+users into account and averaging their rating for $b$.
+
+Even with improvements to the previous method, we don't really take the way
+people make decisions about businesses into account. It won't be terribly
+accurate, and there are a number of situations in which you won't be able to get
+a rating at all. If none of the users related to a user have a rating for a
+business we wish to predict for, we will be unable to make any prediction for
+that business at all. 
+
+\subsection{Singular Value Decomposition}
+To correct for these problems we decided to perform a matrix factorization
+using singular value decomposition (SVD). SVD fixes both of the problems that
+are mentioned above. It decomposes relationships between users and businesses
+into some number of factors that influence the relationship. Because of this it
+ends up being a much better model for why people actually like businesses that
+they like. It can use less direct relationships between users, so even if
+closely related users don't have a rating for a business, we can still give a
+prediction for it. 
+
+The goal of SVD is that the given matrix $M$ should be decomposed into
+matrices $P$ and $Q$ such that $P \times Q \approx M $. This means that if
+matrix $M$ has dimensions $u \times b$, $P$ should be $u \times K$ and $Q$
+should be $k \times b$. We know that $b$ and $u$ should be the number and
+businesses and users respectively, but what is $K$? In NMF $K$ corresponds to
+the number of \emph{latent factors} we believe determine the relationship
+between users and businesses.
+
+The only input to the NMF algorithm is a matrix $M$ of size $b \times u$ and the
+integer $K$. The output of NMF is then matrices $P$ and $Q$. $P$ contains a
+relationship between every user and every latent factor. Similarly $Q$ describes
+relationships between businesses and latent factors. These relationships aren't
+on the same scale as the input ratings of $M$, if everything worked correctly
+they should be smaller. They are relative however. A value of $.9$ between a
+user and a factor suggests that that user has a stronger relationship to the
+factor than a value of $.4$. Because $P \times Q$ is an approximation for $M$,
+$P_u \cdot Q_b$ approximates a rating for user $u$ on business $b$
+
+The equation for calculating NMF unfortunately doesn't have a closed form, so we
+need to use an iterative gradient descent approach to discover good values for
+$P$ and $Q$. This means that we initialize $P$ and $Q$ to some values, and then
+calculate the distance from $P \times Q$ to $M$. We then move the values in $P$
+and $Q$ in the correct direction to decrease the distance between $P \times Q$
+and $M$. This means that the value of $P \times Q$ should move closer to $M$
+with each iteration. At the end of each iteration we measure the difference
+between the previous distance and the current one. When we make a small enough
+change the algorithm terminates.
+
+Our goal in each iteration is given some $P$ and $Q$, for every $i$ and $j$ for
+which there exists a rating $M_{ij}$ and for every latent variable $k$ from
+$0\ldots K$, we should determine a new $P_ik$ and $Q_kj$. We do this using the
+following equations
+
+\[
+\begin{array}{c}
+P'_{ik}=P_{ik} + \alpha(2E_{ij}Q_{kj}-\beta P_{ik}) \\
+Q'_{kj}=Q_{kj} + \alpha(2E_{ij}P_{ik}-\beta Q_{kj})
+\end{array}
+\]
+
+\noindent where $E$ is the error between $P \times Q$ and the actual value. What
+we are doing here is modifying each user and business association in a direction
+that improves the distance between $M$ and $P \times Q$. The term multiplied by
+$\beta$ is the normalization term. This term keeps the values from changing too
+quickly relative to how large they already are. This restricts values in $P$ and
+$Q$ from growing too large to avoid overfitting the data.
+
+%%regularization here
+
+You can see that each iteration is controlled by two additional parameters.
+$\alpha$ scales the amount that we increase or decrease the values in $P$ and $Q$. A larger $\alpha$
+can lead to faster convergence, but if $\alpha$ gets too big, it is possible that
+we will greatly overshoot the answer and simply oscillate around it without ever
+reaching convergence, or just reach convergence much slower than we would with a
+more appropriate value for $\alpha$. We also use $\beta$ to control the effect
+of our normalization term. A larger $\beta$ will decrease the chance of
+overfitting but make convergence slower.
+
+\subsection{Framework}
+
+Because we actually want to build a usable system on top of our recommendation
+engine, we built a prototype website in Django. Django is a python library that
+makes it easy to build a website. Django separates implementation from design
+and also provides convenient abstractions on top of databases. We use a MySQL
+database to hold information about users, businesses, and ratings, but the
+Django abstraction allows us to manage all of our data without having to
+manually write any SQL queries.
+
+\subsection{Challenges}
+
+Our initial implementation had two problems: it used a dense matrix
+representation, and it was implemented in Python. Because the gradient descent
+algorithm only operates on non-zero ratings, a dense matrix representation was
+extremely expensive, both in memory and computationally. Because most of the
+ratings are zeroes, our first large performance improvement came from switching
+to a sparse representation. Instead of creating a 2-dimensional array containing
+every rating weather it existed or not, we created a 1-dimensional array where
+each cell contained a username, a business name, and a rating. This allowed us
+to use only a fraction of the memory, and to save a large number of wasted loop
+iterations. We can't accurately analyze the speedup given by this step because
+the dense matrix representation was never able to start because it was using too
+much memory. 
+
+The next step we took to improve performance was to move our algorithm code into
+C++. To do this we used the Boost library to compile C++ code into a python
+plugin. Once this was done we could call our C++ code as if it were python code.
+This gave a significant speedup and got us to the point where we could execute
+tests in a reasonable amount of time. To improve the speed of tests even more we
+implemented task-level paralellism, allowing us to run tests for different
+values of $K$ simultaneously.
+
+The dataset presented some challenges as well. The first challenge we dealt with
+is that some users and businesses had a very limited number of reviews. Users
+and Business with only a single review don't add any information to the
+algorithm, so we removed those. We also added a method for removing users and
+buinesses with fewer than an arbitrary number of reviews. The effect of this is
+shown in the results section.
+
+The next challenge presented by the dataset is that the reviews use a five-star
+rating system. There is rarely much consistency between users on exactly how to
+use such a system, so we needed to \emph{normalize global effects}. This helps
+to deal with any biases that tend to develop around certain users and
+businesses. 
+
