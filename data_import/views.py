@@ -13,8 +13,9 @@ from ratings.populate import create_business, create_rating, create_user, \
 from ratings.normalization import buildAverageRatings
 import simplejson as json
 
-bus_rating_threshold = 50
-user_rating_threshold = 10
+
+bus_rating_threshold = 2
+user_rating_threshold = 2
 
 
 def read_dataset():
@@ -82,6 +83,8 @@ def read_dataset():
                 
                 name = o['name']
                 state =  o['state']
+                if state != 'NJ':
+                  continue
                 longitude = o['longitude']
                 latitude = o['latitude']
                 full_address = o['full_address']
@@ -149,21 +152,29 @@ def pare_dataset():
   print("Average ratings/user = " + str(numRatings/numUsers) + " avg rat / bus is " + str(numRatings / numBusinesses))   
 
   usrs = User.objects.all()
-#  for u in usrs:
-#    c = Rating.objects.filter(username=u.id).aggregate(Count('rating'))
-#    if c['rating__count'] < user_rating_threshold:
-#      Rating.objects.filter(username=u.id).delete()
-#      u.delete()
+  for u in usrs:
+    c = Rating.objects.filter(username=u.id).aggregate(Count('rating'))
+    if c['rating__count'] < user_rating_threshold:
+      Rating.objects.filter(username=u.id).delete()
+      u.delete()
   print("Ratings after user delete - "+str(Rating.objects.count()))
   businesses = Business.objects.all()
+ 
   for b in businesses:
     c = Rating.objects.filter(business=b.id).aggregate(Count('rating'))
-    if c['rating__count'] < bus_rating_threshold / 10:
+    if c['rating__count'] < bus_rating_threshold:
       Rating.objects.filter(business=b.id).delete()
       b.delete()
-      #c.delete()
-  
-
+      continue
+    kwds = b.keywords
+    qual = False
+    for k in kwds.all():
+      if k.name == u'Restaurants':
+        qual = True
+      elif k.name == u'Food':
+         qual = True 
+    if qual == False:
+      b.delete()
   
   print("Ratings after bus delete - "+str(Rating.objects.count()))
 

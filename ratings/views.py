@@ -1,3 +1,4 @@
+from data_import.views import read_dataset
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
@@ -9,6 +10,7 @@ from ratings.forms import BusinessForm, KeywordForm, RatingForm
 from ratings.models import Business, Grouping, Rating
 from ratings.populate import populate_test_data
 from ratings.recengine import RecEngine
+from validation.views import build_pred_server
 
 
 re = RecEngine() 
@@ -103,6 +105,11 @@ def index(request):
 		return	render_to_response('ratings/index.html', {'business_list': business_list}, context_instance=RequestContext(request))
 	#else:
 	#	return HttpResponse("log in dawg");
+
+
+def reset_site(request):
+	read_dataset()
+	build_pred_server()
 
 def display_table_full(request):
 	return display_table(request, 500)
