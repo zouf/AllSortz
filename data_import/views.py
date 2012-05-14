@@ -13,8 +13,8 @@ from ratings.populate import create_business, create_rating, create_user, \
 from ratings.normalization import buildAverageRatings
 import simplejson as json
 
-bus_rating_threshold = 2
-user_rating_threshold = 2
+bus_rating_threshold = 10
+user_rating_threshold = 10
 
 
 def read_dataset():
@@ -56,8 +56,6 @@ def read_dataset():
             u.id = unique_uid
             users.append(u)
             unique_uid = unique_uid + 1
-            #u.save()
-            #print(u)
             yelpUIDtoID[yelpID] = u 
     User.objects.bulk_create(users)
     business_set = set()
@@ -82,7 +80,7 @@ def read_dataset():
                 
                 name = o['name']
                 state =  o['state']
-                if state != 'NJ':
+                if state == 'CA':
                   continue
                 longitude = o['longitude']
                 latitude = o['latitude']
@@ -165,15 +163,15 @@ def pare_dataset():
       Rating.objects.filter(business=b.id).delete()
       b.delete()
       continue
-    kwds = b.keywords
-    qual = False
-    for k in kwds.all():
-      if k.name == u'Restaurants':
-        qual = True
-      elif k.name == u'Food':
-         qual = True 
-    if qual == False:
-      b.delete()
+    #kwds = b.keywords
+    #qual = False
+    #for k in kwds.all():
+    #  if k.name == u'Restaurants':
+    #    qual = True
+    #  elif k.name == u'Food':
+    #     qual = True 
+    #if qual == False:
+    #  b.delete()
   
   print("Ratings after bus delete - "+str(Rating.objects.count()))
 
