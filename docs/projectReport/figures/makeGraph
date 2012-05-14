@@ -1,0 +1,7 @@
+#!/bin/bash
+for file in `ls *.gnuplot` ; do
+  gnuplot "$file"
+done
+for epss in `ls *.eps` ; do
+  epstopdf "$epss"
+done
