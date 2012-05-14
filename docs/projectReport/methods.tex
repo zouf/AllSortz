@@ -111,12 +111,21 @@ user and this business. This is the term that we try to identify through SVD.
 
 \end{description}
 
-By attempting to identify specifically the User-Business Interaction, we remove
+By attempting to identify specifically the user-business interaction, we remove
 the bias in the system, with the users, and with the businesses to more
 accurately predict the user's rating of the business. 
 
 \subsubsection{Capping}
 
+People typically reserve the highest and lowest ratings for the perfect and
+worst possible business respectively. Currently, a particularly strong factor
+could give a very strong positive rating, such as $+7$, and a second factor has
+a minor negative influence, such as $-1$, would result in an overall rating of
+$+5$. That is, the high positive rating would negate any effects the small
+negative rating would have. Thus, we cap the amount of influence each factor
+can have on the rating to between $-5$ and $+5$. With the cap in place, our
+strong $+7$ rating is capped at $+5$ which allows the $-1$ rating to pull our
+overall rating away from a perfect score and down to $+4$. \cite{black website}
 
 \subsection{Framework}
 
