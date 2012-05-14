@@ -61,7 +61,7 @@ a small enough change the algorithm terminates.
 
 Our goal in each iteration is given some $P$ and $Q$, for every $i$ and $j$ for
 which there exists a rating $M_{ij}$ and for every latent variable $k$ from
-$0\ldots K$, we should determine a new $P_ik$ and $Q_kj$. We do this using the
+$0\ldots K$, we should determine a new $P_{ik}$ and $Q_{kj}$. We do this using the
 following equations
 
 \[
@@ -76,7 +76,7 @@ we are doing here is modifying each user and business association in a direction
 that improves the distance between $M$ and $P \times Q$. The term multiplied by
 $\beta$ is the regularization term. This term keeps the values from changing too
 quickly relative to how large they already are. This restricts values in $P$ and
-$Q$ from growing too large to avoid overfitting the data.
+$Q$ from growing too large to avoid over-fitting the data.
 
 You can see that each iteration is controlled by two additional parameters.
 $\alpha$ scales the amount that we increase or decrease the values in $P$ and
@@ -85,7 +85,7 @@ big, it is possible that we will greatly overshoot the answer and simply
 oscillate around it without ever reaching convergence, or just reach
 convergence much slower than we would with a more appropriate value for
 $\alpha$. We also use $\beta$ to control the effect of our regularization term.
-A larger $\beta$ will decrease the chance of overfitting but make convergence
+A larger $\beta$ will decrease the chance of over-fitting but make convergence
 slower.
 
 \subsubsection{Normalization}
@@ -104,7 +104,7 @@ and serves as a baseline for all ratings.
   \item[User Specific] This is the different between the global average and
 this users average, and serves to account for the users particular bias.
 
-  \item[Business Specific] Same as \bf{User Specific}, but for the business
+  \item[Business Specific] Same as \textbf{User Specific}, but for the business
 
   \item[User-Business Interaction] This is the specific interaction between this
 user and this business. This is the term that we try to identify through SVD. 
@@ -116,7 +116,6 @@ the bias in the system, with the users, and with the businesses to more
 accurately predict the user's rating of the business. 
 
 \subsubsection{Capping}
-
 
 
 \subsection{Framework}
