@@ -74,11 +74,9 @@ Q'_{kj}=Q_{kj} + \alpha(E_{ij}P_{ik}-\beta Q_{kj})
 \noindent where $E$ is the error between $P \times Q$ and the actual value. What
 we are doing here is modifying each user and business association in a direction
 that improves the distance between $M$ and $P \times Q$. The term multiplied by
-$\beta$ is the normalization term. This term keeps the values from changing too
+$\beta$ is the regularization term. This term keeps the values from changing too
 quickly relative to how large they already are. This restricts values in $P$ and
 $Q$ from growing too large to avoid overfitting the data.
-
-%%regularization here
 
 You can see that each iteration is controlled by two additional parameters.
 $\alpha$ scales the amount that we increase or decrease the values in $P$ and
@@ -86,9 +84,40 @@ $Q$. A larger $\alpha$ can lead to faster convergence, but if $\alpha$ gets too
 big, it is possible that we will greatly overshoot the answer and simply
 oscillate around it without ever reaching convergence, or just reach
 convergence much slower than we would with a more appropriate value for
-$\alpha$. We also use $\beta$ to control the effect of our normalization term.
+$\alpha$. We also use $\beta$ to control the effect of our regularization term.
 A larger $\beta$ will decrease the chance of overfitting but make convergence
 slower.
+
+\subsubsection{Normalization}
+
+Our ratings data comes from a 5-star, which everyone can treat slightly
+differently.  For example, perhaps some users are particularly harsh and rarely
+give out 5-star ratings, or others are particularly kind and rarely give any
+business less than 3-stars. To account for this we normalize our data by
+considering each rating to be composed of four factors.
+
+\begin{description}
+
+  \item[Global Baseline] This is the global average of all ratings on the site
+and serves as a baseline for all ratings.
+
+  \item[User Specific] This is the different between the global average and
+this users average, and serves to account for the users particular bias.
+
+  \item[Business Specific] Same as \bf{User Specific}, but for the business
+
+  \item[User-Business Interaction] This is the specific interaction between this
+user and this business. This is the term that we try to identify through SVD. 
+
+\end{description}
+
+By attempting to identify specifically the User-Business Interaction, we remove
+the bias in the system, with the users, and with the businesses to more
+accurately predict the user's rating of the business. 
+
+
+\subsubsection{Capping}
+
 
 \subsection{Framework}
 
@@ -120,19 +149,12 @@ C++. To do this we used the Boost library to compile C++ code into a python
 plugin. Once this was done we could call our C++ code as if it were python code.
 This gave a significant speedup and got us to the point where we could execute
 tests in a reasonable amount of time. To improve the speed of tests even more we
-implemented task-level paralellism, allowing us to run tests for different
+implemented task-level parallelism, allowing us to run tests for different
 values of $K$ simultaneously.
 
 The dataset presented some challenges as well. The first challenge we dealt with
 is that some users and businesses had a very limited number of reviews. Users
 and Business with only a single review don't add any information to the
 algorithm, so we removed those. We also added a method for removing users and
-buinesses with fewer than an arbitrary number of reviews. The effect of this is
+businesses with fewer than an arbitrary number of reviews. The effect of this is
 shown in the results section.
-
-The next challenge presented by the dataset is that the reviews use a five-star
-rating system. There is rarely much consistency between users on exactly how to
-use such a system, so we needed to \emph{normalize global effects}. This helps
-to deal with any biases that tend to develop around certain users and
-businesses. 
-
