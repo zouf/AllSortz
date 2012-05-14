@@ -2,6 +2,14 @@
 %%There is just one section and two subsections.
 \documentclass[12pt]{article}
 \usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{mathtools}
+\usepackage{subfig}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{amsmath}
 \begin{document}
 %%To do:
 %%___________________
@@ -19,12 +27,15 @@
 \section{Problem}
 \input{problem.tex}
 \newcommand{\bestRMSE}{0.9307 }
+\newcommand{\bestRMSEnsp}{0.9307}
 \newcommand{\bestK}{48 }
 \newcommand{\bestNetflixRMSE}{0.8712 }
+\newcommand{\bestNetflixRMSEnsp}{0.8712}
 \newcommand{\netDiff}{0.06 }
 
 \newcommand{\numBusCA}{707 } 
 \newcommand{\numBusTotal}{2,452 }
+\newcommand{\numUserTotal}{??? }
 
 \newcommand{\numRatingCA}{8,970 } 
 \newcommand{\numRatingTotal}{28,310 }
