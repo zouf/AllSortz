@@ -1,19 +1,24 @@
 % talk about data
 
-We acquired the academic dataset from Yelp\cite{yelp}. The rating consists of
+We acquired the academic dataset from Yelp\cite{yelp}. The dataset consists of
 \numUserTotal users and \numBusTotal businesses. The businesses are all located
 in the vicinity of $30$ different universities in the United States. There are
-a total of \numRatingTotal ratings. We initially misunderstood the datasets. We
-believed, from the wording on the website, we were obtaining two different
-datasets, one from Michigan and one from Princeton, but we actually received
-the same dataset twice. Our initial plan was to get two different datasets,
-training on the first then finally testing on the second. Unfortunately we
-unknowingly trained on the entire body of data, so we weren't able to test on
-any fresh data. 
+a total of \numRatingTotal ratings. We initially thought we were going to receive 2 distinct datasets (one for University of Michigan,
+ one for Princeton) but received the same one twice.
+As an alternative, we partitioned our dataset into two; one set
+including only businesses from California (\numBusCA businesses) and one set with all other
+businesses (\numBusOthernsp)
 
-As a replacement for two datasets, we partitioned our dataset into two; one set
-including only businesses from California and one set with all other
-businesses. 
+
+%We initially misunderstood the datasets. We
+%believed, from the wording on the website, we were obtaining two different
+%datasets, one from Michigan and one from Princeton, but we actually received
+%the same dataset twice. Our initial plan was to get two different datasets,
+%training on the first then finally testing on the second. Unfortunately we
+%unknowingly trained on the entire body of data, so we weren't able to test on
+%any fresh data. 
+
+
 
 %For our application, this isn't as big of a problem as others in practice. This
 %is because in practice, we will be able to tune the model on the entire body of

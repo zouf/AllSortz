@@ -11,7 +11,7 @@ rating of user $b$ on business $b$ we can do the following: Find the distance
 between $u$ and each user with a rating for $b$, choosing the user $v$ with the
 shortest distance to $u$. Now we say that since $u$ and $v$ usually have very
 similar ratings, $u$ will probably feel the same about $b$ as $v$ does. This is
-a very naive method, that can be improved by things like taking more related
+a very na\"{i}ve method, that can be improved by things like taking more related
 users into account and averaging their rating for $b$.
 
 Even with improvements to the previous method, we wouldn't really take the way
@@ -26,15 +26,15 @@ To correct for these problems we decided to perform a matrix factorization
 using singular value decomposition (SVD)\cite{bellkor}. SVD fixes both of the
 problems that are mentioned above. It decomposes relationships between users
 and businesses into some number of factors that influence the relationship.
-Because of SVD is a much better model for why people actually like businesses
-that they like. It can use less direct relationships between users, so even if
+This allows SVD to better model why people like particular businesses.
+SVD can also use less direct relationships between users, so even if
 closely related users don't have a rating for a business, we can still give a
 prediction for it.
 
-The goal of SVD is that the given matrix $M$ should be decomposed into
+The goal of SVD is to decompose the given matrix $M$ into
 matrices $P$ and $Q$ such that $P \times Q \approx M $. This means that if
 matrix $M$ has dimensions $u \times b$, $P$ should be $u \times K$ and $Q$
-should be $K \times b$. We know that $b$ and $u$ should be the number and
+should be $K \times b$. We know that $b$ and $u$ should be the number of
 businesses and users respectively, but what is $K$? In SVD $K$ corresponds to
 the number of \emph{latent factors} we believe determine the relationship
 between users and businesses.
@@ -43,12 +43,11 @@ The only input to the SVD algorithm is a matrix $M$ of size $b \times u$ and the
 integer $K$. The output of SVD is then matrices $P$ and $Q$. $P$ contains a
 relationship between every user and every latent factor. Similarly $Q$ describes
 relationships between businesses and latent factors. These relationships aren't
-on the same scale as the input ratings of $M$; If everything worked correctly
-the numbers in $P$ and $Q$ should be smaller. They are relative however. A value
+on the same scale as the input ratings of $M$, but they are relative. A value
 of $.9$ between a user and a factor suggests that that user has a stronger
 relationship to the factor than a value of $.4$. It is also possible to have a
 negative relationship. Because $P \times Q$ is an
-approximation for $M$, $P_u \times Q_b$ approximates a rating for user $u$ on
+approximation for $M$, $P_u \cdot Q_b$ approximates a rating for user $u$ on
 business $b$. This is referred to as Standard SVD\cite{bellkor}.
 
 SVD on sparse matrices is calculated using an iterative gradient descent
@@ -56,11 +55,11 @@ approach to discover good values for $P$ and $Q$. Using gradient descent allows
 us to calculate $P$ and $Q$ using only the observed values and ignoring any
 empty values. This means that we initialize $P$ and $Q$ to some values, and
 then calculate the distance from $P \times Q$ to $M$. We then move the values
-in $P$ and $Q$ in the correct direction to decrease the distance between $P
-\times Q$ and $M$. This means that the value of $P \times Q$ should move closer
+in $P$ and $Q$ in the correct direction to decrease the distance. 
+This means that the value of $P \times Q$ should move closer
 to $M$ with each iteration. At the end of each iteration we measure the
 difference between the previous distance and the current one. When we make a
-small enough change the algorithm terminates.
+small enough change, or a predetermined amount of iterations have occurred, the algorithm terminates.
 
 Our goal in each iteration is given some $P$ and $Q$, for every $i$ and $j$ for
 which there exists a rating $M_{ij}$ and for every latent variable $k$ from
@@ -78,15 +77,15 @@ Q'_{kj}=Q_{kj} + \alpha(E_{ij}P_{ik}-\beta Q_{kj})
 we are doing here is modifying each user and business association in a direction
 that decreases the distance between $M$ and $P \times Q$. The term multiplied by
 $\beta$ is the regularization term. This term keeps the values from changing too
-quickly relative to how large they already are. This restricts values in $P$ and
+quickly relative to how large they already are. This restricts the absolute values in $P$ and
 $Q$ from growing too large to avoid over-fitting the data.
 
 You can see that each iteration is controlled by two additional parameters.
 $\alpha$ scales the amount that we increase or decrease the values in $P$ and
 $Q$. A larger $\alpha$ can lead to faster convergence, but if $\alpha$ gets too
 big, it is possible that we will greatly overshoot the answer and simply
-oscillate around it without ever reaching convergence, or just reach
-convergence much slower than we would with a more appropriate value for
+oscillate around it without ever reaching convergence. Similarly, if $\alpha$ is too small, the algorithm
+will reach convergence much slower than it would with a more appropriate value for
 $\alpha$. We also use $\beta$ to control the effect of our regularization term.
 A larger $\beta$ will decrease the chance of over-fitting but make convergence
 slower.
@@ -97,7 +96,7 @@ Our ratings data comes from a 5-star system, which everyone can treat slightly
 differently. For example, perhaps some users are particularly harsh and rarely
 give out 5-star ratings, or others are particularly kind and rarely give any
 business less than 3-stars. To account for this we normalize our data by
-considering each rating to be composed of four factors\cite{bellkor}.
+considering each rating to be comprised of four factors (cf. \cite{bellkor}): 
 
 \begin{description}
 
@@ -114,7 +113,7 @@ user and this business. This is the term that we try to identify through SVD.
 
 \end{description}
 
-By attempting to identify specifically the user-business interaction, we remove
+By attempting to specifically identify the user-business interaction, we remove
 the bias in the system, with the users, and with the businesses to more
 accurately predict the user's rating of the business. 
 
@@ -126,19 +125,19 @@ could give a very strong positive rating, such as $+7$, and a second factor has
 a minor negative influence, such as $-1$, would result in an overall rating of
 $+5$. That is, the high positive rating would negate any effects the small
 negative rating would have. Thus, we cap the amount of influence each factor
-can have on the rating to between $-5$ and $+5$. With the cap in place, our
+can have on the rating to between $-5$ and $+5$ during the dot-product calculation
+in our algorithm. With the cap in place, our
 strong $+7$ rating is capped at $+5$ which allows the $-1$ rating to pull our
 overall rating away from a perfect score and down to $+4$. \cite{funk}
 
 \subsection{Framework}
 
 Because we actually want to build a usable system on top of our recommendation
-engine, we built a prototype website in Django\cite{django}. Django is a python
-library that makes it easy to build a website. Django separates implementation
-from design and also provides convenient abstractions on top of databases. We
-use a MySQL database to hold information about users, businesses, and ratings,
-but the Django abstraction allows us to manage all of our data without having
-to manually write any SQL queries.
+engine, we built a prototype website in Django\cite{django}. Django is an MVC web framework
+based on Python. MVC frameworks like Django provide modularity between the design and 
+functionality of websites along with convenient abstractions for accessing databases. 
+Behind the scenes,
+a MySQL database is used to hold information about users, businesses, and ratings.
 
 \subsection{Challenges}
 
@@ -162,17 +161,19 @@ plugin. Once this was done we could call our C++ code as if it were python code.
 This gave a significant speedup and got us to the point where we could execute
 tests in a reasonable amount of time. To improve the speed of tests even more we
 implemented task-level parallelism, allowing us to run tests for different
-values of $K$ simultaneously. In future work, we will look into parallelizing
-the algorithm code. This is an interesting challenge, because the outer loop
-appears to carry dependences. We suspect, however, that the order we update
-cells in $P$ and $Q$ actually won't have any effect on the correctness of the
-algorithm. This is easy to check because the distance should get better at every
-step. As long as that invariant holds, we can be sure our algorithm will
-eventually give a good answer.
+values of $K$ simultaneously.
 
-The dataset presented some challenges as well. The first challenge we dealt with
-is that some users and businesses had a very limited number of reviews. Users
-and Business with only a single review don't add any information to the
-algorithm, so we removed those. We also added a method for removing users and
-businesses with fewer than an arbitrary number of reviews. The effect of this is
-shown in the results section.
+%In future work, we will look into parallelizing
+%the algorithm code. This is an interesting challenge, because the outer loop
+%appears to carry dependences. We suspect, however, that the order we update
+%cells in $P$ and $Q$ actually won't have any effect on the correctness of the
+%algorithm. This is easy to check because the distance should get better at every
+%step. As long as that invariant holds, we can be sure our algorithm will
+%eventually give a good answer.
+%
+%The dataset presented some challenges as well. The first challenge we dealt with
+%is that some users and businesses had a very limited number of reviews. Users
+%and Business with only a single review don't add any information to the
+%algorithm, so we removed those. We also added a method for removing users and
+%businesses with fewer than an arbitrary number of reviews. The effect of this is
+%shown in the results section.

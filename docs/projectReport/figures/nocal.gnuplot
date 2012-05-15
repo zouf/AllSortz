@@ -3,9 +3,9 @@ set output "nocal.eps"
 set xlabel "k" font "Times-Roman, 16"
 set ylabel "Root Mean Square Error (RMSE)" font "Times-Roman, 16"
 set yrange [0.9:1.25]
-set xtics font "Times-Roman, 12"
-set ytics font "Times-Roman, 12"
-set yrange [0.8:1.4]
+set xtics font "Times-Roman, 16"
+set ytics font "Times-Roman, 16"
+set yrange [0.8:1.5]
 set grid
 set nokey
 #set key 600, 45
