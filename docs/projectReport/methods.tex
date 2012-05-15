@@ -23,12 +23,13 @@ unable to make any prediction for that business at all.
 
 \subsection{Singular Value Decomposition}
 To correct for these problems we decided to perform a matrix factorization
-using singular value decomposition (SVD). SVD fixes both of the problems that
-are mentioned above. It decomposes relationships between users and businesses
-into some number of factors that influence the relationship. Because of SVD is
-a much better model for why people actually like businesses that they like. It
-can use less direct relationships between users, so even if closely related
-users don't have a rating for a business, we can still give a prediction for it.
+using singular value decomposition (SVD)\cite{bellkor}. SVD fixes both of the
+problems that are mentioned above. It decomposes relationships between users
+and businesses into some number of factors that influence the relationship.
+Because of SVD is a much better model for why people actually like businesses
+that they like. It can use less direct relationships between users, so even if
+closely related users don't have a rating for a business, we can still give a
+prediction for it.
 
 The goal of SVD is that the given matrix $M$ should be decomposed into
 matrices $P$ and $Q$ such that $P \times Q \approx M $. This means that if
@@ -48,7 +49,7 @@ of $.9$ between a user and a factor suggests that that user has a stronger
 relationship to the factor than a value of $.4$. It is also possible to have a
 negative relationship. Because $P \times Q$ is an
 approximation for $M$, $P_u \times Q_b$ approximates a rating for user $u$ on
-business $b$. This is referred to as Standard SVD~\cite{netflix paper}.
+business $b$. This is referred to as Standard SVD\cite{bellkor}.
 
 SVD on sparse matrices is calculated using an iterative gradient descent
 approach to discover good values for $P$ and $Q$. Using gradient descent allows
@@ -93,10 +94,10 @@ slower.
 \subsubsection{Normalization}
 
 Our ratings data comes from a 5-star system, which everyone can treat slightly
-differently.  For example, perhaps some users are particularly harsh and rarely
+differently. For example, perhaps some users are particularly harsh and rarely
 give out 5-star ratings, or others are particularly kind and rarely give any
 business less than 3-stars. To account for this we normalize our data by
-considering each rating to be composed of four factors.
+considering each rating to be composed of four factors\cite{bellkor}.
 
 \begin{description}
 
@@ -127,7 +128,7 @@ $+5$. That is, the high positive rating would negate any effects the small
 negative rating would have. Thus, we cap the amount of influence each factor
 can have on the rating to between $-5$ and $+5$. With the cap in place, our
 strong $+7$ rating is capped at $+5$ which allows the $-1$ rating to pull our
-overall rating away from a perfect score and down to $+4$. \cite{black website}
+overall rating away from a perfect score and down to $+4$. \cite{funk}
 
 \subsection{Framework}
 
