@@ -24,9 +24,9 @@ immediately realized the need to switch our code from Python to a C++ module).
 For training, we removed California's businesses ratings from the Yelp data
 set. This meant removing roughly \numBusCA businesses from \numBusTotal total
 businesses and \numRatingCA from \numRatingTotal ratings.
-Figure~\ref{fig:nocal} shows a plot of RMSE vs. K for all data excluding
+The red line in Figure~\ref{fig:nocal} shows a plot of RMSE vs. K for all data excluding
 California's. For the evaluation step, we ran our algorithm on ratings for
-California businesses only. Figure~\ref{fig:cal} is a plot of RMSE vs. K for
+California businesses only. The red line in Figure~\ref{fig:cal} shows a plot of RMSE vs. K for
 ratings only on California businesses. No parameters were changed between the
 training and evaluation run. The graphs show that the K-values have roughly the
 same effect on RMSE in both cases. Thus, a K-value that gives a good RMSE value
@@ -39,38 +39,37 @@ pick a K that gives good results across most realistic datasets.
 
 \begin{figure}[ht!]
 	\centering
-%%	\includegraphics[scale=0.5]{figures/nocal.pdf}
-	\caption[]{A plot of RMSE vs. K for all ratings excluding California businesses}
+	\includegraphics[scale=0.5]{figures/nocal.pdf}
+	\caption[]{A plot of RMSE vs. K on our test set (all ratings excluding California businesses). Blue indicates our RMSE values when we did not use normalization; red uses normalization.}
 	\label{fig:nocal}
 \end{figure}
 
 
 \begin{figure}[ht!]
 	\centering
-	%%\includegraphics[scale=0.5]{figures/cal.pdf}
-	\caption[]{A plot of RMSE vs. K for all ratings on California businesses}
+	\includegraphics[scale=0.5]{figures/cal.pdf}
+	\caption[]{A plot of RMSE vs. K on our evaluation set. Red indicates ratings on all California businesses and green indicates food-related business ratings in California}
 	\label{fig:cal}
 \end{figure}
 
-\begin{figure}[ht!]
-	\centering
-	%%\includegraphics[scale=0.5]{figures/norm.pdf}
-	\caption[]{A plot of RMSE vs. K for all ratings excluding 
-California businesses without normalization}
-	\label{fig:norm}
-\end{figure}
+%\begin{figure}[ht!]
+%	\centering
+%	\includegraphics[scale=0.5]{figures/nocalnonorm.pdf}
+%	\caption[]{A plot of RMSE vs. K for all ratings excluding 
+%California businesses without normalization}
+%	\label{fig:norm}
+%\end{figure}
 
-\begin{figure}[ht!]
-	\centering
-	%%\includegraphics[scale=0.5]{figures/foodonly.pdf}
-	\caption[]{A plot of RMSE vs. K for all food ratings excluding California businesses}
-	\label{fig:foodonly}
-\end{figure}
+%\begin{figure}[ht!]
+%	\centering
+%	\includegraphics[scale=0.5]{figures/nocalfood.pdf}
+%	\caption[]{A plot of RMSE vs. K for all food ratings excluding California businesses}
+%	\label{fig:foodonly}
+%\end{figure}
 
 We also evaluated the effect of normalization by running the same tests as
 above on businesses excluding California with and without a normalization
-factor. Figure~\ref{fig:norm} shows a plot of the same ratings and businesses
-as Figure~\ref{fig:nocal} without normalization.
+factor. Figure~\ref{fig:nocal} shows this comparison.
 
 \subsection{Interpreting Results}
 As we increase the K-values, the RMSE value approaches a minimum value which it
@@ -82,16 +81,15 @@ interests in unrelated genres. For example, predictions for clothing shops can
 be used to help predict where you might like to go out to eat. We initially
 thought that using unrelated businesses to predict one another would yield to
 inaccurate results. However, when we excluded non-food related ratings from the
-dataset, we achieved worse RMSE results. See Figure~\ref{fig:foodonly} for a
-plot.
+dataset, we achieved worse RMSE results. Figure~\ref{fig:cal} shows this comparison.
 
 We also compared our results to the winners of the Netflix prize,
 \cite{netprize}. Unlike our technique, the winners of the Netflix prize used a
 combination of different predictors working in unison to build a prediction
 engine. Ideally, we would build additional prediction engines to supplement
 ours. However, we were not able to do this due to time constraints. Overall,
-the winners of the Netflix prize achieved an RMSE value of \bestNetflixRMSE,
-which is roughly \netDiff from our best RMSE of \bestRMSE. The difference
+the winners of the Netflix prize achieved an RMSE value of \bestNetflixRMSEnsp,
+which is roughly \netDiff from our best RMSE of \bestRMSEnsp. The difference
 between the accuracy of our results and the Netflix results is likely due to
 the fact that movies are much more controlled than businesses. Businesses are
 affected by location, price, quality of service, and hours of operation. Movies
