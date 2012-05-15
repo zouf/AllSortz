@@ -45,9 +45,9 @@ def buildAverageRatings():
         else:
           avg = float(float(sumRating) / float(countRating)) #ci_lowerbound(sumRating,countRating)
         b = Business.objects.get( id=bus.id)
-        print('sum rat is ' + str(sumRating))
-        print('count rat is ' + str(countRating))
-        print(' avg is ' + str(avg))
+#        print('sum rat is ' + str(sumRating))
+#        print('count rat is ' + str(countRating))
+#        print(' avg is ' + str(avg))
         b.average_rating = avg
         b.save()
     usermeta = []
@@ -60,9 +60,9 @@ def buildAverageRatings():
           avg = 0
         else:
           avg = float(float(sumRating) / float(countRating)) #ci_lowerbound(sumRating,countRating)
-        print('sum rat is ' + str(sumRating))
-        print('count rat is ' + str(countRating))
-        print(' avg is ' + str(avg))
+#        print('sum rat is ' + str(sumRating))
+#        print('count rat is ' + str(countRating))
+#        print(' avg is ' + str(avg))
 
         
         meta = UserMeta(average_rating=avg, user=user)

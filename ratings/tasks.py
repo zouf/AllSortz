@@ -1,5 +1,4 @@
 from celery.decorators import periodic_task
-from data_import.views import average_total_rating, average_total_rating
 from datetime import timedelta
 from django.contrib.auth.models import User
 from django.db import transaction
