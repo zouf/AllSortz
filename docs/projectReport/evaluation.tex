@@ -64,13 +64,6 @@ pick a K that gives good results across most realistic datasets.
 	\label{fig:cal}
 \end{figure}
 
-\begin{figure}[ht!]
-	\centering
-	\includegraphics[scale=0.5]{figures/positive.pdf}
-	\caption[]{}
-	\label{fig:positive}
-\end{figure}
-
 %\begin{figure}[ht!]
 %	\centering
 %	\includegraphics[scale=0.5]{figures/nocalnonorm.pdf}
@@ -104,11 +97,12 @@ dataset, we achieved worse RMSE results. Figure~\ref{fig:cal} shows this compari
 
 As we mentioned in Section~\ref{sec:problem}, our system is intended to be a recommendation system. 
 Therefore, we care more that users are accurately informed of businesses that they will actually enjoy rather than
-telling users about low-rated businesses. For example, I would rather be told that I enjoy love Hoagie Haven than be told
-that I will not enjoy Zorba's. The other implication of this is that we don't differentiate between high-ratings. Thus, as long
-as long as our prediction is 'good' (defined as above 3.5 / 5 stars) when a user rated a place as 'good' (above 3.5 stars), then 
-our prediction is successful.  Figure~\ref{fig:positive} shows that our system is more effective at recommending positive ratings
-than it is at determining negative ratings, which is exactly what we had hoped to find. 
+telling users about low rated businesses. For example, I would rather be told that I enjoy love Hoagie Haven than be told
+that I will not enjoy Zorba's. The other implication of this is that we don't differentiate between high ratings. Our predictions
+indicate we were successful \posAccuracy of the time. The converse of this means
+that \posInaccuracy of the time we predicted a user would give at least a 3 when the actual rating was at most a 2.  For future work,
+we would like to improve the accuracy of predicting positive reviews. We suspect the inaccuracy we've experienced thus far stems
+from poor, abnormal, experiences at a business for  (e.g. the waiter dropped a glass of water on me).
 
 We also compared our results to the winners of the Netflix prize,
 \cite{netprize}. Unlike our technique, the winners of the Netflix prize used a
