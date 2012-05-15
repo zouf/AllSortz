@@ -1,10 +1,10 @@
 from celery.decorators import periodic_task
-from data_import.views import average_total_rating, average_total_rating
 from datetime import timedelta
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Count, Sum
 from ratings.models import Business, DontCare, Rating, Recommendation, UserMeta
+from validation.views import build_pred_server 
 from ratings.nmf import run_nmf_mult_k
 import math
 
@@ -85,10 +85,11 @@ def insertRecommendation(user, bus, rec):
 
 
 
-@periodic_task(name="tasks.build_recommendations", run_every=timedelta(seconds=10))
+@periodic_task(name="tasks.build_recommendations", run_every=timedelta(hours=2))
 def build_recommendations():
 	#working_copy = get_rating_table_working_copy()
-	K = [1,5,10,15,20]
-	#run_nmf_mult_k()
+  print("Running build_pred_server...")
+  build_pred_server()
+  #run_nmf_mult_k()
 	#buildAverageRatings()
 	
