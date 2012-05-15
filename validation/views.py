@@ -8,9 +8,9 @@ from ratings.populate import pop_test_user_bus_data, generate_nmf_test
 import numpy
 
 def build_pred_server():
-    k=30
-    Steps = 1000
-    Alpha = 0.5
+    k=42
+    Steps = 5000
+    Alpha = 0.05
     P, Q, arrID2bid, arrID2uid = get_p_q_best(k, Steps, Alpha)
     Predictions = numpy.dot(P,numpy.transpose(Q))
     i = 0

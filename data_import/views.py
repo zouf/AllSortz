@@ -80,7 +80,7 @@ def read_dataset():
                 
                 name = o['name']
                 state =  o['state']
-                if state == 'CA':
+                if state != 'NJ':
                   continue
                 longitude = o['longitude']
                 latitude = o['latitude']
@@ -163,15 +163,15 @@ def pare_dataset():
       Rating.objects.filter(business=b.id).delete()
       b.delete()
       continue
-    kwds = b.keywords
-    qual = False
-    for k in kwds.all():
-      if k.name == u'Restaurants':
-        qual = True
-      elif k.name == u'Food':
-         qual = True 
-    if qual == False:
-      b.delete()
+   # kwds = b.keywords
+   # qual = False
+   # for k in kwds.all():
+   #   if k.name == u'Restaurants':
+   #     qual = True
+   #   elif k.name == u'Food':
+   #      qual = True 
+   # if qual == False:
+   #   b.delete()
   
   print("Ratings after bus delete - "+str(Rating.objects.count()))
 

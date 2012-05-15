@@ -10,6 +10,11 @@ from ratings.models import Business, Rating, UserMeta
 import math
 import numpy
 
+globalNormFactor = 0
+userCache = dict()
+businessCache = dict()
+
+
 def calcStdev():
     businesses = Business.objects.all()
     bList = []
@@ -45,9 +50,9 @@ def buildAverageRatings():
         else:
           avg = float(float(sumRating) / float(countRating)) #ci_lowerbound(sumRating,countRating)
         b = Business.objects.get( id=bus.id)
-#        print('sum rat is ' + str(sumRating))
-#        print('count rat is ' + str(countRating))
-#        print(' avg is ' + str(avg))
+        #print('sum rat is ' + str(sumRating))
+        #print('count rat is ' + str(countRating))
+        #print(' avg is ' + str(avg))
         b.average_rating = avg
         b.save()
     usermeta = []
@@ -60,9 +65,9 @@ def buildAverageRatings():
           avg = 0
         else:
           avg = float(float(sumRating) / float(countRating)) #ci_lowerbound(sumRating,countRating)
-#        print('sum rat is ' + str(sumRating))
-#        print('count rat is ' + str(countRating))
-#        print(' avg is ' + str(avg))
+        #print('sum rat is ' + str(sumRating))
+        #print('count rat is ' + str(countRating))
+        #print(' avg is ' + str(avg))
 
         
         meta = UserMeta(average_rating=avg, user=user)
@@ -71,6 +76,8 @@ def buildAverageRatings():
 
 
 def getBusAvg(bid):
+#    if bid in businessCache:
+#      return businessCache[bid]
     ratingFilter = Rating.objects.filter(business=Business.objects.get(id=bid)).aggregate(Sum('rating'), Count('rating'))
     sumRating = ratingFilter['rating__sum']
     countRating = ratingFilter['rating__count']
@@ -79,11 +86,14 @@ def getBusAvg(bid):
     if countRating != 0:
       glb = getGlobalAverage()
       avg = (glb * K + float(sumRating)) / (K + float(countRating)) #ci_lowerbound(sumRating,countRating)
+#    businessCache[bid] = avg
     return avg
     #b = Business.objects.get(id=bid)
     #return b.average_rating
 
 def getUserAvg(uid):
+#    if uid in userCache:
+#      return userCache[uid]
     ratingFilter = Rating.objects.filter(username=User.objects.get(id=uid)).aggregate(Sum('rating'), Count('rating'))
     sumRating = ratingFilter['rating__sum']
     countRating = ratingFilter['rating__count']
@@ -92,11 +102,15 @@ def getUserAvg(uid):
     if countRating != 0:
       glb = getGlobalAverage()
       avg = (float(glb * K) + float(sumRating)) / (float(K) + float(countRating)) #ci_lowerbound(sumRating,countRating)
+#    userCache[uid] = avg
     return avg
     #u = UserMeta.objects.get(user=User.objects.get(id=uid))
     #return u.average_rating
 
 def getNormFactors(uid,bid):
+ #   if 'globalNormFactor' in globals():
+  #    glb =globalNormFactor
+  #  else:
     glb = getGlobalAverage()
     usr = getUserAvg(uid)
     bus = getBusAvg(bid)
