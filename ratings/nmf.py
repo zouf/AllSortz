@@ -21,7 +21,7 @@ import fastnmf
 def get_folds(allRatings):
     folds = [[],[],[],[],[]]
     numRatings = len(allRatings)
-    random.seed(666) 
+#    random.seed(666) 
     fld = []
     for i in range(0, numRatings):
         fld.append(i%5)
