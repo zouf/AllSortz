@@ -156,7 +156,7 @@ in the setup stages, so we can't accurately analyze the speedup we got by
 switching to a sparse representation.
 
 The next step we took to improve performance was to move our algorithm code into
-C++. To do this we used the Boost library to compile C++ code into a python
+C++. To do this we used the Boost library \cite{boost} to compile C++ code into a python
 plugin. Once this was done we could call our C++ code as if it were python code.
 This gave a significant speedup and got us to the point where we could execute
 tests in a reasonable amount of time. To improve the speed of tests even more we
