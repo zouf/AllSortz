@@ -133,12 +133,12 @@ overall rating away from a perfect score and down to $+4$. \cite{funk}
 \subsection{Framework}
 
 Because we actually want to build a usable system on top of our recommendation
-engine, we built a prototype website in Django. Django is a python library that
-makes it easy to build a website. Django separates implementation from design
-and also provides convenient abstractions on top of databases. We use a MySQL
-database to hold information about users, businesses, and ratings, but the
-Django abstraction allows us to manage all of our data without having to
-manually write any SQL queries.
+engine, we built a prototype website in Django\cite{django}. Django is a python
+library that makes it easy to build a website. Django separates implementation
+from design and also provides convenient abstractions on top of databases. We
+use a MySQL database to hold information about users, businesses, and ratings,
+but the Django abstraction allows us to manage all of our data without having
+to manually write any SQL queries.
 
 \subsection{Challenges}
 
@@ -162,7 +162,7 @@ plugin. Once this was done we could call our C++ code as if it were python code.
 This gave a significant speedup and got us to the point where we could execute
 tests in a reasonable amount of time. To improve the speed of tests even more we
 implemented task-level parallelism, allowing us to run tests for different
-values of $K$ simultaneously. In future work, we will look into paralellizing
+values of $K$ simultaneously. In future work, we will look into parallelizing
 the algorithm code. This is an interesting challenge, because the outer loop
 appears to carry dependences. We suspect, however, that the order we update
 cells in $P$ and $Q$ actually won't have any effect on the correctness of the
