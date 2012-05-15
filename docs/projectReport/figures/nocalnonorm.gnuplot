@@ -5,6 +5,7 @@ set ylabel "Root Mean Square Error (RMSE)" font "Times-Roman, 16"
 set yrange [1.1:1.45]
 set xtics font "Times-Roman, 12"
 set ytics font "Times-Roman, 12"
+set yrange [0.8:1.4]
 set grid
 set nokey
 #set key 600, 45

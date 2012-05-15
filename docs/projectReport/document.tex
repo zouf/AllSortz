@@ -10,6 +10,10 @@
 \usepackage{fullpage}
 \usepackage{tabularx}
 \usepackage{amsmath}
+
+\setlength{\parskip}{-2pt}
+\setlength{\floatsep}{-5pt}
+
 \begin{document}
 %%To do:
 %%___________________
@@ -29,11 +33,17 @@
 \newcommand{\netDiff}{0.06 }
 
 \newcommand{\numBusCA}{707 } 
+\newcommand{\numBusOther}{1745 }
+\newcommand{\numBusOthernsp}{1745}
 \newcommand{\numBusTotal}{2,452 }
 \newcommand{\numUserTotal}{1,799 }
 
 \newcommand{\numRatingCA}{8,970 } 
+\newcommand{\numRatingOther}{19,340 }
 \newcommand{\numRatingTotal}{28,310 }
+
+\newcommand{\posAccuracy}{92.61\% }
+\newcommand{\posInaccuracy}{7.39\% }
 
 \section{Data}
 \input{data.tex}
@@ -44,14 +54,44 @@
 \section{Evaluation}
 \input{evaluation.tex}
 
-\section{Error Analysis}
-\input{errorAnalysis.tex}
-
 \begin{thebibliography}{9}
 
 \bibitem{netprize}
-  Edwin Chen,
+  Edwin Chen, 2011
   \emph{Winning the Netflix Prize: A Summary}.
+  April 15, 2012
   http://blog.echen.me/2011/10/24/winning-the-netflix-prize-a-summary/
+
+\bibitem{yelp}
+  Yelp, 
+  \emph{Yelp Academic Dataset}.
+  April 15, 2012
+  http://www.yelp.com/academic\_dataset 
+
+\bibitem{bellkor}
+  Robert M. Bell, Yehuda Koren, Chris Volinksy,
+  \emph{The BellKor 2008 Solution to the Netflix Prize}.
+  2008
+
+\bibitem{funk}
+  Simon Funk, 2009
+  \emph{Netflix Update: Try this at Home}.
+  April 15, 2012
+  http://sifter.org/~simon/journal/20061211.html
+
+\bibitem{boost}
+	Boost,
+	\emph{Boost C++ Libraries}.
+	http://www.boost.org/
+
+
+\bibitem{django}
+ Django,
+ \emph{Django: The Web framework for perfectionists with deadlines}.
+ https://www.djangoproject.com/
+
 \end{thebibliography}
+
+
+
 \end{document}
