@@ -14,27 +14,26 @@ similar ratings, $u$ will probably feel the same about $b$ as $v$ does. This is
 a very naive method, that can be improved by things like taking more related
 users into account and averaging their rating for $b$.
 
-Even with improvements to the previous method, we don't really take the way
+Even with improvements to the previous method, we wouldn't really take the way
 people make decisions about businesses into account. It won't be terribly
-accurate, and there are a number of situations in which you won't be able to get
-a rating at all. If none of the users related to a user have a rating for a
-business we wish to predict for, we will be unable to make any prediction for
-that business at all. 
+accurate, and there are a number of situations in which this method won't be
+able to get a rating at all. If none of the users related to a user have a
+rating for a business we wish to predict for, this simple CF algorithm will be
+unable to make any prediction for that business at all. 
 
 \subsection{Singular Value Decomposition}
 To correct for these problems we decided to perform a matrix factorization
 using singular value decomposition (SVD). SVD fixes both of the problems that
 are mentioned above. It decomposes relationships between users and businesses
-into some number of factors that influence the relationship. Because of this it
-ends up being a much better model for why people actually like businesses that
-they like. It can use less direct relationships between users, so even if
-closely related users don't have a rating for a business, we can still give a
-prediction for it. 
+into some number of factors that influence the relationship. Because of SVD is
+a much better model for why people actually like businesses that they like. It
+can use less direct relationships between users, so even if closely related
+users don't have a rating for a business, we can still give a prediction for it.
 
 The goal of SVD is that the given matrix $M$ should be decomposed into
 matrices $P$ and $Q$ such that $P \times Q \approx M $. This means that if
 matrix $M$ has dimensions $u \times b$, $P$ should be $u \times K$ and $Q$
-should be $k \times b$. We know that $b$ and $u$ should be the number and
+should be $K \times b$. We know that $b$ and $u$ should be the number and
 businesses and users respectively, but what is $K$? In SVD $K$ corresponds to
 the number of \emph{latent factors} we believe determine the relationship
 between users and businesses.
@@ -43,21 +42,24 @@ The only input to the SVD algorithm is a matrix $M$ of size $b \times u$ and the
 integer $K$. The output of SVD is then matrices $P$ and $Q$. $P$ contains a
 relationship between every user and every latent factor. Similarly $Q$ describes
 relationships between businesses and latent factors. These relationships aren't
-on the same scale as the input ratings of $M$, if everything worked correctly
-they should be smaller. They are relative however. A value of $.9$ between a
-user and a factor suggests that that user has a stronger relationship to the
-factor than a value of $.4$. Because $P \times Q$ is an approximation for $M$,
-$P_u \cdot Q_b$ approximates a rating for user $u$ on business $b$. This is
-referred to as Standard SVD~\cite{netflix paper}.
+on the same scale as the input ratings of $M$; If everything worked correctly
+the numbers in $P$ and $Q$ should be smaller. They are relative however. A value
+of $.9$ between a user and a factor suggests that that user has a stronger
+relationship to the factor than a value of $.4$. It is also possible to have a
+negative relationship. Because $P \times Q$ is an
+approximation for $M$, $P_u \times Q_b$ approximates a rating for user $u$ on
+business $b$. This is referred to as Standard SVD~\cite{netflix paper}.
 
-SVD is calculated using an iterative gradient descent approach to discover good
-values for $P$ and $Q$. This means that we initialize $P$ and $Q$ to some
-values, and then calculate the distance from $P \times Q$ to $M$. We then move
-the values in $P$ and $Q$ in the correct direction to decrease the distance
-between $P \times Q$ and $M$. This means that the value of $P \times Q$ should
-move closer to $M$ with each iteration. At the end of each iteration we measure
-the difference between the previous distance and the current one. When we make
-a small enough change the algorithm terminates.
+SVD on sparse matrices is calculated using an iterative gradient descent
+approach to discover good values for $P$ and $Q$. Using gradient descent allows
+us to calculate $P$ and $Q$ using only the observed values and ignoring any
+empty values. This means that we initialize $P$ and $Q$ to some values, and
+then calculate the distance from $P \times Q$ to $M$. We then move the values
+in $P$ and $Q$ in the correct direction to decrease the distance between $P
+\times Q$ and $M$. This means that the value of $P \times Q$ should move closer
+to $M$ with each iteration. At the end of each iteration we measure the
+difference between the previous distance and the current one. When we make a
+small enough change the algorithm terminates.
 
 Our goal in each iteration is given some $P$ and $Q$, for every $i$ and $j$ for
 which there exists a rating $M_{ij}$ and for every latent variable $k$ from
@@ -73,7 +75,7 @@ Q'_{kj}=Q_{kj} + \alpha(E_{ij}P_{ik}-\beta Q_{kj})
 
 \noindent where $E$ is the error between $P \times Q$ and the actual value. What
 we are doing here is modifying each user and business association in a direction
-that improves the distance between $M$ and $P \times Q$. The term multiplied by
+that decreases the distance between $M$ and $P \times Q$. The term multiplied by
 $\beta$ is the regularization term. This term keeps the values from changing too
 quickly relative to how large they already are. This restricts values in $P$ and
 $Q$ from growing too large to avoid over-fitting the data.
@@ -90,7 +92,7 @@ slower.
 
 \subsubsection{Normalization}
 
-Our ratings data comes from a 5-star, which everyone can treat slightly
+Our ratings data comes from a 5-star system, which everyone can treat slightly
 differently.  For example, perhaps some users are particularly harsh and rarely
 give out 5-star ratings, or others are particularly kind and rarely give any
 business less than 3-stars. To account for this we normalize our data by
@@ -141,16 +143,17 @@ manually write any SQL queries.
 
 Our initial implementation had two problems: it used a dense matrix
 representation, and it was implemented in Python. Because the gradient descent
-algorithm only operates on non-zero ratings, a dense matrix representation was
-extremely expensive, both in memory and computationally. Because most of the
-ratings are zeroes, our first large performance improvement came from switching
-to a sparse representation. Instead of creating a 2-dimensional array containing
-every rating weather it existed or not, we created a 1-dimensional array where
-each cell contained a username, a business name, and a rating. This allowed us
-to use only a fraction of the memory, and to save a large number of wasted loop
-iterations. We can't accurately analyze the speedup given by this step because
-the dense matrix representation was never able to start because it was using too
-much memory. 
+algorithm only operates on non-zero ratings (we use zero ratings to represent
+no rating), a dense matrix representation was extremely expensive, both in
+memory and computationally. Because most of the ratings are zeroes, our first
+large performance improvement came from switching to a sparse representation.
+Instead of creating a 2-dimensional array containing a rating for every
+user-business pair, we created a 1-dimensional array where each cell contained a
+username, a business name, and a rating. This allowed us to use only a fraction
+of the memory, and to save a large number of wasted loop iterations. The dense
+matrix representation took up too much memory and completely stalled the program
+in the setup stages, so we can't accurately analyze the speedup we got by
+switching to a sparse representation.
 
 The next step we took to improve performance was to move our algorithm code into
 C++. To do this we used the Boost library to compile C++ code into a python
@@ -158,7 +161,13 @@ plugin. Once this was done we could call our C++ code as if it were python code.
 This gave a significant speedup and got us to the point where we could execute
 tests in a reasonable amount of time. To improve the speed of tests even more we
 implemented task-level parallelism, allowing us to run tests for different
-values of $K$ simultaneously.
+values of $K$ simultaneously. In future work, we will look into paralellizing
+the algorithm code. This is an interesting challenge, because the outer loop
+appears to carry dependences. We suspect, however, that the order we update
+cells in $P$ and $Q$ actually won't have any effect on the correctness of the
+algorithm. This is easy to check because the distance should get better at every
+step. As long as that invariant holds, we can be sure our algorithm will
+eventually give a good answer.
 
 The dataset presented some challenges as well. The first challenge we dealt with
 is that some users and businesses had a very limited number of reviews. Users

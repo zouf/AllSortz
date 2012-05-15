@@ -12,14 +12,26 @@ by multiplying the matrices. Running our algorithm on this data yielded similar
 $P$ and $Q$ matrices, which indicated that the algorithm was (fundamentally) doing
 what we expected it to do.
 
-\subsection{Real Data}
-However, using generated data shows nothing about the validity of our model. In
-order to show just how effective our model is, we needed to evaluate on
-the actual businesses data from Yelp. We started evaluation by taking dense
-chunks of data from the Yelp set. Thus, we'd only have a couple of thousand
-ratings (instead of hundreds of thousands).  This step was critical to expose
-inefficiencies in our calculations (indeed, once we started doing this, we
-immediately realized the need to switch our code from Python to a C++ module).
+\subsection{Yelp Data}
+However, using generated data shows nothing about the validity of our model
+when applied to business recommendations. In order to show just how effective
+our model is, we needed to evaluate on the actual businesses data from Yelp. We
+started evaluation by taking dense chunks of data from the Yelp set. Thus, we'd
+only have a couple of thousand ratings (instead of hundreds of thousands). 
+This step was critical to expose inefficiencies in our calculations (indeed,
+once we started doing this, we immediately realized the need to switch our code
+from Python to a C++ module).
+
+To evaluate our algorithm on a dataset, we used 5-fold cross-validation. To do
+this we placed each rating into a random fold, giving us 5 folds of
+approximately the same size. Then we pick a fold to call the infold, and call
+all of the data not in that fold the outfold. To measure how well our algorithm
+worked, we generated a $P$ and $Q$ on all of the ratings in the outfold. We
+calculated distance by generating a predicted rating for each item in the
+infold, taking the distance and squaring it. We then average the distance for
+every rating in the infold and call this the Residual Sum of Squares (RSS). We
+present our data a Root Mean Squared Error (RMSE) to give an idea of the actual
+average distance between predicted ratings and actual ratings.
 
 For training, we removed California's businesses ratings from the Yelp data
 set. This meant removing roughly \numBusCA businesses from \numBusTotal total
