@@ -37,11 +37,31 @@ width:100px;
 	padding-bottom: 25px;
 }
 #account-bar
-{
-	margin: 0 auto;
-	text-align:right;
-	width:900px;
+{	
+	text-align: center;
+	width: 100%;
+	position: fixed;
+	top: 0px;
+	left:0px;
+	background-color: gray;
+	height: 30px;
+	padding-top: .5em;
+	border-bottom: 1px black solid;
+}
 
+#account-bottom
+{
+	width: 100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	border-bottom: 1px lightGrey solid;
+	height: 37px;
+}
+
+#account-back{
+	color: black;
+	opacity :.25
 }
 #pagecontainer
 {

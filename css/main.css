@@ -5,14 +5,22 @@ div#container
 	width: 50em;
 }
 
-div#businessList a
+#businessList
 {
 	font-family: 'Helvetica', sans-serif;
 	font-size:18px;
+	width: 900px;
+    margin: 0 auto;
+    background-color : #f0f0f0;
+    border: 1px black solid;
+    margin-top: -10px;
 }
 
 
-
+body{
+    background-image: url(images/cross_scratches.png);
+    background-repeat: repeat;
+}
 
 h1
 {
@@ -33,13 +41,28 @@ font-family: 'Trykker', serif;
 font-size:15px;
 }
 
+.busCard{
+	border: 1px solid black;
+	width: 100px;
+	height: 100px;
+	padding: 10px;
+	margin: 10px;
+	display: inline-block;
+}
+
 #ratingList
 {
+	
 	margin-left:40%;
 }
 
 
 
+
+.selectedLike
+{
+	font-size: 18px;
+	font-weight:bold;
 
 .selectedLike
 {
@@ -65,7 +88,6 @@ font-size:15px;
 		padding:4px 8px;
 		margin-bottom:5px;
 		border-radius: 5px;
-	
 }
 
 

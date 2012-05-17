@@ -5,15 +5,17 @@
 
 
 {% if business_list %}
-    
-	<h1>Nightout</h1>
     <div id="businessList">
+	<h1>Nightout</h1>
+    
 		<p>
 	    {% for bus in business_list %}
+	       <div class="busCard">
 	        <a href="/ratings/{{ bus.id }}/">{{ bus.name }}</a>
-	        <br>
+	       </div>
 	    {% endfor %}
-			<li><a href="/ratings/add_business/">Add a business</a></li>
+			<br><br><a href="/ratings/add_business/">Add a business</a></li>
+
 	    </p>
 	</div>
 	<script type="text/javascript"/>
