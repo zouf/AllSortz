@@ -1,9 +1,9 @@
-from ratings.models import Business
-from ratings.models import Rating
-from ratings.models import Recommendation
-from django.contrib.auth.models import User
-
 from celery.execute import send_task
+from django.contrib.auth.models import User
+from ratings.models import Business, Rating, Recommendation, UserFactor, \
+    BusinessFactor
+from ratings.normalization import getBusAvg, getNormFactors
+import numpy as np
 
 class RecEngine:
     best_recommendation_table = dict()   
@@ -26,11 +26,41 @@ class RecEngine:
     # CALLED BY THE VIEW TO GET THE BES    T CURRENT RECOMMENDATION
     def get_best_current_recommendation(self, business, user):
       
-            print(user)
-            print(business)
-            recset = Recommendation.objects.filter(username=user, business=business)
-            print(recset[0])
-            return recset[0].recommendation
-         
+        print("zouf)")
+        #  my.factors <- me %*% m@fit@W
+        #  barplot(my.factors)
+        #  my.prediction <- my.factors %*% t(m@fit@W)
+        #  items$title[order(my.prediction, decreasing=T)[1:10]]
+        
+        NumFactors = 42
+        ufset = UserFactor.objects.filter(user=user)
+        myFactors = np.zeros(NumFactors)
     
+        for uf in ufset:
+            factor = uf.latentFactor
+            relation = uf.relation
+            myFactors[factor]=relation
+        
+            
+        bfset = BusinessFactor.objects.filter(business=business)       
+        busFactors = np.zeros(NumFactors)
+        for bf in bfset:
+            factor = bf.latentFactor
+            relation = bf.relation
+            busFactors[factor]=relation
+            
+        
+        prediction = np.dot(myFactors,busFactors) +  getNormFactors(user.id, business.id)
+        
+        rec = round(prediction*2)/2 #round to half
+        
+        if rec > 5.0:
+            rec = 5.0
+        elif rec < 1.0:
+            rec = 1.0 
+            
+        #Recommendation.objects.filter(username=user, business=business)
+        return rec
+     
+
         

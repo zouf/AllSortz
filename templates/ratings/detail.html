@@ -2,20 +2,14 @@
 
 {% block body %}
 {% if business %}
+	<div id="busDetail" class="defaultBody">
     <h1>{{ business.name }}</h1>
 
-    <div id="businessDetail">
-		<p> {{ business.address }}, {{ business.city }}, {{business.state}}</p>
+    <div id="businessDetail" >
+		<i> {{ business.city }}, {{business.state}}</i>
+		<br><br>
 		
-	
-		<div id="busKeywords">
-				<p> Keywords </p>
-			<ul>
-			{% for key in business.keywords.all %}
-				<li>{{ key }}</li>
-			{% endfor %}
-			</ul>
-		</div>
+
 	
 		
 		<div id="busRating">
@@ -23,7 +17,10 @@
 			<p> Your rating is {{ rating.rating }}</p>
 		{% endif %}
 		{% if not rating %}
-			<p> Recommendation: {{ recommendation}} </p>
+		{% if user.is_authenticated %}
+			<p> Recommendation for {{user}}: {{ recommendation}} </p>
+		{% endif %}
+			<p> Average across {{numRatings}} users: {{avg}} </p>
 		{% endif %}
 		</div>
 	</div>
@@ -33,11 +30,24 @@
 		<form action="." method="post">{% csrf_token %}
 		{{ form.as_p }}
 		<input type="submit" value="Submit" />
+		</form>
 	{% endif %}
 	{% if not user.is_authenticated %}
 		<p>Login to rate</p>
 	{% endif %}
-	</form>
+			</div>
+	
+	
+		
+		<div id="busKeywords">
+				<p> Keywords </p>
+			<ul>
+			{% for key in business.keywords.all %}
+				<li>{{ key }}</li>
+			{% endfor %}
+			</ul>
+		</div>
+
 {% else %}
     <p>Invalid business!.</p>
 {% endif %}

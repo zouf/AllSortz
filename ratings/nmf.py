@@ -10,12 +10,12 @@ from ratings.models import Business
 from ratings.models import Rating
 from data_import.views import user_rating_threshold
 from data_import.views import bus_rating_threshold
-
+import numpy as np
 import time
 from ratings.normalization import getNormFactors
 
-#sys.path.append(settings.CLIB_DIR)
-#import fastnmf
+sys.path.append(settings.CLIB_DIR)
+import fastnmf
 
 
 def get_folds(allRatings):
@@ -52,17 +52,20 @@ def get_p_q_best(k, steps, alpha):
     print("Get ratings from DB")
     allRatings = Rating.objects.all()
     print("Moving data to an array...")
-    allRatMatrix, bid2arrID, uid2arrID, arrID2bid, arrID2uid = getAllRatMatrix(allRatings)
+    
+    print(N)
+    
+    allRatMatrix, bid2arrID, uid2arrID, arrID2bid, arrID2uid = getAllRatMatrix(N,M,allRatings)
     print(len(allRatMatrix))
     print("Running nmf...")
     nP, nQ = run_nmf_internal(allRatMatrix,N,M,k,steps,alpha,0)
-    print(len(nQ))
+
     return nP, nQ, arrID2bid, arrID2uid
 
 
-def getAllRatMatrix(allRatings):
-      arrID2uid = dict()
-      arrID2bid = dict()
+def getAllRatMatrix(N,M,allRatings):
+      arrID2uid = np.zeros(N)
+      arrID2bid = np.zeros(M)
       bid2arrID = dict()
       uid2arrID = dict()
       allRatMatrix = []
@@ -240,7 +243,7 @@ def run_nmf_internal(R,N,M, K, Steps, Alpha, fp):
 #      fp.write(str(r[2])+"\n")
     #print(R)
     #run_nmf_c(list& ratings, int N, int M, int K, int p_Steps, double p_Alpha, list& p_P, list &p_Q)
-    #fastnmf.run_nmf_from_python(R,N,M,K, Steps, Alpha, P,Q)
+    fastnmf.run_nmf_from_python(R,N,M,K, Steps, Alpha, P,Q)
     return P, Q
     #nR = numpy.dot(nP, nQ.T)
     #return nR

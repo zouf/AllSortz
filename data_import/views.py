@@ -17,7 +17,7 @@ bus_rating_threshold = 10
 user_rating_threshold = 10
 
 
-def read_dataset():
+def read_dataset(FilterState, FoodOnly):
     yelpUIDtoID = dict()
     yelpBIDtoID = dict()
     clear_all_tables()
@@ -80,7 +80,7 @@ def read_dataset():
                 
                 name = o['name']
                 state =  o['state']
-                if state != 'NJ':
+                if state != FilterState:
                   continue
                 longitude = o['longitude']
                 latitude = o['latitude']
@@ -134,10 +134,10 @@ def read_dataset():
             create_grouping_list.append(g)
     Grouping.objects.bulk_create(create_grouping_list)
     transaction.commit();
-    pare_dataset()
+    pare_dataset(FoodOnly)
     buildAverageRatings()
 
-def pare_dataset():
+def pare_dataset(filterFood):
     # All the ratings are in the DB at this point, out of laziness we now
     # go through again and delete any user that doesn't have enough reviews
     # for the businesses that actually got added
@@ -163,15 +163,17 @@ def pare_dataset():
       Rating.objects.filter(business=b.id).delete()
       b.delete()
       continue
-   # kwds = b.keywords
-   # qual = False
-   # for k in kwds.all():
-   #   if k.name == u'Restaurants':
-   #     qual = True
-   #   elif k.name == u'Food':
-   #      qual = True 
-   # if qual == False:
-   #   b.delete()
-  
+
+    if filterFood:
+        kwds = b.keywords
+        qual = False
+        for k in kwds.all():
+          if k.name == u'Restaurants':
+            qual = True
+          elif k.name == u'Food':
+             qual = True 
+        if qual == False:
+          b.delete()
+      
   print("Ratings after bus delete - "+str(Rating.objects.count()))
 

@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from numpy import dot
 from numpy.random import binomial
 from ratings.models import Business, Rating, Keyword, Grouping, UserMeta, \
-    Recommendation
+    Recommendation, UserFactor
 import numpy
 import random
 
@@ -107,7 +107,7 @@ def generate_nmf_test(numFactors, density):
     
 def create_user(username,uid):
     u = User(username=("u"+str(uid)), first_name=(username[0:20].encode("utf8")),password="")
-    u.set_password("test")
+   # u.set_password("test")
     return u
     
 def create_category(name):
@@ -147,7 +147,10 @@ def clear_all_tables():
     UserMeta.objects.all().delete()
     Recommendation.objects.all().delete()
     #User.objects.exclude(username="joey").exclude(username="zouf").delete()
+    User.objects.all().delete()
     Business.objects.all().delete()
+    UserFactor.objects.all().delete()
+    BusinessFactor.objects.all().delete()
     
 def populate_test_data(numUsers, numBusinesses):
     Rating.objects.all().delete()
@@ -155,6 +158,6 @@ def populate_test_data(numUsers, numBusinesses):
     Business.objects.all().delete()
     createbusinesses(numBusinesses) 
     createusers(numUsers)
-    generateTest()
+    #generateTest()
     return
     
