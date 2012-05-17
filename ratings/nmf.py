@@ -14,8 +14,8 @@ from data_import.views import bus_rating_threshold
 import time
 from ratings.normalization import getNormFactors
 
-sys.path.append(settings.CLIB_DIR)
-import fastnmf
+#sys.path.append(settings.CLIB_DIR)
+#import fastnmf
 
 
 def get_folds(allRatings):
@@ -240,7 +240,7 @@ def run_nmf_internal(R,N,M, K, Steps, Alpha, fp):
 #      fp.write(str(r[2])+"\n")
     #print(R)
     #run_nmf_c(list& ratings, int N, int M, int K, int p_Steps, double p_Alpha, list& p_P, list &p_Q)
-    fastnmf.run_nmf_from_python(R,N,M,K, Steps, Alpha, P,Q)
+    #fastnmf.run_nmf_from_python(R,N,M,K, Steps, Alpha, P,Q)
     return P, Q
     #nR = numpy.dot(nP, nQ.T)
     #return nR
