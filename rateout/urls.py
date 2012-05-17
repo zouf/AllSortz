@@ -1,6 +1,6 @@
 from django.conf.urls import url, patterns, include
 from django.contrib import admin
-from nightout import settings
+from rateout import settings
 from ratings.views import logout_page
 
 
