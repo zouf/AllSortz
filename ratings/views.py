@@ -8,8 +8,10 @@ from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
 from ratings.forms import BusinessForm, KeywordForm, RatingForm
 from ratings.models import Business, Grouping, Rating
+from ratings.normalization import getBusAvg
 from ratings.populate import populate_test_data
 from ratings.recengine import RecEngine
+from ratings.utility import getNumRatings
 from validation.views import build_pred_server
 
 
@@ -33,8 +35,10 @@ def pop_test_data(request):
 	
 def detail(request, bus_id):
 	global re
+	b = get_object_or_404(Business, pk=bus_id)
+	avg = round(getBusAvg(b.id)*2)/2
+	numRatings = getNumRatings(b)
 	if request.user.is_authenticated():
-		b = get_object_or_404(Business, pk=bus_id)
 		try: 
 			r = Rating.objects.get(username=request.user, business=bus_id)	 #rating exists
 			if request.method == 'POST':	#posting an existing rating
@@ -45,8 +49,8 @@ def detail(request, bus_id):
 					r.rating	= new_rating
 					r.save() 
 			f2 = RatingForm();
-			return render_to_response('ratings/detail.html', {'business': b,'rating': r, 'form' : f2}, context_instance=RequestContext(request))
-		except:	#rating doesnt exist
+			return render_to_response('ratings/detail.html', {'business': b,'rating': r, 'form' : f2, 'avg':avg, 'numRatings':numRatings}, context_instance=RequestContext(request))
+		except:	#rating doesn't exist
 			if request.method == 'POST':	# posting a new rating
 				form = RatingForm(request.POST)
 				if form.is_valid():
@@ -55,14 +59,15 @@ def detail(request, bus_id):
 					r = Rating.objects.create(business=b, username=request.user,rating=new_rating)
 					r.save() 
 					f2 = RatingForm();			
-					return render_to_response('ratings/detail.html', {'business': b,'rating': r , 'form' : f2}, context_instance=RequestContext(request))
+					return render_to_response('ratings/detail.html', {'business': b,'rating': r , 'form' : f2, 'avg':avg, 'numRatings':numRatings}, context_instance=RequestContext(request))
 			else:
 				f2 = RatingForm();		
 				r = re.get_best_current_recommendation(b, request.user)	
-				return render_to_response('ratings/detail.html', {'business': b, 'form' : f2, 'recommendation': r}, context_instance=RequestContext(request))
+				return render_to_response('ratings/detail.html', {'business': b, 'form' : f2, 'recommendation': r, 'avg': avg, 'numRatings': numRatings}, context_instance=RequestContext(request))
 	else:		# Not logged in
 		p = get_object_or_404(Business, pk=bus_id)
-		return render_to_response('ratings/detail.html', {'business': p}, context_instance=RequestContext(request))
+		
+		return render_to_response('ratings/detail.html', {'business': p, 'avg':avg, 'numRatings':numRatings}, context_instance=RequestContext(request))
 		
 	
 def add_keyword(request):

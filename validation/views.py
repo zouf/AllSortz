@@ -2,7 +2,8 @@
 from data_import.views import read_dataset
 from django.conf import settings
 from django.db import transaction
-from ratings.models import Business, Recommendation, User
+from ratings.models import Business, Recommendation, User, UserFactor, \
+    BusinessFactor
 from ratings.nmf import run_nmf_mult_k, get_p_q_best
 from ratings.populate import pop_test_user_bus_data, generate_nmf_test
 import numpy
@@ -11,22 +12,67 @@ def build_pred_server():
     k=42
     Steps = 5000
     Alpha = 0.05
+    print("BEFORE")
     P, Q, arrID2bid, arrID2uid = get_p_q_best(k, Steps, Alpha)
-    Predictions = numpy.dot(P,numpy.transpose(Q))
+    print("AFTER)")
+    
+    print(len(arrID2uid))
+    print(len(P))
+    #print(len(P))
+    
     i = 0
-    predictions = []
-    for row in Predictions:
-        print(len(row))
-        j = 0
-        bus = Business.objects.get(id=arrID2bid[j])
-        for cell in row:
-            usr = User.objects.get(id=arrID2uid[i])
-            p = Recommendation(business=bus,recommendation=cell,username=usr)
-            predictions.append(p)
-            j+=1
-        i+=1
-    Recommendation.objects.bulk_create(predictions)
-    transaction.commit();
+   
+    factors = []
+   
+    
+    for row in P:
+        k = 0
+        actualUID = arrID2uid[i]
+        #this user hasn't rated anything
+        if actualUID == 0:
+            continue
+        usr = User.objects.get(id=actualUID)
+        for col in row:
+            uf = UserFactor(user=usr,latentFactor=k,relation=col)
+            factors.append(uf)      
+            k += 1
+        i += 1  
+    UserFactor.objects.bulk_create(factors)
+    
+    i = 0
+    factors = []
+    for row in Q:
+        actualBID = arrID2bid[i]
+        #this business hasn't been rated 
+        if actualBID == 0:
+            continue
+        bus = Business.objects.get(id=actualBID)
+        k = 0
+        for col in row:
+           
+            bf = BusinessFactor(business=bus,latentFactor=k,relation=col)
+            factors.append(bf)        
+            k +=1
+        i += 1
+    BusinessFactor.objects.bulk_create(factors)
+        
+            
+        
+#    Predictions = numpy.dot(P,numpy.transpose(Q))
+#    i = 0
+#    predictions = []
+#    for row in Predictions:
+#        print(len(row))
+#        j = 0
+#        bus = Business.objects.get(id=arrID2bid[j])
+#        for cell in row:
+#            usr = User.objects.get(id=arrID2uid[i])
+#            p = Recommendation(business=bus,recommendation=cell,username=usr)
+#            predictions.append(p)
+#            j+=1
+#        i+=1
+#    Recommendation.objects.bulk_create(predictions)
+#    transaction.commit();
     
 
 def find_categories_best_k(k):

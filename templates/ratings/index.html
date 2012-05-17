@@ -5,8 +5,8 @@
 
 
 {% if business_list %}
-    <div id="businessList">
-	<h1>Nightout</h1>
+    <div id="businessList" class="defaultBody">
+	<h1>Stuff to Rate</h1>
     
 		<p>
 	    {% for bus in business_list %}
@@ -37,5 +37,6 @@
 	</script>
 {% else %}
     <p>No businesses are available.</p>
+    <p><a href="/ratings/add_business/">Add a business</a></p>
 {% endif %}
 {% endblock %}

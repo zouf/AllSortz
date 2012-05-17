@@ -5,9 +5,11 @@ from ratings.models import Keyword
 from ratings.models import Business
 
 RATING_CHOICES = (
-    (0, 0),
     (1, 1),
     (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5)
 )
 
 class RatingForm(forms.Form):

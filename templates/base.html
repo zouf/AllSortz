@@ -13,22 +13,23 @@
 <body>
 	{% if not user.is_authenticated %}
 	
-	<div id=account-bar>
-		<a href="/">Home</a> | <a href="/accounts/login/?next=/">login</a> | 
-		<a href="/accounts/register/">register</a>
+	<div id=account-bar class="headerBar">
+		<a href="/">Home</a> | <a href="/accounts/login/?next=/">login</a> | <a href="/accounts/register/">register</a>
 	</div>
 
 
 	{% endif %}
 
 	{% if user.is_authenticated %}
-		Welcome, {{ user }} | <a href="/">Nightout</a> | <a href="/accounts/logout/?next=/">logout</a> 
+		<div id="account-bar" class="headerBar">
+		<p style="display:inline"> Welcome, {{ user }} </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
+		</div> 
 	{% endif %}
 	<br/><br/>
 
     {% block body %}{% endblock %}
 	<footer>
-		<p> Copyright info </p>
+		<p> All Rights Reserved </p>
 	</footer>
 	
 </body>

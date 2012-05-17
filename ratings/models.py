@@ -41,6 +41,16 @@ class Rating(models.Model):
     def __unicode__(self):
         return self.username.username +  " " + self.business.name + " " + str(self.rating)
 
+class BusinessFactor(models.Model):
+    business = models.ForeignKey(Business)
+    latentFactor = models.IntegerField()
+    relation = models.FloatField()
+
+class UserFactor(models.Model):
+    user = models.ForeignKey(User)
+    latentFactor = models.IntegerField()
+    relation = models.FloatField()
+
 
 
 class Grouping(models.Model):
