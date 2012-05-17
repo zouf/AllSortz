@@ -135,7 +135,7 @@ LOGIN_URL = '/login/'
 
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'rateout.wsgi.application'
+#WSGI_APPLICATION = 'rateout.wsgi.application'
 
 TEMPLATE_DIRS = (
 	BASE+'nightout/templates',
