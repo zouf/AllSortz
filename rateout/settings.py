@@ -17,10 +17,10 @@ BROKER_PASSWORD = "guest"
 CELERY_IMPORTS = ("ratings.tasks", )
 CELERY_RESULT_BACKEND = "amqp"
 
-import djcelery
+#import djcelery
 
 
-djcelery.setup_loader()
+#djcelery.setup_loader()
 
 
 
