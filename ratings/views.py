@@ -95,8 +95,8 @@ def rate(request, bus_id):
 		return HttpResponse("You're rating for business %s." % bus_id)
 
 def index(request):
-		global re
-		re.spawn_worker_task()
+#		global re
+#		re.spawn_worker_task()
 #	if request.user.is_authenticated():
 		business_list = Business.objects.all()
 		c = Context({
