@@ -1,8 +1,9 @@
 # Django settings for nightout project.
-
+import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-BASE='./'
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))+'/..'
+print(BASE_DIR)
 ADMINS = (
      ('Matt Zoufaly', 'matt@tigerstonelabs.com'),
 )
@@ -82,11 +83,11 @@ STATIC_ROOT = '/nightout/static'
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
-DATASET_LOCATION = BASE+'nightout/data_import/michigan_dataset.json'
+DATASET_LOCATION = BASE_DIR+'nightout/data_import/michigan_dataset.json'
 RESULTS_DIR = '/tmp/'
-CLIB_DIR = BASE+'nightout/clib'
+CLIB_DIR = BASE_DIR+'/clib'
 
-PYTHON_PATH = BASE+'/nightout/clib'
+PYTHON_PATH = BASE_DIR+'/clib'
 
 
 # Additional locations of static files
@@ -94,8 +95,8 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-	  ("css", BASE+"nightout/css"),
-	  ("js", BASE+"nightout/js"),
+	  ("css", BASE_DIR+ "/css"),
+	  ("js", BASE_DIR+ "/js"),
 )
 
 # List of finder classes that know how to find static files in
@@ -138,7 +139,7 @@ LOGIN_URL = '/login/'
 #WSGI_APPLICATION = 'rateout.wsgi.application'
 
 TEMPLATE_DIRS = (
-	BASE+'nightout/templates',
+	BASE_DIR+'/templates',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
