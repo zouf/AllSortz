@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from numpy import dot
 from numpy.random import binomial
 from ratings.models import Business, Rating, Keyword, Grouping, UserMeta, \
-    Recommendation, UserFactor
+    Recommendation, UserFactor, BusinessFactor
 import numpy
 import random
 
