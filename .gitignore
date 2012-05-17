@@ -1,10 +1,7 @@
 *.pyc
 .project
 .pydevproject
-nightout/settings.pyc
 /*.pyc
-settings.pyc
-nighout/settings.py
 .project
 .pydevproject
 clib/boost_1_49_0
