@@ -1,7 +1,7 @@
 PYTHON= /usr/include/python2.7
 
-BOOST_INC= CHANGEME 
-BOOST_LIB= CHANGEME
+BOOST_INC= /Users/zouf/pool/include
+BOOST_LIB= /Users/zouf/pool/lib
 
 OBJ= fastnmf
 
