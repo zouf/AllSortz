@@ -119,4 +119,7 @@ def getNormFactors(uid,bid):
 
 def getGlobalAverage():
     res = Rating.objects.all().aggregate(Sum('rating'),Count('rating'))
-    return (float(res['rating__sum'])/float(res['rating__count']))
+    count = res['rating__count']
+    if count != 0:
+      return (float(res['rating__sum'])/float(res['rating__count']))
+    return 0
