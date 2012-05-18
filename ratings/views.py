@@ -107,6 +107,9 @@ def index(request):
 		c = Context({
 			'business_list': business_list,
 		})
+		for b in business_list:
+			b.average_rating = round(getBusAvg(b.id)*2)/2
+			
 		return	render_to_response('ratings/index.html', {'business_list': business_list}, context_instance=RequestContext(request))
 	#else:
 	#	return HttpResponse("log in dawg");
