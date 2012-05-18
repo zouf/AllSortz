@@ -40,7 +40,7 @@ class RecEngine:
             relation = uf.relation
             myFactors[factor]=relation
         
-        if uf.count() == 0:
+        if ufset.count() == 0:
           return 0
 
 
@@ -51,7 +51,7 @@ class RecEngine:
             relation = bf.relation
             busFactors[factor]=relation
         
-        if bf.count() == 0:
+        if bfset.count() == 0:
           return 1
         
         prediction = np.dot(myFactors,busFactors) +  getNormFactors(user.id, business.id)
