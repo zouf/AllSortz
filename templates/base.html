@@ -22,7 +22,8 @@
 
 	{% if user.is_authenticated %}
 		<div id="account-bar" class="headerBar">
-		<p style="display:inline"> Welcome, {{ user }} </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
+		<p style="display:inline"> Welcome, {{ user }} </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a> 
+		| <a href="/ratings/top_ten/"> Top </a> 
 		</div> 
 	{% endif %}
 	<br/><br/>

@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^ratings/view_ratings/(?P<maxc>\d+)', 'ratings.views.display_table'),
     url(r'^ratings/view_ratings*$', 'ratings.views.display_table_full'),
     url(r'^ratings/pop_test_data/$', 'ratings.views.pop_test_data'),
+    url(r'^ratings/top_ten/$', 'ratings.views.top_ten'),
     url(r'^admin/', include(admin.site.urls)),
     # Login / logout.
     url(r'^login/$', 'django.contrib.auth.views.login'),

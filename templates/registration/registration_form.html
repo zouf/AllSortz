@@ -1,16 +1,16 @@
-<html>
-    <head>
-        <title>Register</title>
-    </head>
-    <body>
-        <h2>Register</h2>
-        <form action="/accounts/register/" method="POST">{% csrf_token %}
+{% extends "base.html" %}
+
+{% block body %}
+  <div id="businessList" class="defaultBody" >
+        <h2>Sign up</h2>
+        <form action="/accounts/register/" style="margin-left:250px" method="POST">{% csrf_token %}
             <table>
             {{ form.as_table }}
             </table>
         <p>
-            <input type="submit" value="Submit" />
+            <input type="submit" style="margin-left:-200px" value="Submit" />
         </p>
         </form>
-    </body>
-</html>
+       </div>
+        
+{% endblock %}

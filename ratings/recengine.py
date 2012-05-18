@@ -23,6 +23,65 @@ class RecEngine:
             send_task("tasks.build_recommendations")
             self.workerSpawned = True
                 
+                
+    def get_top_ratings(self, user,  numToPrint):
+        NumFactors = 42
+        ufset = UserFactor.objects.filter(user=user)
+        myFactors = np.zeros(NumFactors)
+    
+        
+        ratFilter = Rating.objects.filter(username=user) 
+        
+        id2bus = {}
+        ct=0
+        for bus in Business.objects.all():
+            id2bus[ct] = bus
+            ct=ct+1
+            
+        busrelations = np.zeros((Business.objects.all().count(),NumFactors))
+        for bc in id2bus.items():
+            bfset= BusinessFactor.objects.filter(business=bc[1])
+            for bf in bfset:
+                busrelations[bc[0],bf.latentFactor]=bf.relation
+        
+        myFactors = np.zeros(NumFactors)
+        for k in range(0,NumFactors):
+            for r in ratFilter:
+                bfset = BusinessFactor.objects.filter(business=r.business).filter(latentFactor=k)       
+                for bf in bfset:
+                    relation = bf.relation
+                    myFactors[k] += relation * r.rating
+                    
+        myRatings = np.dot(myFactors,np.transpose(busrelations))
+        
+        dtype = [('index', int), ('rating',float)]
+        
+        pairedRatings = []
+        for i in range(Business.objects.all().count()):
+            pairedRatings.append((i,myRatings[i]))
+        
+        myPR = np.array(pairedRatings,dtype)
+        
+        print(myPR)
+        myPR = np.sort(myPR,order=['rating'])
+        print(myPR)
+       
+    
+        top10 = [] 
+        
+       
+        end = 0
+        if len(myPR) < numToPrint:
+            end = len(myPR)
+        else:
+            end = numToPrint
+        for i in range(0, end):
+            top10.append(id2bus[myPR[len(myPR)-i-1]['index']])
+        
+        return top10
+                    
+        
+        
     # CALLED BY THE VIEW TO GET THE BES    T CURRENT RECOMMENDATION
     def get_best_current_recommendation(self, business, user):
       
@@ -42,6 +101,7 @@ class RecEngine:
         
         if ufset.count() == 0:
           return 0
+      
 
 
         bfset = BusinessFactor.objects.filter(business=business)       
@@ -52,7 +112,7 @@ class RecEngine:
             busFactors[factor]=relation
         
         if bfset.count() == 0:
-          return 1
+          return 0
         
         prediction = np.dot(myFactors,busFactors) +  getNormFactors(user.id, business.id)
         

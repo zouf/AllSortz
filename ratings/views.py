@@ -31,8 +31,14 @@ def pop_test_data(request):
 	populate_test_data(numUsers, numBusinesses)
 	return HttpResponseRedirect('/')
 	
+def top_ten(request):
+	if request.user.is_authenticated():
+		top10 = re.get_top_ratings(request.user, 25)
+		for b in top10:
+				b.average_rating = round(getBusAvg(b.id)*2)/2
+				
+		return	render_to_response('ratings/index.html', {'business_list': top10}, context_instance=RequestContext(request))		
 
-	
 def detail(request, bus_id):
 	global re
 	b = get_object_or_404(Business, pk=bus_id)
