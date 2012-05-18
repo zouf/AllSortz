@@ -26,7 +26,6 @@ class RecEngine:
     # CALLED BY THE VIEW TO GET THE BES    T CURRENT RECOMMENDATION
     def get_best_current_recommendation(self, business, user):
       
-        print("zouf)")
         #  my.factors <- me %*% m@fit@W
         #  barplot(my.factors)
         #  my.prediction <- my.factors %*% t(m@fit@W)
@@ -41,14 +40,19 @@ class RecEngine:
             relation = uf.relation
             myFactors[factor]=relation
         
-            
+        if uf.count() == 0:
+          return 0
+
+
         bfset = BusinessFactor.objects.filter(business=business)       
         busFactors = np.zeros(NumFactors)
         for bf in bfset:
             factor = bf.latentFactor
             relation = bf.relation
             busFactors[factor]=relation
-            
+        
+        if bf.count() == 0:
+          return 1
         
         prediction = np.dot(myFactors,busFactors) +  getNormFactors(user.id, business.id)
         
