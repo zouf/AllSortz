@@ -3,7 +3,6 @@ import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))+'/..'
-print(BASE_DIR)
 ADMINS = (
      ('Matt Zoufaly', 'matt@tigerstonelabs.com'),
 )
@@ -83,7 +82,7 @@ STATIC_ROOT = '/nightout/static'
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
-DATASET_LOCATION = BASE_DIR+'nightout/data_import/michigan_dataset.json'
+DATASET_LOCATION = BASE_DIR+'/data_import/michigan_dataset.json'
 RESULTS_DIR = '/tmp/'
 CLIB_DIR = BASE_DIR+'/clib'
 

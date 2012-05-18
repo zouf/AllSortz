@@ -1,7 +1,7 @@
 import os
 import sys
 
-path = '/home/zouf/nightout'
+path = 'Users/zouf/Sites/rateout-2'
 if path not in sys.path:
     sys.path.append(path)
 
