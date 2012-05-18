@@ -10,9 +10,15 @@
     
 		<p>
 	    {% for bus in business_list %}
+	    <div class="cardShadow">
+	    <a href="/ratings/{{ bus.id }}/">
 	       <div class="busCard">
-	        <a href="/ratings/{{ bus.id }}/">{{ bus.name }}</a>
+	        <span class = "cardShadowLink">{{ bus.name }}</span><br>
+	        {{bus.city}}<br><br>
+	        {{average.rating}} avg
 	       </div>
+	       </a>
+	    </div>
 	    {% endfor %}
 			<br><br><a href="/ratings/add_business/">Add a business</a></li>
 
