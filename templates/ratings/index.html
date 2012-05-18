@@ -8,21 +8,18 @@
     <div id="businessList" class="defaultBody">
 	<h1>Stuff to Rate</h1>
     
-		<p>
+	
 	    {% for bus in business_list %}
-	    <div class="cardShadow">
-	    <a href="/ratings/{{ bus.id }}/">
+	    <a href="/ratings/{{ bus.id }}/" class="blocklink">
 	       <div class="busCard">
-	        <span class = "cardShadowLink">{{ bus.name }}</span><br>
+	        {{ bus.name }}<br>
 	        {{bus.city}}<br><br>
 	        {{bus.average_rating}} Stars
 	       </div>
 	       </a>
-	    </div>
 	    {% endfor %}
 			<br><br><a href="/ratings/add_business/">Add a business</a></li>
 
-	    </p>
 	</div>
 	<script type="text/javascript"/>
 			$.ajax({

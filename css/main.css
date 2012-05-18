@@ -12,10 +12,12 @@ div#container
 	font-size:18px;
 	width: 900px;
     margin: 0 auto;
-    background-color : #f0f0f0;
+    background-image: url(images/transwhite.png);
+    background-repeat: repeat;
     border: 1px black solid;
     margin-top: -10px;
     min-height:800px;
+    box-shadow : 0px 0px 8px #888888;
 }
 
 
@@ -68,10 +70,7 @@ font-size:15px;
 
 
 .cardShadow{
-	margin:10px;
 	padding:5px;
-	vertical-align: top;
-	display: inline-block;
 	width:222px;
 	height:122px;
 	background-image: url(images/cardshadow2.png)
@@ -88,25 +87,26 @@ font-size:15px;
 }
 
 .busCard{
-	vertical-align:middle;
-	margin:0 auto;
+	vertical-align: top;
+	margin:10px;
 	background-color: lightgrey;
 	border: 1px solid black;
 	width: 200px;
 	height: 100px;
 	padding: 10px;
 	border-radius:3px;
+	display: inline-block;
+	box-shadow : 0px 0px 5px #888888;
+}
+
+.blocklink{
+	display: inline-block;
 }
 
 .busCard:hover{
-    vertical-align:middle;
-    margin:0 auto;
+
     background-color: #C0C0C0;
-    border: 1px solid black;
-    width: 200px;
-    height: 100px;
-    padding: 10px;
-    border-radius:3px;
+
 }
 
 #ratingList
