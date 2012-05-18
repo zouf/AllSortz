@@ -1,7 +1,8 @@
 import os
 import sys
 
-path = 'Users/zouf/Sites/rateout-2'
+
+path = os.path.abspath(os.path.dirname(__file__))+'/..'
 if path not in sys.path:
     sys.path.append(path)
 
