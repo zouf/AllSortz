@@ -78,6 +78,8 @@ MEDIA_URL = ''
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = BASE_DIR+'/static'
 
+LOG_FILE = STATIC_ROOT+'/log.txt'
+
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'

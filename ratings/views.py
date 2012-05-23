@@ -9,12 +9,13 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import Context, RequestContext
 from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
+from rateout.settings import LOG_FILE
 from ratings.forms import BusinessForm, KeywordForm, RatingForm
 from ratings.models import Business, Grouping, Rating
 from ratings.normalization import getBusAvg, getNumPosRatings, getNumNegRatings
 from ratings.populate import populate_test_data
 from ratings.recengine import RecEngine
-from ratings.utility import getNumRatings
+from ratings.utility import getNumRatings, log_msg
 from validation.views import build_pred_server
 import json
 import sys
@@ -30,7 +31,7 @@ def ajax_query(request):
 
 
 def pop_test_data(request):
-	print('Populating with test data')
+	log_msg('Populating with test data')
 	numUsers = 10
 	numBusinesses =20
 	populate_test_data(numUsers, numBusinesses)
@@ -190,9 +191,7 @@ def display_table(request, maxc):
 
 @csrf_exempt
 def vote(request):
-	fp = open(settings.STATIC_ROOT+"/crap.txt","w")
 	if request.method == 'POST':
-		fp.write("here" + str(request.POST['id']))
 		try:
 			business = Business.objects.get(id=request.POST['id'])
 		except Business.DoesNotExist:
@@ -209,7 +208,7 @@ def vote(request):
 		try:
 			rating = Rating.objects.get(business=business, username=request.user)
 		except Rating.DoesNotExist:
-			fp.write("create a new rating!")
+			log_msg("In vote create a new rating!")
 			rating = Rating.objects.create(business=business,username=request.user,rating=rat)
 		else:
 			sys.stderr.write("rating already exists :(")
@@ -221,7 +220,6 @@ def vote(request):
 		response_data['rating'] = res
 		response_data['pos_rating'] = getNumPosRatings(business)
 		response_data['neg_rating'] = getNumNegRatings(business)
-		fp.close()
 		return HttpResponse(json.dumps(response_data), mimetype="application/json")
 		#return HttpResponse("{'success':'true', 'rating': '" + str(rat) + "'}")
 	else:
@@ -231,7 +229,6 @@ def vote(request):
 
 @csrf_exempt
 def remove_vote(request):
-	fp = open("/tmp/log","w")
 	if request.method == 'POST':
 		try:
 			business = Business.objects.get(id=request.POST['id'])
@@ -243,7 +240,7 @@ def remove_vote(request):
 		except Rating.DoesNotExist:
 			pass
 		else:
-			fp.write('delete it!')
+			log_msg("Deleting a rating")
 			rating.delete()
 
 		response_data = dict()
