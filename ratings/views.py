@@ -1,4 +1,5 @@
 from data_import.views import read_dataset
+from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core import paginator
@@ -16,6 +17,7 @@ from ratings.recengine import RecEngine
 from ratings.utility import getNumRatings
 from validation.views import build_pred_server
 import json
+import sys
 
 
 re = RecEngine() 
@@ -133,7 +135,7 @@ def index(request):
 		page = request.GET.get('page')
 		try:
 			business_list = paginator.page(page)
-		except PageNotAnInteger:
+		except (PageNotAnInteger,TypeError):
 			business_list = paginator.page(1)
 		except EmptyPage:
 			business_list = paginator.page(paginator.num_pages)
@@ -188,7 +190,7 @@ def display_table(request, maxc):
 
 @csrf_exempt
 def vote(request):
-	fp = open("/tmp/log","w")
+	fp = open(settings.STATIC_ROOT+"/crap.txt","w")
 	if request.method == 'POST':
 		fp.write("here" + str(request.POST['id']))
 		try:
@@ -210,7 +212,7 @@ def vote(request):
 			fp.write("create a new rating!")
 			rating = Rating.objects.create(business=business,username=request.user,rating=rat)
 		else:
-			fp.write("rating already exists :(")
+			sys.stderr.write("rating already exists :(")
 			return HttpResponse("{'success': 'false'}")
 		rating.save()
 		response_data = dict()
