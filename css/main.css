@@ -121,6 +121,29 @@ font-size:15px;
 	margin-left:40%;
 }
 
+.up
+{	
+	background-image:url("images/up.png");
+	background-repeat: no-repeat;
+   	cursor: pointer;
+    display: block;
+    height: 25px;
+    margin: 0px auto 0;
+    width: 25px;
+}
+.down
+{	
+	background-image:url("images/down.png");
+	background-repeat: no-repeat;
+   	cursor: pointer;
+    display: block;
+    height: 25px;
+    margin: 0px auto 0;
+    width: 25px;
+	
+}
+
+
 .pos_rating
 {
 	font-size: 16px;
@@ -134,9 +157,15 @@ font-size:15px;
 }
 
 
+div.vote
+{
+	background-image:url("images/up.png")
+	background-color:blue;
+}
+
 .selected
 {
-	color: blue;
+	box-shadow: 1px 1px 1px 1px #ccc;
 }
 
 .error

@@ -15,21 +15,21 @@
 		    	<table>
 		    	<tr>
 					<td>
-					<div id="answer_{{bus.id}}" class="answer">
+							<div id="answer_{{bus.id}}" class="answer">
 						{% if bus.this_rat > 0 %}
 							{% if bus.this_rat > 2 %}
-								<h3 id="vote_pos_{{bus.id}}" class="vote up selected">+</h3>
-								<h3 id="vote_neg_{{bus.id}}" class="vote down">-</h3>
+								<div id="vote_pos_{{bus.id}}" class="vote up selected" ></div>
+								<div id="vote_neg_{{bus.id}}" class="vote down" ></div>
 							{% else %}
-								<h3 id="vote_pos_{{bus.id}}" class="vote up">+</h3>
-								<h3 id="vote_neg_{{bus.id}}" class="vote down selected">-</h3>
+								<div id="vote_pos_{{bus.id}}" class="vote up" ></div>
+								<div id="vote_neg_{{bus.id}}" class="vote down selected"></div>
 							{%endif%}
 						{%else%}
-							<h3 id="vote_pos_{{bus.id}}" class="vote up">+</h3>
-							<h3 id="vote_neg_{{bus.id}}" class="vote down">-</h3>
+							<div id="vote_pos_{{bus.id}}" class="vote up" ></div>
+							<div id="vote_neg_{{bus.id}}" class="vote down" ></div>
 						{% endif %}
 							
-			
+	
 						  <table>
 						  <tr>
 						  <td><div id="pos_rating_{{bus.id}}" class="pos_rating">{{bus.pos_ratings}}</div></td>
