@@ -188,9 +188,9 @@ def display_table(request, maxc):
 
 @csrf_exempt
 def vote(request):
-
+	fp = open("/tmp/log","w")
 	if request.method == 'POST':
-		print("here" + str(request.POST['id']))
+		fp.write("here" + str(request.POST['id']))
 		try:
 			business = Business.objects.get(id=request.POST['id'])
 		except Business.DoesNotExist:
@@ -207,10 +207,10 @@ def vote(request):
 		try:
 			rating = Rating.objects.get(business=business, username=request.user)
 		except Rating.DoesNotExist:
-			print("create a new rating!")
+			fp.write("create a new rating!")
 			rating = Rating.objects.create(business=business,username=request.user,rating=rat)
 		else:
-			print("rating already exists :(")
+			fp.write("rating already exists :(")
 			return HttpResponse("{'success': 'false'}")
 		rating.save()
 		response_data = dict()
@@ -219,7 +219,7 @@ def vote(request):
 		response_data['rating'] = res
 		response_data['pos_rating'] = getNumPosRatings(business)
 		response_data['neg_rating'] = getNumNegRatings(business)
-		
+		fp.close()
 		return HttpResponse(json.dumps(response_data), mimetype="application/json")
 		#return HttpResponse("{'success':'true', 'rating': '" + str(rat) + "'}")
 	else:
@@ -229,6 +229,7 @@ def vote(request):
 
 @csrf_exempt
 def remove_vote(request):
+	fp = open("/tmp/log","w")
 	if request.method == 'POST':
 		try:
 			business = Business.objects.get(id=request.POST['id'])
@@ -240,7 +241,7 @@ def remove_vote(request):
 		except Rating.DoesNotExist:
 			pass
 		else:
-			print('delete it!')
+			fp.write('delete it!')
 			rating.delete()
 
 		response_data = dict()
