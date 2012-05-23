@@ -76,7 +76,11 @@ class RecEngine:
         else:
             end = numToPrint
         for i in range(0, end):
-            top10.append(id2bus[myPR[len(myPR)-i-1]['index']])
+            #dont append stuff user has already rated
+            bus = id2bus[myPR[len(myPR)-i-1]['index']]
+            queryrat = Rating.objects.filter(username=user, business=bus)
+            if queryrat.count() == 0:  #hasn't been a rating yet
+                top10.append(id2bus[myPR[len(myPR)-i-1]['index']])
         
         return top10
                     

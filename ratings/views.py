@@ -1,18 +1,21 @@
 from data_import.views import read_dataset
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
+from django.core import paginator
+from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import Context, RequestContext
 from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
 from ratings.forms import BusinessForm, KeywordForm, RatingForm
 from ratings.models import Business, Grouping, Rating
-from ratings.normalization import getBusAvg
+from ratings.normalization import getBusAvg, getNumPosRatings, getNumNegRatings
 from ratings.populate import populate_test_data
 from ratings.recengine import RecEngine
 from ratings.utility import getNumRatings
 from validation.views import build_pred_server
+import json
 
 
 re = RecEngine() 
@@ -37,7 +40,7 @@ def top_ten(request):
 		for b in top10:
 				b.average_rating = round(getBusAvg(b.id)*2)/2
 				
-		return	render_to_response('ratings/index.html', {'business_list': top10}, context_instance=RequestContext(request))		
+		return	render_to_response('ratings/top.html', {'user': request.user, 'business_list': top10}, context_instance=RequestContext(request))		
 
 def detail(request, bus_id):
 	global re
@@ -116,6 +119,24 @@ def index(request):
 		for b in business_list:
 			b.average_rating = round(getBusAvg(b.id)*2)/2
 			
+			b.num_ratings=getNumRatings(b.id)
+			if request.user.is_authenticated():
+				b.pos_ratings = getNumPosRatings(b.id)
+				b.neg_ratings = getNumNegRatings(b.id)
+				thisRat = Rating.objects.filter(username=request.user, business=b)
+				if thisRat.count() > 0:
+					r = Rating.objects.get(username=request.user, business=b)
+					b.this_rat = r.rating
+				else:
+					b.this_rat = 0
+		paginator = Paginator(business_list, 10) # Show 25 contacts per page	
+		page = request.GET.get('page')
+		try:
+			business_list = paginator.page(page)
+		except PageNotAnInteger:
+			business_list = paginator.page(1)
+		except EmptyPage:
+			business_list = paginator.page(paginator.num_pages)
 		return	render_to_response('ratings/index.html', {'business_list': business_list}, context_instance=RequestContext(request))
 	#else:
 	#	return HttpResponse("log in dawg");
@@ -165,8 +186,72 @@ def display_table(request, maxc):
 	#print(all_ratings)
 	return	render_to_response('ratings/rating_table.html', {'ratings_list': all_ratings, 'business_list' :bus_to_display, 'user_list': user_list}, context_instance=RequestContext(request))
 
+@csrf_exempt
+def vote(request):
+
+	if request.method == 'POST':
+		print("here" + str(request.POST['id']))
+		try:
+			business = Business.objects.get(id=request.POST['id'])
+		except Business.DoesNotExist:
+			return HttpResponse("{'success': 'false'}")
 
 
+		if request.POST['type'] == 'up':
+			rat = 5#rating.rating + 1
+			res = 'pos'
+		else:
+			rat = 1#rating.rating - 1
+			res = 'neg'
+		
+		try:
+			rating = Rating.objects.get(business=business, username=request.user)
+		except Rating.DoesNotExist:
+			print("create a new rating!")
+			rating = Rating.objects.create(business=business,username=request.user,rating=rat)
+		else:
+			print("rating already exists :(")
+			return HttpResponse("{'success': 'false'}")
+		rating.save()
+		response_data = dict()
+		response_data['id'] = str(request.POST['id'])
+		response_data['success'] = 'true'
+		response_data['rating'] = res
+		response_data['pos_rating'] = getNumPosRatings(business)
+		response_data['neg_rating'] = getNumNegRatings(business)
+		
+		return HttpResponse(json.dumps(response_data), mimetype="application/json")
+		#return HttpResponse("{'success':'true', 'rating': '" + str(rat) + "'}")
+	else:
+		raise Http404('What are you doing here?')
+
+#from stack overflow
+
+@csrf_exempt
+def remove_vote(request):
+	if request.method == 'POST':
+		try:
+			business = Business.objects.get(id=request.POST['id'])
+		except Business.DoesNotExist:
+			return HttpResponse("{'success': 'false'}")
+
+		try:
+			rating = Rating.objects.filter(business=business, username=request.user)
+		except Rating.DoesNotExist:
+			pass
+		else:
+			print('delete it!')
+			rating.delete()
+
+		response_data = dict()
+		response_data['id'] = str(request.POST['id'])
+		response_data['success'] = 'true'
+		response_data['pos_rating'] = getNumPosRatings(business)
+		response_data['neg_rating'] = getNumNegRatings(business)
+
+		return HttpResponse(json.dumps(response_data), mimetype="application/json")
+	else:
+		raise Http404('What are you doing here?')
 
 def logout_page(request):
 	logout(request)

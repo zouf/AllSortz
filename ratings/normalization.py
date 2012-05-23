@@ -117,6 +117,24 @@ def getNormFactors(uid,bid):
     fct = (usr + bus - glb)
     return(fct)
 
+def getNumPosRatings(b):
+
+    ratingFilter = Rating.objects.filter(business=b,rating__range=["3","5"])
+    ratingFilter = ratingFilter.aggregate(Count('rating'))
+    countRating = ratingFilter['rating__count']
+    return countRating
+
+def getNumNegRatings(b):
+    ratingFilter = Rating.objects.filter(business=b,rating__range=["1","2"])
+    ratingFilter = ratingFilter.aggregate(Count('rating'))
+    countRating = ratingFilter['rating__count']
+    return countRating
+
+def getNumRatings(bid):
+    ratingFilter = Rating.objects.filter(business=Business.objects.get(id=bid)).aggregate(Sum('rating'), Count('rating'))
+    countRating = ratingFilter['rating__count']
+    return countRating
+
 def getGlobalAverage():
     res = Rating.objects.all().aggregate(Sum('rating'),Count('rating'))
     count = res['rating__count']

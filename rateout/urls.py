@@ -22,8 +22,9 @@ urlpatterns = patterns('',
     # Login / logout.
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', logout_page),
-	(r'^accounts/', include('registration.urls')),
-
+	url(r'^accounts/', include('registration.urls')),
+    url(r'^vote*', 'ratings.views.vote'),
+    url(r'^remove_vote*', 'ratings.views.remove_vote')
 )
 
 if settings.DEBUG:

@@ -3,23 +3,78 @@
 {% block body %}
 
 
-
 {% if business_list %}
     <div id="businessList" class="defaultBody">
-	<h1>Stuff to Rate</h1>
-    
-	
-	    {% for bus in business_list %}
-	    <a href="/ratings/{{ bus.id }}/" class="blocklink">
-	       <div class="busCard">
-	        {{ bus.name }}<br>
-	        {{bus.city}}<br><br>
-	        {{bus.average_rating}} Stars
-	       </div>
-	       </a>
-	    {% endfor %}
-			<br><br><a href="/ratings/add_business/">Add a business</a></li>
-
+	<table>
+		<tr>
+		<td>
+    	<div id="prime_list" style="float:left; width:700px" >
+		
+		    {% for bus in business_list %}
+		    	<div class="busListing">
+		    	<table>
+		    	<tr>
+					<td>
+					<div id="answer_{{bus.id}}" class="answer">
+						{% if bus.this_rat > 0 %}
+							{% if bus.this_rat > 2 %}
+								<h3 id="vote_pos_{{bus.id}}" class="vote up selected">+</h3>
+								<h3 id="vote_neg_{{bus.id}}" class="vote down">-</h3>
+							{% else %}
+								<h3 id="vote_pos_{{bus.id}}" class="vote up">+</h3>
+								<h3 id="vote_neg_{{bus.id}}" class="vote down selected">-</h3>
+							{%endif%}
+						{%else%}
+							<h3 id="vote_pos_{{bus.id}}" class="vote up">+</h3>
+							<h3 id="vote_neg_{{bus.id}}" class="vote down">-</h3>
+						{% endif %}
+							
+			
+						  <table>
+						  <tr>
+						  <td><div id="pos_rating_{{bus.id}}" class="pos_rating">{{bus.pos_ratings}}</div></td>
+						  <td><div id="neg_rating_{{bus.id}}" class="neg_rating">{{bus.neg_ratings}}</div></td>
+						  </tr>
+						  </table>
+					</div>
+					</td>
+					<td>
+					    <a href="/ratings/{{ bus.id }}/" class="blocklink">
+					    
+					        {{bus.name }}<br>
+					        {{bus.city}}<br><br>
+					        {{bus.average_rating}} Stars
+					     
+					       </a>
+					 </td>
+					</tr>
+				  </table>
+				    </div>
+		       <hr>
+		    {% endfor %}
+				<br><br><a href="/ratings/add_business/">Add a business</a></li>
+				    <span class="step-links">
+					    {% if business_list.has_previous %}
+					        <a href="?page={{ business_list.previous_page_number }}">previous</a>
+					    {% endif %}
+					
+					    <span class="current">
+					        Page {{ business_list.number }} of {{ business_list.paginator.num_pages }}.
+					    </span>
+					
+					    {% if business_list.has_next %}
+					        <a href="?page={{ business_list.next_page_number }}">next</a>
+					    {% endif %}
+					</span>
+		</div>
+		</td>
+		<td>
+		<div id="side_bar" style="float:left; width:300px">
+			Discounts
+		</div>
+		</td>
+		</tr>
+		</table>
 	</div>
 	<script type="text/javascript"/>
 			$.ajax({

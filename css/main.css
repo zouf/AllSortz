@@ -10,10 +10,11 @@ div#container
 {
 	font-family: 'Helvetica', sans-serif;
 	font-size:18px;
-	width: 900px;
+	width: 1000px;
     margin: 0 auto;
-    background-image: url(images/transwhite.png);
-    background-repeat: repeat;
+    background-color: #FFFAF0;
+   /* image: url(images/transwhite.png);
+    background-repeat: repeat; */
     border: 1px black solid;
     margin-top: -10px;
     min-height:800px;
@@ -34,7 +35,7 @@ div#container
 }
 
 body{
-    background-image: url(images/cross_scratches_orange.png);
+    background-image: url(images/darkdenim3.png);
     background-repeat: repeat;
 }
 
@@ -89,7 +90,7 @@ font-size:15px;
 .busCard{
 	vertical-align: top;
 	margin:10px;
-	background-color: lightgrey;
+	background-color: white;
 	border: 1px solid black;
 	width: 200px;
 	height: 100px;
@@ -98,6 +99,11 @@ font-size:15px;
 	display: inline-block;
 	box-shadow : 0px 0px 5px #888888;
 }
+
+.busListing{
+	margin-left:80px;
+}
+
 
 .blocklink{
 	display: inline-block;
@@ -115,19 +121,22 @@ font-size:15px;
 	margin-left:40%;
 }
 
-
-
-
-.selectedLike
+.pos_rating
 {
-	font-size: 18px;
-	font-weight:bold;
+	font-size: 16px;
+	color: green;
+}
 
-.selectedLike
+.neg_rating
 {
-	font-size: 18px;
-	font-weight:bold;
+	font-size: 16px;
+	color: red;
+}
 
+
+.selected
+{
+	color: blue;
 }
 
 .error
@@ -161,4 +170,13 @@ font-size:15px;
 	padding:4px 8px;
 	margin-bottom:5px;
 	border-radius: 5px;
+}
+	
+.clear {
+   height: 0;
+   font-size: 1px;
+   margin: 0;
+   padding: 0;
+   line-height: 0;
+   clear: both;
 }

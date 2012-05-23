@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+
+{% if business_list %}
+    <div id="businessList" class="defaultBody">
+	<h1>Recommendations for {{user.username}} </h1>
+    
+	
+	    {% for bus in business_list %}
+	    <a href="/ratings/{{ bus.id }}/" class="blocklink">
+	       <div class="busCard">
+	        {{ bus.name }}<br>
+	        {{bus.city}}<br><br>
+	        {{bus.average_rating}} Stars
+	       </div>
+	       </a>
+	    {% endfor %}
+			<br><br><a href="/ratings/add_business/">Add a business</a></li>
+
+	</div>
+	<script type="text/javascript"/>
+			$.ajax({
+				type : 'POST',
+				url : '/ajax_query/',
+				dataType : 'json',
+				data: {	
+						val : 1
+				},
+				success : function(data){
+		
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+						
+				}
+			});
+
+	</script>
+{% else %}
+    <p>No businesses are available.</p>
+    <p><a href="/ratings/add_business/">Add a business</a></p>
+{% endif %}
+{% endblock %}
