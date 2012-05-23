@@ -157,7 +157,6 @@ INSTALLED_APPS = (
 	'registration', 
 	 'celery',
      'djcelery',
-     'voting', 
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
 	'django.contrib.contenttypes',
