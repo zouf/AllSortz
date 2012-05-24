@@ -1,11 +1,40 @@
 {% extends "base.html" %}
 
 {% block body %}
-
+<script>
+	$(function() {
+		$( "input:submit" ).button();
+	});
+</script>
+	<div class="defaultBody" >
 	<form action="." method="post">{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" value="Submit" />
+		{{ form.non_field_errors }}
+		<div class="input_box">
+		    {{ form.name.errors }}
+		    <p>
+    		<input id="id_name" value="Name" class="input_box" type="text"  name="name" maxlength="100" onfocus="this.value='';"  /></p>
+		</div>
+		<div class="input_box">
+		    {{ form.address.errors }}
+			<p>
+    		<input id="id_address" value="Address" class="input_box" type="text"  name="name" maxlength="100" onfocus="this.value='';"  /></p>
+		
+		</div>
+		<div class="input_box">
+		    {{ form.city.errors }}
+			<p>
+    		<input id="id_city" value="City" class="input_box" type="text"  name="name" maxlength="100" onfocus="this.value='';"  /></p>
+		</div>
+		
+		<div class="input_box">
+		    {{ form.state.errors }}
+			<p><label for="id_state">State</label>
+    		{{ form.state }}
+		</div>
+		
+		<p><input type="submit" value="Done" /></p>
 	</form>
+	</div>
 	
 <a href="{% url ratings.views.add_keyword %}">Add Keyword</a>
 	

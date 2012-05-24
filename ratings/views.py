@@ -191,6 +191,7 @@ def display_table(request, maxc):
 
 @csrf_exempt
 def vote(request):
+	print('vote')
 	if request.method == 'POST':
 		try:
 			business = Business.objects.get(id=request.POST['id'])

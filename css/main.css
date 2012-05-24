@@ -209,3 +209,39 @@ div.vote
    line-height: 0;
    clear: both;
 }
+
+a:link
+{
+	color:black;
+}
+a:visited
+{
+	color:black;
+}
+
+.business_name
+{
+	font-size: 20px;
+	font-color: black;
+	text-decoration:none;
+	margin-left:5px;
+	text-align:left;
+	
+	
+}
+
+.location_name
+{
+	font-style: italic;	
+	margin-left:5px;
+	text-align:left;
+}
+
+.input_box
+{
+	height:25px;
+	border-radius: 1px;
+	font-family: 'Helvetica', sans-serif;
+	font-size:18px;
+
+}

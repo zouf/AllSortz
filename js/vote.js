@@ -1,6 +1,6 @@
 $(function() {
 
-      $('div.answer h3.vote').click(function() {
+      $('div.answer div.vote').click(function() {
       var id = $(this).parents('div.answer').attr('id').split('_')[1];
         var vote_type = $(this).hasClass('up') ? 'up' : 'down';
         var t1 = $("#vote_pos_"+id).hasClass("selected");

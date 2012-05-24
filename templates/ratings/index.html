@@ -38,14 +38,10 @@
 						  </table>
 					</div>
 					</td>
-					<td>
-					    <a href="/ratings/{{ bus.id }}/" class="blocklink">
-					    
-					        {{bus.name }}<br>
-					        {{bus.city}}<br><br>
-					        {{bus.average_rating}} Stars
-					     
-					       </a>
+					<td>		
+					     <div class="business_name"><a class="business_name" href="/ratings/{{ bus.id }}/" class="blocklink"> {{bus.name }} </a></div> 
+					     <div class="location_name"> {{bus.city}}, {{bus.state}}</div>
+					      
 					 </td>
 					</tr>
 				  </table>
