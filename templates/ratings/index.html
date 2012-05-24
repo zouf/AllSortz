@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 
 {% block body %}
-
+<script type="text/javascript">
+$(function() {
+		$( "input:submit, a, button", ".demo" ).button();
+		$( "#submitBus").button();
+		$( "#submitBus" ).click(function() { window.location="/ratings/add_business/" });
+	});
+</script>
 
 {% if business_list %}
     <div id="businessList" class="defaultBody">
@@ -14,19 +20,32 @@
 		    	<div class="busListing">
 		    	<table>
 		    	<tr>
-					<td>
+					<td style="width:40px;">
 							<div id="answer_{{bus.id}}" class="answer">
 						{% if bus.this_rat > 0 %}
 							{% if bus.this_rat > 2 %}
-								<div id="vote_pos_{{bus.id}}" class="vote up selected" ></div>
-								<div id="vote_neg_{{bus.id}}" class="vote down" ></div>
+								<div class="vote up">
+								<span id="vote_pos_{{bus.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
+								</div>
+								<div class="vote down">
+								<span id="vote_neg_{{bus.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+								</div>
+								
 							{% else %}
-								<div id="vote_pos_{{bus.id}}" class="vote up" ></div>
-								<div id="vote_neg_{{bus.id}}" class="vote down selected"></div>
+								<div class="vote up">
+								<span id="vote_pos_{{bus.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
+								</div>
+								<div class="vote down">
+								<span id="vote_neg_{{bus.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
+								</div>
 							{%endif%}
 						{%else%}
-							<div id="vote_pos_{{bus.id}}" class="vote up" ></div>
-							<div id="vote_neg_{{bus.id}}" class="vote down" ></div>
+								<div class="vote up">
+								<span id="vote_pos_{{bus.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
+								</div>
+								<div class="vote down">
+								<span id="vote_neg_{{bus.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+								</div>
 						{% endif %}
 							
 	
@@ -48,7 +67,7 @@
 				    </div>
 		       <hr>
 		    {% endfor %}
-				<br><br><a href="/ratings/add_business/">Add a business</a></li>
+				
 				    <span class="step-links">
 					    {% if business_list.has_previous %}
 					        <a href="?page={{ business_list.previous_page_number }}">previous</a>
@@ -66,7 +85,7 @@
 		</td>
 		<td>
 		<div id="side_bar" style="float:left; width:300px">
-			Discounts
+			<button id="submitBus">List a business</button>
 		</div>
 		</td>
 		</tr>

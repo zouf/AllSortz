@@ -121,25 +121,40 @@ font-size:15px;
 	margin-left:40%;
 }
 
-.up
+div.vote
 {	
-	background-image:url("images/up.png");
-	background-repeat: no-repeat;
-   	cursor: pointer;
+  	cursor: pointer;
     display: block;
     height: 25px;
     margin: 0px auto 0;
     width: 25px;
 }
-.down
+
+.up
 {	
-	background-image:url("images/down.png");
-	background-repeat: no-repeat;
    	cursor: pointer;
     display: block;
     height: 25px;
     margin: 0px auto 0;
     width: 25px;
+     margin-left:0px;
+	
+}
+
+.answer
+{
+	margin-left:0px;
+
+}
+
+.down
+{	
+   	cursor: pointer;
+    display: block;
+    height: 25px;
+    margin: 0px auto 0;
+    width: 25px;
+    margin-left:0px;
 	
 }
 
@@ -157,15 +172,10 @@ font-size:15px;
 }
 
 
-div.vote
-{
-	background-image:url("images/up.png")
-	background-color:blue;
-}
-
 .selected
 {
-	box-shadow: 1px 1px 1px 1px #ccc;
+	outline-style:solid;
+	
 }
 
 .error
