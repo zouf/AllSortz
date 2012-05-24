@@ -9,7 +9,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', 'ratings.views.index'),
-    url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.detail'),
+    url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.detail_keywords'),
     url(r'^ratings/(?P<bus_id>\d+)/rate/$', 'ratings.views.rate'),
 	url(r'^ratings/add_keyword/$', 'ratings.views.add_keyword'),
 	url(r'^ajax_query/$','ratings.views.ajax_query'),
@@ -24,7 +24,8 @@ urlpatterns = patterns('',
     url(r'^logout/$', logout_page),
 	url(r'^accounts/', include('registration.urls')),
     url(r'^vote*', 'ratings.views.vote'),
-    url(r'^remove_vote*', 'ratings.views.remove_vote')
+    url(r'^remove_vote*', 'ratings.views.remove_vote'),
+    url(r'^api/get_keywords/', 'ratings.views.get_keywords', name='get_keywords')
 )
 
 if settings.DEBUG:

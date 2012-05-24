@@ -109,10 +109,19 @@ def create_user(username,uid):
     u = User(username=("u"+str(uid)), first_name=(username[0:20].encode("utf8")),password="")
    # u.set_password("test")
     return u
-    
+ 
 def create_category(name):
     k = Keyword(name=name)
     return k
+    
+def create_keyword(name):
+    k = Keyword(name=name)
+    k.save()
+    return k
+
+def create_keyword2bus(b,key):
+    g = create_grouping(key,b)
+    g.save()
 
 def create_grouping(cat,bus):
     g = Grouping(business=bus, keyword=cat)

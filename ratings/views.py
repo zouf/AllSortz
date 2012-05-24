@@ -11,9 +11,10 @@ from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
 from rateout.settings import LOG_FILE
 from ratings.forms import BusinessForm, KeywordForm, RatingForm
-from ratings.models import Business, Grouping, Rating
+from ratings.models import Business, Grouping, Rating, Keyword
 from ratings.normalization import getBusAvg, getNumPosRatings, getNumNegRatings
-from ratings.populate import populate_test_data
+from ratings.populate import populate_test_data, create_business, create_keyword, \
+	create_keyword2bus
 from ratings.recengine import RecEngine
 from ratings.utility import getNumRatings, log_msg
 from validation.views import build_pred_server
@@ -44,6 +45,30 @@ def top_ten(request):
 				b.average_rating = round(getBusAvg(b.id)*2)/2
 				
 		return	render_to_response('ratings/top.html', {'user': request.user, 'business_list': top10}, context_instance=RequestContext(request))		
+
+
+def detail_keywords(request,bus_id):
+	b = get_object_or_404(Business, pk=bus_id)
+	keywords = b.keywords
+	if request.method == 'POST':
+		#add a keyword
+		form = request.POST
+		nm = form['name']
+		print(nm)
+		set = Keyword.objects.filter(name=nm)
+		try: 
+			k = Keyword.objects.get(name=nm)
+		except:
+			k = create_keyword(name=nm)
+		print(k.id)
+		print(b.id)
+		gset = Grouping.objects.filter(business=b,keyword=k)
+		if gset.count() == 0:
+			g = Grouping.objects.create(business=b,keyword=k)
+			g.save()				
+	keywords = b.keywords
+	return render_to_response('ratings/detail.html', {'business': b, 'keywords':keywords}, context_instance=RequestContext(request))
+		
 
 def detail(request, bus_id):
 	global re
@@ -81,15 +106,42 @@ def detail(request, bus_id):
 		
 		return render_to_response('ratings/detail.html', {'business': p, 'avg':avg, 'numRatings':numRatings}, context_instance=RequestContext(request))
 		
-	
+
+def get_keywords(request):
+	if request.method== 'GET':
+	        q = request.GET.get('term', '')
+	        keywords = Keyword.objects.filter(name__icontains = q )[:20]
+	        results = []
+	        for word in keywords:
+	            keyword_json = {}
+	          #  keyword_json.append(word.name)
+	            #keyword_json['id'] = word.id
+	            #keyword_json['name'] = word.name
+	            results.append(word.name)
+	        data = json.dumps(results)
+	        print(data)
+	else:
+		data = 'fail'
+	mimetype = 'application/json'
+	return HttpResponse(data, mimetype)
+
 def add_keyword(request):
+
 	if request.method == 'POST':	#add a business
-		form = KeywordForm(request.POST)
-		new_key = form.save()
-		return HttpResponseRedirect('/')
-	else: #add a form
+		form = request.POST
+
+		nm = form['name']
+		print('here')
+		set = Keyword.objects.filter(name=nm)
+		print(set)
+		if(set.count() == 0):
+			k = Keyword.objects.create(name=nm)
+			print('new one')
+			k.save()
+		return render_to_response('ratings/add_keyword.html', {'keywords' : Keyword.objects.all()}, context_instance=RequestContext(request))	
+	else:
 		f = KeywordForm();			
-		return render_to_response('ratings/add_keyword.html', {'form' : f}, context_instance=RequestContext(request))	
+		return render_to_response('ratings/add_keyword.html', {'keywords' : Keyword.objects.all()}, context_instance=RequestContext(request))	
 
 
 
@@ -97,11 +149,15 @@ def add_keyword(request):
 def add_business(request):
 	if request.method == 'POST':	#add a business
 		form = BusinessForm(request.POST)
-		new_business = form.save(commit=False)
-		new_business.save()
-		for key_id in request.POST.getlist('keywords'):
-			grouping = Grouping.objects.create(keyword_id = int(key_id), business = new_business)
-		return HttpResponseRedirect('/')
+		name = form.data['name']
+		address = form.data['address']
+		city = form.data['city']
+		state = form.data['state']
+		
+		b = create_business(name,address,state,city,1,1)
+		b.save()
+		return render_to_response('ratings/detail.html', {'business': b, 'avg':0, 'numRatings':0}, context_instance=RequestContext(request))
+		
 
 	else: #add a form
 		f = BusinessForm();			

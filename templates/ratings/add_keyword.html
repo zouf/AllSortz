@@ -1,10 +1,27 @@
 {% extends "base.html" %}
 
 {% block body %}
+<script type="text/javascript">
+$(function() {
+  $("#id_name").autocomplete({
+    source: "/api/get_keywords/",
+    minLength: 2,
+  });
+});
+</script>
+<div class="defaultBody">
+<br>
+<form action="." method="post">{% csrf_token %}
+		<div class="test">
+  			<input id="id_name" value="Name" class="input_box" type="text"  name="name" maxlength="100" onfocus="this.value='';"  /></p>
 
-	<form action="." method="post">{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" value="Submit" />
-	</form>
+  			<p>Keywords:</p>
+  			{% for key in keywords %}
+  				<br>
+  				{{key.name}}
+  			{%endfor%}
+		</div>
+</form>
+</div>
 
 {% endblock %}

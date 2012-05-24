@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block body %}
+<script type="text/javascript" >
+$(function(){
+  setAutoComplete("keySearchField", "keyResults", "/lookup/?query=");
+});
+</script>
 {% if business %}
 	<div id="busDetail" class="defaultBody">
     <h1>{{ business.name }}</h1>
@@ -8,10 +13,30 @@
     <div id="businessDetail" >
 		<i> {{ business.city }}, {{business.state}}</i>
 		<br><br>
-		
-
+	</div>
 	
-		
+	
+	<form action="." method="post">{% csrf_token %}
+		<div class="test">
+  			<input id="id_name" value="Name" class="input_box" type="text"  name="name" maxlength="100" onfocus="this.value='';"  /></p>
+
+  			<p>Tags:</p>
+  			{% for key in keywords.all %}
+  				<br>
+  				{{key.name}}
+  			{%endfor%}
+		</div>
+	</form>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--
 		<div id="busRating">
 		{% if rating %}
 			<p> Your rating is {{ rating.rating }}</p>
@@ -22,10 +47,8 @@
 		{% endif %}
 			<p> Average across {{numRatings}} users: {{avg}} </p>
 		{% endif %}
-		</div>
-	</div>
-	
-	
+		</div> -->
+	<!--
 	{% if user.is_authenticated %}
 		<form action="." method="post">{% csrf_token %}
 		{{ form.as_p }}
@@ -35,18 +58,11 @@
 	{% if not user.is_authenticated %}
 		<p>Login to rate</p>
 	{% endif %}
-			</div>
+	-->
 	
+	</div>
 	
-		
-		<div id="busKeywords">
-				<p> Keywords </p>
-			<ul>
-			{% for key in business.keywords.all %}
-				<li>{{ key }}</li>
-			{% endfor %}
-			</ul>
-		</div>
+
 
 {% else %}
     <p>Invalid business!.</p>
