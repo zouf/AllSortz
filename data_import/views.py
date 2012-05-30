@@ -10,7 +10,6 @@ from django.db.models.aggregates import Count
 from ratings.models import Business, Rating, User, Keyword, Grouping
 from ratings.populate import create_business, create_rating, create_user, \
     create_grouping, clear_all_tables, create_category, create_grouping
-from ratings.normalization import buildAverageRatings
 import simplejson as json
 
 bus_rating_threshold = 10
@@ -135,7 +134,6 @@ def read_dataset(FilterState, FoodOnly):
     Grouping.objects.bulk_create(create_grouping_list)
     transaction.commit();
     pare_dataset(FoodOnly)
-    buildAverageRatings()
 
 def pare_dataset(filterFood):
     # All the ratings are in the DB at this point, out of laziness we now

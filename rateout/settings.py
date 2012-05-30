@@ -155,7 +155,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 	'ratings',
     'data_import',
-    'validation',
+    'recommendation',
 	'registration', 
 	 'celery',
      'djcelery',

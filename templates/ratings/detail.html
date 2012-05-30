@@ -8,8 +8,14 @@ $(function(){
 </script>
 {% if business %}
 	<div id="busDetail" class="defaultBody">
+    <table>
+		<tr >
+		<td>
+    	<div id="prime_list" style="width:700px" >
+		
+			    
     <h1>{{ business.name }}</h1>
-
+	
     <div id="businessDetail" >
 		<i> {{ business.city }}, {{business.state}}</i>
 		<br><br>
@@ -17,7 +23,7 @@ $(function(){
 	
 	
 	<form action="." method="post">{% csrf_token %}
-		<div class="test">
+		<div>
   			<input id="id_name" value="Name" class="input_box" type="text"  name="name" maxlength="100" onfocus="this.value='';"  /></p>
 
   			<p>Tags:</p>
@@ -31,6 +37,134 @@ $(function(){
 	
 	
 	
+		</div>
+		</td>
+		<td>
+		
+			
+		</td>
+
+		</tr>
+		<tr>
+				<td valign="top">
+				<div id="review_list" class="news_feed">
+				<form action="." method="post">{% csrf_token %}
+				  	<input id="id_review" value="Add a review" class="input_box" type="text"  name="review" maxlength="150" onfocus="this.value='';"  /></p>
+					{% for review in reviews %}
+					<div class="reviewListing">
+			    	<table>
+			    	<tr valign="top">
+			    	
+						<td style="width:40px;" valign="top">
+								<div id="review_{{review.id}}" class="review">
+							{% if review.this_rat > 0 %}
+								{% if review.this_rat > 2 %}
+									<div class="vote up">
+									<span id="vote_pos_{{review.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
+									</div>
+									<div class="vote down">
+									<span id="vote_neg_{{review.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+									</div>
+									
+								{% else %}
+									<div class="vote up">
+									<span id="vote_pos_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
+									</div>
+									<div class="vote down">
+									<span id="vote_neg_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
+									</div>
+								{%endif%}
+							{%else%}
+									<div class="vote up">
+									<span id="vote_pos_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
+									</div>
+									<div class="vote down">
+									<span id="vote_neg_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+									</div>
+							{% endif %}
+								
+			
+							  <table>
+							  <tr>
+							  <td><div id="pos_rating_{{review.id}}" class="pos_rating">{{review.pos_ratings}}</div></td>
+							  <td><div id="neg_rating_{{review.id}}" class="neg_rating">{{review.neg_ratings}}</div></td>
+							  </tr>
+							  </table>
+						</div>
+					</td>
+					<td>		
+					    {{review.descr}} 
+					 </td>
+					</tr>
+				  </table>
+				    </div>
+				    {%endfor%}
+				    </form>
+				</div>
+			</td>
+			<td valign="top">
+				<div id="tip_list" class="news_feed">
+				<form action="." method="post">{% csrf_token %}
+				  	<input id="id_tip" value="Add a tip" class="input_box" type="text"  name="tip" maxlength="150" onfocus="this.value='';"  /></p>
+				
+					{% for tip in tips %}
+					<div class="tipListing">
+			    	<table>
+			    	<tr valign="top">
+						<td style="width:40px;" valign="top">
+								<div id="tip_{{tip.id}}" class="tip">
+							{% if tip.this_rat > 0 %}
+								{% if tip.this_rat > 2 %}
+									<div class="vote up">
+									<span id="vote_pos_{{tip.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
+									</div>
+									<div class="vote down">
+									<span id="vote_neg_{{tip.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+									</div>
+									
+								{% else %}
+									<div class="vote up">
+									<span id="vote_pos_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
+									</div>
+									<div class="vote down">
+									<span id="vote_neg_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
+									</div>
+								{%endif%}
+							{%else%}
+									<div class="vote up">
+									<span id="vote_pos_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
+									</div>
+									<div class="vote down">
+									<span id="vote_neg_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+									</div>
+							{% endif %}
+								
+			
+							  <table>
+							  <tr>
+							  <td><div id="pos_rating_{{tip.id}}" class="pos_rating">{{tip.pos_ratings}}</div></td>
+							  <td><div id="neg_rating_{{tip.id}}" class="neg_rating">{{tip.neg_ratings}}</div></td>
+							  </tr>
+							  </table>
+						</div>
+					</td>
+					<td>		
+					     {{tip.descr}}  
+					 </td>
+					</tr>
+				  </table>
+				    </div>
+					{%endfor%}
+					</form>
+				</div>
+			</td>
+				
+		
+		</tr>
+		</table>
+    
+    
+
 	
 	
 	
