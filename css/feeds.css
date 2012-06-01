@@ -1,7 +1,14 @@
 .news_feed
 {
-	width:250px;
-	padding-top:50px;
+	width:150px;
 	margin-top:0px;
+    padding-left:100px;
 	vertical-align:top;
+}
+
+.feedTitle
+{
+    font-size:26px;
+
+    
 }

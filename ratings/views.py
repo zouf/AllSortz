@@ -4,13 +4,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from ratings.forms import BusinessForm
-from ratings.models import Business, Grouping, Rating, Keyword, Review, Tip
-from ratings.populate import create_business, create_keyword
+from ratings.models import Business, Rating, Review, Tip, Tag, TagRating, \
+    ReviewRating, TipRating
+from ratings.populate import create_business
 from ratings.utility import getNumRatings, log_msg, get_lat
 from recommendation.normalization import getBusAvg, getNumPosRatings, \
     getNumNegRatings
 from recommendation.recengine import RecEngine
-import json
 
 re = RecEngine()
 
@@ -29,16 +29,16 @@ def detail_keywords(request, bus_id):
     if request.method == 'POST':
         #add a keyword
         form = request.POST
-        if 'name' in form:  # we're posting a keyword
-            nm = form['name']
-            try:
-                k = Keyword.objects.get(name=nm)
-            except:
-                k = create_keyword(name=nm)
-            gset = Grouping.objects.filter(business=b, keyword=k)
-            if gset.count() == 0:
-                g = Grouping.objects.create(business=b, keyword=k)
-                g.save()
+#        if 'name' in form:  # we're posting a keyword
+#            nm = form['name']
+#            try:
+#                k = Keyword.objects.get(name=nm)
+#            except:
+#                k = create_keyword(name=nm)
+#            gset = Grouping.objects.filter(business=b, keyword=k)
+#            if gset.count() == 0:
+#                g = Grouping.objects.create(business=b, keyword=k)
+#                g.save()
         if 'review' in form:  # we're posting a review
             review = form['review']
             rev = Review.objects.create(user=request.user, business=b, descr=review)
@@ -47,46 +47,67 @@ def detail_keywords(request, bus_id):
             tip = form['tip']
             tip = Tip.objects.create(user=request.user, business=b, descr=tip)
             tip.save()
-    keywords = b.keywords
+        if 'tag' in form:
+            tag = form['tag']
+            tag = Tag.objects.create(creator=request.user, business=b, descr=tag)
+            tag.save()
+    tags = Tag.objects.filter(business=b)
+    for t in tags:
+        try:
+            rat =  TagRating.objects.get(tag=t,user=request.user)
+            t.this_rat = rat.rating
+            t.pos_ratings = getNumPosRatings(t)
+            t.neg_ratings = getNumNegRatings(t)
+        except:
+            t.this_rat = 0
+    
+    
     tips = Tip.objects.filter(business=b)
+    for t in tips:
+        try:
+            rat =  TipRating.objects.get(tip=t,user=request.user)
+            t.this_rat = rat.rating
+            t.pos_ratings = getNumPosRatings(t)
+            t.neg_ratings = getNumNegRatings(t)
+        except:
+            t.this_rat = 0
+    
+    
     reviews = Review.objects.filter(business=b)
+    for t in reviews:
+        try:
+            rat =  ReviewRating.objects.get(review=t,user=request.user)
+            t.this_rat = rat.rating
+            t.pos_ratings = getNumPosRatings(t)
+            t.neg_ratings = getNumNegRatings(t)
+        except:
+            t.this_rat = 0
+   
+    
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
-    print(latlng)
     if latlng:
-        return render_to_response('ratings/detail.html', {'business': b, 'keywords': keywords, 'tips': tips, 'reviews': reviews, 'lat':latlng[0], 'lng':latlng[1]}, context_instance=RequestContext(request))
+        return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips, 'reviews': reviews, 'lat':latlng[0], 'lng':latlng[1]}, context_instance=RequestContext(request))
     else:
-        return render_to_response('ratings/detail.html', {'business': b, 'keywords': keywords, 'tips': tips, 'reviews': reviews}, context_instance=RequestContext(request))
+        return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips, 'reviews': reviews}, context_instance=RequestContext(request))
 
 
-def get_keywords(request):
-    if request.method == 'GET':
-        q = request.GET.get('term', '')
-        keywords = Keyword.objects.filter(name__icontains=q)[:20]
-        results = []
-        for word in keywords:
-            results.append(word.name)
-        data = json.dumps(results)
-        print(data)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
 
 
-def add_keyword(request):
-    log_msg('Create a keyword')
-    if request.method == 'POST':  # add a keyword!
-        form = request.POST
-
-        nm = form['name']
-        keyset = Keyword.objects.filter(name=nm)
-        print(set)
-        if(keyset.count() == 0):
-            k = Keyword.objects.create(name=nm)
-            print('new one')
-            k.save()
-    else:
-        return render_to_response('ratings/add_keyword.html', {'keywords': Keyword.objects.all()}, context_instance=RequestContext(request))
+#
+#def add_keyword(request):
+#    log_msg('Create a keyword')
+#    if request.method == 'POST':  # add a keyword!
+#        form = request.POST
+#
+#        nm = form['name']
+#        keyset = Keyword.objects.filter(name=nm)
+#        print(set)
+#        if(keyset.count() == 0):
+#            k = Keyword.objects.create(name=nm)
+#            print('new one')
+#            k.save()
+#    else:
+#        return render_to_response('ratings/add_keyword.html', {'keywords': Keyword.objects.all()}, context_instance=RequestContext(request))
 
 
 def add_business(request):
@@ -143,6 +164,20 @@ def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')
 
+
+#def get_keywords(request):
+#    if request.method == 'GET':
+#        q = request.GET.get('term', '')
+#        keywords = Keyword.objects.filter(name__icontains=q)[:20]
+#        results = []
+#        for word in keywords:
+#            results.append(word.name)
+#        data = json.dumps(results)
+#        print(data)
+#    else:
+#        data = 'fail'
+#    mimetype = 'application/json'
+#    return HttpResponse(data, mimetype)
 
 
 #def pop_test_data(request):

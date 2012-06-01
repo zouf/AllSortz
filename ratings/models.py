@@ -37,6 +37,13 @@ class Rating(models.Model):
         return self.username.username + " " + self.business.name + " " + str(self.rating)
 
 
+
+class Tag(models.Model):
+    creator = models.ForeignKey(User)
+    business=models.ForeignKey(Business)
+    descr = models.TextField(max_length=1000)
+
+
 class Tip(models.Model):
     user = models.ForeignKey(User)
     business = models.ForeignKey(Business)
@@ -54,17 +61,20 @@ class ReviewRating(models.Model):
     user = models.ForeignKey(User)
     rating = models.PositiveSmallIntegerField()
 
-    def __unicode__(self):
-        return self.username.username + " " + self.business.name + " " + str(self.rating)
-
 
 class TipRating(models.Model):
     tip = models.ForeignKey(Tip)
     user = models.ForeignKey(User)
     rating = models.PositiveSmallIntegerField()
 
-    def __unicode__(self):
-        return self.username.username + " " + self.business.name + " " + str(self.rating)
+
+class TagRating(models.Model):
+    tag = models.ForeignKey(Tag)
+    user = models.ForeignKey(User)
+    rating = models.PositiveSmallIntegerField()
+
+
+
 
 
 class Grouping(models.Model):

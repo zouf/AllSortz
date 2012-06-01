@@ -6,6 +6,11 @@ div#container
 }
 
 
+body
+{
+    margin: 0 0 0 0;
+}
+
 .defaultBody
 {
 	font-family: 'Helvetica', sans-serif;
@@ -16,7 +21,7 @@ div#container
    /* image: url(images/transwhite.png);
     background-repeat: repeat; */
     border: 1px black solid;
-    margin-top: -10px;
+    margin-top: 0px;
     min-height:800px;
     box-shadow : 0px 0px 8px #888888;
 }

@@ -6,15 +6,14 @@ Created on May 8, 2012
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Sum, Count
 from numpy.ma.core import std
-from ratings.models import Business, Rating, TipRating, ReviewRating
+from ratings.models import Business, Rating, TipRating, ReviewRating, TagRating
 from ratings.utility import log_msg
 import math
 
 
 def getNumPosRatings(o):
-    print(type(o))
+    #get class name
     t = o.__class__.__name__
-    print(t)
     if t == "Business":
         ratingFilter = Rating.objects.filter(business=o, rating__range=["3", "5"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
@@ -27,6 +26,11 @@ def getNumPosRatings(o):
         return countRating
     elif t == 'Review':
         ratingFilter = ReviewRating.objects.filter(review=o, rating__range=["3", "5"])
+        ratingFilter = ratingFilter.aggregate(Count('rating'))
+        countRating = ratingFilter['rating__count']
+        return countRating
+    elif t == 'Tag':
+        ratingFilter = TagRating.objects.filter(tag=o, rating__range=["3", "5"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
@@ -48,6 +52,11 @@ def getNumNegRatings(o):
         return countRating
     elif t == 'Review':
         ratingFilter = ReviewRating.objects.filter(review=o, rating__range=["1", "2"])
+        ratingFilter = ratingFilter.aggregate(Count('rating'))
+        countRating = ratingFilter['rating__count']
+        return countRating
+    elif t == 'Tag':
+        ratingFilter = TagRating.objects.filter(tag=o, rating__range=["1", "2"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating

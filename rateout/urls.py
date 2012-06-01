@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^$', 'ratings.views.index'),
     url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.detail_keywords'),
     url(r'^ratings/(?P<bus_id>\d+)/rate/$', 'ratings.views.rate'),
-	url(r'^ratings/add_keyword/$', 'ratings.views.add_keyword'),
+	#url(r'^ratings/add_keyword/$', 'ratings.views.add_keyword'),
 #	url(r'^ajax_query/$','ratings.views.ajax_query'),
 	url(r'^ratings/add_business/$', 'ratings.views.add_business'),
 #    url(r'^ratings/view_ratings/(?P<maxc>\d+)', 'ratings.views.display_table'),
@@ -29,7 +29,9 @@ urlpatterns = patterns('',
     url(r'^remove_tip_vote*', 'ratings.vote.remove_tip_vote'),
     url(r'^review_vote*', 'ratings.vote.review_vote'),
     url(r'^remove_review_vote*', 'ratings.vote.remove_review_vote'),
-    url(r'^api/get_keywords/', 'ratings.views.get_keywords', name='get_keywords')
+    url(r'^tag_vote*', 'ratings.vote.tag_vote'),
+    url(r'^remove_tag_vote*', 'ratings.vote.remove_tag_vote')
+   # url(r'^api/get_keywords/', 'ratings.views.get_keywords', name='get_keywords')
 )
 
 if settings.DEBUG:
