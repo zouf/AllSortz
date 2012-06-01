@@ -1,13 +1,47 @@
 {% extends "base.html" %}
 
 {% block body %}
-<script type="text/javascript" >
+<script type="text/javascript">
+function initialize() {
+	var latlng = new google.maps.LatLng({{lat}}, {{lng}});
+    var myOptions = {
+      center: latlng,
+      zoom: 16,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("map_canvas"),
+        myOptions);
+    var marker = new google.maps.Marker({
+      position: latlng,
+      map: map,
+      title: "{{business.name}}"
+  	});
+}
+  
+</script>
+
+
+<script type="text/javascript">
+  
 $(function(){
   setAutoComplete("keySearchField", "keyResults", "/lookup/?query=");
 });
 </script>
+
+
+
+<style type="text/css">
+  html { height: 100% }
+  body { height: 100%; margin: 0; padding: 0 }
+  #map_canvas { height: 100% }
+</style>
+
+
 {% if business %}
+	
+	
 	<div id="busDetail" class="defaultBody">
+
     <table>
 		<tr >
 		<td>
@@ -40,8 +74,8 @@ $(function(){
 		</div>
 		</td>
 		<td>
-		
-			
+			<div id="map_canvas" style="width:300px; height:300px"></div>
+	
 		</td>
 
 		</tr>

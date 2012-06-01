@@ -73,6 +73,7 @@ p
 	height: 30px;
 	padding-top: .5em;
 	border-bottom: 1px black solid;
+	z-index:1000
 	
 }
 

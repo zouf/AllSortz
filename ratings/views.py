@@ -6,12 +6,11 @@ from django.template import RequestContext
 from ratings.forms import BusinessForm
 from ratings.models import Business, Grouping, Rating, Keyword, Review, Tip
 from ratings.populate import create_business, create_keyword
-from ratings.utility import getNumRatings, log_msg
+from ratings.utility import getNumRatings, log_msg, get_lat
 from recommendation.normalization import getBusAvg, getNumPosRatings, \
-        getNumNegRatings
+    getNumNegRatings
 from recommendation.recengine import RecEngine
 import json
-
 
 re = RecEngine()
 
@@ -51,7 +50,12 @@ def detail_keywords(request, bus_id):
     keywords = b.keywords
     tips = Tip.objects.filter(business=b)
     reviews = Review.objects.filter(business=b)
-    return render_to_response('ratings/detail.html', {'business': b, 'keywords': keywords, 'tips': tips, 'reviews': reviews}, context_instance=RequestContext(request))
+    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+    print(latlng)
+    if latlng:
+        return render_to_response('ratings/detail.html', {'business': b, 'keywords': keywords, 'tips': tips, 'reviews': reviews, 'lat':latlng[0], 'lng':latlng[1]}, context_instance=RequestContext(request))
+    else:
+        return render_to_response('ratings/detail.html', {'business': b, 'keywords': keywords, 'tips': tips, 'reviews': reviews}, context_instance=RequestContext(request))
 
 
 def get_keywords(request):
