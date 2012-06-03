@@ -6,3 +6,4 @@ from ratings.models import Business
 class BusinessForm(ModelForm):
     class Meta:
         model = Business
+        

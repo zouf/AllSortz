@@ -5,9 +5,9 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from ratings.forms import BusinessForm
 from ratings.models import Business, Rating, Review, Tip, Tag, TagRating, \
-    ReviewRating, TipRating
+    ReviewRating, TipRating, BusinessPhoto
 from ratings.populate import create_business
-from ratings.utility import getNumRatings, log_msg, get_lat
+from ratings.utility import getNumRatings, log_msg, get_lat, get_photo_thumb_url
 from recommendation.normalization import getBusAvg, getNumPosRatings, \
     getNumNegRatings
 from recommendation.recengine import RecEngine
@@ -85,6 +85,8 @@ def detail_keywords(request, bus_id):
    
     
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+    b.photourl = get_photo_thumb_url(b)
+
     if latlng:
         return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips, 'reviews': reviews, 'lat':latlng[0], 'lng':latlng[1]}, context_instance=RequestContext(request))
     else:
@@ -113,14 +115,20 @@ def detail_keywords(request, bus_id):
 def add_business(request):
     log_msg('Create a business')
     if request.method == 'POST':  # add a business
-        form = BusinessForm(request.POST)
+        form = BusinessForm(request.POST, request.FILES)
         name = form.data['name']
         address = form.data['address']
         city = form.data['city']
         state = form.data['state']
+        img = request.FILES['image']
+        
+        print(form.data)
 
+      
         b = create_business(name, address, state, city, 1, 1)
         b.save()
+        bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
+        bp.save()
         return render_to_response('ratings/detail.html', {'business': b, 'avg': 0, 'numRatings': 0}, context_instance=RequestContext(request))
     else:  # Print a boring business form
         f = BusinessForm()

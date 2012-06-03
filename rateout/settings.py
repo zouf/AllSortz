@@ -1,4 +1,5 @@
 # Django settings for nightout project.
+from S3 import CallingFormat
 import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -17,6 +18,13 @@ BROKER_PASSWORD = "guest"
 CELERY_IMPORTS = ("ratings.tasks", )
 CELERY_RESULT_BACKEND = "amqp"
 
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+AWS_ACCESS_KEY_ID='AKIAJNT6HH4SMZYBZJKQ'
+AWS_SECRET_ACCESS_KEY='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'
+AWS_STORAGE_BUCKET_NAME='rateoutimages'
+AWS_CALLING_FORMAT=CallingFormat.SUBDOMAIN
+STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 #import djcelery
 
 
@@ -159,6 +167,7 @@ INSTALLED_APPS = (
 	'registration', 
 	 'celery',
      'djcelery',
+     'storages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
 	'django.contrib.contenttypes',
