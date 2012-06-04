@@ -62,6 +62,7 @@ class BusinessPhoto(models.Model):
     caption = models.TextField(blank=True)
     def save(self):
         #Original photo
+        print(self.business.id)
         imgFile = Image.open(self.image)
         
         #Convert to RGB
@@ -70,7 +71,7 @@ class BusinessPhoto(models.Model):
         
         #Save a thumbnail for each of the given dimensions
         #The IMAGE_SIZES looks like:
-        IMAGE_SIZES = { 'image_web'      : (300, 348),
+        IMAGE_SIZES = { 'image'      : (300, 348),
                     'image_large'    : (600, 450),
                     'image_thumb'    : (200, 200) }
 
