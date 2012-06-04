@@ -22,8 +22,8 @@
 	
 	<div id=account-bar class="headerBar">
 		<a href="/">Home</a> | <a href="/accounts/login/?next=/">Login</a> | <a href="/accounts/register/">Register</a>
+		
 	</div>
-    <div id="titleShadow"></div>
 	{% endif %}
 
 	{% if user.is_authenticated %}
@@ -32,6 +32,18 @@
 		| <a href="/ratings/top_ten/"> Top </a> 
 		</div> 
 	{% endif %}
+		
+		<div id="searchBar" class="searchBar">
+			<form method="get" action="/ratings/search_tags/">{% csrf_token %}
+		        <input type="search" class="ui-widget" name="search" />
+			</form>		
+		</div>
+	
+
+	
+	
+	
+	
     {% block body %}{% endblock %}
 	<footer>
 		<p> All Rights Reserved </p>

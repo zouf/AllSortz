@@ -9,10 +9,14 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', 'ratings.views.index'),
+   url(r'^index*$', 'ratings.views.index'),
+ url(r'^index/$', 'ratings.views.index'),
+
     url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.detail_keywords'),
     url(r'^ratings/(?P<bus_id>\d+)/rate/$', 'ratings.views.rate'),
-	#url(r'^ratings/add_keyword/$', 'ratings.views.add_keyword'),
-#	url(r'^ajax_query/$','ratings.views.ajax_query'),
+	url(r'^api/add_tag/$', 'ratings.views.add_tag'),
+    url(r'^ratings/search_tags/$', 'ratings.views.search_test'),
+	(r'^search/', include('haystack.urls')),
 	url(r'^ratings/add_business/$', 'ratings.views.add_business'),
 #    url(r'^ratings/view_ratings/(?P<maxc>\d+)', 'ratings.views.display_table'),
 #    url(r'^ratings/view_ratings*$', 'ratings.views.display_table_full'),
@@ -30,8 +34,8 @@ urlpatterns = patterns('',
     url(r'^review_vote*', 'ratings.vote.review_vote'),
     url(r'^remove_review_vote*', 'ratings.vote.remove_review_vote'),
     url(r'^tag_vote*', 'ratings.vote.tag_vote'),
-    url(r'^remove_tag_vote*', 'ratings.vote.remove_tag_vote')
-   # url(r'^api/get_keywords/', 'ratings.views.get_keywords', name='get_keywords')
+    url(r'^remove_tag_vote*', 'ratings.vote.remove_tag_vote'),
+    url(r'^api/get_tags/', 'ratings.views.get_tags', name='get_tags')
 )
 
 if settings.DEBUG:

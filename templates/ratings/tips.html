@@ -1,0 +1,56 @@
+
+					<form action="." method="post">{% csrf_token %}
+						<h3 class="feedTitle">Tips</h3>
+					  	<input id="id_tip" value="Add a tip" class="tip_input_box" type="text"  name="tip" maxlength="150" onfocus="this.value='';"  /></p>
+						{% for tip in tips %}
+						<div class="tipListing">
+				    	<table>
+				    	<tr valign="top">
+							<td style="width:40px;" valign="top">
+									<div id="tip_{{tip.id}}" class="up_down">
+								{% if tip.this_rat > 0 %}
+									{% if tip.this_rat > 2 %}
+										<div class="vote up">
+										<span id="tip_vote_pos_{{tip.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
+										</div>
+										<div class="vote down">
+										<span id="tip_vote_neg_{{tip.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+										</div>
+										
+									{% else %}
+										<div class="vote up">
+										<span id="tip_vote_pos_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
+										</div>
+										<div class="vote down">
+										<span id="tip_vote_neg_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
+										</div>
+									{%endif%}
+								{%else%}
+										<div class="vote up">
+										<span id="tip_vote_pos_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
+										</div>
+										<div class="vote down">
+										<span id="tip_vote_neg_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+										</div>
+								{% endif %}
+									
+				
+								  <table>
+								  <tr>
+								  <td><div id="tip_pos_rating_{{tip.id}}" class="pos_rating">{{tip.pos_ratings}}</div></td>
+								  <td><div id="tip_neg_rating_{{tip.id}}" class="neg_rating">{{tip.neg_ratings}}</div></td>
+								  </tr>
+								  </table>
+							</div>
+						</td>
+						<td>		
+						     <div class="review_box">		
+						     {{tip.descr}}  
+						    </div>
+						 </td>
+						</tr>
+					  </table>
+					    </div>
+						{%endfor%}
+						</form>
+					

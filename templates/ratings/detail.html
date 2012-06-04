@@ -18,18 +18,31 @@ function initialize() {
   	});
   	google.maps.event.trigger(map, 'resize') 
 }
-  
-</script>
 
 
-
-<script type="text/javascript">
-  
-$(function(){
-  setAutoComplete("tagSearchField", "tagResults", "/lookup/?query=");
+$(function() {
+  $("#id_tag").autocomplete({
+    source: "/api/get_tags/",
+    minLength: 2,
+  });
+}); 
+ 
+$(document).ready(function(){
+$("form[name=addTag]").submit(function(e){
+	e.preventDefault();
+	var form = $("form[name=addTag]")
+    $.ajax({ 
+         url   : '/api/add_tag/',
+         type  : form.attr('method'),
+         data  : form.serialize(), // data to be submitted
+         success: function(data){
+         	document.getElementById("tag_list").innerHTML = data         
+         }
+    });
+    return false;
+ });
 });
 </script>
-
 
 
 <style type="text/css">
@@ -50,222 +63,57 @@ $(function(){
 			    
     <h1>{{ business.name }}</h1>
 	
-    <div id="businessDetail" >
-		<i> {{ business.city }}, {{business.state}}</i>
-		<br><br>
-		<img src="{{business.photourl}}" width="200" height="100" />
-	</div>
-	
-	
-	
-	
-	
-		</div>
+		    <div id="businessDetail" >
+				<i> {{ business.city }}, {{business.state}}</i>
+				<br><br>
+				<img src="{{business.photourl}}" width="200" height="100" />
+			</div>
+			
 		</td>
 		<td>
 		</td>
 		<td>
 			<div id="map_canvas" style="width:250px; height:250px"></div>
-	
 		</td>
-
-		</tr>
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			
 		</tr>
 		<tr>
 			<td colspan="3">
-			<table>
-				<tr>
-					<td valign="top">
-					<div id="review_list" class="news_feed">
-					<form action="." method="post">{% csrf_token %}
-					  	<h3 class="feedTitle">Reviews</h3>
-					  	<input id="id_review" value="Add a review" class="input_box" type="text"  name="review" maxlength="150" onfocus="this.value='';"  /></p>
-						{% for review in reviews %}
-						<div class="reviewListing">
-				    	<table>
-				    	<tr valign="top">
-				    	
-							<td style="width:40px;" valign="top">
-									<div id="review_{{review.id}}" class="review">
-								{% if review.this_rat > 0 %}
-									{% if review.this_rat > 2 %}
-										<div class="vote up">
-										<span id="vote_pos_{{review.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
-										</div>
-										<div class="vote down">
-										<span id="vote_neg_{{review.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
-										</div>
-										
-									{% else %}
-										<div class="vote up">
-										<span id="vote_pos_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
-										</div>
-										<div class="vote down">
-										<span id="vote_neg_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
-										</div>
-									{%endif%}
-								{%else%}
-										<div class="vote up">
-										<span id="vote_pos_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
-										</div>
-										<div class="vote down">
-										<span id="vote_neg_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
-										</div>
-								{% endif %}
-									
-				
-								  <table>
-								  <tr>
-								  <td><div id="pos_rating_{{review.id}}" class="pos_rating">{{review.pos_ratings}}</div></td>
-								  <td><div id="neg_rating_{{review.id}}" class="neg_rating">{{review.neg_ratings}}</div></td>
-								  </tr>
-								  </table>
+			<hr/ >
+			</td>			
+		</tr>
+		<tr>
+			<td colspan="3">
+				<table>
+					<tr>
+						<td valign="top">
+							<div id="tip_list" class="ui-widget tips_feed">
+								{% include 'ratings/tips.html' %}
 							</div>
 						</td>
-						<td>		
-						    {{review.descr}} 
-						 </td>
-						</tr>
-					  </table>
-					    </div>
-					    {%endfor%}
-					    </form>
-					</div>
-				</td>
-				
-				<td  valign="top">
-					<div id="tag_list" class="news_feed">
-					<form action="." method="post">{% csrf_token %}
-						<h3 class="feedTitle">Tags</h3>
-					  	<input id="id_tag" value="Add a tag" class="input_box" type="text"  name="tag" maxlength="150" onfocus="this.value='';"  /></p>
-						{% for tag in tags %}
-						<div class="tagListing">
-				    	<table>
-				    	<tr valign="top">
-							<td style="width:40px;" valign="top">
-									<div id="tag_{{tag.id}}" class="tag">
-								{% if tag.this_rat > 0 %}
-									{% if tag.this_rat > 2 %}
-										<div class="vote up">
-										<span id="vote_pos_{{tag.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
-										</div>
-										<div class="vote down">
-										<span id="vote_neg_{{tag.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
-										</div>
-										
-									{% else %}
-										<div class="vote up">
-										<span id="vote_pos_{{tag.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
-										</div>
-										<div class="vote down">
-										<span id="vote_neg_{{tag.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
-										</div>
-									{%endif%}
-								{%else%}
-										<div class="vote up">
-										<span id="vote_pos_{{tag.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
-										</div>
-										<div class="vote down">
-										<span id="vote_neg_{{tag.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
-										</div>
-								{% endif %}
-									
-				
-								  <table>
-								  <tr>
-								  <td><div id="pos_rating_{{tag.id}}" class="pos_rating">{{tag.pos_ratings}}</div></td>
-								  <td><div id="neg_rating_{{tag.id}}" class="neg_rating">{{tag.neg_ratings}}</div></td>
-								  </tr>
-								  </table>
+						<td >
+							<div id="tag_list" class="ui-widget tags_feed">
+								{% include 'ratings/tags.html' %}
 							</div>
 						</td>
-						<td>		
-						     {{tag.descr}}  
-						 </td>
-						</tr>
-					  </table>
-					    </div>
-						{%endfor%}
-						</form>
-					</div>
-				</td>
-				
-				
-				
-				<td valign="top">
-					<div id="tip_list" class="news_feed">
-					<form action="." method="post">{% csrf_token %}
-						<h3 class="feedTitle">Tips</h3>
-					  	<input id="id_tip" value="Add a tip" class="input_box" type="text"  name="tip" maxlength="150" onfocus="this.value='';"  /></p>
-						{% for tip in tips %}
-						<div class="tipListing">
-				    	<table>
-				    	<tr valign="top">
-							<td style="width:40px;" valign="top">
-									<div id="tip_{{tip.id}}" class="tip">
-								{% if tip.this_rat > 0 %}
-									{% if tip.this_rat > 2 %}
-										<div class="vote up">
-										<span id="vote_pos_{{tip.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
-										</div>
-										<div class="vote down">
-										<span id="vote_neg_{{tip.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
-										</div>
-										
-									{% else %}
-										<div class="vote up">
-										<span id="vote_pos_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
-										</div>
-										<div class="vote down">
-										<span id="vote_neg_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
-										</div>
-									{%endif%}
-								{%else%}
-										<div class="vote up">
-										<span id="vote_pos_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
-										</div>
-										<div class="vote down">
-										<span id="vote_neg_{{tip.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
-										</div>
-								{% endif %}
-									
-				
-								  <table>
-								  <tr>
-								  <td><div id="pos_rating_{{tip.id}}" class="pos_rating">{{tip.pos_ratings}}</div></td>
-								  <td><div id="neg_rating_{{tip.id}}" class="neg_rating">{{tip.neg_ratings}}</div></td>
-								  </tr>
-								  </table>
-							</div>
-						</td>
-						<td>		
-						     {{tip.descr}}  
-						 </td>
-						</tr>
-					  </table>
-					    </div>
-						{%endfor%}
-						</form>
-					</div>
-				</td>
-				</tr>
-			</table>
+					</tr>
+				</table>
 			</td>
 		</tr>
 		</table>
     
-    
+{% else %}
+    <p>Invalid business!.</p>
+{% endif %}
 
 	
+	</div>
 	
-	
-	
-	
+
+
+
+{% endblock %}
+
+
 	<!--
 		<div id="busRating">
 		{% if rating %}
@@ -289,12 +137,64 @@ $(function(){
 		<p>Login to rate</p>
 	{% endif %}
 	-->
-	
-	</div>
-	
 
-
-{% else %}
-    <p>Invalid business!.</p>
-{% endif %}
-{% endblock %}
+	<!--
+					<td valign="top">
+					<div id="review_list" class="news_feed">
+					<form action="." method="post">{% csrf_token %}
+					  	<h3 class="feedTitle">Reviews</h3>
+					  	<input id="id_review" value="Add a review" class="input_box" type="text"  name="review" maxlength="150" onfocus="this.value='';"  /></p>
+						{% for review in reviews %}
+						<div class="reviewListing">
+				    	<table>
+				    	<tr valign="top">
+				    	
+							<td style="width:40px;" valign="top">
+									<div id="review_{{review.id}}" class="review">
+								{% if review.this_rat > 0 %}
+									{% if review.this_rat > 2 %}
+										<div class="vote up">
+										<span id="rev_vote_pos_{{review.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
+										</div>
+										<div class="vote down">
+										<span id="rev_vote_neg_{{review.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+										</div>
+										
+									{% else %}
+										<div class="vote up">
+										<span id="rev_vote_pos_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
+										</div>
+										<div class="vote down">
+										<span id="vrev_ote_neg_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
+										</div>
+									{%endif%}
+								{%else%}
+										<div class="vote up">
+										<span id="rev_vote_pos_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
+										</div>
+										<div class="vote down">
+										<span id="rev_vote_neg_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+										</div>
+								{% endif %}
+									
+				
+								  <table>
+								  <tr>
+								  <td><div id="rev_pos_rating_{{review.id}}" class="pos_rating">{{review.pos_ratings}}</div></td>
+								  <td><div id="rev_neg_rating_{{review.id}}" class="neg_rating">{{review.neg_ratings}}</div></td>
+								  </tr>
+								  </table>
+							</div>
+						</td>
+						<td>		
+						   <div class="review_box">		
+						     {{review.descr}}  
+						    </div>
+						 </td>
+						</tr>
+					  </table>
+					    </div>
+					    {%endfor%}
+					    </form>
+					</div>
+				</td>-->

@@ -32,7 +32,6 @@ def get_lat(loc):
     location = urllib.quote_plus(smart_str(loc))
     dd = urllib2.urlopen("http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % location).read() 
     ft = simplejson.loads(dd)
-    print(ft)
     if ft["status"] == 'OK':
         lat = str(ft["results"][0]['geometry']['location']['lat']) 
         lng = str(ft["results"][0]['geometry']['location']['lng'])

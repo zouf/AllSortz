@@ -6,6 +6,7 @@ div#container
 }
 
 
+
 body
 {
     margin: 0 0 0 0;
@@ -67,7 +68,7 @@ font-size:15px;
 	height: 5px;
 	background-image: url(images/downshadow.png);
 	background-repeat: repeat-x;
-	position: fixed;
+	position: ;
 	top: 38px;
 	left: 0px;
 	
@@ -252,11 +253,4 @@ a:visited
 	text-align:left;
 }
 
-.input_box
-{
-	height:25px;
-	border-radius: 1px;
-	font-family: 'Helvetica', sans-serif;
-	font-size:18px;
 
-}

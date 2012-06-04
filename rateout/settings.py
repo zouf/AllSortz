@@ -139,9 +139,17 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'rateout.urls'
 
 # URL of the login page.
-LOGIN_URL = '/login/'
+LOGIN_URL = '/accounts/login/'
 
 
+#haystack search plugin
+import os
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
 
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -161,6 +169,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'haystack',
 	'ratings',
     'data_import',
     'recommendation',

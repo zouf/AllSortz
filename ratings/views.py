@@ -3,6 +3,8 @@ from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
+from haystack.query import SearchQuerySet
 from ratings.forms import BusinessForm
 from ratings.models import Business, Rating, Review, Tip, Tag, TagRating, \
     ReviewRating, TipRating, BusinessPhoto
@@ -11,6 +13,9 @@ from ratings.utility import getNumRatings, log_msg, get_lat, get_photo_thumb_url
 from recommendation.normalization import getBusAvg, getNumPosRatings, \
     getNumNegRatings
 from recommendation.recengine import RecEngine
+import json
+
+
 
 re = RecEngine()
 
@@ -23,10 +28,38 @@ def top_ten(request):
 
         return render_to_response('ratings/top.html', {'user': request.user, 'business_list': top10}, context_instance=RequestContext(request))
 
+def search_test(request):
+    form = request.GET
+    if 'search' not in form:
+        return index(request)
+    term = form['search']
+    search_results = SearchQuerySet().filter(content=term)
+#    hello_world_results = SearchQuerySet().filter(content='zouf world')
+#    unfriendly_results = SearchQuerySet().exclude(content='hello').filter(content='world')
+#    recent_results = SearchQuerySet().all()
+    businesses = []
+    for sr in search_results:
+        t = Tag.objects.get(pk=sr.pk)
+        businesses.append(t.business)
+        
+    paginator = Paginator(businesses, 10)  # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        businesses = paginator.page(page)
+    except (PageNotAnInteger, TypeError):
+        businesses = paginator.page(1)
+    except EmptyPage:
+        businesses = paginator.page(paginator.num_pages)
+    return render_to_response('ratings/index.html', {'business_list': businesses}, context_instance=RequestContext(request))
 
+    
+@csrf_exempt
 def detail_keywords(request, bus_id):
     b = get_object_or_404(Business, pk=bus_id)
     if request.method == 'POST':
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+
         #add a keyword
         form = request.POST
 #        if 'name' in form:  # we're posting a keyword
@@ -85,32 +118,35 @@ def detail_keywords(request, bus_id):
    
     
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
-    b.photourl = get_photo_thumb_url(b)
+    try:
+        b.photourl = get_photo_thumb_url(b)
+    except:
+        b.photourl= "" #NONE
 
     if latlng:
         return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips, 'reviews': reviews, 'lat':latlng[0], 'lng':latlng[1]}, context_instance=RequestContext(request))
     else:
         return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips, 'reviews': reviews}, context_instance=RequestContext(request))
 
+    
 
 
-
-#
-#def add_keyword(request):
-#    log_msg('Create a keyword')
-#    if request.method == 'POST':  # add a keyword!
-#        form = request.POST
-#
-#        nm = form['name']
-#        keyset = Keyword.objects.filter(name=nm)
-#        print(set)
-#        if(keyset.count() == 0):
-#            k = Keyword.objects.create(name=nm)
-#            print('new one')
-#            k.save()
-#    else:
-#        return render_to_response('ratings/add_keyword.html', {'keywords': Keyword.objects.all()}, context_instance=RequestContext(request))
-
+@csrf_exempt
+def add_tag(request):
+    log_msg('Create a tag')
+    if request.method == 'POST':  # add a tag!
+        form = request.POST
+        nm = form['tag']
+        bid = form['bid']
+        b = Business.objects.get(id=bid)
+        keyset = Tag.objects.filter(descr=nm, business=b)
+        if(keyset.count() == 0):
+            k = Tag.objects.create(descr=nm,creator=request.user,business=b)
+            print('new one')
+            k.save()
+        tags = Tag.objects.filter(business=b)
+        return render_to_response('ratings/tags.html', {'business':b, 'tags': tags})
+    
 
 def add_business(request):
     log_msg('Create a business')
@@ -121,12 +157,12 @@ def add_business(request):
         city = form.data['city']
         state = form.data['state']
         img = request.FILES['image']
-        
-        print(form.data)
+
 
       
         b = create_business(name, address, state, city, 1, 1)
         b.save()
+       
         bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
         bp.save()
         return render_to_response('ratings/detail.html', {'business': b, 'avg': 0, 'numRatings': 0}, context_instance=RequestContext(request))
@@ -172,20 +208,19 @@ def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')
 
-
-#def get_keywords(request):
-#    if request.method == 'GET':
-#        q = request.GET.get('term', '')
-#        keywords = Keyword.objects.filter(name__icontains=q)[:20]
-#        results = []
-#        for word in keywords:
-#            results.append(word.name)
-#        data = json.dumps(results)
-#        print(data)
-#    else:
-#        data = 'fail'
-#    mimetype = 'application/json'
-#    return HttpResponse(data, mimetype)
+@csrf_exempt
+def get_tags(request):
+    if request.method == 'GET':
+        q = request.GET.get('term', '')
+        tags = Tag.objects.filter(descr__icontains=q)[:20]
+        results = []
+        for tag in tags:
+            results.append(tag.descr)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
 
 
 #def pop_test_data(request):

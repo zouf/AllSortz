@@ -72,10 +72,32 @@ p
 	
 	height: 30px;
 	padding-top: .5em;
+
+	z-index:1000
+	
+}
+
+#searchBar
+{	
+	background-color: #7B9646;
+  /*#ACD661;*/
+    background-repeat: repeat;
+	text-align: center;
+
+	width: 100%;
+	/*position: fixed;*/
+	top: 0px;
+	left:0px;
+
+
+	
+	height: 40px;
+	padding-top: .5em;
 	border-bottom: 1px black solid;
 	z-index:1000
 	
 }
+
 
 #account-bottom
 {
