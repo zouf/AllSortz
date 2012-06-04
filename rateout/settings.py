@@ -2,6 +2,8 @@
 from S3 import CallingFormat
 import os
 DEBUG = True
+DEPLOY = True
+
 TEMPLATE_DEBUG = DEBUG
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))+'/..'
 ADMINS = (
@@ -96,7 +98,7 @@ LOG_FILE = STATIC_ROOT+'/log.txt'
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 
-if DEBUG:
+if DEPLOY:
     STATIC_URL='/static/'
 else:
     STATIC_URL='http://rateoutimages.s3-website-us-east-1.amazonaws.com/'
