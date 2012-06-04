@@ -131,9 +131,8 @@ def detail_keywords(request, bus_id):
     
 
 
-@csrf_exempt
 def add_tag(request):
-    log_msg('Create a tag')
+    print('Create a tag')
     if request.method == 'POST':  # add a tag!
         form = request.POST
         nm = form['tag']
@@ -142,7 +141,6 @@ def add_tag(request):
         keyset = Tag.objects.filter(descr=nm, business=b)
         if(keyset.count() == 0):
             k = Tag.objects.create(descr=nm,creator=request.user,business=b)
-            print('new one')
             k.save()
         tags = Tag.objects.filter(business=b)
         return render_to_response('ratings/tags.html', {'business':b, 'tags': tags})

@@ -4,10 +4,10 @@ Created on May 17, 2012
 @author: zouf
 '''
 from django.utils.encoding import smart_str
-from rateout.settings import LOG_FILE
+#from rateout.settings import LOG_FILE
 from ratings.models import Rating, BusinessPhoto
 import simplejson
-import time
+#import time
 import urllib
 import urllib2
 
@@ -20,11 +20,11 @@ def getNumRatings(business):
 
 
 def log_msg(msg):
-    fp = open(LOG_FILE, "a")
-    fp.write(time.asctime())
-    fp.write(msg)
+#    fp = open(LOG_FILE, "a")
+#    fp.write(time.asctime())
+#    fp.write(msg)
     print(msg)
-    fp.write('\n')
+#    fp.write('\n')
     
 #from 
 #http://djangosnippets.org/snippets/2399/
@@ -44,5 +44,4 @@ def get_photo_thumb_url(b):
     if qset.count < 1:
         return False
     ph = qset[0].image_thumb
-    print(ph.url)
     return ph.url

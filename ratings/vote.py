@@ -15,7 +15,7 @@ import sys
 
 @csrf_exempt
 def tip_vote(request):
-    log_msg('in tip_vote')
+    print   ('in tip_vote')
     if request.method == 'POST':
         try:
             tip = Tip.objects.get(id=request.POST['id'])
@@ -28,9 +28,12 @@ def tip_vote(request):
         else:
             rat = 1  # rating.rating - 1
             res = 'neg'
-
+            
+        print('here')
         try:
+            log_msg('get')
             rating = TipRating.objects.get(tip=tip, user=request.user)
+            print('after get')
         except TipRating.DoesNotExist:
             log_msg("In vote create a new tip rating!")
             rating = TipRating.objects.create(tip=tip, user=request.user, rating=rat)
@@ -109,16 +112,16 @@ def tag_vote(request):
         else:
             rat = 1  # rating.rating - 1
             res = 'neg'
-
+        print('here in tag_vote')
         try:
             rating = TagRating.objects.get(tag=tag, user=request.user)
         except TagRating.DoesNotExist:
-            log_msg("In tag vote create a new tag rating!")
+            print("In tag vote create a new tag rating!")
             rating = TagRating.objects.create(tag=tag, user=request.user, rating=rat)
         except:
-            log_msg("Unexpected error:", sys.exc_info()[0])
+            print("Unexpected error:", sys.exc_info()[0])
         else:
-            log_msg("tag rating already exists :(")
+            print("tag rating already exists :(")
             return HttpResponse("{'success': 'false'}")
         rating.save()
         print("after save")

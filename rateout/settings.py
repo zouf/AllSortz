@@ -84,15 +84,23 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
+
+
+#dont use AWS for debug
+
 STATIC_ROOT = BASE_DIR+'/static/'
-print(STATIC_ROOT)
 
 
 LOG_FILE = STATIC_ROOT+'/log.txt'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL='http://rateoutimages.s3-website-us-east-1.amazonaws.com/'
+
+if DEBUG:
+    STATIC_URL='/static/'
+else:
+    STATIC_URL='http://rateoutimages.s3-website-us-east-1.amazonaws.com/'
+    
 DATASET_LOCATION = BASE_DIR+'/data_import/michigan_dataset.json'
 RESULTS_DIR = '/tmp/'
 CLIB_DIR = BASE_DIR+'/clib'

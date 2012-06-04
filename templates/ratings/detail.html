@@ -21,7 +21,7 @@ function initialize() {
 
 
 $(function() {
-  $("#id_tag").autocomplete({
+  $("#tag").autocomplete({
     source: "/api/get_tags/",
     minLength: 2,
   });
@@ -90,7 +90,7 @@ $("form[name=addTag]").submit(function(e){
 								{% include 'ratings/tips.html' %}
 							</div>
 						</td>
-						<td >
+						<td valign="top">
 							<div id="tag_list" class="ui-widget tags_feed">
 								{% include 'ratings/tags.html' %}
 							</div>
