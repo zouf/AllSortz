@@ -111,7 +111,7 @@ LOG_FILE = STATIC_ROOT+'/log.txt'
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 
-if DEPLOY:
+if not DEPLOY:
     STATIC_URL='/static/'
 else:
     STATIC_URL='http://rateoutimages.s3-website-us-east-1.amazonaws.com/'
