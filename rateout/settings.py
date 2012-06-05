@@ -33,15 +33,28 @@ STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 #djcelery.setup_loader()
 
 
+##old settings
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#        'NAME': 'nightout2',                      # Or path to database file if using sqlite3.
+#        'USER': 'root',                      # Not used with sqlite3.
+#        'PASSWORD': 'new-password',                  # Not used with sqlite3.
+#        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+#        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+#    }
+#}
 
+
+#use amazon RDS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'nightout2',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': 'new-password',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'USER': 'zouf',                      # Not used with sqlite3.
+        'PASSWORD': 'zoufzouf',                  # Not used with sqlite3.
+        'HOST': 'rateoutdb-mysql.carvpvtur6or.us-east-1.rds.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
