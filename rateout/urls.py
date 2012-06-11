@@ -8,6 +8,7 @@ from ratings.views import logout_page
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),
    url(r'^index*$', 'ratings.views.index'),
  url(r'^index/$', 'ratings.views.index'),

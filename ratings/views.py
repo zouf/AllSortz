@@ -19,6 +19,13 @@ import json
 
 re = RecEngine()
 
+def coming_soon(request):
+    if request.user.is_authenticated():
+        return index(request)
+    else:
+        return render_to_response('coming_soon.html', context_instance=RequestContext(request))
+
+
 
 def top_ten(request):
     if request.user.is_authenticated():
