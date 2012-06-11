@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block body %}
+<script type="text/javascript">
+$(function() {
+		$( "input:submit, a, button", ".demo" ).button();
+		$( "#submitBus").button();
+		$( "#submitBus" ).click(function() { window.location="/ratings/add_business/" });
+	});
+</script>
+
+{% if business_list %}
+    <div id="businessList" class="defaultBody">
+	<table>
+		<tr>
+		<td>
+    	<div id="prime_list" style="float:left; width:700px" >
+			<p>Coming soon</p>
+		</div>
+		</td>
+		<td>
+		<div id="side_bar" style="float:left; width:300px">
+			<button id="submitBus">List a business</button>
+		</div>
+		</td>
+		</tr>
+		</table>
+	</div>
+	<script type="text/javascript"/>
+			$.ajax({
+				type : 'POST',
+				url : '/ajax_query/',
+				dataType : 'json',
+				data: {	
+						val : 1
+				},
+				success : function(data){
+		
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+						
+				}
+			});
+
+	</script>
+{% else %}
+    <p>No businesses are available.</p>
+    <p><a href="/ratings/add_business/">Add a business</a></p>
+{% endif %}
+{% endblock %}

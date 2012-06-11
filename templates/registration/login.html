@@ -2,11 +2,18 @@
 
 {% block body %}
 
+
+<script type="text/javascript">
+	$(function() {
+		$( "input:submit" ).button();
+	});
+</script>
 <div class="defaultBody" >
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
 
+<div class="ui-widget">
 <form method="post" action="{% url django.contrib.auth.views.login %}" style="margin-left:300px; padding-top:20px">
 {% csrf_token %}
 <table>
@@ -23,6 +30,7 @@
 <input type="submit" value="login" style="margin-left:-300px" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
+</div>
 </div>
 
 {% endblock %}

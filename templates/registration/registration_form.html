@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 
 {% block body %}
+<script type="text/javascript">
+	$(function() {
+		$( "input:submit" ).button();
+	});
+</script>
   <div id="businessList" class="defaultBody" >
-        <h2>Sign up</h2>
+        <div class="ui-widget">
         <form action="/accounts/register/" style="margin-left:250px" method="POST">{% csrf_token %}
             <table>
             {{ form.as_table }}
@@ -11,6 +16,7 @@
             <input type="submit" style="margin-left:-200px" value="Submit" />
         </p>
         </form>
+        </div>
        </div>
         
 {% endblock %}

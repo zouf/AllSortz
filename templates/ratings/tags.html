@@ -1,8 +1,10 @@
 		
-					<form name="addTag" action="." method="post">{% csrf_token %}
+					
 						<h3 class="feedTitle">Tags</h3>
+						<form name="addTag" action="." method="post">{% csrf_token %}
 					  	<input id="tag" type="text"  name="tag"  />
 						<input id="bid" value="{{business.id}}" type="hidden" name="bid" />
+						</form>
 						{% for tag in tags %}
 						<div class="tagListing">
 				    	<table>
@@ -53,5 +55,5 @@
 					  </table>
 					    </div>
 						{%endfor%}
-						</form>
+						
 					

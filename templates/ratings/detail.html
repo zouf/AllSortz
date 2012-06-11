@@ -42,6 +42,24 @@ $("form[name=addTag]").submit(function(e){
     return false;
  });
 });
+
+
+$(document).ready(function(){
+$("form[name=addTip]").submit(function(e){
+	e.preventDefault();
+	var form = $("form[name=addTip]")
+    $.ajax({ 
+         url   : '/api/add_tip/',
+         type  : form.attr('method'),
+         data  : form.serialize(), // data to be submitted
+         success: function(data){
+         	document.getElementById("tip_list").innerHTML = data         
+         }
+    });
+    return false;
+ });
+});
+
 </script>
 
 
@@ -66,7 +84,7 @@ $("form[name=addTag]").submit(function(e){
 		    <div id="businessDetail" >
 				<i> {{ business.city }}, {{business.state}}</i>
 				<br><br>
-				<img src="{{business.photourl}}" width="200" height="100" />
+				<img src="{{business.photourl}}"  />
 			</div>
 			
 		</td>
