@@ -16,9 +16,11 @@ from recommendation.normalization import getBusAvg, getNumPosRatings, \
     getNumNegRatings
 from recommendation.recengine import RecEngine
 import json
+import logging
 import sys
 
 
+logger = logging.getLogger(__name__)
 
 re = RecEngine()
 
@@ -93,10 +95,11 @@ def detail_keywords(request, bus_id):
 
     
 def add_tag(request):
-    print('Create a tag')
+  
     if request.method == 'POST':  # add a tag!
         form = request.POST
         nm = form['tag']
+        logger.debug('Create a tag '+str(nm))
         bid = form['bid']
         b = Business.objects.get(id=bid)
         keyset = Tag.objects.filter(descr=nm, business=b)
@@ -123,17 +126,18 @@ def add_tip(request):
             try:
                 k = Tip.objects.create(descr=nm,user=request.user,business=b)
             except:
-                print "Unexpected error:", sys.exc_info()[0]
+                logger.error("Unexpected error:" + str(sys.exc_info()[0]))
             k.save()
         tips = get_tips(b)
         return render_to_response('ratings/tips.html', {'business':b, 'tips': tips})
     
 
 def add_business(request):
-    print('Create a business')
+ 
     if request.method == 'POST':  # add a business
         form = BusinessForm(request.POST, request.FILES)
         name = form.data['name']
+        logger.debug("Creation of business %s by  %s", name,request.user.username)
         address = form.data['address']
         city = form.data['city']
         state = form.data['state']

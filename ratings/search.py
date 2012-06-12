@@ -6,21 +6,21 @@ Created on Jun 12, 2012
 from django.core.paginator import Paginator
 from haystack.query import SearchQuerySet
 from ratings.models import Tag
+import logging
 import sys
 
-
+logger = logging.getLogger(__name__)
 
 def search_site(term):
     search_results = (SearchQuerySet().filter(content=term))
     businesses = []
     for sr in search_results:
-        print(sr.model_name)
         if sr.model_name == "business":
             businesses.append(sr.object)
         elif sr.model_name == "tag":
             businesses.append(sr.object.business)
         else:
-            print('error')
+            logger.error('error in search_site')
     return businesses   
 
 

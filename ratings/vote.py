@@ -6,15 +6,19 @@ Created on May 29, 2012
 from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from ratings.models import Tip, TipRating, Business, Rating, Tag, TagRating
-from ratings.utility import log_msg
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 import json
+import logging
 import sys
+
+
+
+logger = logging.getLogger(__name__)
 
 
 @csrf_exempt
 def tip_vote(request):
-    print   ('in tip_vote')
+    logger.debug('in tip_vote')
     if request.method == 'POST':
         try:
             tip = Tip.objects.get(id=request.POST['id'])
@@ -27,19 +31,15 @@ def tip_vote(request):
         else:
             rat = 1  # rating.rating - 1
             res = 'neg'
-            
-        print('here')
         try:
-            log_msg('get')
             rating = TipRating.objects.get(tip=tip, user=request.user)
-            print('after get')
         except TipRating.DoesNotExist:
-            log_msg("In vote create a new tip rating!")
+            logger.debug("In vote create a new tip rating!")
             rating = TipRating.objects.create(tip=tip, user=request.user, rating=rat)
         except:
-            log_msg("Unexpected error:", sys.exc_info()[0])
+            logger.debug("Unexpected error:", sys.exc_info()[0])
         else:
-            log_msg("tip vote already exists :(")
+            logger.debug("tip vote already exists :(")
             return HttpResponse("{'success': 'false'}")
 
         rating.save()
@@ -59,7 +59,7 @@ def tip_vote(request):
 
 @csrf_exempt
 def tag_vote(request):
-    print('tag_vote')
+    logger.debug('tag_vote')
     if request.method == 'POST':
         try:
             tag = Tag.objects.get(id=request.POST['id'])
@@ -72,38 +72,33 @@ def tag_vote(request):
         else:
             rat = 1  # rating.rating - 1
             res = 'neg'
-        print('here in tag_vote')
         try:
             rating = TagRating.objects.get(tag=tag, user=request.user)
         except TagRating.DoesNotExist:
-            print("In tag vote create a new tag rating!")
+            logger.debug("In tag vote create a new tag rating!")
             rating = TagRating.objects.create(tag=tag, user=request.user, rating=rat)
         except:
-            print("Unexpected error:", sys.exc_info()[0])
+            logger.error("Unexpected error:", sys.exc_info()[0])
         else:
-            print("tag rating already exists :(")
+            logger.debug("Tag rating already exists :(")
             return HttpResponse("{'success': 'false'}")
         rating.save()
-        print("after save")
         response_data = dict()
         response_data['id'] = str(request.POST['id'])
         response_data['success'] = 'true'
         response_data['rating'] = res
         response_data['pos_rating'] = getNumPosRatings(tag)
         response_data['neg_rating'] = getNumNegRatings(tag)
-        print("before resp data")
-        print(response_data)
-        print("response data")
         return HttpResponse(json.dumps(response_data), mimetype="application/json")
         #return HttpResponse("{'success':'true', 'rating': '" + str(rat) + "'}")
     else:
+        logger.debug("404 raised in tag_vote")
         raise Http404('What are you doing here?')
 
 
 
 @csrf_exempt
 def vote(request):
-    print('vote')
     if request.method == 'POST':
         try:
             business = Business.objects.get(id=request.POST['id'])
@@ -120,7 +115,7 @@ def vote(request):
         try:
             rating = Rating.objects.get(business=business, username=request.user)
         except Rating.DoesNotExist:
-            log_msg("In vote create a new rating!")
+            logger.debug("In vote create a new rating!")
             rating = Rating.objects.create(business=business, username=request.user, rating=rat)
         else:
             sys.stderr.write("rating already exists :(")
@@ -130,7 +125,6 @@ def vote(request):
         response_data['id'] = str(request.POST['id'])
         response_data['success'] = 'true'
         response_data['rating'] = res
-        print(type(business))
         response_data['pos_rating'] = getNumPosRatings(business)
         response_data['neg_rating'] = getNumNegRatings(business)
         return HttpResponse(json.dumps(response_data), mimetype="application/json")
@@ -141,23 +135,21 @@ def vote(request):
 
 @csrf_exempt
 def remove_tip_vote(request):
-    log_msg('Remove Tip Vote!')
+    logger.debug('Remove Tip Vote!')
     if request.method == 'POST':
         try:
             tip = Tip.objects.get(id=request.POST['id'])
         except Tip.DoesNotExist:
-            log_msg("Tip does not exist")
+            logger.debug("Tip does not exist")
             return HttpResponse("{'success': 'false'}")
 
         try:
             rating = TipRating.objects.filter(tip=tip, user=request.user)
         except TipRating.DoesNotExist:
-            print "Unexpected error:", sys.exc_info()[0]
-            log_msg("Tip does not exist")
-            print(tip.descr)
+            logger.debug("Tip does not exist")
             pass
         else:
-            log_msg("Deleting a tip rating")
+            logger.debug("Deleting a tip rating")
             rating.delete()
 
         response_data = dict()
@@ -173,23 +165,21 @@ def remove_tip_vote(request):
 
 @csrf_exempt
 def remove_tag_vote(request):
-    log_msg('Remove Tag Vote!')
+    logger.debug('Remove Tag Vote!')
     if request.method == 'POST':
         try:
             tag = Tag.objects.get(id=request.POST['id'])
         except Tag.DoesNotExist:
-            log_msg("Tag does not exist")
+            logger.debug("Tag does not exist")
             return HttpResponse("{'success': 'false'}")
 
         try:
             rating = TagRating.objects.filter(tag=tag, user=request.user)
         except TagRating.DoesNotExist:
-            print "Unexpected error:", sys.exc_info()[0]
-            log_msg("Tag does not exist")
-            print(tag.descr)
+            logger.debug("Tag does not exist")
             pass
         else:
-            log_msg("Deleting a tag rating")
+            logger.debug("Deleting a tag rating")
             rating.delete()
 
         response_data = dict()
@@ -218,7 +208,7 @@ def remove_vote(request):
         except Rating.DoesNotExist:
             pass
         else:
-            log_msg("Deleting a rating")
+            logger.debug("Deleting a rating")
             rating.delete()
 
         response_data = dict()

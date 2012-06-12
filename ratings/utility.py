@@ -6,11 +6,14 @@ Created on May 17, 2012
 from django.utils.encoding import smart_str
 from ratings.models import Rating, BusinessPhoto, Tip, TipRating, Tag, TagRating
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
+import logging
 import simplejson
 import urllib
 import urllib2
 #from rateout.settings import LOG_FILE
 #import time
+
+logger = logging.getLogger(__name__)
 
 #Files for miscellaneous database accesses
 def tiptag_comp(x,y):
@@ -73,13 +76,7 @@ def getNumRatings(business):
     return ratset.count()
 
 
-def log_msg(msg):
-#    fp = open(LOG_FILE, "a")
-#    fp.write(time.asctime())
-#    fp.write(msg)
-    print(msg)
-#    fp.write('\n')
-    
+
 #from 
 #http://djangosnippets.org/snippets/2399/
 def get_lat(loc):

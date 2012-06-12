@@ -1,14 +1,36 @@
 # Django settings for nightout project.
 from S3 import CallingFormat
 import os
+import socket
 DEBUG = True
-DEPLOY = False
 
 TEMPLATE_DEBUG = DEBUG
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))+'/..'
+
+#add your admin name here
 ADMINS = (
-     ('Matt Zoufaly', 'matt@tigerstonelabs.com'),
+     ('Matt Zoufaly', 'matt@allsortz.com'),
 )
+
+DEV_BOXES = ['hydralisk'] # add your dev computer here
+
+
+#true if we're on the servers for deployment. In other words, any computer but
+# the dev computers
+
+if socket.gethostname() in DEV_BOXES:
+    DEPLOY = False
+else:
+    DEPLOY = True
+
+
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'errors@allsortz.com'
+EMAIL_HOST_PASSWORD = 'sendserrors'
+EMAIL_PORT = 587
+
 
 MANAGERS = ADMINS
 
@@ -229,29 +251,64 @@ ACCOUNT_ACTIVATION_DAYS = 7
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-#LOGGING = {
-# #   'version': 1,
-# #   'disable_existing_loggers': False,
-# #   'filters': {
-##        'require_debug_false': {
-##            '()': 'django.utils.log.RequireDebugFalse'
-# #       }
-# #   },
-#    'handlers': {
-#        'mail_admins': {
-#            'level': 'ERROR',
-#            'filters': ['require_debug_false'],
-#            'class': 'django.utils.log.AdminEmailHandler'
-#        }
-#    },
-#    'loggers': {
-#        'django.request': {
-#            'handlers': ['mail_admins'],
-#            'level': 'ERROR',
-#            'propagate': True,
-#        },
-#    }
-#}
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'default': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/mylog.log',
+            'maxBytes': 1024*1024*5, # 5 MB
+            'backupCount': 5,
+            'formatter':'standard',
+        },  
+        'allsortz_handler': {
+                'level':'DEBUG',
+                'class':'logging.handlers.RotatingFileHandler',
+                'filename': 'logs/allsortz_ratings.log',
+                'maxBytes': 1024*1024*5, # 5 MB
+                'backupCount': 5,
+                'formatter':'standard',
+        },
+        'request_handler': {
+                'level':'DEBUG',
+                'class':'logging.handlers.RotatingFileHandler',
+                'filename': 'logs/django_request.log',
+                'maxBytes': 1024*1024*5, # 5 MB
+                'backupCount': 5,
+                'formatter':'standard',
+        },
+         'send_email': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        }
+    },
+    'loggers': {
+        'ratings':{
+             'handlers': ['allsortz_handler', 'send_email'], #sends email on errors
+            'level': 'DEBUG',
+            'propagate': True      
+            },
+        '': {
+            'handlers': ['default'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'django.request': { # Stop SQL debug from logging to main logger
+            'handlers': ['request_handler'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+    }
+}
+
 
 PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
