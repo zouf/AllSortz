@@ -11,6 +11,9 @@ $(function() {
 
 {% if business_list %}
     <div id="businessList" class="defaultBody">
+    	{% if search_term %}
+			<h2 class="search_term">{{search_term}}</h2>
+		{%endif%}
 	<table>
 		<tr>
 		<td>

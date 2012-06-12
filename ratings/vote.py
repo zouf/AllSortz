@@ -203,33 +203,6 @@ def remove_tag_vote(request):
         raise Http404('What are you doing here?')
 
 
-@csrf_exempt
-def remove_review_vote(request):
-    log_msg('Remove Review Vote!')
-    if request.method == 'POST':
-        try:
-            review = Review.objects.get(id=request.POST['id'])
-        except Review.DoesNotExist:
-            return HttpResponse("{'success': 'false'}")
-
-        try:
-            rating = ReviewRating.objects.filter(review=review, user=request.user)
-        except ReviewRating.DoesNotExist:
-            pass
-        else:
-            log_msg("Deleting a review rating")
-            rating.delete()
-
-        response_data = dict()
-        response_data['id'] = str(request.POST['id'])
-        response_data['success'] = 'true'
-        response_data['pos_rating'] = getNumPosRatings(review)
-        response_data['neg_rating'] = getNumNegRatings(review)
-
-        return HttpResponse(json.dumps(response_data), mimetype="application/json")
-    else:
-        raise Http404('What are you doing here?')
-
 
 #from stack overflow
 @csrf_exempt

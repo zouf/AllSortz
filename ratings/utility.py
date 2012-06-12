@@ -29,7 +29,7 @@ def get_tips(b,user=False,q=""):
     if q != "":
         tips = Tip.objects.filter(descr__icontains=q)[:20]
     else:
-        tips = Tip.objects.all().order_by('-date')
+        tips = Tip.objects.filter(business=b).order_by('-date')
     results = []
     for t in tips:
         try:
@@ -48,11 +48,11 @@ def get_tips(b,user=False,q=""):
         
 
 
-def get_tags(request,user=False,q=""):
+def get_tags(b,user=False,q=""):
     if q != "":
         tags = Tag.objects.filter(descr__icontains=q)[:20]
     else:
-        tags = Tag.objects.all().order_by('-date')
+        tags = Tag.objects.filter(business=b).order_by('-date')
     results = []
     for t in tags:
         try:

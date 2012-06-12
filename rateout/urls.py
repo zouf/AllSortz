@@ -4,7 +4,6 @@ from rateout import settings
 from ratings.views import logout_page
 
 
-
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -37,4 +36,5 @@ if settings.DEBUG:
         (r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root':     settings.MEDIA_ROOT}),
 		(r'^(?P<path>.*)$', 'django.views.static.serve',  {'document_root':     settings.MEDIA_ROOT}),
     )
+
 

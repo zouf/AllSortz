@@ -6,9 +6,10 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from haystack.query import SearchQuerySet
 from ratings.forms import BusinessForm
-from ratings.models import Business, Rating, Tip, Tag, TagRating, \
-    TipRating, BusinessPhoto
+from ratings.models import Business, Rating, Tip, Tag, TagRating, TipRating, \
+    BusinessPhoto
 from ratings.populate import create_business
+from ratings.search import search_site
 from ratings.utility import getNumRatings, get_lat, get_photo_thumb_url, \
     get_tips, get_tags
 from recommendation.normalization import getBusAvg, getNumPosRatings, \
@@ -37,20 +38,14 @@ def top_ten(request):
 
         return render_to_response('ratings/top.html', {'user': request.user, 'business_list': top10}, context_instance=RequestContext(request))
 
+
+
 def search_test(request):
     form = request.GET
     if 'search' not in form:
         return index(request)
     term = form['search']
-    search_results = SearchQuerySet().filter(content=term)
-#    hello_world_results = SearchQuerySet().filter(content='zouf world')
-#    unfriendly_results = SearchQuerySet().exclude(content='hello').filter(content='world')
-#    recent_results = SearchQuerySet().all()
-    businesses = []
-    for sr in search_results:
-        t = Tag.objects.get(pk=sr.pk)
-        businesses.append(t.business)
-        
+    businesses = search_site(term)
     paginator = Paginator(businesses, 10)  # Show 25 contacts per page
     page = request.GET.get('page')
     try:
@@ -59,9 +54,10 @@ def search_test(request):
         businesses = paginator.page(1)
     except EmptyPage:
         businesses = paginator.page(paginator.num_pages)
-    return render_to_response('ratings/index.html', {'business_list': businesses}, context_instance=RequestContext(request))
+    return render_to_response('ratings/index.html', {'business_list': businesses, 'search_term': term}, context_instance=RequestContext(request))
 
     
+
 @csrf_exempt
 def detail_keywords(request, bus_id):
     b = get_object_or_404(Business, pk=bus_id)
