@@ -5,8 +5,7 @@ Created on May 29, 2012
 '''
 from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
-from ratings.models import Tip, TipRating, Review, Business, ReviewRating, \
-    Rating, Tag, TagRating
+from ratings.models import Tip, TipRating, Business, Rating, Tag, TagRating
 from ratings.utility import log_msg
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 import json
@@ -56,45 +55,6 @@ def tip_vote(request):
         raise Http404('What are you doing here?')
 
 
-@csrf_exempt
-def review_vote(request):
-    print('review_vote')
-    if request.method == 'POST':
-        try:
-            review = Review.objects.get(id=request.POST['id'])
-        except Review.DoesNotExist:
-            return HttpResponse("{'success': 'false'}")
-
-        if request.POST['type'] == 'up':
-            rat = 5  # rating.rating + 1
-            res = 'pos'
-        else:
-            rat = 1  # rating.rating - 1
-            res = 'neg'
-
-        try:
-            rating = ReviewRating.objects.get(review=review, user=request.user)
-        except ReviewRating.DoesNotExist:
-            log_msg("In review vote create a new tip rating!")
-            rating = ReviewRating.objects.create(review=review, user=request.user, rating=rat)
-        except:
-            log_msg("Unexpected error:", sys.exc_info()[0])
-        else:
-            log_msg("review rating already exists :(")
-            print()
-            return HttpResponse("{'success': 'false'}")
-        rating.save()
-        response_data = dict()
-        response_data['id'] = str(request.POST['id'])
-        response_data['success'] = 'true'
-        response_data['rating'] = res
-        response_data['pos_rating'] = getNumPosRatings(review)
-        response_data['neg_rating'] = getNumNegRatings(review)
-
-        return HttpResponse(json.dumps(response_data), mimetype="application/json")
-        #return HttpResponse("{'success':'true', 'rating': '" + str(rat) + "'}")
-    else:
-        raise Http404('What are you doing here?')
 
 
 @csrf_exempt

@@ -8,21 +8,16 @@ from ratings.views import logout_page
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^api/add_tag/$', 'ratings.views.add_tag'),
+    url(r'^api/add_tip/$', 'ratings.views.add_tip'),
     url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),
-   url(r'^index*$', 'ratings.views.index'),
- url(r'^index/$', 'ratings.views.index'),
-
+    url(r'^index*$', 'ratings.views.index'),
+    url(r'^index/$', 'ratings.views.index'),
     url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.detail_keywords'),
-    url(r'^ratings/(?P<bus_id>\d+)/rate/$', 'ratings.views.rate'),
-	url(r'^api/add_tag/$', 'ratings.views.add_tag'),
     url(r'^ratings/search_tags/$', 'ratings.views.search_test'),
 	(r'^search/', include('haystack.urls')),
 	url(r'^ratings/add_business/$', 'ratings.views.add_business'),
-#    url(r'^ratings/view_ratings/(?P<maxc>\d+)', 'ratings.views.display_table'),
-#    url(r'^ratings/view_ratings*$', 'ratings.views.display_table_full'),
-#    url(r'^ratings/pop_test_data/$', 'ratings.views.pop_test_data'),
-    url(r'^ratings/top_ten/$', 'ratings.views.top_ten'),
     url(r'^admin/', include(admin.site.urls)),
     # Login / logout.
     url(r'^login/$', 'django.contrib.auth.views.login'),
@@ -32,11 +27,9 @@ urlpatterns = patterns('',
     url(r'^remove_vote*', 'ratings.vote.remove_vote'),
     url(r'^tip_vote*', 'ratings.vote.tip_vote'),
     url(r'^remove_tip_vote*', 'ratings.vote.remove_tip_vote'),
-    url(r'^review_vote*', 'ratings.vote.review_vote'),
-    url(r'^remove_review_vote*', 'ratings.vote.remove_review_vote'),
     url(r'^tag_vote*', 'ratings.vote.tag_vote'),
     url(r'^remove_tag_vote*', 'ratings.vote.remove_tag_vote'),
-    url(r'^api/get_tags/', 'ratings.views.get_tags', name='get_tags')
+    url(r'^api/get_all_tags/', 'ratings.views.get_tags', name='get_all_tags')
 )
 
 if settings.DEBUG:

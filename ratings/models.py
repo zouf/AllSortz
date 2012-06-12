@@ -6,20 +6,10 @@ from django.db import models
 import StringIO
 import datetime
 
-
-class Keyword(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __unicode__(self):
-        return self.name
-
-
-
-
+    
 class Business(models.Model):
     name = models.CharField(max_length=250)
-
-    average_rating = models.FloatField()
+    date = models.DateField(auto_now=True)
 
     lat = models.FloatField()
     lon = models.FloatField()
@@ -28,9 +18,6 @@ class Business(models.Model):
     city = models.CharField(max_length=100)
     state = USStateField()  # Yes, this is America-centric..
 
-    keywords = models.ManyToManyField(Keyword, through='Grouping')
-
-    
     def __unicode__(self):
         return self.name
     
@@ -102,26 +89,16 @@ class Rating(models.Model):
 
 class Tag(models.Model):
     creator = models.ForeignKey(User)
+    date = models.DateField(auto_now=True)
     business=models.ForeignKey(Business)
     descr = models.TextField(max_length=1000)
 
 
 class Tip(models.Model):
     user = models.ForeignKey(User)
+    date = models.DateField(auto_now=True)
     business = models.ForeignKey(Business)
     descr = models.TextField(max_length=2000)
-
-
-class Review(models.Model):
-    user = models.ForeignKey(User)
-    business = models.ForeignKey(Business)
-    descr = models.TextField(max_length=2000)
-
-
-class ReviewRating(models.Model):
-    review = models.ForeignKey(Review)
-    user = models.ForeignKey(User)
-    rating = models.PositiveSmallIntegerField()
 
 
 class TipRating(models.Model):
@@ -136,6 +113,3 @@ class TagRating(models.Model):
     rating = models.PositiveSmallIntegerField()
 
 
-class Grouping(models.Model):
-    business = models.ForeignKey(Business)
-    keyword = models.ForeignKey(Keyword)

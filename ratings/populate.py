@@ -5,7 +5,7 @@ Created on Apr 2, 2012
 '''
 
 from django.contrib.auth.models import User
-from ratings.models import Business, Rating, Keyword, Grouping
+from ratings.models import Business, Rating
 from recommendation.models import Recommendation, UserFactor, BusinessFactor
 
 
@@ -15,25 +15,6 @@ def create_user(username, uid):
     return u
 
 
-def create_category(name):
-    k = Keyword(name=name)
-    return k
-
-
-def create_keyword(name):
-    k = Keyword(name=name)
-    k.save()
-    return k
-
-
-def create_keyword2bus(b, key):
-    g = create_grouping(key, b)
-    g.save()
-
-
-def create_grouping(cat, bus):
-    g = Grouping(business=bus, keyword=cat)
-    return g
 
 
 def create_rating(user, business, rating):
@@ -42,15 +23,13 @@ def create_rating(user, business, rating):
 
 
 def create_business(name, address, state, city, lat, lon):
-    b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=address.encode("utf8"), lat=lat, lon=lon, average_rating=0)
+    b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=address.encode("utf8"), lat=lat, lon=lon)
     return b
 
 
 def clear_all_tables():
     Rating.objects.all().delete()
     User.objects.all().delete()
-    Grouping.objects.all().delete()
-    Keyword.objects.all().delete()
     Recommendation.objects.all().delete()
     #User.objects.exclude(username="joey").exclude(username="zouf").delete()
     User.objects.all().delete()

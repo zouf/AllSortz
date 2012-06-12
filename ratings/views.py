@@ -6,14 +6,16 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from haystack.query import SearchQuerySet
 from ratings.forms import BusinessForm
-from ratings.models import Business, Rating, Review, Tip, Tag, TagRating, \
-    ReviewRating, TipRating, BusinessPhoto
+from ratings.models import Business, Rating, Tip, Tag, TagRating, \
+    TipRating, BusinessPhoto
 from ratings.populate import create_business
-from ratings.utility import getNumRatings, log_msg, get_lat, get_photo_thumb_url
+from ratings.utility import getNumRatings, get_lat, get_photo_thumb_url, \
+    get_tips, get_tags
 from recommendation.normalization import getBusAvg, getNumPosRatings, \
     getNumNegRatings
 from recommendation.recengine import RecEngine
 import json
+import sys
 
 
 
@@ -66,23 +68,8 @@ def detail_keywords(request, bus_id):
     if request.method == 'POST':
         if not request.user.is_authenticated():
             return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-
-        #add a keyword
         form = request.POST
-#        if 'name' in form:  # we're posting a keyword
-#            nm = form['name']
-#            try:
-#                k = Keyword.objects.get(name=nm)
-#            except:
-#                k = create_keyword(name=nm)
-#            gset = Grouping.objects.filter(business=b, keyword=k)
-#            if gset.count() == 0:
-#                g = Grouping.objects.create(business=b, keyword=k)
-#                g.save()
-        if 'review' in form:  # we're posting a review
-            review = form['review']
-            rev = Review.objects.create(user=request.user, business=b, descr=review)
-            rev.save()
+
         if 'tip' in form:  # we're posting a tip
             tip = form['tip']
             tip = Tip.objects.create(user=request.user, business=b, descr=tip)
@@ -91,38 +78,11 @@ def detail_keywords(request, bus_id):
             tag = form['tag']
             tag = Tag.objects.create(creator=request.user, business=b, descr=tag)
             tag.save()
-    tags = Tag.objects.filter(business=b)
-    for t in tags:
-        try:
-            rat =  TagRating.objects.get(tag=t,user=request.user)
-            t.this_rat = rat.rating
-            t.pos_ratings = getNumPosRatings(t)
-            t.neg_ratings = getNumNegRatings(t)
-        except:
-            t.this_rat = 0
+
     
+    tips = get_tips(b,user=request.user,q="")
+    tags = get_tags(b,user=request.user,q="")
     
-    tips = Tip.objects.filter(business=b)
-    for t in tips:
-        try:
-            rat =  TipRating.objects.get(tip=t,user=request.user)
-            t.this_rat = rat.rating
-            t.pos_ratings = getNumPosRatings(t)
-            t.neg_ratings = getNumNegRatings(t)
-        except:
-            t.this_rat = 0
-    
-    
-    reviews = Review.objects.filter(business=b)
-    for t in reviews:
-        try:
-            rat =  ReviewRating.objects.get(review=t,user=request.user)
-            t.this_rat = rat.rating
-            t.pos_ratings = getNumPosRatings(t)
-            t.neg_ratings = getNumNegRatings(t)
-        except:
-            t.this_rat = 0
-   
     
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
     try:
@@ -131,13 +91,11 @@ def detail_keywords(request, bus_id):
         b.photourl= "" #NONE
 
     if latlng:
-        return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips, 'reviews': reviews, 'lat':latlng[0], 'lng':latlng[1]}, context_instance=RequestContext(request))
+        return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips, 'lat':latlng[0], 'lng':latlng[1]}, context_instance=RequestContext(request))
     else:
-        return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips, 'reviews': reviews}, context_instance=RequestContext(request))
+        return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips}, context_instance=RequestContext(request))
 
     
-
-
 def add_tag(request):
     print('Create a tag')
     if request.method == 'POST':  # add a tag!
@@ -149,12 +107,34 @@ def add_tag(request):
         if(keyset.count() == 0):
             k = Tag.objects.create(descr=nm,creator=request.user,business=b)
             k.save()
-        tags = Tag.objects.filter(business=b)
+        tags = get_tags(b)
         return render_to_response('ratings/tags.html', {'business':b, 'tags': tags})
     
 
+
+
+def add_tip(request):
+    if request.method == 'POST':  # add a tip!
+       
+        form = request.POST
+
+        nm = form['tip']
+        bid = form['bid']
+        b = Business.objects.get(id=bid)
+        #don't readd a tip if its identical
+        keyset = Tip.objects.filter(descr=nm, business=b)
+        if(keyset.count() == 0):
+            try:
+                k = Tip.objects.create(descr=nm,user=request.user,business=b)
+            except:
+                print "Unexpected error:", sys.exc_info()[0]
+            k.save()
+        tips = get_tips(b)
+        return render_to_response('ratings/tips.html', {'business':b, 'tips': tips})
+    
+
 def add_business(request):
-    log_msg('Create a business')
+    print('Create a business')
     if request.method == 'POST':  # add a business
         form = BusinessForm(request.POST, request.FILES)
         name = form.data['name']
@@ -175,15 +155,7 @@ def add_business(request):
         f = BusinessForm()
         return render_to_response('ratings/add_business.html', {'form': f}, context_instance=RequestContext(request))
 
-
-def rate(request, bus_id):
-    return HttpResponse("You're rating for business %s." % bus_id)
-
-
 def index(request):
-#               global re
-#               re.spawn_worker_task()
-#       if request.user.is_authenticated():
     business_list = Business.objects.all()
     for b in business_list:
         b.average_rating = round(getBusAvg(b.id) * 2) / 2
@@ -213,15 +185,16 @@ def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')
 
+
+#this funciton is for autocomplete on tags
 @csrf_exempt
-def get_tags(request):
+def get_all_tags(request):
     if request.method == 'GET':
         q = request.GET.get('term', '')
         tags = Tag.objects.filter(descr__icontains=q)[:20]
         results = []
         for tag in tags:
             results.append(tag.descr)
-        data = json.dumps(results)
     else:
         data = 'fail'
     mimetype = 'application/json'

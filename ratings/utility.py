@@ -4,15 +4,69 @@ Created on May 17, 2012
 @author: zouf
 '''
 from django.utils.encoding import smart_str
-#from rateout.settings import LOG_FILE
-from ratings.models import Rating, BusinessPhoto
+from ratings.models import Rating, BusinessPhoto, Tip, TipRating, Tag, TagRating
+from recommendation.normalization import getNumPosRatings, getNumNegRatings
 import simplejson
-#import time
 import urllib
 import urllib2
+#from rateout.settings import LOG_FILE
+#import time
 
 #Files for miscellaneous database accesses
+def tiptag_comp(x,y):
+    #eventually do something more intelligent here!
+    xTot = x.pos_ratings - x.neg_ratings
+    yTot = y.pos_ratings - y.neg_ratings
+    if (xTot > yTot):
+        return -1
+    elif (xTot < yTot ):
+        return 1
+    else:
+        return 0
+    
 
+def get_tips(b,user=False,q=""):
+    if q != "":
+        tips = Tip.objects.filter(descr__icontains=q)[:20]
+    else:
+        tips = Tip.objects.all().order_by('-date')
+    results = []
+    for t in tips:
+        try:
+            rat =  TipRating.objects.get(tip=t)
+            t.this_rat = rat.rating
+            t.pos_ratings = getNumPosRatings(t)
+            t.neg_ratings = getNumNegRatings(t)
+        except:
+            t.this_rat = 0
+            t.pos_ratings = 0
+            t.neg_ratings = 0
+        results.append(t)
+
+    #results.sort(cmp=tiptag_comp)
+    return results
+        
+
+
+def get_tags(request,user=False,q=""):
+    if q != "":
+        tags = Tag.objects.filter(descr__icontains=q)[:20]
+    else:
+        tags = Tag.objects.all().order_by('-date')
+    results = []
+    for t in tags:
+        try:
+            rat =  TagRating.objects.get(tag=t)
+            t.this_rat = rat.rating
+            t.pos_ratings = getNumPosRatings(t)
+            t.neg_ratings = getNumNegRatings(t)
+        except:
+            t.this_rat = 0
+            t.pos_ratings = 0
+            t.neg_ratings = 0
+        results.append(t)
+    # results.sort(cmp=tiptag_comp)
+    return results
 
 def getNumRatings(business):
     ratset = Rating.objects.filter(business=business)

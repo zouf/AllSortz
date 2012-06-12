@@ -6,8 +6,8 @@ Created on May 8, 2012
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Sum, Count
 from numpy.ma.core import std
-from ratings.models import Business, Rating, TipRating, ReviewRating, TagRating
-from ratings.utility import log_msg
+from ratings.models import Business, Rating, TipRating, TagRating
+
 import math
 
 
@@ -24,18 +24,18 @@ def getNumPosRatings(o):
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
-    elif t == 'Review':
-        ratingFilter = ReviewRating.objects.filter(review=o, rating__range=["3", "5"])
-        ratingFilter = ratingFilter.aggregate(Count('rating'))
-        countRating = ratingFilter['rating__count']
-        return countRating
+#    elif t == 'Review':
+#        ratingFilter = ReviewRating.objects.filter(review=o, rating__range=["3", "5"])
+#        ratingFilter = ratingFilter.aggregate(Count('rating'))
+#        countRating = ratingFilter['rating__count']
+#        return countRating
     elif t == 'Tag':
         ratingFilter = TagRating.objects.filter(tag=o, rating__range=["3", "5"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
     else:
-        log_msg("error in getnumpos")
+        print("error in getnumpos")
 
 
 def getNumNegRatings(o):
@@ -50,18 +50,18 @@ def getNumNegRatings(o):
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
-    elif t == 'Review':
-        ratingFilter = ReviewRating.objects.filter(review=o, rating__range=["1", "2"])
-        ratingFilter = ratingFilter.aggregate(Count('rating'))
-        countRating = ratingFilter['rating__count']
-        return countRating
+#    elif t == 'Review':
+#        ratingFilter = ReviewRating.objects.filter(review=o, rating__range=["1", "2"])
+#        ratingFilter = ratingFilter.aggregate(Count('rating'))
+#        countRating = ratingFilter['rating__count']
+#        return countRating
     elif t == 'Tag':
         ratingFilter = TagRating.objects.filter(tag=o, rating__range=["1", "2"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
     else:
-        log_msg("error in getnumneg")
+        print("error in getnumneg")
 
 
 def calcStdev():
