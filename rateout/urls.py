@@ -7,8 +7,8 @@ from ratings.views import logout_page
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^api/add_tag/$', 'ratings.views.add_tag'),
-    url(r'^api/add_tip/$', 'ratings.views.add_tip'),
+    url(r'^api/add_tag/$', 'ratings.tags.add_tag'),
+    url(r'^api/add_tip/$', 'ratings.tips.add_tip'),
     url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),
     url(r'^index*$', 'ratings.views.index'),

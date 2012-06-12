@@ -10,10 +10,11 @@ from ratings.models import Business, Rating, Tip, Tag, TagRating, TipRating, \
     BusinessPhoto
 from ratings.populate import create_business
 from ratings.search import search_site
+from ratings.tags import get_tags
+from ratings.tips import get_tips
 from ratings.utility import getNumRatings, get_lat, get_photo_thumb_url, \
-    get_tips, get_tags
-from recommendation.normalization import getBusAvg, getNumPosRatings, \
-    getNumNegRatings
+    get_bus_data
+from recommendation.normalization import getBusAvg
 from recommendation.recengine import RecEngine
 import json
 import logging
@@ -47,7 +48,8 @@ def search_test(request):
     if 'search' not in form:
         return index(request)
     term = form['search']
-    businesses = search_site(term)
+    business_list = search_site(term)
+    businesses = get_bus_data(business_list,request.user)
     paginator = Paginator(businesses, 10)  # Show 25 contacts per page
     page = request.GET.get('page')
     try:
@@ -66,22 +68,21 @@ def detail_keywords(request, bus_id):
     if request.method == 'POST':
         if not request.user.is_authenticated():
             return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-        form = request.POST
+#        form = request.POST
 
-        if 'tip' in form:  # we're posting a tip
-            tip = form['tip']
-            tip = Tip.objects.create(user=request.user, business=b, descr=tip)
-            tip.save()
-        if 'tag' in form:
-            tag = form['tag']
-            tag = Tag.objects.create(creator=request.user, business=b, descr=tag)
-            tag.save()
+#        if 'tip' in form:  # we're posting a tip
+#            tip = form['tip']
+#            tip = Tip.objects.create(user=request.user, business=b, descr=tip)
+#            tip.save()
+#        if 'tag' in form:
+#            tag = form['tag']
+#            tag = Tag.objects.create(creator=request.user, business=b, descr=tag)
+#            tag.save()
 
     
     tips = get_tips(b,user=request.user,q="")
     tags = get_tags(b,user=request.user,q="")
-    
-    
+        
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
     try:
         b.photourl = get_photo_thumb_url(b)
@@ -93,44 +94,6 @@ def detail_keywords(request, bus_id):
     else:
         return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips}, context_instance=RequestContext(request))
 
-    
-def add_tag(request):
-  
-    if request.method == 'POST':  # add a tag!
-        form = request.POST
-        nm = form['tag']
-        logger.debug('Create a tag '+str(nm))
-        bid = form['bid']
-        b = Business.objects.get(id=bid)
-        keyset = Tag.objects.filter(descr=nm, business=b)
-        if(keyset.count() == 0):
-            k = Tag.objects.create(descr=nm,creator=request.user,business=b)
-            k.save()
-        tags = get_tags(b)
-        return render_to_response('ratings/tags.html', {'business':b, 'tags': tags})
-    
-
-
-
-def add_tip(request):
-    if request.method == 'POST':  # add a tip!
-       
-        form = request.POST
-
-        nm = form['tip']
-        bid = form['bid']
-        b = Business.objects.get(id=bid)
-        #don't readd a tip if its identical
-        keyset = Tip.objects.filter(descr=nm, business=b)
-        if(keyset.count() == 0):
-            try:
-                k = Tip.objects.create(descr=nm,user=request.user,business=b)
-            except:
-                logger.error("Unexpected error:" + str(sys.exc_info()[0]))
-            k.save()
-        tips = get_tips(b)
-        return render_to_response('ratings/tips.html', {'business':b, 'tips': tips})
-    
 
 def add_business(request):
  
@@ -155,21 +118,11 @@ def add_business(request):
         f = BusinessForm()
         return render_to_response('ratings/add_business.html', {'form': f}, context_instance=RequestContext(request))
 
-def index(request):
-    business_list = Business.objects.all()
-    for b in business_list:
-        b.average_rating = round(getBusAvg(b.id) * 2) / 2
 
-        b.num_ratings = getNumRatings(b.id)
-        if request.user.is_authenticated():
-            b.pos_ratings = getNumPosRatings(b)
-            b.neg_ratings = getNumNegRatings(b)
-            thisRat = Rating.objects.filter(username=request.user, business=b)
-            if thisRat.count() > 0:
-                r = Rating.objects.get(username=request.user, business=b)
-                b.this_rat = r.rating
-            else:
-                b.this_rat = 0
+
+
+def index(request):
+    business_list = get_bus_data(Business.objects.all(),request.user)
     paginator = Paginator(business_list, 10)  # Show 25 contacts per page
     page = request.GET.get('page')
     try:

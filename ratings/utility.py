@@ -5,7 +5,8 @@ Created on May 17, 2012
 '''
 from django.utils.encoding import smart_str
 from ratings.models import Rating, BusinessPhoto, Tip, TipRating, Tag, TagRating
-from recommendation.normalization import getNumPosRatings, getNumNegRatings
+from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
+    getBusAvg
 import logging
 import simplejson
 import urllib
@@ -15,61 +16,27 @@ import urllib2
 
 logger = logging.getLogger(__name__)
 
-#Files for miscellaneous database accesses
-def tiptag_comp(x,y):
-    #eventually do something more intelligent here!
-    xTot = x.pos_ratings - x.neg_ratings
-    yTot = y.pos_ratings - y.neg_ratings
-    if (xTot > yTot):
-        return -1
-    elif (xTot < yTot ):
-        return 1
-    else:
-        return 0
+
+
+def get_bus_data(business_list,user):
+    for b in business_list:
+        b.average_rating = round(getBusAvg(b.id) * 2) / 2
     
-
-def get_tips(b,user=False,q=""):
-    if q != "":
-        tips = Tip.objects.filter(descr__icontains=q)[:20]
-    else:
-        tips = Tip.objects.filter(business=b).order_by('-date')
-    results = []
-    for t in tips:
-        try:
-            rat =  TipRating.objects.get(tip=t)
-            t.this_rat = rat.rating
-            t.pos_ratings = getNumPosRatings(t)
-            t.neg_ratings = getNumNegRatings(t)
-        except:
-            t.this_rat = 0
-            t.pos_ratings = 0
-            t.neg_ratings = 0
-        results.append(t)
-
-    #results.sort(cmp=tiptag_comp)
-    return results
-        
+        b.num_ratings = getNumRatings(b.id)
+        if user.is_authenticated():
+            b.pos_ratings = getNumPosRatings(b)
+            b.neg_ratings = getNumNegRatings(b)
+            thisRat = Rating.objects.filter(username=user, business=b)
+            if thisRat.count() > 0:
+                r = Rating.objects.get(username=user, business=b)
+                b.this_rat = r.rating
+            else:
+                b.this_rat = 0
+    return business_list
 
 
-def get_tags(b,user=False,q=""):
-    if q != "":
-        tags = Tag.objects.filter(descr__icontains=q)[:20]
-    else:
-        tags = Tag.objects.filter(business=b).order_by('-date')
-    results = []
-    for t in tags:
-        try:
-            rat =  TagRating.objects.get(tag=t)
-            t.this_rat = rat.rating
-            t.pos_ratings = getNumPosRatings(t)
-            t.neg_ratings = getNumNegRatings(t)
-        except:
-            t.this_rat = 0
-            t.pos_ratings = 0
-            t.neg_ratings = 0
-        results.append(t)
-    # results.sort(cmp=tiptag_comp)
-    return results
+
+
 
 def getNumRatings(business):
     ratset = Rating.objects.filter(business=business)
