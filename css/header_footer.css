@@ -1,150 +1,107 @@
 body
 {
-	text-align: center;
+    text-align: center;
 }
 
-ul#list-nav {
-margin:0 0;
-width:900px;
+ul#list-nav
+{
+    margin: 0 0;
+    width: 900px;
 }
 
-ul#list-nav li {
-display:inline
+ul#list-nav li
+{
+    display:inline;
 }
 
-
-ul#list-nav li  {
-padding-left: 20px;
-padding-right	: 20px;
-width:100px;
-
+ul#list-nav li
+{
+    padding-left: 20px;
+    padding-right: 20px;
+    width:100px;
 }
 
 a
 {
-	font-family: verdana
-	font-size: 20px
-	
-	color: white
+    font-family: verdana;
+    font-size: 20px;
+    color: white;
 }
 
 #nightoutHome
 {
-	font-size:50px;
+    font-size: 50px;
 }
-
-
-p
-{
-
-
-
-}
-
 
 #formdiv
 {
-	padding-top: 100px;
+    padding-top: 100px;
 }
 
 #nav-bar
 {
-	margin: 0 auto;
-	text-align:center;
-	width:900px;
-	padding-bottom: 25px;
+    margin: 0 auto;
+    text-align: center;
+    width: 900px;
+    padding-bottom: 25px;
 }
-#account-bar
-{	
 
+#account
+{
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    width: 980px;
+    height: 50px;
+    margin-left: -490px;
+    text-align: right;
+    z-index: 100;
+}
 
-	background-color: #7B9646;
-  /*#ACD661;*/
+#account a
+{
+    color: #7B9646;
+    text-decoration: none;
+}
+
+#dropdown
+{
+    list-style: none;
+    background-color: #7B9646;
+    /*#ACD661;*/
+    text-align: center;
+    width: 100%;
+    height: 40px;
+    position: absolute;
+    top: 110px;
+    left: 0px;
+    padding-top: 10px;
+    z-index:1000;
+}
+
+#dropdown a
+{
+    padding: 5px;
+    color: white;
+    font-family: Helvetica;
+    font-size: 20px;
+    background-color: #5B7626;
+    text-decoration: none;
+}
+
+#search
+{    
+    background-color: #7B9646;
+    /*#ACD661;*/
     background-repeat: repeat;
-	text-align: center;
-
-	width: 100%;
-	/*position: fixed;*/
-	top: 0px;
-	left:0px;
-
-
-	
-	height: 30px;
-	padding-top: .5em;
-
-	z-index:1000
-	
-}
-
-#searchBar
-{	
-	background-color: #7B9646;
-  /*#ACD661;*/
-    background-repeat: repeat;
-	text-align: center;
-
-	width: 100%;
-	/*position: fixed;*/
-	top: 0px;
-	left:0px;
-
-
-	
-	height: 40px;
-	padding-top: .5em;
-	border-bottom: 1px black solid;
-	z-index:1000
-	
-}
-
-
-#account-bottom
-{
-	width: 100%;
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	border-bottom: 1px lightGrey solid;
-	height: 37px;
-}
-
-.headerBar a
-{
-	color: white;
-		font-family: Helvetica
-	color: white;
-	font-size: 20px
-	
-}
-
-.headerBar
-{
-		color: white;
-}
-
-#account-back{
-	color: black;
-	opacity :.25
-}
-#pagecontainer
-{
-	margin: 0 auto;
-	width:900px;
-}
-
-#footerbar
-{
-	padding-top:500px;
-}
-
-#accountbar
-{
-	font-size:24px;
-	
-}
-
-#mainform
-{
-	border:0;
+    text-align: center;
+    width: 100%;
+    height: 40px;
+    position: absolute;
+    top: 70px;
+    left: 0px;
+    padding-top: .5em;
+    padding-left: 375px;
+    border-bottom: 1px black solid;
+    z-index: 1000;
 }
