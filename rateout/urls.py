@@ -8,13 +8,21 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 
+    #api for comments
     url(r'^api/add_comment/$', 'comments.views.add_comment'),
     url(r'^api/comment_vote/$', 'comments.vote.comment_vote'),
     url(r'^api/remove_comment_vote*', 'comments.vote.remove_comment_vote'),
     
-    url(r'^api/add_tag/$', 'ratings.tags.add_tag'),
+    #api for tags
+    url(r'^api/add_tag/$', 'tags.views.add_tag'),
     url(r'^api/get_tags/', 'tags.views.get_all_tags', name='get_all_tags'),
-    url(r'^tag_vote*', 'tags.vote.tag_vote'),
+    url(r'^api/tag_vote*', 'tags.vote.tag_vote'),
+    url(r'^api/remove_tag_vote*', 'tags.vote.remove_tag_vote'),
+
+    #api for voting on businesses
+    url(r'^vote*', 'ratings.vote.vote'),
+    url(r'^remove_vote*', 'ratings.vote.remove_vote'),
+
     
     url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),
@@ -29,14 +37,9 @@ urlpatterns = patterns('',
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', logout_page),
 	url(r'^accounts/', include('registration.urls')),
-    url(r'^vote*', 'ratings.vote.vote'),
-    url(r'^remove_vote*', 'ratings.vote.remove_vote'),
-    url(r'^tip_vote*', 'ratings.vote.tip_vote'),
-    url(r'^remove_tip_vote*', 'ratings.vote.remove_tip_vote'),
 
 
 
-    url(r'^remove_tag_vote*', 'ratings.vote.remove_tag_vote')
 )
 
 if settings.DEBUG:
