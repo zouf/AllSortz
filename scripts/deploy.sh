@@ -1,6 +1,6 @@
 #!/bin/bash
 
-KEY_LOC=~/Desktop/zoufkey.pem
+KEY_LOC=../keys/zoufkey.pem
 DEPLOY_SERVER=ubuntu@ec2-50-17-101-100.compute-1.amazonaws.com
 
 CMD="cd ~/deploy"
