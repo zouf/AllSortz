@@ -19,7 +19,7 @@ $(function() {
            		$("#tag_vote_neg_"+id).addClass("selected");
            	}
         	
-        $.post('/tag_vote/', {id: id, type: vote_type}, function(json) {
+        $.post('/api/tag_vote/', {id: id, type: vote_type}, function(json) {
                 if(json.success=='true') {
                     document.getElementById('tag_pos_rating_'+json.id).innerHTML=json.pos_rating
                     document.getElementById('tag_neg_rating_'+json.id).innerHTML=json.neg_rating
@@ -34,7 +34,7 @@ $(function() {
 					$("#tag_vote_neg_"+id).removeClass("selected");
            		if(t1)
                		$("#tag_vote_pos_"+id).removeClass("selected");
-            	$.post('/remove_tag_vote/', {id: id, type: vote_type}, function(json) {
+            	$.post('/api/remove_tag_vote/', {id: id, type: vote_type}, function(json) {
                	 if(json.success == 'true') {
 					document.getElementById('tag_pos_rating_'+json.id).innerHTML=json.pos_rating
                     document.getElementById('tag_neg_rating_'+json.id).innerHTML=json.neg_rating
