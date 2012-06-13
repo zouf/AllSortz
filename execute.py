@@ -1,10 +1,11 @@
 #!/usr/bin/env python
+from recommendation.views import val_nmf
 import os
 import sys
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rateout.settings")
-    from validation.views import val_nmf
+  
     pargs = []
     
 

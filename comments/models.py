@@ -3,7 +3,6 @@ from django.db import models
 from django.template.base import Template
 from django.template.context import Context
 from ratings.models import Business
-from test.test_support import temp_cwd
 
 _CommentTemplate = Template("""
 <li>{{ comment.descr }}
