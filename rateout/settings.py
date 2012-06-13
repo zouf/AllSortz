@@ -227,6 +227,7 @@ INSTALLED_APPS = (
      'djcelery',
      'storages',
      'comments',
+     'tags',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
 	'django.contrib.contenttypes',

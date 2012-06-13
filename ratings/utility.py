@@ -4,7 +4,7 @@ Created on May 17, 2012
 @author: zouf
 '''
 from django.utils.encoding import smart_str
-from ratings.models import Rating, BusinessPhoto, Tip, TipRating, Tag, TagRating
+from ratings.models import Rating, BusinessPhoto
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     getBusAvg
 import logging

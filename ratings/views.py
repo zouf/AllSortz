@@ -7,19 +7,19 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from haystack.query import SearchQuerySet
 from ratings.forms import BusinessForm
-from ratings.models import Business, Rating, Tip, Tag, TagRating, TipRating, \
-    BusinessPhoto
+from ratings.models import Business, BusinessPhoto
 from ratings.populate import create_business
 from ratings.search import search_site
-from ratings.tags import get_tags
-from ratings.tips import get_tips
 from ratings.utility import getNumRatings, get_lat, get_photo_thumb_url, \
     get_bus_data
 from recommendation.normalization import getBusAvg
 from recommendation.recengine import RecEngine
+from tags.models import Tag
+from tags.views import get_tags
 import json
 import logging
 import sys
+
 
 
 logger = logging.getLogger(__name__)

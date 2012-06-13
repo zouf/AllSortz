@@ -5,7 +5,7 @@ Created on Jun 12, 2012
 '''
 from django.core.paginator import Paginator
 from haystack.query import SearchQuerySet
-from ratings.models import Tag
+from tags.models import Tag
 import logging
 import sys
 
