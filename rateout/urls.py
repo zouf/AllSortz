@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^api/add_tip/$', 'ratings.tips.add_tip'),
     
     url(r'^api/add_comment/$', 'comments.views.add_comment'),
-    url(r'^api/comment_vote*', 'comments.vote.comment_vote'),
+    url(r'^api/comment_vote/$', 'comments.vote.comment_vote'),
     url(r'^api/remove_comment_vote*', 'comments.vote.remove_comment_vote'),
     
     

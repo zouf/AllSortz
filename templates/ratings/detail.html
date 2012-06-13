@@ -20,31 +20,6 @@ function initialize() {
 }
 
 
-  $(document).ready(function(){
-
-
-  $("#tag").autocomplete({
-    source: "/api/get_tags/",
-    minLength: 2,
-  });
-}); 
- 
-$(document).ready(function(){
-$("form[name=addTag]").live("submit", function(e){
-	e.preventDefault();
-	var form = $("form[name=addTag]")
-    $.ajax({ 
-         url   : '/api/add_tag/',
-         type  : form.attr('method'),
-         data  : form.serialize(), // data to be submitted
-         success: function(data){
-         	document.getElementById("tag_list").innerHTML = data         
-         }
-    });
-    return false;
- });
-});
-
 </script>
 
 

@@ -25,10 +25,9 @@ def comment_comp(x,y):
 #adds comments to the database
 @csrf_exempt
 def add_comment(request):
+    logger.debug('in add comment')
     if request.method == 'POST':  # add a comment!
-        form = request.POST
-        print(form)
-        
+        form = request.POST       
         #base comment submission
         if 'cid' not in form:      
             nm = form['comment']
@@ -74,26 +73,26 @@ def get_comments(b,user=False,q=""):
         comments = Comment.objects.filter(descr__icontains=q)[:20]
     else:
         comments = Comment.objects.filter(business=b)
-    results = []
-    for t in comments:
-        try:
-            rat =  CommentRating.objects.get(comment=t)
-            t.this_rat = rat.rating
-            t.pos_ratings = getNumPosRatings(t)
-            t.neg_ratings = getNumNegRatings(t)
-        except:
-            t.this_rat = 0
-            t.pos_ratings = 0
-            t.neg_ratings = 0
-        results.append(t)
-  
     
-    comments = Comment.objects.filter(business=b)    
+  
     comment_list = []
     for c in comments:
         if c.reply_to is None:
             comment_list.append("open")
             recurse_comments(c,comment_list)
             comment_list.append("close")
-                  
-    return comment_list
+    
+    results = []              
+    for c in comment_list:
+        if c != "open" and c != "close":
+            try:
+                rat =  CommentRating.objects.get(comment=c)
+                c.this_rat = rat.rating
+                c.pos_ratings = getNumPosRatings(c)
+                c.neg_ratings = getNumNegRatings(c)
+            except:
+                c.this_rat = 0
+                c.pos_ratings = 0
+                c.neg_ratings = 0
+        results.append(c)
+    return results

@@ -1,7 +1,7 @@
 		
 					
 						<h3 class="feedTitle">Tags</h3>
-						<form name="addTag" action="." method="post">
+						<form name="addTag" action="." method="post">{% csrf_token %}
 					  	<input id="tag" type="text"  name="tag"  />
 						<input id="bid" value="{{business.id}}" type="hidden" name="bid" />
 						</form>

@@ -48,7 +48,7 @@ class Comment(models.Model):
 
 
 class CommentRating(models.Model):
-    tip = models.ForeignKey(Comment)
+    comment = models.ForeignKey(Comment)
     user = models.ForeignKey(User)
     rating = models.PositiveSmallIntegerField()
     
