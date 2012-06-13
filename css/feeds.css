@@ -1,27 +1,25 @@
 .tips_feed
 {
-	width:400px;
-	margin-top:0px;
-	margin-left:0px;
-	vertical-align:top;
-	text-align:left;
+    width: 400px;
+    margin-top: 0px;
+    margin-left: 0px;
+    vertical-align: top;
+    text-align: left;
 }
 
 .tags_feed
 {
-	width:150px;
-	margin-left:250px;
-	vertical-align:top;
-	text-align:right;
+    width: 150px;
+    margin-left: 250px;
+    vertical-align: top;
+    text-align: right;
 
 }
 
 
 .feedTitle
 {
-    font-size:26px;
-
-    
+    font-size: 26px;
 }
 
 /* 
@@ -29,8 +27,7 @@ This is the control of the position of the up-down arrow
 */
 .up_down
 {
-	margin-top:25px;
-
+    margin-top: 25px;
 }
 
 /*
@@ -38,14 +35,11 @@ Controls the style of the actual review box
 */
 .review_box
 {
-	width:500px;
-	height:100px;
-	background-color:white;
-	text-align:left;
-	padding-left: 5px;
-	padding-top: 5px;
-	
-	box-shadow: 1px 1px 1px  1px #888;
+    width: 500px;
+    height: 100px;
+    background-color: white;
+    text-align: left;
+    padding-left: 5px;
+    padding-top: 5px;
+    box-shadow: 1px 1px 1px  1px #888;
 }
-
-
