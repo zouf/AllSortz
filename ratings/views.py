@@ -140,22 +140,7 @@ def logout_page(request):
     return HttpResponseRedirect('/')
 
 
-#this funciton is for autocomplete on tags
 
-def get_all_tags(request):
-    if request.method == 'GET':
-        q = request.GET.get('term', '')
-        tags = Tag.objects.filter(descr__icontains=q)[:20]
-        results = []
-        for tag in tags:
-            print(tag.descr)
-            results.append(tag.descr)
-        data = json.dumps(results)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-
-    return HttpResponse(data, mimetype)
 
 
 #def pop_test_data(request):
