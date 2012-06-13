@@ -20,7 +20,9 @@ function initialize() {
 }
 
 
-$(function() {
+  $(document).ready(function(){
+
+
   $("#tag").autocomplete({
     source: "/api/get_tags/",
     minLength: 2,
@@ -28,7 +30,7 @@ $(function() {
 }); 
  
 $(document).ready(function(){
-$("form[name=addTag]").submit(function(e){
+$("form[name=addTag]").live("submit", function(e){
 	e.preventDefault();
 	var form = $("form[name=addTag]")
     $.ajax({ 
@@ -37,23 +39,6 @@ $("form[name=addTag]").submit(function(e){
          data  : form.serialize(), // data to be submitted
          success: function(data){
          	document.getElementById("tag_list").innerHTML = data         
-         }
-    });
-    return false;
- });
-});
-
-
-$(document).ready(function(){
-$("form[name=addTip]").submit(function(e){
-	e.preventDefault();
-	var form = $("form[name=addTip]")
-    $.ajax({ 
-         url   : '/api/add_tip/',
-         type  : form.attr('method'),
-         data  : form.serialize(), // data to be submitted
-         success: function(data){
-         	document.getElementById("tip_list").innerHTML = data         
          }
     });
     return false;
@@ -104,8 +89,8 @@ $("form[name=addTip]").submit(function(e){
 				<table>
 					<tr>
 						<td valign="top">
-							<div id="tip_list" class="ui-widget tips_feed">
-								{% include 'ratings/tips.html' %}
+							<div id="comment_list" class="ui-widget tips_feed">
+								{% include 'comments/thread.html' %}
 							</div>
 						</td>
 						<td valign="top">

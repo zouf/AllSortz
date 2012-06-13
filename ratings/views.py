@@ -1,3 +1,4 @@
+from comments.views import get_comments
 from django.contrib.auth import logout
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.http import HttpResponse, HttpResponseRedirect
@@ -80,7 +81,7 @@ def detail_keywords(request, bus_id):
 #            tag.save()
 
     
-    tips = get_tips(b,user=request.user,q="")
+    comments = get_comments(b,user=request.user,q="")
     tags = get_tags(b,user=request.user,q="")
         
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
@@ -90,9 +91,9 @@ def detail_keywords(request, bus_id):
         b.photourl= "" #NONE
 
     if latlng:
-        return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips, 'lat':latlng[0], 'lng':latlng[1]}, context_instance=RequestContext(request))
+        return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'comments': comments, 'lat':latlng[0], 'lng':latlng[1]}, context_instance=RequestContext(request))
     else:
-        return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'tips': tips}, context_instance=RequestContext(request))
+        return render_to_response('ratings/detail.html', {'business': b, 'tags': tags, 'comments': comments}, context_instance=RequestContext(request))
 
 
 def add_business(request):
@@ -140,17 +141,20 @@ def logout_page(request):
 
 
 #this funciton is for autocomplete on tags
-@csrf_exempt
+
 def get_all_tags(request):
     if request.method == 'GET':
         q = request.GET.get('term', '')
         tags = Tag.objects.filter(descr__icontains=q)[:20]
         results = []
         for tag in tags:
+            print(tag.descr)
             results.append(tag.descr)
+        data = json.dumps(results)
     else:
         data = 'fail'
     mimetype = 'application/json'
+
     return HttpResponse(data, mimetype)
 
 
