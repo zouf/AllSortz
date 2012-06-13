@@ -16,46 +16,46 @@
 
 
 <head>
-<title>Nightout</title>
+<title>AllSorts!</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     {% block head %}{% endblock %}
 </head>
 <body onload="initialize()">
 	{% if not user.is_authenticated %}
-	
+
 	<div id="account">
-		<a href="/">Home</a> | <a href="/accounts/login/?next=/">Login</a> 
-		
+		<a href="/">Home</a> | <a href="/accounts/login/?next=/">Login</a>
+
 	</div>
 	{% endif %}
 
 	{% if user.is_authenticated %}
 		<div id="account">
-		<p style="display:inline"> Welcome, {{ user }} </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a> 
-		| <a href="/ratings/top_ten/"> Top </a> 
-		</div> 
+		<p style="display:inline"> Welcome, {{ user }} </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
+		| <a href="/ratings/top_ten/"> Top </a>
+		</div>
 	{% endif %}
-	
+
 	<div id="search">
 		<form method="get" action="/ratings/search_tags/">{% csrf_token %}
 		       <input type="search" class="ui-widget" name="search" />
-		</form>		
+		</form>
 	</div>
 	<div id="dropdown">
 		<a href="/">test</a>
 	</div>
-	
 
-	
-	
-	
+
+
+
+
 	<div id="main">
     {% block body %}{% endblock %}
 	</div>
 	<footer>
 		<p> All Rights Reserved </p>
 	</footer>
-	
+
 </body>
 
 </html>
