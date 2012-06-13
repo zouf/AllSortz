@@ -9,6 +9,12 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^api/add_tag/$', 'ratings.tags.add_tag'),
     url(r'^api/add_tip/$', 'ratings.tips.add_tip'),
+    
+    url(r'^api/add_comment/$', 'comments.views.add_comment'),
+    url(r'^api/comment_vote/$', 'comments.vote.comment_vote'),
+    url(r'^api/remove_comment_vote*', 'comments.vote.remove_comment_vote'),
+    
+    
     url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),
     url(r'^index*$', 'ratings.views.index'),
@@ -26,9 +32,11 @@ urlpatterns = patterns('',
     url(r'^remove_vote*', 'ratings.vote.remove_vote'),
     url(r'^tip_vote*', 'ratings.vote.tip_vote'),
     url(r'^remove_tip_vote*', 'ratings.vote.remove_tip_vote'),
+
+
     url(r'^tag_vote*', 'ratings.vote.tag_vote'),
     url(r'^remove_tag_vote*', 'ratings.vote.remove_tag_vote'),
-    url(r'^api/get_all_tags/', 'ratings.views.get_tags', name='get_all_tags')
+    url(r'^api/get_tags/', 'ratings.views.get_all_tags', name='get_all_tags')
 )
 
 if settings.DEBUG:

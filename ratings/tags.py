@@ -4,13 +4,14 @@ Created on Jun 12, 2012
 @author: zouf
 '''
 from django.shortcuts import render_to_response
+from django.views.decorators.csrf import csrf_exempt
 from ratings.models import Business, Tag, TagRating
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 import logging
 
 logger = logging.getLogger(__name__)
     
-    
+
     
 #sorts tags
 def tag_comp(x,y):
@@ -24,8 +25,8 @@ def tag_comp(x,y):
     else:
         return 0
     
+@csrf_exempt
 def add_tag(request):
-  
     if request.method == 'POST':  # add a tag!
         form = request.POST
         nm = form['tag']

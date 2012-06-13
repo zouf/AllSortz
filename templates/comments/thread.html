@@ -1,0 +1,84 @@
+<h3 class="feedTitle">Comments</h3>
+	<form name="addComment" action="." method="post">
+  	<input id="id_comment" value="Add a comment" class="comment_input_box" type="text"  name="comment" maxlength="150" onfocus="this.value='';"  /></p>
+	<input id="bid" value="{{business.id}}" type="hidden" name="bid" />
+	</form>
+		<ul>
+		{% for comment in comments %}
+			{% if comment == "open" %}
+				<ul>
+			{%else%}
+				{%if comment == "close" %}
+						</ul>
+				{%else%}		
+				
+				
+						<div class="commentListing">
+				    	<table>
+				    	<tr valign="top">
+							<td style="width:40px;" valign="top">
+									<div id="comment_{{comment.id}}" class="comment">
+								{% if comment.this_rat > 0 %}
+									{% if comment.this_rat > 2 %}
+										<div class="vote up">
+										<span id="comment_vote_pos_{{comment.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
+										</div>
+										<div class="vote down">
+										<span id="comment_vote_neg_{{comment.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+										</div>
+										
+									{% else %}
+										<div class="vote up">
+										<span id="comment_vote_pos_{{comment.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
+										</div>
+										<div class="vote down">
+										<span id="comment_vote_neg_{{comment.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
+										</div>
+									{%endif%}
+								{%else%}
+										<div class="vote up">
+										<span id="comment_vote_pos_{{comment.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
+										</div>
+										<div class="vote down">
+										<span id="comment_vote_neg_{{comment.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+										</div>
+								{% endif %}
+									
+				
+								  <table>
+								  <tr>
+								  <td><div id="comment_pos_rating_{{comment.id}}" class="pos_rating">{{comment.pos_ratings}}</div></td>
+								  <td><div id="comment_neg_rating_{{comment.id}}" class="neg_rating">{{comment.neg_ratings}}</div></td>
+								  </tr>
+								  </table>
+							</div>
+						</td>
+						<td>
+							
+						     
+							<div class="comment" id="comment_{{comment.pk}}">
+							
+							<li>{{comment.descr}}</li>
+							<form action="." name="addReply" class="comment" id="comment_form_{{comment.pk}}" method="post">
+							<input type="text" name="comment" id="comment_{{comment.pk}}"/>
+							<input type="hidden" name="cid" id="comment_{{comment.pk}}" value="{{comment.pk}}"/> 
+							<input id="bid" value="{{comment.business.id}}" type="hidden" name="bid" />
+							</form>
+							</div>
+						   
+						 </td>
+						</tr>
+					  </table>
+					    </div>
+				
+				
+				
+				
+				
+				{%endif%}
+			{%endif%}
+		
+
+
+		{%endfor%}
+		</ul>				
