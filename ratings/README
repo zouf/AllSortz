@@ -17,3 +17,38 @@ Joey + Matt Discussion
 
 - Must install Celery and RabbitMQ on your machine!
 	+
+	
+	
+	
+misc.
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#open-dropdown").live("click",function() {
+		if( $("#dropdown-inner").hasClass("hideDropdown") )
+		{
+			$("#dropdown-inner").show();
+			$("#dropdown-inner").removeClass("hideDropdown");
+			$("#dropdown-inner").addClass("showDropdown");
+		}
+		else
+		{
+			$("#dropdown-inner").hide();
+			$("#dropdown-inner").addClass("hideDropdown");
+			$("#dropdown-inner").removeClass("showDropdown");
+
+			
+		}
+		
+	});
+});
+
+</script>
+/* .hideDropdown
+{
+	display:none;
+}
+.showDropdown
+{
+	display:block;
+}
+*/
