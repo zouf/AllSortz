@@ -3,11 +3,9 @@ Created on Jun 12, 2012
 
 @author: zouf
 '''
-from django.core.paginator import Paginator
 from haystack.query import SearchQuerySet
 from tags.models import Tag
 import logging
-import sys
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +16,8 @@ def search_site(term):
         if sr.model_name == "business":
             businesses.append(sr.object)
         elif sr.model_name == "tag":
+            businesses.append(sr.object.business)
+        elif sr.model_name == "comment":
             businesses.append(sr.object.business)
         else:
             logger.error('error in search_site')

@@ -1,25 +1,23 @@
 from comments.views import get_comments
+from communities.models import UserMembership, Community, BusinessMembership
+from communities.views import get_community
 from django.contrib.auth import logout
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from haystack.query import SearchQuerySet
+from photos.models import BusinessPhoto
+from photos.views import get_photo_thumb_url
 from ratings.forms import BusinessForm
-from ratings.models import Business, BusinessPhoto
+from ratings.models import Business
 from ratings.populate import create_business
 from ratings.search import search_site
-from ratings.utility import getNumRatings, get_lat, get_photo_thumb_url, \
-    get_bus_data
+from ratings.utility import get_lat, get_bus_data
 from recommendation.normalization import getBusAvg
 from recommendation.recengine import RecEngine
-from tags.models import Tag
 from tags.views import get_tags
-import json
 import logging
-import sys
-
 
 
 logger = logging.getLogger(__name__)
@@ -107,14 +105,18 @@ def add_business(request):
         state = form.data['state']
         img = request.FILES['image']
 
-
-      
         b = create_business(name, address, state, city, 1, 1)
         b.save()
        
         bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
         bp.save()
-        return render_to_response('ratings/detail.html', {'business': b, 'avg': 0, 'numRatings': 0}, context_instance=RequestContext(request))
+        
+        community = get_community(request.user)
+        
+        bm = BusinessMembership(business=b,community=community)
+        bm.save()
+        
+        return detail_keywords(request,b.id)
     else:  # Print a boring business form
         f = BusinessForm()
         return render_to_response('ratings/add_business.html', {'form': f}, context_instance=RequestContext(request))
@@ -123,6 +125,18 @@ def add_business(request):
 
 
 def index(request):
+    
+    community = get_community(request.user)
+    print("comm is "+str(community.name))
+    businesses = []
+    try:
+        busMembership = BusinessMembership.objects.filter(community = community)
+        for b in busMembership:
+            businesses.append(b.business)
+    except:
+        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+        businesses = Business.objects.all()
+    
     business_list = get_bus_data(Business.objects.all(),request.user)
     paginator = Paginator(business_list, 10)  # Show 25 contacts per page
     page = request.GET.get('page')
@@ -132,7 +146,7 @@ def index(request):
         business_list = paginator.page(1)
     except EmptyPage:
         business_list = paginator.page(paginator.num_pages)
-    return render_to_response('ratings/index.html', {'business_list': business_list}, context_instance=RequestContext(request))
+    return render_to_response('ratings/index.html', {'business_list': business_list, 'community':community}, context_instance=RequestContext(request))
 
 
 def logout_page(request):
@@ -140,96 +154,3 @@ def logout_page(request):
     return HttpResponseRedirect('/')
 
 
-
-
-
-#def pop_test_data(request):
-#       log_msg('Populating with test data')
-#       numUsers = 10
-#       numBusinesses =20
-#       populate_test_data(numUsers, numBusinesses)
-#       return HttpResponseRedirect('/')
-#
-
-#def detail(request, bus_id):
-#       global re
-#       b = get_object_or_404(Business, pk=bus_id)
-#       avg = round(getBusAvg(b.id)*2)/2
-#       numRatings = getNumRatings(b)
-#       if request.user.is_authenticated():
-#               try:
-#                       r = Rating.objects.get(username=request.user, business=bus_id)   #rating exists
-#                       if request.method == 'POST':    #posting an existing rating
-#                               form = RatingForm(request.POST)
-#                               if form.is_valid():
-#                                       cd = form.cleaned_data
-#                                       new_rating = cd['rating']
-#                                       r.rating        = new_rating
-#                                       r.save()
-#                       f2 = RatingForm();
-#                       return render_to_response('ratings/detail.html', {'business': b,'rating': r, 'form' : f2, 'avg':avg, 'numRatings':numRatings}, context_instance=RequestContext(request))
-#               except: #rating doesn't exist
-#                       if request.method == 'POST':    # posting a new rating
-#                               form = RatingForm(request.POST)
-#                               if form.is_valid():
-#                                       cd = form.cleaned_data
-#                                       new_rating = cd['rating']
-#                                       r = Rating.objects.create(business=b, username=request.user,rating=new_rating)
-#                                       r.save()
-#                                       f2 = RatingForm();
-#                                       return render_to_response('ratings/detail.html', {'business': b,'rating': r , 'form' : f2, 'avg':avg, 'numRatings':numRatings}, context_instance=RequestContext(request))
-#                       else:
-#                               f2 = RatingForm();
-#                               r = re.get_best_current_recommendation(b, request.user)
-#                               return render_to_response('ratings/detail.html', {'business': b, 'form' : f2, 'recommendation': r, 'avg': avg, 'numRatings': numRatings}, context_instance=RequestContext(request))
-#       else:           # Not logged in
-#               p = get_object_or_404(Business, pk=bus_id)
-#
-#               return render_to_response('ratings/detail.html', {'business': p, 'avg':avg, 'numRatings':numRatings}, context_instance=RequestContext(request))
-#
-
-
-
-#def reset_site(request):
-#       read_dataset()
-#       build_pred_server()
-#
-#def display_table_full(request):
-#       return display_table(request, 500)
-#
-#def display_table(request, maxc):
-#       maxc=int(maxc)
-#       business_list = Business.objects.all()
-#       user_list = User.objects.all()
-#       bus_to_display = []
-#       all_ratings = []
-#       userno = 0
-#
-#       c = 0
-#       for b in business_list:
-#               if  c > maxc:
-#                       break
-#               c+=1
-#               bus_to_display.append(b)
-#
-#       for user in user_list:
-#               if(userno >maxc):
-#                       break
-#               businessno = 0
-#               all_ratings.append([user.username])
-#               for business in business_list:
-#                       if(businessno > maxc):
-#                               break
-#                       try:
-#                               r = Rating.objects.get(username=user, business=business).rating
-#                               all_ratings[userno].append(r)
-#                       except:
-#                               r="--"
-#                               all_ratings[userno].append(r)
-#
-#                       businessno = businessno+1
-#               userno = userno + 1
-#
-#
-#       #print(all_ratings)
-#       return  render_to_response('ratings/rating_table.html', {'ratings_list': all_ratings, 'business_list' :bus_to_display, 'user_list': user_list}, context_instance=RequestContext(request))

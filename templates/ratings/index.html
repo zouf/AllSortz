@@ -61,6 +61,9 @@ $(function() {
 					</div>
 					</td>
 					<td>		
+						 listed in {{community.name}}
+						 <div class="businessPhoto"><a href="/ratings/{{ bus.id }}/" > <img src="{{bus.photourl}}"  /> </a></div>
+					 
 					     <div class="business_name"><a class="business_name" href="/ratings/{{ bus.id }}/" class="blocklink"> {{bus.name }} </a></div> 
 					     <div class="location_name"> {{bus.city}}, {{bus.state}}</div>
 					      
@@ -94,23 +97,7 @@ $(function() {
 		</tr>
 		</table>
 	</div>
-	<script type="text/javascript"/>
-			$.ajax({
-				type : 'POST',
-				url : '/ajax_query/',
-				dataType : 'json',
-				data: {	
-						val : 1
-				},
-				success : function(data){
-		
-				},
-				error : function(XMLHttpRequest, textStatus, errorThrown) {
-						
-				}
-			});
 
-	</script>
 {% else %}
     <p>No businesses are available.</p>
     <p><a href="/ratings/add_business/">Add a business</a></p>

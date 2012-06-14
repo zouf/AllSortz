@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def comment_vote(request):
-    print('in comment vote')
     logger.debug('in comment_vote')
     if request.method == 'POST':
         try:

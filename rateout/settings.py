@@ -192,7 +192,6 @@ LOGIN_URL = '/accounts/login/'
 
 
 #haystack search plugin
-import os
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
@@ -228,6 +227,8 @@ INSTALLED_APPS = (
      'storages',
      'comments',
      'tags',
+     'photos',
+     'communities',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
 	'django.contrib.contenttypes',
