@@ -12,7 +12,7 @@ ADMINS = (
      ('Matt Zoufaly', 'matt@allsortz.com'),
 )
 
-DEV_BOXES = ['hydralisk'] # add your dev computer here
+DEV_BOXES = ['hydralisk', 'connie-VirtualBox'] # add your dev computer here
 
 
 #true if we're on the servers for deployment. In other words, any computer but
