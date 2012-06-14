@@ -40,7 +40,7 @@ body
     position: relative;
     top: 0px;
     left: 50%;
-    margin-left: -100px;
+    margin-left: -120px;
     z-index:1000;
 }
 
@@ -72,7 +72,6 @@ body
     text-decoration: none;
 }
 
-/* Topmost link on hover */
 #dropdown li:hover a
 {
     color: #FFFFFF;
