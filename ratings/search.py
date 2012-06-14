@@ -17,6 +17,8 @@ def search_site(term):
             businesses.append(sr.object)
         elif sr.model_name == "tag":
             businesses.append(sr.object.business)
+        elif sr.model_name == "comment":
+            businesses.append(sr.object.business)
         else:
             logger.error('error in search_site')
     return businesses   

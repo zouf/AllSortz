@@ -1,4 +1,6 @@
 from comments.views import get_comments
+from communities.models import UserMembership, Community, BusinessMembership
+from communities.views import get_community
 from django.contrib.auth import logout
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.http import HttpResponseRedirect
@@ -108,6 +110,12 @@ def add_business(request):
        
         bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
         bp.save()
+        
+        community = get_community(request.user)
+        
+        bm = BusinessMembership(business=b,community=community)
+        bm.save()
+        
         return detail_keywords(request,b.id)
     else:  # Print a boring business form
         f = BusinessForm()
@@ -117,6 +125,18 @@ def add_business(request):
 
 
 def index(request):
+    
+    community = get_community(request.user)
+    print("comm is "+str(community.name))
+    businesses = []
+    try:
+        busMembership = BusinessMembership.objects.filter(community = community)
+        for b in busMembership:
+            businesses.append(b.business)
+    except:
+        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+        businesses = Business.objects.all()
+    
     business_list = get_bus_data(Business.objects.all(),request.user)
     paginator = Paginator(business_list, 10)  # Show 25 contacts per page
     page = request.GET.get('page')
@@ -126,7 +146,7 @@ def index(request):
         business_list = paginator.page(1)
     except EmptyPage:
         business_list = paginator.page(paginator.num_pages)
-    return render_to_response('ratings/index.html', {'business_list': business_list}, context_instance=RequestContext(request))
+    return render_to_response('ratings/index.html', {'business_list': business_list, 'community':community}, context_instance=RequestContext(request))
 
 
 def logout_page(request):
