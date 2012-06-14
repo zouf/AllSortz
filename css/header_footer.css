@@ -87,20 +87,26 @@ body
     padding: 10px 0px;
     position: absolute;
     top: 33px;
-    left: -9999px;
+    left: 0px;
+    display: none;
     width: 100px;
     padding-top: 10px;
+}
+
+#dropdown ul a
+{
+    display: hidden;
 }
 
 /* See dropdown list on hover */
 #dropdown li:hover ul
 {
-    left: 0px;
+    display: block;
 }
 
 #dropdown ul:hover ul
 {
-    left: 0px;
+    display: block;
 }
 
 /* Dropdown list link */
