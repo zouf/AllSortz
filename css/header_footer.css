@@ -93,11 +93,6 @@ body
     padding-top: 10px;
 }
 
-#dropdown ul a
-{
-    display: hidden;
-}
-
 /* See dropdown list on hover */
 #dropdown li:hover ul
 {
