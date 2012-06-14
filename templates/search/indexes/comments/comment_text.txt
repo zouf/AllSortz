@@ -1,1 +1,1 @@
-{{ object.descr }}
+{{ object.name }}

@@ -1,6 +1,6 @@
 from comments.views import get_comments
 from communities.models import UserMembership, Community, BusinessMembership
-from communities.views import get_community
+from communities.views import get_community, get_default
 from django.contrib.auth import logout
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.http import HttpResponseRedirect
@@ -8,7 +8,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from photos.models import BusinessPhoto
-from photos.views import get_photo_thumb_url
+from photos.views import get_photo_thumb_url, get_photo_web_url
 from ratings.forms import BusinessForm
 from ratings.models import Business
 from ratings.populate import create_business
@@ -42,12 +42,19 @@ def top_ten(request):
 
 
 
-def search_test(request):
+def search(request):
     form = request.GET
     if 'search' not in form:
         return index(request)
     term = form['search']
-    business_list = search_site(term)
+    location = form['location']
+    
+    #TODO fix getting location
+    if location == "":
+        #handle blank location with IP track!!!
+        location = get_default()
+        
+    business_list = search_site(term, location)
     businesses = get_bus_data(business_list,request.user)
     paginator = Paginator(businesses, 10)  # Show 25 contacts per page
     page = request.GET.get('page')
@@ -57,7 +64,7 @@ def search_test(request):
         businesses = paginator.page(1)
     except EmptyPage:
         businesses = paginator.page(paginator.num_pages)
-    return render_to_response('ratings/index.html', {'business_list': businesses, 'search_term': term}, context_instance=RequestContext(request))
+    return render_to_response('ratings/index.html', {'business_list': businesses, 'search_term': term, 'location_term':location}, context_instance=RequestContext(request))
 
     
 
@@ -84,7 +91,7 @@ def detail_keywords(request, bus_id):
         
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
     try:
-        b.photourl = get_photo_thumb_url(b)
+        b.photourl = get_photo_web_url(b)
     except:
         b.photourl= "" #NONE
 
@@ -127,7 +134,6 @@ def add_business(request):
 def index(request):
     
     community = get_community(request.user)
-    print("comm is "+str(community.name))
     businesses = []
     try:
         busMembership = BusinessMembership.objects.filter(community = community)
@@ -137,7 +143,7 @@ def index(request):
         logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
         businesses = Business.objects.all()
     
-    business_list = get_bus_data(Business.objects.all(),request.user)
+    business_list = get_bus_data(businesses,request.user)
     paginator = Paginator(business_list, 10)  # Show 25 contacts per page
     page = request.GET.get('page')
     try:

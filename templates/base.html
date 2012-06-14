@@ -39,8 +39,36 @@
 	<div id="header">
 		<div id="search">
 			<form method="get" action="/ratings/search_tags/">{% csrf_token %}
-			       <input type="search" class="ui-widget" name="search" placeholder="Find tag or location" />
-			       <input type="submit" class="ui-widget" value="Go!">
+					<table>
+						<tr>
+							<td>
+								
+								{% if search_term %}
+									 <input type="search" class="ui-widget" name="search" placeholder="{{search_term}}" />
+								{%else%}
+									<input type="search" class="ui-widget" name="search" placeholder="Find tag" />
+								{%endif%}
+
+					       </td><td>
+					       	 	<span>near  sdsds</span>
+					       	</td><td>
+					       		{% if location_term %}
+					       			
+					       			 <input type="search" class="ui-widget" name="location" placeholder="{{location_term}}" />
+					       	    {%else%}
+					       		
+							       {%if community %}
+							       <input type="search" class="ui-widget" name="location" placeholder="{{community.name}}" />
+							       {%else%}
+							       <input type="search" class="ui-widget" name="location" placeholder="location" />
+							       {%endif%}
+							     {%endif%}
+							     
+					       </td><td>
+					       
+					       	  <input type="submit" value="Find it!" />
+					       </td></tr>
+			      </table>
 			</form>
 		</div>
 		<ul id="dropdown">

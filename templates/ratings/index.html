@@ -13,6 +13,9 @@ $(function() {
     <div id="businessList" class="content">
     	{% if search_term %}
 			<h2 class="search_term">{{search_term}}</h2>
+			{%if location_term %}
+				near <h2 class="search_term">{{location_term}}</h2>
+		     {%endif%}
 		{%endif%}
 	<table>
 		<tr>
@@ -61,11 +64,23 @@ $(function() {
 					</div>
 					</td>
 					<td>		
-						 listed in {{community.name}}
-						 <div class="businessPhoto"><a href="/ratings/{{ bus.id }}/" > <img src="{{bus.photourl}}"  /> </a></div>
+						<table>
+							<tr>
+								<td>
+									 <div class="businessPhoto"><a href="/ratings/{{ bus.id }}/" > <img src="{{bus.photourl}}"  /> </a></div>
+								</td>
+								<td>
+									<div class="business_name"><a class="business_name" href="/ratings/{{ bus.id }}/" class="blocklink"> {{bus.name }} </a></div> 
+					   				<div class="location_name"> {{bus.city}}, {{bus.state}}</div>
+					   				<em> {{community.name}} </em>
+								</td>
+							</tr>						
+						</table>
+						
+					
+						
 					 
-					     <div class="business_name"><a class="business_name" href="/ratings/{{ bus.id }}/" class="blocklink"> {{bus.name }} </a></div> 
-					     <div class="location_name"> {{bus.city}}, {{bus.state}}</div>
+					  
 					      
 					 </td>
 					</tr>
