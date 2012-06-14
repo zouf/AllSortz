@@ -4,7 +4,8 @@ Created on May 17, 2012
 @author: zouf
 '''
 from django.utils.encoding import smart_str
-from ratings.models import Rating, BusinessPhoto
+from photos.views import get_photo_web_url
+from ratings.models import Rating
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     getBusAvg
 import logging
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 def get_bus_data(business_list,user):
     for b in business_list:
         b.average_rating = round(getBusAvg(b.id) * 2) / 2
-    
+        b.photourl = get_photo_web_url(b)
         b.num_ratings = getNumRatings(b.id)
         if user.is_authenticated():
             b.pos_ratings = getNumPosRatings(b)
@@ -32,6 +33,8 @@ def get_bus_data(business_list,user):
                 b.this_rat = r.rating
             else:
                 b.this_rat = 0
+                
+        
     return business_list
 
 
@@ -56,10 +59,3 @@ def get_lat(loc):
         return [lat, lng]
     return False
 
-#for businesses
-def get_photo_thumb_url(b):
-    qset  = BusinessPhoto.objects.filter(business=b)
-    if qset.count < 1:
-        return False
-    ph = qset[0].image_thumb
-    return ph.url
