@@ -16,23 +16,18 @@
 
 }
 
-
 .feedTitle
 {
     font-size: 26px;
 }
 
-/* 
-This is the control of the position of the up-down arrow
-*/
+/* Controls the position of the up-down arrow */
 .up_down
 {
     margin-top: 25px;
 }
 
-/*
-Controls the style of the actual review box
-*/
+/* Controls the style of the actual review box */
 .review_box
 {
     width: 500px;
