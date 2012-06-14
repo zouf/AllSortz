@@ -35,14 +35,29 @@
 		| <a href="/ratings/top_ten/"> Top </a>
 		</div>
 	{% endif %}
-
-	<div id="search">
-		<form method="get" action="/ratings/search_tags/">{% csrf_token %}
-		       <input type="search" class="ui-widget" name="search" />
-		</form>
-	</div>
-	<div id="dropdown">
-		<a href="/">test</a>
+	
+	<div id="header">
+		<div id="search">
+			<form method="get" action="/ratings/search_tags/">{% csrf_token %}
+			       <input type="search" class="ui-widget" name="search" />
+			</form>
+		</div>
+		<ul id="dropdown">
+			<li><a href="/">testing</a>
+				<ul>
+					<li><a href="/">one</a></li>
+					<li><a href="/">two</a></li>
+					<li><a href="/">three</a></li>
+				</ul>
+			</li>
+			<li><a href="/">testing</a>
+				<ul>
+					<li><a href="/">one</a></li>
+					<li><a href="/">two</a></li>
+					<li><a href="/">three</a></li>
+				</ul>
+			</li>
+		</ul>
 	</div>
 
 
