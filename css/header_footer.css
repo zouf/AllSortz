@@ -6,12 +6,13 @@ body
 #account
 {
     position: absolute;
-    top: 35px;
+    top: 40px;
     left: 50%;
     width: 980px;
     height: 50px;
     margin-left: -490px;
     text-align: right;
+    font-size: 20px;
     z-index: 100;
 }
 
@@ -24,6 +25,8 @@ body
 #header
 {
     background-color: #7B9646;
+    border-top: 1px solid #5B7626;
+    border-bottom: 1px solid #5B7626;
     position: absolute;
     top: 70px;
     left: 0px;
@@ -38,9 +41,11 @@ body
     list-style: none;
     display: block;
     position: relative;
+    width: 700px;
     top: 0px;
     left: 50%;
-    margin-left: -120px;
+    margin-left: -125px;
+    padding: 0px;
     z-index:1000;
 }
 
@@ -49,18 +54,19 @@ body
     position: relative;
     float: left;
     margin-right: 70px;
-    width: 100px;
 }
 
 /* Topmost link */
 #dropdown a
 {
+    white-space: nowrap;
     display: block;
-    padding: 5px 15px;
+    padding: 5px 20px;
     color: #FFFFFF;
     background-color: #5B7626;
-    font-family: Helvetica;
+    font-family: 'Helvetica';
     font-size: 20px;
+    min-width: 75px;
     text-decoration: none;
 }
 
@@ -89,8 +95,11 @@ body
     top: 33px;
     left: 0px;
     display: none;
-    width: 100px;
+    width: 100%;
     padding-top: 10px;
+    border: 1px solid #000000;
+    border-top: 0px;
+    overflow: hidden;
 }
 
 /* See dropdown list on hover */
@@ -98,9 +107,6 @@ body
 {
     display: block;
 }
-
-
-
 
 #dropdown ul:hover ul
 {
@@ -111,9 +117,12 @@ body
 #dropdown li:hover ul a
 {
 	text-decoration:none;
+	text-align: left;
     color: #000000;
-    background-color: #FFFFFF;
-    padding: 0px;
+    background-color: transparent;
+    font-size: 17px;
+    padding-left: 10px;
+    margin-right: 2px;
 }
 
 /* Dropdown list link on hover */

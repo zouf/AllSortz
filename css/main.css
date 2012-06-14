@@ -1,4 +1,4 @@
-div#container
+#container
 {
     margin-left: auto;
     margin-right: auto;
@@ -22,6 +22,7 @@ div#container
     /* image: url(images/transwhite.png);
     background-repeat: repeat; */
     border: 1px black solid;
+    border-bottom: none;
     box-shadow : 0px 0px 8px #888888;
     z-index: 0;
 }
@@ -29,23 +30,6 @@ div#container
 .content
 {
     height: 100%;
-}
-
-.search_term
-{
-    font-size: 24px;
-    font-style: italic;    
-}
-
-#regForm
-{
-    font-family: 'Helvetica', sans-serif;
-    font-size: 18px;
-    width: 900px;
-    margin: 0 auto;
-    background-color: #f0f0f0;
-    border: 1px black solid;
-    margin-top: -10px;
 }
 
 body
@@ -73,37 +57,6 @@ li
     font-size: 15px;
 }
 
-#titleShadow
-{
-    height: 5px;
-    background-image: url(images/downshadow.png);
-    background-repeat: repeat-x;
-    top: 38px;
-    left: 0px;    
-    width: 100%;
-}
-
-
-.cardShadow
-{
-    padding: 5px;
-    width: 222px;
-    height: 122px;
-    background-image: url(images/cardshadow2.png);
-}
-
-.cardShadowLink
-{
-    color: blue;
-    text-decoration: underline;
-}
-
-.cardShadow a
-{
-    color: black;
-    text-decoration: none;
-}
-
 .busCard
 {
     vertical-align: top;
@@ -118,25 +71,9 @@ li
     box-shadow: 0px 0px 5px #888888;
 }
 
-.busListing
-{
-    margin-left: 80px;
-}
-
-
-.blocklink
-{
-    display: inline-block;
-}
-
 .busCard:hover
 {
     background-color: #C0C0C0;
-}
-
-#ratingList
-{
-    margin-left: 40%;
 }
 
 div.vote
@@ -147,35 +84,6 @@ div.vote
     margin: 0px auto 0;
     width: 25px;
 }
-
-.up
-{    
-    cursor: pointer;
-    display: block;
-    height: 25px;
-    margin: 0px auto 0;
-    width: 25px;
-    margin-left: 0px;
-    
-}
-
-.answer
-{
-    margin-left: 0px;
-
-}
-
-.down
-{    
-    cursor: pointer;
-    display: block;
-    height: 25px;
-    margin: 0px auto 0;
-    width: 25px;
-    margin-left: 0px;
-    
-}
-
 
 .pos_rating
 {
@@ -189,43 +97,11 @@ div.vote
     color: red;
 }
 
-
-.selected
-{
-    background-color: navy !important;
-    
-}
-
 .error
 {
     background-color: red;
 }
 
-.bigsearch
-{
-    width: 300px;
-    font-size: 24px;
-    color: #747862;
-    height: 30px;
-    border: 1;
-    padding: 4px 8px;
-    margin-bottom: 5px;
-    border-radius: 5px;
-}
-
-
-.adduser
-{
-    width: 300px;
-    font-size: 24px;
-    color: #747862;
-    height: 30px;
-    border: 1;
-    padding: 4px 8px;
-    margin-bottom: 5px;
-    border-radius: 5px;
-}
-    
 .clear
 {
     height: 0;
@@ -238,28 +114,10 @@ div.vote
 
 a:link
 {
-    color: black;
+    color: #000000;
 }
 
 a:visited
 {
-    color: black;
+    color: #000000;
 }
-
-.business_name
-{
-    font-size: 20px;
-    font-color: black;
-    text-decoration: none;
-    margin-left: 5px;
-    text-align: left;
-}
-
-.location_name
-{
-    font-style: italic;    
-    margin-left: 5px;
-    text-align: left;
-}
-
-
