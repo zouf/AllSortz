@@ -16,7 +16,7 @@
 
 
 <head>
-<title>AllSorts!</title>
+<title>AllSortz!</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     {% block head %}{% endblock %}
 </head>
@@ -37,37 +37,39 @@
 	{% endif %}
 	
 	<div id="header">
+		<div style="position:absolute;top:-10px;left:50%;margin-left:-570px;">
+			<a class="title">AllSortz </a> All sorts of places for all sorts of people.
+		</div>
 		<div id="search">
-			<form method="get" action="/ratings/search_tags/">{% csrf_token %}
-					<table>
-						<tr>
+				<form method="get" action="/ratings/search_tags/">{% csrf_token %}
+						<table>
+							<tr>
 							<td>
-								
 								{% if search_term %}
 									 <input type="search" class="ui-widget" name="search" placeholder="{{search_term}}" />
 								{%else%}
 									<input type="search" class="ui-widget" name="search" placeholder="Find tag" />
 								{%endif%}
-
-					       </td><td>
+							</td>
+							<td>
 					       	 	<span>near</span>
-					       	</td><td>
-					       		{% if location_term %}
-					       			
+							</td>
+							<td>
+						       	{% if location_term %}
 					       			 <input type="search" class="ui-widget" name="location" placeholder="{{location_term}}" />
-					       	    {%else%}
-					       		
-							       {%if community %}
-							       <input type="search" class="ui-widget" name="location" placeholder="{{community.name}}" />
-							       {%else%}
-							       <input type="search" class="ui-widget" name="location" placeholder="location" />
-							       {%endif%}
-							     {%endif%}
+								{%else%}
+									{%if community %}
+										<input type="search" class="ui-widget" name="location" placeholder="{{community.name}}" />
+										{%else%}
+										<input type="search" class="ui-widget" name="location" placeholder="location" />
+									{%endif%}
+								{%endif%}
 							     
-					       </td><td>
-					       
+					       </td>
+					       <td>
 					       	  <input type="submit" value="Find it!" />
-					       </td></tr>
+					       </td>
+					       </tr>
 			      </table>
 			</form>
 		</div>
