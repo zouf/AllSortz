@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block body %}
+<script>
+	$(function() {
+		$( "input:submit" ).button();
+	});
+	
+	$(function() {
+		$( "#datepicker1" ).datetimepicker({dateFormat:'yy-mm-dd',  ampm:false,showMinute:false});
+		$( "#datepicker2" ).datetimepicker({dateFormat:'yy-mm-dd',  ampm:false,showMinute:false});
+	});
+</script>
+	<div class="content ui-widget" >
+	<form action="." method="post" enctype="multipart/form-data" >{% csrf_token %}
+		<input type="hidden" name="community" value="{{community.id}}" />
+		{{ form.non_field_errors }}
+		<div class="input_box">
+		    {{ form.name.errors }}
+		    <p> Name </p>
+		    {{form.name}}
+		</div>
+		<div class="input_box">
+		    {{ form.descr.errors }}
+			<p>Description</p>
+    		{{form.descr}}
+		
+		</div>
+		<div class="input_box">
+		    {{ form.start.errors }}
+			<p>Start: <input type="text" name="start" id="datepicker1"></p>
+		</div>
+		
+		<div class="input_box">
+		    {{ form.state.errors }}
+			<p>End: <input type="text" name="end" id="datepicker2"></p>
+    		
+		</div>
+
+		
+		<div class="input_box">
+			{{ form.community.errors }}
+			<p>Community to Post To</p>
+			{{ form.community }}
+		</div>
+		
+		<p><input type="submit" value="Done" /></p>
+	</form>
+	</div>
+	
+
+
+{% endblock %}

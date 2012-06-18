@@ -3,11 +3,13 @@ Created on Jun 12, 2012
 
 @author: zouf
 '''
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from ratings.models import Business
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from tags.models import Tag, TagRating
+import json
 import logging
 
 logger = logging.getLogger(__name__)

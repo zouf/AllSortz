@@ -20,9 +20,19 @@ urlpatterns = patterns('',
     url(r'^api/remove_tag_vote*', 'tags.vote.remove_tag_vote'),
 
     #api for voting on businesses
-    url(r'^vote*', 'ratings.vote.vote'),
-    url(r'^remove_vote*', 'ratings.vote.remove_vote'),
+    url(r'^api/vote*', 'ratings.vote.vote'),
+    url(r'^api/rm_vote*', 'ratings.vote.remove_vote'),
 
+    #api for voting on activities
+    url(r'^api/act_vote/*', 'activities.vote.vote'),
+    url(r'^api/rm_act_vote/*', 'activities.vote.remove_vote'),
+
+    
+    
+    url(r'acts/$', 'activities.views.activities'),    
+    url(r'acts/add_activity/', 'activities.views.add_activity'),    
+    url(r'^acts/(?P<act_id>\d+)/$', 'activities.views.detail_activity'),
+    
     
     url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),

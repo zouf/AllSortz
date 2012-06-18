@@ -1,5 +1,6 @@
 # Create your views here.
-from communities.models import UserMembership, Community
+
+from communities.models import Community, UserMembership
 import logging
 
 
@@ -24,3 +25,5 @@ def get_community(user):
             return get_default()
     return get_default()
         
+
+

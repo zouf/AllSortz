@@ -3,6 +3,7 @@ Created on May 8, 2012
 
 @author: zouf
 '''
+from activities.models import ActRating
 from comments.models import CommentRating
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Sum, Count
@@ -31,6 +32,11 @@ def getNumPosRatings(o):
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
+    elif t=="Activity":
+        ratingFilter = ActRating.objects.filter(activity=o,rating__range=["3", "5"])
+        ratingFilter = ratingFilter.aggregate(Count('rating'))
+        countRating = ratingFilter['rating__count']
+        return countRating
     elif t == 'Tag':
         ratingFilter = TagRating.objects.filter(tag=o, rating__range=["3", "5"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
@@ -54,6 +60,11 @@ def getNumNegRatings(o):
 #        return countRating
     elif t == 'Comment':
         ratingFilter = CommentRating.objects.filter(comment=o, rating__range=["1", "2"])
+        ratingFilter = ratingFilter.aggregate(Count('rating'))
+        countRating = ratingFilter['rating__count']
+        return countRating
+    elif t=="Activity":
+        ratingFilter = ActRating.objects.filter(activity=o,rating__range=["1", "2"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating

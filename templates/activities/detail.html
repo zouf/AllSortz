@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block body %}
+<script type="text/javascript">
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+var map;
+
+function initialize() {
+	var latlng = new google.maps.LatLng({{lat}}, {{lng}});
+    var myOptions = {
+      center: latlng,
+      zoom: 16,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("map_canvas"),
+        myOptions);
+    var marker = new google.maps.Marker({
+      position: latlng,
+      map: map,
+      title: "{{activity.name}}"
+  	});
+  	google.maps.event.trigger(map, 'resize') 
+}
+
+function calcRoute() {
+alert('here')
+	var start = "New York,NY";
+	var end  = "San Francisco,CA";
+	
+  var waypts =  [
+    {
+      location:"Joplin, MO",
+      stopover:false
+    },{
+      location:"Oklahoma City, OK",
+      stopover:true
+    }];
+  
+  var request = {
+      origin: start,
+      destination: end,
+      waypoints: waypts,
+      optimizeWaypoints: true,
+      travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+      var route = response.routes[0];
+      var summaryPanel = document.getElementById("directions_panel");
+      summaryPanel.innerHTML = "";
+      // For each route, display summary information.
+      for (var i = 0; i < route.legs.length; i++) {
+        var routeSegment = i+1;
+        summaryPanel.innerHTML += "<b>Route Segment: " + routeSegment + "</b><br />";
+        summaryPanel.innerHTML += route.legs[i].start_address + " to ";
+        summaryPanel.innerHTML += route.legs[i].end_address + "<br />";
+        summaryPanel.innerHTML += route.legs[i].distance.text + "<br /><br />";
+      }
+    }
+  });
+}
+</script>
+
+
+<style type="text/css">
+  #map_canvas { height: 50px; }
+</style>
+
+
+{% if activity %}
+	
+	<div id="busDetail" class="content">
+
+    <table>
+		<tr >
+		<td>
+    	<div id="prime_list" style="width:700px" >
+		
+			    
+    <h1>{{ activity.name }}</h1>
+	{{waypoint_form.as_p}}
+			
+		</td>
+		<td>
+		</td>
+		<td>
+			<div id="map_canvas" style="width:250px; height:250px"></div>
+		</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+			<hr/ >
+			</td>			
+		</tr>
+		<tr>
+			<td colspan="3">
+				<table>
+					<tr>
+						<td valign="top">
+							<div id="comment_list" class="ui-widget tips_feed">
+								{% include 'activities/waypoints.html' %}
+							</div>
+						</td>
+						<td valign="top">
+							<div id="tag_list" class="ui-widget tags_feed">
+								{% include 'ratings/tags.html' %}
+							</div>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		</table>
+    
+{% else %}
+    <p>Invalid activity!.</p>
+{% endif %}
+
+	
+	</div>
+	
+
+
+
+{% endblock %}
+
+
+			

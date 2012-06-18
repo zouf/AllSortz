@@ -229,6 +229,7 @@ INSTALLED_APPS = (
      'tags',
      'photos',
      'communities',
+     'activities',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
 	'django.contrib.contenttypes',

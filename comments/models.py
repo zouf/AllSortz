@@ -36,14 +36,7 @@ class Comment(models.Model):
         null=True, blank=True)
     descr = models.TextField(max_length=2000)
     
-    @property
-    def html(self):
-        temp= _CommentTemplate.render(Context({
-            'comment': self,
-            'replies': [reply.html() for reply in self.replies.all()]
-        }))
-        print(temp)
-        return temp
+
 
 
 class CommentRating(models.Model):

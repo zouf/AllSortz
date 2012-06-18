@@ -1,0 +1,22 @@
+					<h3 class="feedTitle">Points</h3>
+						<form name="addWaypoint" action="." method="post">{% csrf_token %}
+					  	
+						 <select name="business">
+						{% for b in businesses%}
+							 <option value="{{b.id}}" >{{b.name}}</option>						
+						{%endfor%}
+						</select>
+						<input id="act_id" value="{{activity.id}}" type="hidden" name="act_id" />
+						<input type="submit" value="Add"/>
+						</form>
+						<ul>
+						
+						{% for point in waypoints %}
+						<li>
+						<div class="tipListing">
+							
+				    		<p>{{point.business.name}}</p>
+					    </div>
+					    </li>
+					    </ul>
+						{%endfor%}

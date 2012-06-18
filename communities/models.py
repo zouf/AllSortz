@@ -20,6 +20,7 @@ class Community(models.Model):
         
 class UserMembership(models.Model):
     user = models.ForeignKey(User)
+    logged_in = models.BooleanField()
     community = models.ForeignKey(Community)
     date = models.DateField(auto_now=True)
 
