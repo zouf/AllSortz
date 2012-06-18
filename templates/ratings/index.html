@@ -10,14 +10,7 @@ $(function() {
 </script>
 
 {% if business_list %}
-    <div id="suggestions">
-    	<h1>For You</h1>
-    	more here
-    </div>
-	<div id="friends">
-		<h1>Your Friends</h1>
-		more here
-	</div>
+	<div id="content">
     <div id="trending">
     	<h1>Now Trending</h1>
     	{% if search_term %}
@@ -114,6 +107,15 @@ $(function() {
 		</td>
 		</tr>
 		</table>
+	</div>
+	<div id="suggestions">
+    	<h1>For You</h1>
+    	more here
+    </div>
+	<div id="friends">
+		<h1>Your Friends</h1>
+		more here
+	</div>
 	</div>
 
 {% else %}
