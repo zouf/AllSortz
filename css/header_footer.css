@@ -16,22 +16,28 @@ body
     z-index: 100;
 }
 
-#account a
-{
-    color: #7B9646;
-    text-decoration: none;
-}
-
 #header
 {
-    background-color: #7B9646;
-    border-top: 1px solid #5B7626;
-    border-bottom: 1px solid #5B7626;
+    background-color: #327BD9;
     position: absolute;
     top: 60px;
     min-width: 100%;
     height: 90px;
     z-index: 500;
+}
+
+#icon
+{
+    background-color: #327BD9;
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    margin-left: -610px;
+    -moz-border-radius: 75px;
+    border-radius: 75px;
+    z-index: 400;
 }
 
 /* Dropdown bar */
@@ -61,7 +67,7 @@ body
     display: block;
     padding: 5px 20px;
     color: #FFFFFF;
-    background-color: #5B7626;
+    background-color: #71A7EC;
     font-family: 'Helvetica';
     font-size: 20px;
     min-width: 75px;
@@ -72,14 +78,14 @@ body
 #dropdown a:hover
 {
     color: #FFFFFF;
-    background-color: #3B5606;
+    background-color: #5187CC;
     text-decoration: none;
 }
 
 #dropdown li:hover a
 {
     color: #FFFFFF;
-    background-color: #3B5606;
+    background-color: #5187CC;
     text-decoration: none;
 }
 
