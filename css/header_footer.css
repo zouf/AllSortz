@@ -6,7 +6,7 @@ body
 #account
 {
     position: absolute;
-    top: 40px;
+    top: 30px;
     left: 50%;
     width: 980px;
     height: 50px;
@@ -16,36 +16,40 @@ body
     z-index: 100;
 }
 
-#account a
-{
-    color: #7B9646;
-    text-decoration: none;
-}
-
 #header
 {
-    background-color: #7B9646;
-    border-top: 1px solid #5B7626;
-    border-bottom: 1px solid #5B7626;
+    background-color: #327BD9;
     position: absolute;
-    top: 70px;
-    left: 0px;
-    width: 100%;
+    top: 60px;
+    min-width: 100%;
     height: 90px;
     z-index: 500;
+}
+
+#icon
+{
+    background-color: #327BD9;
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    margin-left: -610px;
+    -moz-border-radius: 75px;
+    border-radius: 75px;
+    z-index: 400;
 }
 
 /* Dropdown bar */
 #dropdown
 {
     list-style: none;
-    display: block;
-    position: relative;
     width: 700px;
+    position: relative;
     top: 0px;
     left: 50%;
-    margin-left: -125px;
     padding: 0px;
+    margin-left: 55px;
     z-index:1000;
 }
 
@@ -63,7 +67,7 @@ body
     display: block;
     padding: 5px 20px;
     color: #FFFFFF;
-    background-color: #5B7626;
+    background-color: #71A7EC;
     font-family: 'Helvetica';
     font-size: 20px;
     min-width: 75px;
@@ -74,14 +78,14 @@ body
 #dropdown a:hover
 {
     color: #FFFFFF;
-    background-color: #3B5606;
+    background-color: #5187CC;
     text-decoration: none;
 }
 
 #dropdown li:hover a
 {
     color: #FFFFFF;
-    background-color: #3B5606;
+    background-color: #5187CC;
     text-decoration: none;
 }
 
@@ -98,7 +102,12 @@ body
     width: 100%;
     padding-top: 10px;
     border: 1px solid #000000;
-    border-top: 0px;
+    border-top: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
     overflow: hidden;
 }
 
@@ -134,10 +143,20 @@ body
 #search
 {
     text-align: right;
-    width: 490px;
+    width: 500px;
     height: 30px;
     position: relative;
     top: 5px;
     left: 50%;
+    margin-left: 50px;
     z-index: 1100;
+}
+
+#footer
+{
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    height: 30px;
+    font-size: 16px;
 }

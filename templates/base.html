@@ -19,7 +19,7 @@
 
 
 <head>
-<title>AllSorts!</title>
+<title>AllSortz!</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     {% block head %}{% endblock %}
 </head>
@@ -39,38 +39,41 @@
 		</div>
 	{% endif %}
 	
+	<div id="icon"></div>
 	<div id="header">
+		<div style="position:absolute;top:-10px;left:50%;margin-left:-570px;">
+			<a class="title">AllSortz </a> All sorts of places for all sorts of people.
+		</div>
 		<div id="search">
-			<form method="get" action="/ratings/search_tags/">{% csrf_token %}
-					<table>
-						<tr>
+				<form method="get" action="/ratings/search_tags/">{% csrf_token %}
+						<table>
+							<tr>
 							<td>
-								
 								{% if search_term %}
 									 <input type="search" class="ui-widget" name="search" placeholder="{{search_term}}" />
 								{%else%}
 									<input type="search" class="ui-widget" name="search" placeholder="Find tag" />
 								{%endif%}
-
-					       </td><td>
-					       	 	<span>near  sdsds</span>
-					       	</td><td>
-					       		{% if location_term %}
-					       			
+							</td>
+							<td>
+					       	 	<span>near</span>
+							</td>
+							<td>
+						       	{% if location_term %}
 					       			 <input type="search" class="ui-widget" name="location" placeholder="{{location_term}}" />
-					       	    {%else%}
-					       		
-							       {%if community %}
-							       <input type="search" class="ui-widget" name="location" placeholder="{{community.name}}" />
-							       {%else%}
-							       <input type="search" class="ui-widget" name="location" placeholder="location" />
-							       {%endif%}
-							     {%endif%}
+								{%else%}
+									{%if community %}
+										<input type="search" class="ui-widget" name="location" placeholder="{{community.name}}" />
+										{%else%}
+										<input type="search" class="ui-widget" name="location" placeholder="location" />
+									{%endif%}
+								{%endif%}
 							     
-					       </td><td>
-					       
+					       </td>
+					       <td>
 					       	  <input type="submit" value="Find it!" />
-					       </td></tr>
+					       </td>
+					       </tr>
 			      </table>
 			</form>
 		</div>
@@ -104,11 +107,58 @@
 
 
 	<div id="main">
-    {% block body %}{% endblock %}
+    	{% block body %}{% endblock %}
+    	
+    	<div id="browse">
+    		<h1>Browse Tags</h1>
+    		<table id="tags">
+    			<tr>
+    				<td><a href="/">tags here</a></td>
+    				<td><a href="/">more tags</a></td>
+    				<td><a href="/">tags tags</a></td>
+    				<td><a href="/">even more</a></td>
+    				<td><a href="/">many tags</a></td>
+    			</tr>
+    			<tr>
+    				<td><a href="/">tags here</a></td>
+    				<td><a href="/">more tags</a></td>
+    				<td><a href="/">tags tags</a></td>
+    				<td><a href="/">even more</a></td>
+    				<td><a href="/">many tags</a></td>
+    			</tr>
+    			<tr>
+    				<td><a href="/">tags here</a></td>
+    				<td><a href="/">more tags</a></td>
+    				<td><a href="/">tags tags</a></td>
+    				<td><a href="/">even more</a></td>
+    				<td><a href="/">many tags</a></td>
+    			</tr>
+    			<tr>
+    				<td><a href="/">tags here</a></td>
+    				<td><a href="/">more tags</a></td>
+    				<td><a href="/">tags tags</a></td>
+    				<td><a href="/">even more</a></td>
+    				<td><a href="/">many tags</a></td>
+    			</tr>
+    			<tr>
+    				<td><a href="/">tags here</a></td>
+    				<td><a href="/">more tags</a></td>
+    				<td><a href="/">tags tags</a></td>
+    				<td><a href="/">even more</a></td>
+    				<td><a href="/">many tags</a></td>
+    			</tr>
+    		</table>
+    		<p align="right"><a href="/">and more...</a></p>
+    	</div>
+    	
+    	<div id="footer">
+    		All Rights Reserved, AllSortz, Inc. |
+    		<a href="/">Home</a> |
+    		<a href="/">About</a> |
+    		<a href="/">Contact</a> |
+    		<a href="/">Help</a>
+    	</div>
 	</div>
-	<footer>
-		<p> All Rights Reserved, AllSortz, Inc. </p>
-	</footer>
 
 </body>
 

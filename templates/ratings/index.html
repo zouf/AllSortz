@@ -10,7 +10,9 @@ $(function() {
 </script>
 
 {% if business_list %}
-    <div id="businessList" class="content">
+	<div id="content">
+    <div id="trending">
+    	<h1>Now Trending</h1>
     	{% if search_term %}
 			<h2 class="search_term">{{search_term}}</h2>
 			{%if location_term %}
@@ -20,7 +22,7 @@ $(function() {
 	<table>
 		<tr>
 		<td>
-    	<div id="prime_list" style="float:left; width:700px" >
+    	<div id="prime_list" style="float:left; width:300px" >
 		
 		    {% for bus in business_list.object_list %}
 		    	<div class="busListing">
@@ -76,12 +78,6 @@ $(function() {
 								</td>
 							</tr>						
 						</table>
-						
-					
-						
-					 
-					  
-					      
 					 </td>
 					</tr>
 				  </table>
@@ -105,12 +101,21 @@ $(function() {
 		</div>
 		</td>
 		<td>
-		<div id="side_bar" style="float:left; width:300px">
+		<div id="side_bar" style="float:left; width:200px">
 			<button id="submitBus">List a business</button>
 		</div>
 		</td>
 		</tr>
 		</table>
+	</div>
+	<div id="suggestions">
+    	<h1>For You</h1>
+    	more here
+    </div>
+	<div id="friends">
+		<h1>Your Friends</h1>
+		more here
+	</div>
 	</div>
 
 {% else %}
