@@ -6,17 +6,6 @@
 							 <option value="{{b.id}}" >{{b.name}}</option>						
 						{%endfor%}
 						</select>
-						<input id="act_id" value="{{activity.id}}" type="hidden" name="act_id" />
-						<input type="submit" value="Add"/>
+						<input type="submit" value="add" />
 						</form>
-						<ul>
-						
-						{% for point in waypoints %}
-						<li>
-						<div class="tipListing">
-							
-				    		<p>{{point.business.name}}</p>
-					    </div>
-					    </li>
-					    </ul>
-						{%endfor%}
+ 						{% include 'ratings/buslist.html' %}

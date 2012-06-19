@@ -2,65 +2,118 @@
 
 {% block body %}
 <script type="text/javascript">
-var directionsDisplay;
+var rendererOptions = {
+  draggable: true,
+  suppressMarkers: true
+};
+
+
+var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);;
 var directionsService = new google.maps.DirectionsService();
 var map;
+var base = new google.maps.LatLng({{baselat}}, {{baselng}});
+	
 
 function initialize() {
-	var latlng = new google.maps.LatLng({{lat}}, {{lng}});
-    var myOptions = {
-      center: latlng,
-      zoom: 16,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    var map = new google.maps.Map(document.getElementById("map_canvas"),
-        myOptions);
-    var marker = new google.maps.Marker({
-      position: latlng,
-      map: map,
-      title: "{{activity.name}}"
-  	});
-  	google.maps.event.trigger(map, 'resize') 
+
+  var myOptions = {
+    zoom: 7,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    center: base
+  };
+  map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+  directionsDisplay.setMap(map);
+  directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+
+
+
+  	var waypts = [
+  	{% for b in business_list %}
+  		{
+  			location: "{{b.name}} {{b.address}} {{b.city}}, {{b.state}}",
+  			stopover:true
+        },
+  	{% endfor %}
+  	]
+  	calcRoute(waypts)
+  	
 }
 
-function calcRoute() {
-alert('here')
+ // Start/Finish icons
+ var icons = {
+  start: new google.maps.MarkerImage(
+   // URL
+   'https://www.resiprocate.org/images/8/81/Symbol-warning-small.png',
+   // (width,height)
+   new google.maps.Size( 44, 32 ),
+   // The origin point (x,y)
+   new google.maps.Point( 0, 0 ),
+   // The anchor point (x,y)
+   new google.maps.Point( 22, 32 )
+  ),
+  end: new google.maps.MarkerImage(
+   // URL
+   'https://www.resiprocate.org/images/8/81/Symbol-warning-small.png',
+   // (width,height)
+   new google.maps.Size( 44, 32 ),
+   // The origin point (x,y)
+   new google.maps.Point( 0, 0 ),
+   // The anchor point (x,y)
+   new google.maps.Point( 22, 32 )
+  )
+ };
+
+function calcRoute(waypts) {
 	var start = "New York,NY";
 	var end  = "San Francisco,CA";
 	
-  var waypts =  [
-    {
-      location:"Joplin, MO",
-      stopover:false
-    },{
-      location:"Oklahoma City, OK",
-      stopover:true
-    }];
-  
-  var request = {
-      origin: start,
-      destination: end,
-      waypoints: waypts,
-      optimizeWaypoints: true,
-      travelMode: google.maps.TravelMode.DRIVING
+  	var request = {
+    origin: "Princeton, NJ",
+    destination: "Princeton, NJ",
+    waypoints:waypts,
+    travelMode: google.maps.TravelMode.DRIVING
   };
   directionsService.route(request, function(response, status) {
     if (status == google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(response);
-      var route = response.routes[0];
+
+		var route = response.routes[0];
+		
+	  var i = 0;
+	  {% for b in business_list %}
+		 var leg = route.legs[ i ];
+	     makeMarker( leg.start_location, icons.start, "{{b.name}}" );
+		 makeMarker( leg.end_location, icons.end, "{{b.name}}" );
+		 i++
+	  {% endfor %}
       var summaryPanel = document.getElementById("directions_panel");
       summaryPanel.innerHTML = "";
       // For each route, display summary information.
-      for (var i = 0; i < route.legs.length; i++) {
+      i = 0;
+	  {% for b in business_list %}
         var routeSegment = i+1;
         summaryPanel.innerHTML += "<b>Route Segment: " + routeSegment + "</b><br />";
-        summaryPanel.innerHTML += route.legs[i].start_address + " to ";
-        summaryPanel.innerHTML += route.legs[i].end_address + "<br />";
-        summaryPanel.innerHTML += route.legs[i].distance.text + "<br /><br />";
-      }
+        summaryPanel.innerHTML += "{{b.name}}" + "   <br /> ";
+
+       	i++
+      {% endfor %}
+
     }
   });
+
+	  
+  	
 }
+
+	  function makeMarker( position, icon, title ) {
+	 new google.maps.Marker({
+	  position: position,
+	  map: map,
+	  title: title,
+	  icon: icon
+	 });
+	 }
+
 </script>
 
 
@@ -80,13 +133,20 @@ alert('here')
 		
 			    
     <h1>{{ activity.name }}</h1>
-	{{waypoint_form.as_p}}
+	 
+	 
+	<p>{{activity.descr}}</p>
+	<p>{{activity.start}}</p> 
+	<p>{{activity.end}}</p>
 			
 		</td>
 		<td>
+		
 		</td>
 		<td>
 			<div id="map_canvas" style="width:250px; height:250px"></div>
+			<div id="directions_panel" style="margin:20px;background-color:#FFEE77;"></div>
+</div>
 		</td>
 		</tr>
 		<tr>

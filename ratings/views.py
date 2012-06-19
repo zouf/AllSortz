@@ -130,6 +130,15 @@ def add_business(request):
 
 
 
+def paginate_businesses(business_list,page, num):
+    paginator = Paginator(business_list, num)  # Show 25 contacts per page
+    try:
+        business_list = paginator.page(page)
+    except (PageNotAnInteger, TypeError):
+        business_list = paginator.page(1)
+    except EmptyPage:
+        business_list = paginator.page(paginator.num_pages)
+    return business_list
 
 def index(request):
     
@@ -144,14 +153,8 @@ def index(request):
         businesses = Business.objects.all()
     
     business_list = get_bus_data(businesses,request.user)
-    paginator = Paginator(business_list, 10)  # Show 25 contacts per page
-    page = request.GET.get('page')
-    try:
-        business_list = paginator.page(page)
-    except (PageNotAnInteger, TypeError):
-        business_list = paginator.page(1)
-    except EmptyPage:
-        business_list = paginator.page(paginator.num_pages)
+    business_list = paginate_businesses(business_list,request.GET.get('page'),1)
+
     return render_to_response('ratings/index.html', {'business_list': business_list, 'community':community}, context_instance=RequestContext(request))
 
 

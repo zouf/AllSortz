@@ -10,8 +10,8 @@ from photos.models import BusinessPhoto
 from ratings.forms import BusinessForm
 from ratings.models import Business
 from ratings.populate import create_business
-from ratings.utility import get_bus_data
-from ratings.views import detail_keywords
+from ratings.utility import get_bus_data, get_avg_latlng
+from ratings.views import detail_keywords, paginate_businesses
 import activities
 import logging
 
@@ -66,17 +66,15 @@ def detail_activity(request, act_id):
     if request.method == 'POST':  # add a business
         form = ActivityWaypointForm(request.POST, request.FILES)
         business = Business.objects.get(id=form.data['business'])
-        
-        print(activity)
-        print(business)
         aw = add_to_activity(activity,business)
         aw.save()
     waypoints = ActivityWaypoint.objects.filter(activity=activity)
-    businesses = Business.objects.all()
+    business_list = get_bus_data(Business.objects.all(),request.user)
+    business_list = paginate_businesses(business_list,request.GET.get('page'),5)
     waypoint_form = ActivityWaypointForm()
-    return render_to_response('activities/detail.html', {'waypoint_form': waypoint_form, 'waypoints':waypoints, 'activity': activity,'businesses':businesses}, context_instance=RequestContext(request))
-
-
+    latlng = get_avg_latlng(business_list)   
+    
+    return render_to_response('activities/detail.html', {'businesses':Business.objects.all(), 'waypoint_form': waypoint_form, 'waypoints':waypoints, 'activity': activity,'business_list':business_list, 'baselat':latlng[0], 'baselng':latlng[1]}, context_instance=RequestContext(request))
 
 
 
@@ -93,7 +91,6 @@ def activities(request):
         businesses = Business.objects.all()
     
     activities = get_activites(community)
-    print(activities)
     paginator = Paginator(activities, 10)  # Show 25 contacts per page
     page = request.GET.get('page')
     try:

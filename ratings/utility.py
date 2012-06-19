@@ -24,6 +24,19 @@ def get_bus_data(business_list,user):
         b.average_rating = round(getBusAvg(b.id) * 2) / 2
         b.photourl = get_photo_thumb_url(b)
         b.num_ratings = getNumRatings(b.id)
+           
+        latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+        try:
+            b.photourl = get_photo_web_url(b)
+        except:
+            b.photourl= "" #NONE
+
+        if latlng:
+            b.lat=latlng[0]
+            b.lon = latlng[1]
+        else:
+            b.lat = 0
+            b.lon = 0
         if user.is_authenticated():
             b.pos_ratings = getNumPosRatings(b)
             b.neg_ratings = getNumNegRatings(b)
@@ -44,6 +57,17 @@ def get_bus_data(business_list,user):
 def getNumRatings(business):
     ratset = Rating.objects.filter(business=business)
     return ratset.count()
+
+
+#returns the average latitude and longitude
+def get_avg_latlng(business_list):
+    latsum = 0
+    lonsum = 0
+        
+    for b in business_list:
+        latsum += float(b.lat)
+        lonsum += float(b.lon)
+    return [latsum / len(business_list),lonsum / len(business_list) ]    
 
 
 

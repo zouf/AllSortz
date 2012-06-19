@@ -17,7 +17,6 @@ def get_photo_web_url(b):
     qset  = BusinessPhoto.objects.filter(business=b)
     if qset.count() < 1:
         return False
-    print qset
     ph = qset[0].image
     return ph.url
 
@@ -27,6 +26,5 @@ def get_photo_large_url(b):
     qset  = BusinessPhoto.objects.filter(business=b)
     if qset.count() < 1:
         return False
-    print qset
     ph = qset[0].image_large
     return ph.url

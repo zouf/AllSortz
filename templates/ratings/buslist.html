@@ -1,0 +1,76 @@
+    		<input type="hidden" value="business" id="vote_on" />
+
+		    {% for bus in business_list.object_list %}
+		    	<div class="busListing">
+		    	<table>
+		    	<tr>
+					<td style="width:40px;">
+							<div id="answer_{{bus.id}}" class="answer">
+						{% if bus.this_rat > 0 %}
+							{% if bus.this_rat > 2 %}
+								<div class="vote up">
+								<span id="vote_pos_{{bus.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
+								</div>
+								<div class="vote down">
+								<span id="vote_neg_{{bus.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+								</div>
+								
+							{% else %}
+								<div class="vote up">
+								<span id="vote_pos_{{bus.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
+								</div>
+								<div class="vote down">
+								<span id="vote_neg_{{bus.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
+								</div>
+							{%endif%}
+						{%else%}
+								<div class="vote up">
+								<span id="vote_pos_{{bus.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
+								</div>
+								<div class="vote down">
+								<span id="vote_neg_{{bus.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+								</div>
+						{% endif %}
+							
+	
+						  <table>
+						  <tr>
+						  <td><div id="pos_rating_{{bus.id}}" class="pos_rating">{{bus.pos_ratings}}</div></td>
+						  <td><div id="neg_rating_{{bus.id}}" class="neg_rating">{{bus.neg_ratings}}</div></td>
+						  </tr>
+						  </table>
+					</div>
+					</td>
+					<td>		
+						<table>
+							<tr>
+								<td>
+									 <div class="businessPhoto"><a href="/ratings/{{ bus.id }}/" > <img src="{{bus.photourl}}"  /> </a></div>
+								</td>
+								<td>
+									<div class="business_name"><a class="business_name" href="/ratings/{{ bus.id }}/" class="blocklink"> {{bus.name }} </a></div> 
+					   				<div class="location_name"> {{bus.city}}, {{bus.state}}</div>
+					   				<em> {{community.name}} </em>
+								</td>
+							</tr>						
+						</table>
+					 </td>
+					</tr>
+				  </table>
+				    </div>
+		       <hr>
+		    {% endfor %}
+				
+				    <span class="step-links">
+					    {% if business_list.has_previous %}
+					        <a href="?page={{ business_list.previous_page_number }}">previous</a>
+					    {% endif %}
+					
+					    <span class="current">
+					        Page {{ business_list.number }} of {{ business_list.paginator.num_pages }}.
+					    </span>
+					
+					    {% if business_list.has_next %}
+					        <a href="?page={{ business_list.next_page_number }}">next</a>
+					    {% endif %}
+					</span>
