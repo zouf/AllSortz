@@ -48,6 +48,8 @@ urlpatterns = patterns('',
     url(r'^logout/$', logout_page),
 	url(r'^accounts/', include('registration.urls')),
 
+    (r'^mywiki/', include('wiki.urls')),
+ 
 
 
 )
