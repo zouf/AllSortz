@@ -14,9 +14,14 @@
 
 
 <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAefqg5thWNg8s8YTq0CWRdQD7jt1VEruM&sensor=false">
- </script>
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAefqg5thWNg8s8YTq0CWRdQD7jt1VEruM&sensor=false"></script>
 
+
+<script type="text/javascript">
+	$(function() {
+		$( "input:submit").button();
+	});
+</script>
 
 <head>
 <title>AllSortz!</title>
@@ -24,6 +29,7 @@
     {% block head %}{% endblock %}
 </head>
 <body onload="initialize()">
+
 	{% if not user.is_authenticated %}
 
 	<div id="account">
@@ -80,25 +86,18 @@
 			</form>
 		</div>
 		<ul id="dropdown">
-			<li><a href="#">Top In</a>
+			<li><a href="#">Your Sorts</a>
 				<ul id="dropdown-list1">
 					<li><a href="/">one</a></li>
 					<li><a href="/">two</a></li>
 					<li><a href="/">three</a></li>
 				</ul>
 			</li>
-			<li><a href="#">Category</a>
+			<li><a href="#">Top Sorts</a>
 				<ul id="dropdown-list2">
 					<li><a href="/">four</a></li>
 					<li><a href="/">five</a></li>
 					<li><a href="/">eight million and a half</a></li>
-				</ul>
-			</li>
-			<li><a href="#">Add</a>
-				<ul id="dropdown-list1">
-					<li><a href="/">test</a></li>
-					<li><a href="/">test</a></li>
-					<li><a href="/">test</a></li>
 				</ul>
 			</li>
 		</ul>

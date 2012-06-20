@@ -9,9 +9,9 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     #api for comments
-    url(r'^api/add_comment/$', 'comments.views.add_comment'),
-    url(r'^api/comment_vote/$', 'comments.vote.comment_vote'),
-    url(r'^api/remove_comment_vote*', 'comments.vote.remove_comment_vote'),
+    url(r'^api/add_comment/$', 'ratings.views.add_comment'),
+    url(r'^api/comment_vote/$', 'ratings.vote.comment_vote'),
+    url(r'^api/remove_comment_vote*', 'ratings.vote.remove_comment_vote'),
     
     #api for tags
     url(r'^api/add_tag/$', 'tags.views.add_tag'),
@@ -28,6 +28,8 @@ urlpatterns = patterns('',
     url(r'^api/rm_act_vote/*', 'activities.vote.remove_vote'),
 
     
+    
+    url(r'^ratings/(?P<bus_id>\d+)/edit/(?P<page_id>\d+)/$','ratings.views.edit_tag_discussion'),
     
     url(r'acts/$', 'activities.views.activities'),    
     url(r'acts/add_activity/', 'activities.views.add_activity'),    
@@ -47,8 +49,12 @@ urlpatterns = patterns('',
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', logout_page),
 	url(r'^accounts/', include('registration.urls')),
+    url(r'^comments/add_comment/(?P<bus_id>\d+)/$','ratings.views.add_comment_form'),
 
+    
     (r'^mywiki/', include('wiki.urls')),
+    
+    
  
 
 
