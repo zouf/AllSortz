@@ -4,11 +4,10 @@ Created on May 8, 2012
 @author: zouf
 '''
 from activities.models import ActRating
-from comments.models import CommentRating
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Sum, Count
 from numpy.ma.core import std
-from ratings.models import Rating, Business
+from ratings.models import Rating, Business, CommentRating
 from tags.models import TagRating
 import math
 

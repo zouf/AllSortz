@@ -3,7 +3,6 @@ Created on Jun 4, 2012
 
 @author: zouf
 '''
-from comments.models import Comment
 from communities.models import Community
 from haystack import indexes
 

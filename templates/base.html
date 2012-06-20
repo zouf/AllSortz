@@ -40,13 +40,13 @@
 
 	{% if user.is_authenticated %}
 		<div id="account">
-		<p style="display:inline"> Welcome, {{ user }} </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
+		<p style="display:inline"> <a href="/user_details/"> {{user}}</a> </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
 		| <a href="/ratings/top_ten/"> Top </a>
 		</div>
 	{% endif %}
 	
 	<div id="icon">
-		<img src="/css/images/logo.png" width="420" height="140">
+		<a href="/" ><img src="{{STATIC_URL}}css/images/logo.png" width="420" height="140"></a>
 	</div>
 	<div id="header">
 		<div style="position:absolute;top:80%;left:50%;margin-left:-175px;">

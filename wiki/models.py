@@ -1,6 +1,6 @@
 from django.db import models
-
 from templatetags.wiki import wikify
+
 
 
 class Page(models.Model):
@@ -17,3 +17,4 @@ class Page(models.Model):
     def save(self, *args, **kwargs):
         self.rendered = wikify(self.content)
         super(Page, self).save(*args, **kwargs)
+

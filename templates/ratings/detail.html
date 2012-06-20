@@ -104,13 +104,27 @@ alert('here')
 				<table>
 					<tr>
 						<td valign="top">
-							<div id="comment_list" class="ui-widget tips_feed">
-								{% include 'comments/thread.html' %}
+							<div id="discussion_list" class="ui-widget tips_feed">
+
+								{%if form %}
+									{% include 'ratings/discussion/wikiedit.html' %}
+								{% else %}
+									{% include 'ratings/discussion/wikipages.html' %}
+								{% endif %}
+								
 							</div>
 						</td>
+						<!--<td valign="top">
+							<div id="comment_list" class="ui-widget tags_feed">
+							<a href="/comments/add_comment/{{ business.id }}/"> Add Comment </a>
+								{% include 'comments/thread.html' %}
+							</div>
+						</td>-->
 						<td valign="top">
 							<div id="tag_list" class="ui-widget tags_feed">
+								{% if tags %}
 								{% include 'ratings/tags.html' %}
+								{% endif %}
 							</div>
 						</td>
 					</tr>

@@ -227,7 +227,7 @@ INSTALLED_APPS = (
 	 'celery',
      'djcelery',
      'storages',
-     'comments',
+
      'tags',
      'photos',
      'communities',
