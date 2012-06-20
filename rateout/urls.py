@@ -27,7 +27,8 @@ urlpatterns = patterns('',
     url(r'^api/act_vote/*', 'activities.vote.vote'),
     url(r'^api/rm_act_vote/*', 'activities.vote.remove_vote'),
 
-    
+    #favicon
+    url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/css/images/favicon.ico'}),
     
     url(r'^ratings/(?P<bus_id>\d+)/edit/(?P<page_id>\d+)/$','ratings.views.edit_tag_discussion'),
     
