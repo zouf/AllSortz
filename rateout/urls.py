@@ -27,7 +27,8 @@ urlpatterns = patterns('',
     url(r'^api/act_vote/*', 'activities.vote.vote'),
     url(r'^api/rm_act_vote/*', 'activities.vote.remove_vote'),
 
-    
+    #favicon
+    url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/css/images/favicon.ico'}),
     
     url(r'acts/$', 'activities.views.activities'),    
     url(r'acts/add_activity/', 'activities.views.add_activity'),    
