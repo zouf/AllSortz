@@ -16,13 +16,19 @@ body
 
 a:link
 {
-    color: #2366BC;
+    color: #4C60BE;
     text-decoration: none;
+}
+
+a:hover
+{
+    color: #90A2F8;
+    text-decoration: underline;
 }
 
 a:visited
 {
-    color: #2366BC;
+    color: #4C60BE;
 }
 
 h1
@@ -32,17 +38,6 @@ h1
     font-style: italic;
     font-weight: normal;
     font-size: 32px;
-    text-align: left;
-    margin: 0px;
-}
-
-.title
-{
-    color: #000000;
-    font-family: 'Garamond';
-    font-style: italic;
-    font-weight: normal;
-    font-size: 100px;
     text-align: left;
     margin: 0px;
 }
@@ -65,7 +60,7 @@ li
     width: 1000px;
     min-height: 100%;
     margin-left: -500px;
-    padding-top: 175px;
+    padding-top: 190px;
     padding-bottom: 400px;
     background-color: #D8ECFF;
     border-left: 1px solid #000000;
@@ -88,17 +83,24 @@ li
     height: 900px;
 }
 
+.section
+{
+    border: 1px solid #000000;
+    padding: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    -moz-box-shadow: 0px 0px 4px #83B6F7;
+    -webkit-box-shadow: 0px 0px 4px #83B6F7;
+    box-shadow: 0px 0px 4px #83B6F7;
+}
+
 #trending
 {
     float: left;
     width: 580px;
     height: 300px;
-    border: 1px solid #000000;
-    padding: 10px;
     margin-left: 12px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    background-color: #FFFFFF;
 }
 
 #friends
@@ -106,13 +108,8 @@ li
     float: left;
     width: 580px;
     height: 480px;
-    border: 1px solid #000000;
-    padding: 10px;
     margin-left: 12px;
     margin-top: 20px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    background-color: #FFFFFF;
 }
 
 #suggestions
@@ -120,12 +117,7 @@ li
     float: right;
     width: 330px;
     height: 820px;
-    border: 1px solid #000000;
-    padding: 10px;
     margin-right: 12px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    background-color: #FFFFFF;
 }
 
 /* Tag list */
@@ -244,15 +236,3 @@ div.vote
     line-height: 0;
     clear: both;
 }
-
-a:link
-{
-    color: #000000;
-}
-
-a:visited
-{
-    color: #000000;
-}
-
-
