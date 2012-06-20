@@ -1,7 +1,7 @@
 #!/bin/bash
 
 KEY_LOC=`pwd`/../keys/zoufkey.pem
-DEPLOY_SERVER=ubuntu@ec2-50-17-101-100.compute-1.amazonaws.com
+DEPLOY_SERVER=ubuntu@ec2-184-72-252-26.compute-1.amazonaws.com
 
 CMD="cd ~/deploy"
 CMD=$CMD" && git pull"
