@@ -1,7 +1,7 @@
 <h1>Comments</h3>
 	<form name="addTagComment" action="." method="post">
   		<input id="id_comment" placeholder="Add a comment" class="comment_input_box" type="text"  name="comment" maxlength="150" onfocus="this.value='';"  />
-		<input type="submit" class="ui-widget" value="Post"></p>
+		<input type="submit" class="ui-widget  buttonme" value="Post"></p>
 		<input id="bid" value="{{business.id}}" type="hidden" name="bid" />
 	</form>
 		<ul>
@@ -62,7 +62,7 @@
 							<li>{{comment.descr}}</li>
 							<form action="." name="addReply" class="comment" id="comment_form_{{comment.pk}}" method="post">
 								<input type="text" name="comment" id="comment_{{comment.pk}}" placeholder="Reply"/>
-								<input type="submit" class="ui-widget" value="Reply"></p>
+								<input type="submit" class="ui-widget buttonme" value="Reply"></p>
 								<input type="hidden" name="cid" id="comment_{{comment.pk}}" value="{{comment.pk}}"/> 
 								<input id="bid" value="{{comment.business.id}}" type="hidden" name="bid" />
 							</form>
