@@ -49,7 +49,7 @@ $(function() {
 });
 
 $(document).ready(function(){
-
+	$("#addTagDiv").hide();
 
   $("#tag").autocomplete({
     source: "/api/get_tags/",
@@ -71,9 +71,9 @@ $(document).ready(function(){
 
 
 $(document).ready(function(){
-$("form[name=addTag]").live("submit", function(e){
-	e.preventDefault();
-	var form = $("form[name=addTag]")
+$("form[name=addTagTB]").live("submit", function(e){
+	//e.preventDefault();
+	var form = $("form[name=addTagTB]")
 	var serial = form.serialize()
     
 	$.ajax({ 
@@ -81,7 +81,27 @@ $("form[name=addTag]").live("submit", function(e){
          type  : form.attr('method'),
          data  : serial, // data to be submitted
          success: function(data){
-         	document.getElementById("tag_list").innerHTML = data         
+         	document.getElementById("tag_list").innerHTML = data
+         	 $("#addTagDiv").hide();
+         	$("#addTagButton").button();
+         }
+    });
+    return false;
+ });
+
+$("form[name=addTagDD]").live("submit", function(e){
+//	e.preventDefault();
+	var form = $("form[name=addTagDD]")
+	var serial = form.serialize()
+    
+	$.ajax({ 
+         url   : '/api/add_tag/',
+         type  : form.attr('method'),
+         data  : serial, // data to be submitted
+         success: function(data){
+         	document.getElementById("tag_list").innerHTML = data   
+         	 $("#addTagDiv").hide();
+         	$("#addTagButton").button();
          }
     });
     return false;
@@ -89,10 +109,17 @@ $("form[name=addTag]").live("submit", function(e){
 });
 
 
+function showAddTag()
+{
+	$("#addTagDiv").toggle();
+
+}
+
+
 $(document).ready(function(){
-	$("form[name=addUserTag]").live("submit", function(e){
-		e.preventDefault();
-		var form = $("form[name=addUserTag]")
+	$("form[name=addUserTagDD]").live("submit", function(e){
+	//	e.preventDefault();
+		var form = $("form[name=addUserTagDD]")
 		var serial = form.serialize()
 	    
 		$.ajax({ 
@@ -100,7 +127,26 @@ $(document).ready(function(){
 	         type  : form.attr('method'),
 	         data  : serial, // data to be submitted
 	         success: function(data){
-	         	document.getElementById("tag_list").innerHTML = data         
+	        	 document.getElementById("tag_list").innerHTML = data      
+	        	 $("#addTagDiv").hide();
+	        	 $("#addTagButton").button();
+	         }
+	    });
+	    return false;
+	 });
+	$("form[name=addUserTagTB]").live("submit", function(e){
+	//	e.preventDefault();
+		var form = $("form[name=addUserTagTB]")
+		var serial = form.serialize()
+	    
+		$.ajax({ 
+	         url   : '/api/add_user_tag/',
+	         type  : form.attr('method'),
+	         data  : serial, // data to be submitted
+	         success: function(data){
+	         	$("#tag_list").html( data)
+	         	 $("#addTagDiv").hide();
+	         	$("#addTagButton").button();
 	         }
 	    });
 	    return false;

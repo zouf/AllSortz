@@ -31,7 +31,14 @@ $(function() {
 	</div>
 		<div id="suggestions" class="section">
     	
-    	<a href="#" >Subscribe to {{search_term}}</a>
+    	{% if subscribed %}
+    		<p> You're subscribed to {{search_term}} </p>
+    	{%else%}
+    		<form name="addUserTag" action="." method="post">{% csrf_token %}
+    				<input type="hidden" name="tag" value="{{search_term}}" />
+					<input type="submit" value="Subscribe to {{search_term}}"/>
+			</form>
+		{%endif%}
     </div>
 	
 

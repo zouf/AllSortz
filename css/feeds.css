@@ -9,12 +9,25 @@
 
 .tags_feed
 {
-    width: 150px;
-    margin-left: 250px;
+    width: 800px;
+    margin-left: 50px;
+    margin-bottom:100px;
     vertical-align: top;
-    text-align: right;
+    text-align: left;
 
 }
+
+
+.comments_feed
+{
+    width: 250px;
+    margin-left: 0px;
+    margin-bottom:100px;
+    vertical-align: top;
+    text-align: left;
+
+}
+
 
 .feedTitle
 {

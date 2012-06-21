@@ -67,6 +67,47 @@ $("form[name=addComment]").live("submit", function(e){
 });
 
 
+$(document).ready(function(){
+	$("form[name=addTagComment]").live("submit", function(e){
+		e.preventDefault();
+		var form = $("form[name=addTagComment]")
+		var serial = form.serialize()
+	    $.ajax({ 
+	         url   : '/api/add_tag_comment/',
+	         type  : form.attr('method'),
+	         data  : serial, // data to be submitted
+	         success: function(data){
+	         	var elem = document.getElementById("comment_list")
+	         	elem.innerHTML = data
+	         }
+	    });
+	    return false;
+	 });
+	});
+
+
+
+$(document).ready(function(){
+	$("form[name=addTagReply]").live("submit", function(e){
+		e.preventDefault();
+		var id = $(this).parents('div.comment').attr('id').split('_')[1];
+		var form = $("form[id=comment_form_"+id+"]")
+		
+		
+		$.ajax({
+			url   : '/api/add_tag_comment/',
+	         type  : form.attr('method'),
+	         data  : form.serialize(), // data to be submitted
+	         success: function(data){
+	         	document.getElementById("comment_list").innerHTML = data         
+	         }
+	     });
+		
+		
+	    return false;
+	 });
+	});
+
 
 
 $(document).ready(function(){

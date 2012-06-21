@@ -100,11 +100,11 @@ body
     background-color: #FFFFFF;
     padding: 10px 0px;
     position: absolute;
-    top: 32px;
+    top: 26px;
     left: 0px;
     display: none;
     width: 100%;
-    padding-top: 10px;
+    padding-top: 0px;
     border: 1px solid #000000;
     border-top: none;
     -webkit-box-sizing: border-box;

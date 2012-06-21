@@ -20,11 +20,13 @@
 <script type="text/javascript">
 	$(function() {
 		$( "input:submit").button();
+		$( "#topSorts").button();
+		$( "#yourSorts").button();
 	});
 </script>
 
 <head>
-<title>AllSortz!</title>
+<title>AllSorts</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     {% block head %}{% endblock %}
 </head>
@@ -41,7 +43,6 @@
 	{% if user.is_authenticated %}
 		<div id="account">
 		<p style="display:inline"> <a href="/user_details/"> {{user}}</a> </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
-		| <a href="/ratings/top_ten/"> Top </a>
 		</div>
 	{% endif %}
 	
@@ -58,7 +59,7 @@
 							<tr>
 							<td>
 								{% if search_term %}
-									 <input type="search" class="ui-"widget" name="search" placeholder="{{search_term}}" />
+									 <input type="search" class="ui-widget" name="search" placeholder="{{search_term}}" />
 								{%else%}
 									<input type="search" class="ui-widget" name="search" placeholder="Find tag" />
 								{%endif%}
@@ -86,14 +87,15 @@
 			</form>
 		</div>
 		<ul id="dropdown">
-			<li><a href="#">Your Sorts</a>
+			<li id="yourSorts" style="width:150px;">Your Sorts
 				<ul id="dropdown-list1">
 					{% for sort in user_sorts %}
-					<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
+					<li><p style="display:inline"><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></p></li>
 					{% endfor %}
+					<li><p style="display:inline"> <a href="/user_details/"> Add a Sort</a> </p></li>
 				</ul>
 			</li>
-			<li><a href="#">Top Sorts</a>
+			<li id="topSorts" style="width:150px;">AllSorts
 				<ul id="dropdown-list2">
 					{% for sort in top_sorts %}
 					<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
@@ -111,45 +113,22 @@
     	{% block body %}{% endblock %}
     	
     	<div id="browse">
-    		<h1>Browse Tags</h1>
+    		<h1>Browse Sorts</h1>
     		<table id="tags">
-    			<tr>
-    				<td><a href="/">tags here</a></td>
-    				<td><a href="/">more tags</a></td>
-    				<td><a href="/">tags tags</a></td>
-    				<td><a href="/">even more</a></td>
-    				<td><a href="/">many tags</a></td>
-    			</tr>
-    			<tr>
-    				<td><a href="/">tags here</a></td>
-    				<td><a href="/">more tags</a></td>
-    				<td><a href="/">tags tags</a></td>
-    				<td><a href="/">even more</a></td>
-    				<td><a href="/">many tags</a></td>
-    			</tr>
-    			<tr>
-    				<td><a href="/">tags here</a></td>
-    				<td><a href="/">more tags</a></td>
-    				<td><a href="/">tags tags</a></td>
-    				<td><a href="/">even more</a></td>
-    				<td><a href="/">many tags</a></td>
-    			</tr>
-    			<tr>
-    				<td><a href="/">tags here</a></td>
-    				<td><a href="/">more tags</a></td>
-    				<td><a href="/">tags tags</a></td>
-    				<td><a href="/">even more</a></td>
-    				<td><a href="/">many tags</a></td>
-    			</tr>
-    			<tr>
-    				<td><a href="/">tags here</a></td>
-    				<td><a href="/">more tags</a></td>
-    				<td><a href="/">tags tags</a></td>
-    				<td><a href="/">even more</a></td>
-    				<td><a href="/">many tags</a></td>
-    			</tr>
+    			{% for sort in all_sorts %}
+    			
+    				{%if sort == "open" %}
+    				
+    					<tr>
+    				{%else%}{%if sort == "close"%}
+  
+    					</tr>
+    				{%else%}
+    					<td><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></td>
+    				{%endif%}{%endif%}
+    			{%endfor%}
     		</table>
-    		<p align="right"><a href="/">and more...</a></p>
+    		<!--<p align="right"><a href="/">and more (eventually)...</a></p>-->
     	</div>
     	
     	<div id="footer">
