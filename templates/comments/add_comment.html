@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block body %}
+<script>
+	$(function() {
+		$( "input:submit" ).button();
+	});
+</script>
+	<div class="content ui-widget" >
+	<form action="." method="post" id="mainform" enctype="multipart/form-data" >{% csrf_token %}
+		<input type="hidden" name="community" value="{{community.id}}" />
+		{{ form.non_field_errors }}
+		<div class="input_box">
+		    {{ form.name.errors }}
+		   	{{form.descr}}
+		</div>  	
+		
+		<p><input type="submit" value="Done" /></p>
+	</form>
+		<form name="appendTag" action="." method="post">{% csrf_token %}
+			<input id="tag" type="text"  name="tagName"  />			
+		</form>
+	</div>
+	
+
+
+{% endblock %}

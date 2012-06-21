@@ -61,13 +61,14 @@ alert('here')
     }
   });
 }
+
 </script>
+
 
 
 <style type="text/css">
   #map_canvas { height: 50px; }
 </style>
-
 
 {% if business %}
 	
@@ -113,19 +114,22 @@ alert('here')
 								{% endif %}
 								
 							</div>
-						</td>
-						<!--<td valign="top">
-							<div id="comment_list" class="ui-widget tags_feed">
-							<a href="/comments/add_comment/{{ business.id }}/"> Add Comment </a>
-								{% include 'comments/thread.html' %}
-							</div>
-						</td>-->
 						<td valign="top">
-							<div id="tag_list" class="ui-widget tags_feed">
-								{% if tags %}
-								{% include 'ratings/tags.html' %}
-								{% endif %}
+							<div id="comment_list" class="ui-widget comments_feed">
+								{% include 'ratings/discussion/thread.html' %}
 							</div>
+						</td>
+						
+					</tr>
+					<tr>
+						<td colspan="2" valign="top" >
+							
+								
+								<div id="tag_list" class="ui-widget tags_feed">
+									{% if not form %}
+									{% include 'ratings/tags.html' %}
+									{%endif%}
+								</div>
 						</td>
 					</tr>
 				</table>
@@ -140,7 +144,7 @@ alert('here')
 	
 	</div>
 	
-
+<hr />
 
 
 {% endblock %}

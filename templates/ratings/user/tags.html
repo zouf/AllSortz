@@ -1,57 +1,32 @@
-	<h1>{{business.name}} Sorts</h1>
-						<form name="addTag" action="." method="post">{% csrf_token %}
-					  	<input id="tag" type="text"  name="tag"  />
-						<input id="bid" value="{{business.id}}" type="hidden" name="bid" />
+
+	<h1>Sorts</h1>
+						<form name="addUserTagDD" action="." method="post">{% csrf_token %}
+
+						 <select name="tag" class="ui-widget">
+						
+						  {% for tag in tags %}
+						 	<option value="{{tag.descr}}" name="tag" selected="true">{{tag.descr}}</option>
+						 {%endfor%}
+
+						 </select>
+							<br />
+							<input type="submit" value="Add"/>
 						</form>
-						{% for tag in tags %}
-						<div class="tagListing">
-				    	<table>
-				    	<tr valign="top">
-							<td style="width:40px;" valign="top">
-									<div id="tag_{{tag.id}}" class="tag">
-								{% if tag.this_rat > 0 %}
-									{% if tag.this_rat > 2 %}
-										<div class="vote up">
-										<span id="tag_vote_pos_{{tag.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
-										</div>
-										<div class="vote down">
-										<span id="tag_vote_neg_{{tag.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
-										</div>
-										
-									{% else %}
-										<div class="vote up">
-										<span id="tag_vote_pos_{{tag.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
-										</div>
-										<div class="vote down">
-										<span id="tag_vote_neg_{{tag.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
-										</div>
-									{%endif%}
-								{%else%}
-										<div class="vote up">
-										<span id="tag_vote_pos_{{tag.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
-										</div>
-										<div class="vote down">
-										<span id="tag_vote_neg_{{tag.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
-										</div>
-								{% endif %}
-									
+							<p style="font-size:10px"  onclick="showAddTag()" >Think we're missing a sort?</p>
 				
-								  <table>
-								  <tr>
-								  <td><div id="tag_pos_rating_{{tag.id}}" class="pos_rating">{{tag.pos_ratings}}</div></td>
-								  <td><div id="tag_neg_rating_{{tag.id}}" class="neg_rating">{{tag.neg_ratings}}</div></td>
-								  </tr>
-								  </table>
+				
+							<div id="addTagDiv">
+							<form name="addUserTagTB" action="." method="post">{%csrf_token%}
+							<input type="text" value="" name="tag" />
+							</form>
 							</div>
-						</td>
-						<td>
-							
-						     {{tag.descr}}  
-						   
-						 </td>
-						</tr>
-					  </table>
-					    </div>
+					
+					
+						<br />
+						{% for tag in user_sorts %}
+						<div class="tagListing">
+							{{tag.descr}}
+						</div>
 						{%endfor%}
 						
 					

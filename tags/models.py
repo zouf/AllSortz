@@ -10,7 +10,6 @@ from ratings.models import Business
 class Tag(models.Model):
     creator = models.ForeignKey(User)
     date = models.DateField(auto_now=True)
-
     descr = models.TextField(max_length=1000)
 
 class CommentTag(models.Model):
@@ -18,6 +17,8 @@ class CommentTag(models.Model):
     date = models.DateField(auto_now=True)
     comment=models.ForeignKey('ratings.Comment')
     descr = models.TextField(max_length=1000)  
+
+
 
 
 

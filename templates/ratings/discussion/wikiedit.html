@@ -17,7 +17,9 @@
 		<div class="submit">
 			<input type="submit" value="Save" />
 		</div>
+			</form>
 		
-		
-		comments will go here
-	</form>
+		<div id="comment_list" class="ui-widget tags_feed">
+							<a href="/ratings/add_tag_comment/{{ page.id }}/"> Add Comment </a>
+								{% include 'ratings/discussion/thread.html' %}
+		</div>

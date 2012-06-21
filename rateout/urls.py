@@ -15,11 +15,12 @@ urlpatterns = patterns('',
     url(r'^api/remove_comment_vote*', 'ratings.vote.remove_comment_vote'),
     
     #api for tags
-    url(r'^api/add_tag/$', 'tags.views.add_tag'),
+    url(r'^api/add_tag/$', 'tags.views.add_tag_business'),
     url(r'^api/add_user_tag/$', 'tags.views.add_user_tag'),
     url(r'^api/get_tags/', 'tags.views.get_all_tags', name='get_all_tags'),
     url(r'^api/tag_vote*', 'tags.vote.tag_vote'),
     url(r'^api/remove_tag_vote*', 'tags.vote.remove_tag_vote'),
+    
 
     #api for voting on businesses
     url(r'^api/vote*', 'ratings.vote.vote'),
@@ -44,6 +45,12 @@ urlpatterns = patterns('',
     #URL for user details
     url(r'^user_details/$','ratings.views.user_details'),
     
+    #display businesses assoc with a tag
+    url(r'^ratings/disp/(?P<tag_id>\d+)/$','ratings.views.display_tag'),
+    
+    #comments on discussion page
+    url(r'^api/add_tag_comment/$','ratings.views.add_tag_comment'),
+
     
     url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),
