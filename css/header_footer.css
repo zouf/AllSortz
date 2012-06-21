@@ -18,7 +18,7 @@ body
 
 #header
 {
-    background-color: #327BD9;
+    background-color: #317BE2;
     position: absolute;
     top: 60px;
     min-width: 1100px;
@@ -30,7 +30,7 @@ body
 
 #icon
 {
-    background-color: #327BD9;
+    background-color: #317BE2;
     padding-left: 12px;
     padding-top: 12px;
     width: 150px;
@@ -71,7 +71,7 @@ body
     display: block;
     padding: 5px 20px;
     color: #FFFFFF;
-    background-color: #71A7EC;
+    background-color: #79B1FF;
     font-family: 'Helvetica';
     font-size: 20px;
     min-width: 75px;
@@ -82,14 +82,14 @@ body
 #dropdown a:hover
 {
     color: #FFFFFF;
-    background-color: #5187CC;
+    background-color: #1365D6;
     text-decoration: none;
 }
 
 #dropdown li:hover a
 {
     color: #FFFFFF;
-    background-color: #5187CC;
+    background-color: #1365D6;
     text-decoration: none;
 }
 

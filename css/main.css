@@ -22,7 +22,7 @@ a:link
 
 a:hover
 {
-    color: #90A2F8;
+    color: #4679ED;
     text-decoration: underline;
 }
 
@@ -33,7 +33,7 @@ a:visited
 
 h1
 {
-    color: #004399;
+    color: #070771;
     font-family: 'Garamond';
     font-style: italic;
     font-weight: normal;
@@ -62,12 +62,12 @@ li
     margin-left: -500px;
     padding-top: 190px;
     padding-bottom: 400px;
-    background-color: #D8ECFF;
+    background-color: #ECECFF;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
-    -moz-box-shadow: 0px 0px 8px #83B6F7;
-    -webkit-box-shadow: 0px 0px 8px #83B6F7;
-    box-shadow: 0px 0px 8px #83B6F7;
+    -moz-box-shadow: 0px 0px 8px #4679ED;
+    -webkit-box-shadow: 0px 0px 8px #4679ED;
+    box-shadow: 0px 0px 8px #4679ED;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     -ms-box-sizing: border-box;
@@ -85,14 +85,14 @@ li
 
 .section
 {
-    border: 1px solid #000000;
+    border: 1px solid #070771;
     padding: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
     background-color: #FFFFFF;
-    -moz-box-shadow: 0px 0px 4px #83B6F7;
-    -webkit-box-shadow: 0px 0px 4px #83B6F7;
-    box-shadow: 0px 0px 4px #83B6F7;
+    -moz-box-shadow: 0px 0px 4px #4679ED;
+    -webkit-box-shadow: 0px 0px 4px #4679ED;
+    box-shadow: 0px 0px 4px #4679ED;
 }
 
 #trending
