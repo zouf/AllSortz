@@ -88,16 +88,16 @@
 		<ul id="dropdown">
 			<li><a href="#">Your Sorts</a>
 				<ul id="dropdown-list1">
-					<li><a href="/">one</a></li>
-					<li><a href="/">two</a></li>
-					<li><a href="/">three</a></li>
+					{% for sort in user_sorts %}
+					<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
+					{% endfor %}
 				</ul>
 			</li>
 			<li><a href="#">Top Sorts</a>
 				<ul id="dropdown-list2">
-					<li><a href="/">four</a></li>
-					<li><a href="/">five</a></li>
-					<li><a href="/">eight million and a half</a></li>
+					{% for sort in top_sorts %}
+					<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
+					{% endfor %}
 				</ul>
 			</li>
 		</ul>
