@@ -3,6 +3,7 @@ Created on May 17, 2012
 
 @author: zouf
 '''
+
 from django.utils.encoding import smart_str
 from photos.views import get_photo_web_url, get_photo_thumb_url
 from ratings.models import Rating

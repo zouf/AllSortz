@@ -27,3 +27,5 @@ def get_community(user):
         
 
 
+def test_func2():
+    return False

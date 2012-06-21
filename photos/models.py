@@ -32,12 +32,13 @@ class BusinessPhoto(models.Model):
     image_thumb = models.ImageField(upload_to=image_upload_to_thumb)
     image_large = models.ImageField(upload_to=image_upload_to_lg)
     
+    date = models.DateField(auto_now=True)
+    
     
     title = models.CharField(blank=True, max_length=300)
     caption = models.TextField(blank=True)
     def save(self):
         #Original photo
-        print(self.business.id)
         imgFile = Image.open(self.image)
         
         #Convert to RGB

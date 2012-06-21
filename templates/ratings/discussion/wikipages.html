@@ -1,0 +1,28 @@
+	<h1>Sort Discussions</h1>
+
+	{% if pages %}
+		
+			{% for page in pages %}
+				
+				<div style="background-color:white; margin-top:5px;" >
+				
+					
+					<h1><a href="edit/{{ page.id }}/" rel="bookmark">{{ page.name }}</a></h1>
+					
+					{% if not page.id %}
+					<p>This page does not exist, <a href="edit/">create it now</a>?</p>
+					{% endif %}
+					
+					{{ page.rendered|safe|linebreaks }}
+					
+					
+					
+					<!--{% if page.id %}
+					<a href="edit/{{page.id}}/">Discuss / edit this tag</a>
+					{% else %}
+					<a href="edit/">Create this page</a>
+					{% endif %}-->
+				</div>
+			{% endfor %}
+		
+	{% endif %}

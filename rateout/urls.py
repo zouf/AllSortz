@@ -1,6 +1,7 @@
 from django.conf.urls import url, patterns, include
 from django.contrib import admin
 from rateout import settings
+from rateout.settings import STATIC_URL
 from ratings.views import logout_page
 
 
@@ -9,12 +10,13 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     #api for comments
-    url(r'^api/add_comment/$', 'comments.views.add_comment'),
-    url(r'^api/comment_vote/$', 'comments.vote.comment_vote'),
-    url(r'^api/remove_comment_vote*', 'comments.vote.remove_comment_vote'),
+    url(r'^api/add_comment/$', 'ratings.views.add_comment'),
+    url(r'^api/comment_vote/$', 'ratings.vote.comment_vote'),
+    url(r'^api/remove_comment_vote*', 'ratings.vote.remove_comment_vote'),
     
     #api for tags
     url(r'^api/add_tag/$', 'tags.views.add_tag'),
+    url(r'^api/add_user_tag/$', 'tags.views.add_user_tag'),
     url(r'^api/get_tags/', 'tags.views.get_all_tags', name='get_all_tags'),
     url(r'^api/tag_vote*', 'tags.vote.tag_vote'),
     url(r'^api/remove_tag_vote*', 'tags.vote.remove_tag_vote'),
@@ -28,11 +30,19 @@ urlpatterns = patterns('',
     url(r'^api/rm_act_vote/*', 'activities.vote.remove_vote'),
 
     #favicon
-    url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': '/css/images/favicon.ico'}),
+    url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': STATIC_URL+'css/images/favicon.ico'}),
     
+    
+    #URLS for editing wiki pages
+    url(r'^ratings/(?P<bus_id>\d+)/edit/(?P<page_id>\d+)/$','ratings.views.edit_tag_discussion'),
+    
+    #activity URLs
     url(r'acts/$', 'activities.views.activities'),    
     url(r'acts/add_activity/', 'activities.views.add_activity'),    
     url(r'^acts/(?P<act_id>\d+)/$', 'activities.views.detail_activity'),
+    
+    #URL for user details
+    url(r'^user_details/$','ratings.views.user_details'),
     
     
     url(r'^$','ratings.views.coming_soon'),
@@ -48,8 +58,14 @@ urlpatterns = patterns('',
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', logout_page),
 	url(r'^accounts/', include('registration.urls')),
+    url(r'^comments/add_comment/(?P<bus_id>\d+)/$','ratings.views.add_comment_form'),
 
+    
+    
+    
     (r'^mywiki/', include('wiki.urls')),
+    
+    
  
 
 

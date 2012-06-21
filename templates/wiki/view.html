@@ -1,7 +1,7 @@
 {% extends 'wiki/base.html' %}
 
 
-{% block content %}
+{% block wiki_content %}
 	<h1><a href="../{{ page.name }}/" rel="bookmark">{{ page.name }}</a></h1>
 
 	{% if not page.id %}
@@ -12,7 +12,7 @@
 {% endblock %}
 
 
-{% block footer %}
+{% block wiki_footer %}
 	{% if page.id %}
 		<a href="edit/">Edit this page</a>
 	{% else %}
