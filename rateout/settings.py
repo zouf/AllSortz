@@ -155,8 +155,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 	  ("css", BASE_DIR+ "/css"),
-	  ("js", BASE_DIR+ "/js"),
-      ("wiki/media", BASE_DIR+"/wiki/media")
+	  ("js", BASE_DIR+ "/js")
 )
 
 # List of finder classes that know how to find static files in
