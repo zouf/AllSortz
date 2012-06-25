@@ -33,8 +33,8 @@ def handle_fb_login(request):
         user = fbu.user
         authuser = authenticate(username=user.username,password="facebook");
         if authuser:
+		logger.debug("zouflogging logged in "+str(authuser.username))
                 login(request,authuser)
-        return redirect(index)
             
     #fb_data = parse_signed_request(request.POST.get('signed_request'))
     #logger.debug('Logging in FB user')
