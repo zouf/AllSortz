@@ -17,39 +17,43 @@ logger = logging.getLogger(__name__)
 
 def handle_fb_login(request):
     logger.debug("zouflogin")
-    facebook_data = fb_request_decode(request.POST.get('signed_request'))
+    facebook_data = parse_signed_request(request.POST.get('signed_request'))
     logger.debug('zouf----')
     logger.debug(facebook_data['fb_data'])
 
 def handle_fb_request(request):
-    facebook_data = fb_request_decode(request.POST.get('signed_request'))
+    facebook_data = parse_signed_request(request.POST.get('signed_request'))
     logger.debug('zouf----')
     logger.debug(facebook_data['fb_data'])
     add_fb_user(facebook_data['fb_data'])
 
 
-def fb_request_decode(signed_request):
-    s = [s.encode('ascii') for s in signed_request.split('.')]
-    fb_sig = base64.urlsafe_b64decode(s[0] + '=')
-    logger.debug(base64.decodestring(s[1]))
-    fb_data = json.loads(base64.decodestring(s[1]))#base64.urlsafe_b64decode(s[1]))
-    fb_hash = hmac.new(FB_APP_SECRET, s[1], hashlib.sha256).digest()
+def base64_url_decode(inp):
+    inp = inp.replace('-','+').replace('_','/')
+    padding_factor = (4 - len(inp) % 4) % 4
+    inp += "="*padding_factor
+    return base64.decodestring(inp)
 
-    sig_match = False
-    if fb_sig == fb_hash:
-        sig_match = True
 
-    auth = False
-    if 'user_id' in fb_data:
-        auth = True
+def parse_signed_request(signed_request='a.a'):
+    l = signed_request.split('.', 2)
+    encoded_sig = l[0]
+    payload = l[1]
 
-    return {
-        'fb_sig' : fb_sig,
-        'fb_data' : fb_data,
-        'fb_hash' : fb_hash,
-        'sig_match' : sig_match,
-        'auth' : auth,
-    }
+    sig = base64_url_decode(encoded_sig)
+    data = json.loads(base64_url_decode(payload))
+
+    if data.get('algorithm').upper() != 'HMAC-SHA256':
+        print('Unknown algorithm')
+        return None
+    else:
+        expected_sig = hmac.new(FB_APP_SECRET, msg=payload, digestmod=hashlib.sha256).digest()
+
+    if sig != expected_sig:
+        return None
+    else:
+        print('valid signed request received..')
+        return data
 
 
 def add_fb_user(fbdata):
