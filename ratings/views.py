@@ -381,6 +381,7 @@ def edit_tag_discussion(request,bus_id,page_id):
     except:
         pgr = PageRelationship.objects.filter(page=pg)[0]
     
+    
     t = pgr.tag
     comments = get_tag_comments(t,request.user)
     user_tags = get_tags_user(request.user,"")
@@ -489,33 +490,60 @@ def paginate_businesses(business_list,page, num):
 
 def index(request):
     
-    community = get_community(request.user)
-    businesses = []
-    try:
-        busMembership = BusinessMembership.objects.filter(community = community)
-        for b in busMembership:
-            businesses.append(b.business)
-    except:
-        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
-        businesses = Business.objects.all()
-    
-    business_list = get_bus_data(businesses,request.user)
-    business_list = paginate_businesses(business_list,request.GET.get('page'),1)
-    
-    user_tags = get_tags_user(request.user,"")
-    top_tags = get_top_tags(10)
-    
-    
-    
-    
-    context = { 'business_list':business_list,\
-                'community':community,\
-                'top_sorts':top_tags,\
-                'user_sorts': user_tags,\
-                'all_sorts':get_all_sorts(4),\
-                'location_term':get_community(request.user)
-                }
-    return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
+    if request.user.is_authenticated():
+        
+        community = get_community(request.user)
+        businesses = []
+        try:
+            busMembership = BusinessMembership.objects.filter(community = community)
+            for b in busMembership:
+                businesses.append(b.business)
+        except:
+            logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+            businesses = Business.objects.all()
+        
+        business_list = get_bus_data(businesses,request.user)
+        business_list = paginate_businesses(business_list,request.GET.get('page'),1)
+        
+        user_tags = get_tags_user(request.user,"")
+        top_tags = get_top_tags(10)
+        
+        
+        
+        
+        context = { 'business_list':business_list,\
+                    'community':community,\
+                    'top_sorts':top_tags,\
+                    'user_sorts': user_tags,\
+                    'all_sorts':get_all_sorts(4),\
+                    'location_term':get_community(request.user)
+                    }
+        return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
+    else:
+        businesses = []
+        try:
+            busMembership = BusinessMembership.objects.filter(community = community)
+            for b in busMembership:
+                businesses.append(b.business)
+        except:
+            logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+            businesses = Business.objects.all()
+        
+        
+        top_tags = get_top_tags(10)
+        
+        
+        
+        
+        context = { \
+                    #'business_list':business_list,\
+                   # 'community':community,\
+                    'top_sorts':top_tags,\
+                   # 'user_sorts': user_tags,\
+                    'all_sorts':get_all_sorts(4),\
+                    'location_term':get_community(request.user)
+                    }
+        return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
 
 def user_details(request):
     if not request.user.is_authenticated():

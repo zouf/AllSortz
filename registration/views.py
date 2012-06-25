@@ -10,6 +10,9 @@ from django.template import RequestContext
 from registration.backends import get_backend
 
 
+def handle_fb_request(request):
+    
+    print('hello!')
 
 def activate(request, backend,
              template_name='registration/activate.html',
