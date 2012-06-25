@@ -524,7 +524,6 @@ def paginate_businesses(business_list,page, num):
     return business_list
 
 def index(request):
-    request_fb_login(request)
     if request.user.is_authenticated():
         logger.debug("zouf logged in user!"); 
         community = get_community(request.user)

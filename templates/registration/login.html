@@ -30,7 +30,7 @@ type: 'POST',
 url: '/handle_fb_login/',
 data: {sig:response.authResponse.signedRequest, fbuid:response.authResponse.userID},
 });
-		window.reload('/')
+		window.location.href =  "/";
 			  } else {
 			  // Subscribe to the event 'auth.authResponseChange' and wait for the user to autenticate
 			  FB.Event.subscribe('auth.authResponseChange', function(response) {
