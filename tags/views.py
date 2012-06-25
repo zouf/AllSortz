@@ -49,10 +49,14 @@ def add_tag_business(request):
         except:
             bustag = BusinessTag.objects.create(tag=tag,business=b,creator=request.user)
             
-            pg = Page(name=nm)
-            pg.save()
+            try:
+                pg = Page.objects.get(name=nm)
+            except:
+                pg = Page(name=nm)
+                pg.save()
             print('creating a page)')
-            pgr = PageRelationship(business=b,page=pg,tag=bustag)
+            print(tag)
+            pgr = PageRelationship(business=b,page=pg,tag=bustag.tag)
             pgr.save()
             print('page done')
         bus_tags = get_tags_business(b)
@@ -123,11 +127,11 @@ def get_pages(business,tags):
         try:
             bt = BusinessTag.objects.get(business=business,tag=t)
             print(bt)
-            relationship = PageRelationship.objects.get(business=business,tag=bt)
+            relationship = PageRelationship.objects.get(business=business,tag=bt.tag)
             pages.append(relationship.page)
         except:
             logger.debug('error in getting relationships')
-            print('error in getitng pages)')
+            print('error in getting pages)')
           
   
     print("pages are "+str(pages)) 

@@ -24,7 +24,7 @@ class Business(models.Model):
 class PageRelationship(models.Model):
     page = models.ForeignKey(Page)
     business = models.ForeignKey(Business)
-    tag = models.ForeignKey('tags.BusinessTag')
+    tag = models.ForeignKey('tags.Tag')
     
     
     

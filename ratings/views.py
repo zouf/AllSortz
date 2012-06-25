@@ -67,6 +67,7 @@ def get_business_comments(business,user=False):
     return results
 
 def get_tag_comments(tag,user=False):
+    print(tag.id)
     tagcomments = TagComment.objects.filter(tag=tag)
     
     comment_list = []
@@ -165,8 +166,10 @@ def add_comment(request):
     print('in add comment regular')
     if request.method == 'POST':  # add a comment!
         form = request.POST       
+        print(form)
         #base comment submission
-        if 'cid' not in form:      
+        if 'cid' not in form:   
+            print(form)   
             nm = form['comment']
             bid = form['bid']
             b = Business.objects.get(id=bid)
@@ -180,28 +183,34 @@ def add_comment(request):
         else:  #reply to another comment submission
             nm = form['comment']
             bid = form['bid']
+            print(form)
             b = Business.objects.get(id=bid)
             cid = form['cid']
             c = Comment.objects.get(id=cid)
             keyset = Comment.objects.filter(descr=nm, business=b)
             if(keyset.count() == 0):
                 try:
-                    k = Comment.objects.create(descr=nm,user=request.user,business=b,reply_to=c)
+                    k = Comment.objects.create(descr=nm,user=request.user,reply_to=c)
                 except:
                     logger.error("Unexpected error:" + str(sys.exc_info()[0]))
                 k.save()
-        comment_list = get_comments(b)
-        return render_to_response('comments/thread.html', {'business':b, 'comments': comment_list})
+        comment_list = get_business_comments(b,request.user)
+
+        return render_to_response('ratings/discussion/thread.html', {'business':b, 'comments': comment_list})
 
 
 @csrf_exempt
 def add_tag_comment(request):
     logger.debug('in add comment')
+    print('in add tag comment')
     if request.method == 'POST':  # add a comment!
         form = request.POST       
         if 'tid'  in form:
+            print(form)
+
             tid = form['tid']
-            t = Tag.objects.get(id=tid)
+            bt = BusinessTag.objects.get(id=tid)
+            t = bt.tag
             
             if 'cid' not in form:      #root reply
                 print(form)
@@ -366,12 +375,14 @@ def edit_tag_discussion(request,bus_id,page_id):
 #  comments = get_comments(b,user=request.user,q="")
     
     pg = get_object_or_404(Page, pk=page_id)
-
-    pgr = PageRelationship.objects.get(page=pg)
-
+    print('hey')
+    try:
+        pgr = PageRelationship.objects.get(page=pg)
+    except:
+        pgr = PageRelationship.objects.filter(page=pg)[0]
+    
     t = pgr.tag
     comments = get_tag_comments(t,request.user)
-    
     user_tags = get_tags_user(request.user,"")
     top_tags = get_top_tags(10)   
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
@@ -405,7 +416,7 @@ def detail_keywords(request, bus_id):
     if request.method == 'POST':
         if not request.user.is_authenticated():
             return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-#  comments = get_comments(b,user=request.user,q="")
+    comments = get_business_comments(b)
     bus_tags = get_tags_business(b,user=request.user,q="")
         
         
@@ -422,7 +433,7 @@ def detail_keywords(request, bus_id):
     if latlng:
         context =   { \
         'business' : b, \
-    #    'comments': comments, \
+        'comments': comments, \
         'lat': latlng[0],\
         'lng':latlng[1],  \
         'bus_tags':bus_tags, \

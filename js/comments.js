@@ -121,7 +121,7 @@ $("form[name=addReply]").live("submit", function(e){
 	
 	
 	$.ajax({
-		url   : '/api/add_comment/',
+		url   : '/api/add_tag_comment/',
          type  : form.attr('method'),
          data  : form.serialize(), // data to be submitted
          success: function(data){
