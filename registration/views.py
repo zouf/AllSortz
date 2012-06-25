@@ -8,10 +8,13 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 from registration.backends import get_backend
+import logging
 
+logger = logging.getLogger(__name__)
 
 def handle_fb_request(request):
-    
+    logger.debug("fb auth hello")
+    logger.debug(request)
     print('hello!')
 
 def activate(request, backend,
