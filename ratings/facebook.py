@@ -4,8 +4,10 @@ Created on Jun 25, 2012
 @author: zouf
 '''
 from django.contrib.auth.models import User
+from django.shortcuts import redirect
 from rateout.settings import FB_APP_SECRET
 from ratings.models import FacebookUser
+from ratings.views import index
 import base64
 import hashlib
 import hmac
@@ -19,12 +21,16 @@ def handle_fb_login(request):
     fb_data = parse_signed_request(request.POST.get('signed_request'))
     logger.debug('Logging in FB user')
     logger.debug(fb_data)
+    login_fb_user(fb_data)
+    return redirect(index)
 
 def handle_fb_request(request):
     fb_data = parse_signed_request(request.POST.get('signed_request'))
     logger.debug('Registering FB user')
     logger.debug(fb_data)
     add_fb_user(fb_data)
+    return redirect(index)
+
 
 
 def base64_url_decode(inp):
@@ -54,11 +60,25 @@ def parse_signed_request(signed_request='a.a'):
         print('valid signed request received..')
         return data
 
+def login_fb_user(fbdata):
+    name = fbdata['registration']['name']
+    email = fbdata['registration']['email']
+    fbuser_id = fbdata['user_id']
+    location = fbdata['registration']['location']
+    try:
+        u = User.objects.create(username=name,email=email)
+    except:
+        logger.error("Could not find user from the facebook auth")
+    u.authenticate(u.username,"facebook")
+    
+
 
 def add_fb_user(fbdata):
     name = fbdata['registration']['name']
     email = fbdata['registration']['email']
-    fbuser_id = fbdata['user']['user_id']
+    fbuser_id = fbdata['user_id']
     location = fbdata['registration']['location']
-    u = User.objects.create(name=name,email=email)
+    u = User.objects.create(username=name,email=email)
+    u.set_password("facebook")
     fbuser = FacebookUser.objects.create(fbuser_id=fbuser_id,user=u)
+    u.authenticate(u.username,"facebook")
