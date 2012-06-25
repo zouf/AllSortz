@@ -58,7 +58,8 @@ def parse_signed_request(signed_request='a.a'):
 def add_fb_user(fbdata):
     name = fbdata['registration']['name']
     email = fbdata['registration']['email']
-    fbuser_id = fbdata['user']['user_id']
+    fbuser_id = fbdata['user_id']
     location = fbdata['registration']['location']
-    u = User.objects.create(name=name,email=email)
+    logger.debug("Creaitng a user with username "+str(name));
+    u = User.objects.create(username=name,email=email)
     fbuser = FacebookUser.objects.create(fbuser_id=fbuser_id,user=u)
