@@ -1,24 +1,20 @@
 
 	<h1>Sorts</h1>
 						<form name="addUserTagDD" action="." method="post">{% csrf_token %}
-
-						 <select name="tag" class="ui-widget">
-						
-						  {% for tag in tags %}
-						 	<option value="{{tag.descr}}" name="tag" selected="true">{{tag.descr}}</option>
-						 {%endfor%}
-
-						 </select>
+							<select name="tag" class="ui-widget">
+							{% for tag in tags %}
+							 	<option value="{{tag.descr}}" name="tag" selected="true">{{tag.descr}}</option>
+							{%endfor%}
+							</select>
 							<br />
 							<input type="submit" value="Add"/>
 						</form>
+						
 							<p style="font-size:10px"  onclick="showAddTag()" >Think we're missing a sort?</p>
-				
-				
 							<div id="addTagDiv">
-							<form name="addUserTagTB" action="." method="post">{%csrf_token%}
-							<input type="text" value="" name="tag" />
-							</form>
+								<form name="addUserTagTB" action="." method="post">{%csrf_token%}
+									<input type="text" value="" name="tag" />
+								</form>
 							</div>
 					
 					
