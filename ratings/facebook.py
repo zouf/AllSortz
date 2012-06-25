@@ -3,18 +3,20 @@ Created on Jun 25, 2012
 
 @author: zouf
 '''
+from IPython.config.configurable import MultipleInstanceError
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
-from rateout.settings import FB_APP_SECRET
+from rateout.settings import FB_APP_SECRET, FB_APP_ID
 from ratings.models import FacebookUser
 from ratings.views import index
 import base64
+import cgi
 import hashlib
 import hmac
 import json
 import logging
-from IPython.config.configurable import MultipleInstanceError
+import urllib
 
 
 logger = logging.getLogger(__name__)
@@ -52,6 +54,30 @@ def handle_fb_request(request):
         login(request,newuser)
     return redirect(index)
 
+
+def request_fb_login():
+    state = "zouf1234"
+    args = {
+        'client_id': FB_APP_ID,
+        'redirect_uri': 'http://allsortz.com/handle_fb_login/',
+        'state': state
+    }
+    url = 'https://www.facebook.com/dialog/oauth?' + \
+            urllib.urlencode(args)
+    
+    raw_response = urllib.urlopen(url).read()
+    response = cgi.parse_qs(raw_response)    
+    
+    if response:
+        error = ''
+        if response['access_token']:
+            access_token = response['access_token'][0]
+        if response['expires']:
+            expires = response['expires'][0]
+    else:
+        access_token = 'No access token returned'
+        expires = 'No expiration given'
+        error = raw_response
 
 
 def base64_url_decode(inp):
