@@ -12,7 +12,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'rateout.settings'
 import django.core.handlers.wsgi
 
 
-if settings.INTERACTIVE_DEBUG:
+if False:
 	class Debugger:
 
 	    def __init__(self, object):

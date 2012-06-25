@@ -14,24 +14,23 @@ import hashlib
 import hmac
 import json
 import logging
-from IPython.config.configurable import MultipleInstanceError
+from django.core.exceptions import MultipleObjectsReturned
 
 
 logger = logging.getLogger(__name__)
 
 def handle_fb_login(request):
     if request.method == 'POST':
-        response = request.POST['response']
-        sig = response['authResponse']['signedRequest']
-        fbuid = response['authResponse']['userID']
+        sig = request.POST['sig']
+        fbuid = request.POST['fbuid']
         try:
             fbu = FacebookUser.objects.get(fbuser_id=fbuid)
-        except(MultipleInstanceError):
+        except(MultipleObjectsReturned):
             fbu = FacebookUser.objects.filter(fbuser_id=fbuid)[0]
         user = fbu.user
-        
-        if( authenticate(username=user.username,"facebook")):
-            login(request,user)
+        authuser = authenticate(username=user.username,password="facebook");
+	if authuser:
+            login(request,authuser)
             
     #fb_data = parse_signed_request(request.POST.get('signed_request'))
     #logger.debug('Logging in FB user')
