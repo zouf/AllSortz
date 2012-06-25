@@ -8,6 +8,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from photos.models import BusinessPhoto
 from photos.views import get_photo_thumb_url, get_photo_web_url
+from rateout.settings import FB_APP_ID, FB_APP_SECRET
 from ratings.forms import BusinessForm, CommentForm
 from ratings.models import Business, Comment, CommentRating, TagComment, \
     PageRelationship, BusinessComment
@@ -23,13 +24,45 @@ from tags.views import get_tags_business, get_pages, get_tags_user, get_top_tags
 from wiki.forms import PageForm
 from wiki.models import Page
 from wiki.views import view
+import cgi
 import logging
 import sys
+import urllib
 
 
 logger = logging.getLogger(__name__)
 
 re = RecEngine()
+
+
+
+def request_fb_login(request):
+
+    code = request.GET['code']
+    args = {
+        'client_id': FB_APP_ID,
+        'redirect_uri': 'http://allsortz.com/handle_fb_login/',
+        'client_secret': FB_APP_SECRET,
+        'code': code,
+    }
+    url = 'https://graph.facebook.com/oauth/access_token?' + \
+        urllib.urlencode(args)
+    
+    raw_response = urllib.urlopen(url).read()
+    response = cgi.parse_qs(raw_response)    
+    print('here')
+    print(response)
+    if response:
+        error = ''
+        if response['access_token']:
+            access_token = response['access_token'][0]
+        if response['expires']:
+            expires = response['expires'][0]
+    else:
+        access_token = 'No access token returned'
+        expires = 'No expiration given'
+        error = raw_response
+
 def comment_comp(x,y):
     #eventually do something more intelligent here!
     xTot = x.pos_ratings - x.neg_ratings
@@ -121,6 +154,8 @@ def get_comments(b,user=False,q=""):
                 c.pos_ratings = 0
                 c.neg_ratings = 0
         results.append(c)
+
+        
     return results
 
 
@@ -489,9 +524,9 @@ def paginate_businesses(business_list,page, num):
     return business_list
 
 def index(request):
-    
+    request_fb_login(request)
     if request.user.is_authenticated():
-       	logger.debug("zouf logged in user!"); 
+        logger.debug("zouf logged in user!"); 
         community = get_community(request.user)
         businesses = []
         try:
