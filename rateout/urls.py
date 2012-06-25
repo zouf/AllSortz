@@ -52,7 +52,8 @@ urlpatterns = patterns('',
     url(r'^api/add_tag_comment/$','ratings.views.add_tag_comment'),
 
     
-    url(r'^$','ratings.views.coming_soon'),
+    
+    #url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),
     url(r'^index*$', 'ratings.views.index'),
     url(r'^index/$', 'ratings.views.index'),
@@ -69,6 +70,9 @@ urlpatterns = patterns('',
 
     
     
+    
+    url(r'^handle_fb_login/$','ratings.facebook.handle_fb_login'),
+    url(r'^fbauth/$','ratings.facebook.handle_fb_request'),
     
     (r'^mywiki/', include('wiki.urls')),
     

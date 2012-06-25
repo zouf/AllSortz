@@ -1,22 +1,16 @@
 {% extends "base.html" %}
 
 {% block body %}
-<script type="text/javascript">
-	$(function() {
-		$( "input:submit" ).button();
-	});
-</script>
-  <div id="businessList" class="content" >
-        <div class="ui-widget">
-        <form action="/accounts/register/" style="margin-left:250px" method="POST">{% csrf_token %}
-            <table>
-            {{ form.as_table }}
-            </table>
-        <p>
-            <input type="submit" style="margin-left:-200px" value="Submit" />
-        </p>
-        </form>
-        </div>
-       </div>
-        
+
+        <p> Or register with Facebook </p>
+
+<div id="fb-root"></div>
+<script src="https://connect.facebook.net/en_US/all.js#appId=260788694033894&xfbml=1"></script>
+
+<fb:registration 
+  fields="name,birthday,gender,location,email" 
+  redirect-uri="http://www.allsortz.com/fbauth/"
+  width="530">
+</fb:registration>
+
 {% endblock %}

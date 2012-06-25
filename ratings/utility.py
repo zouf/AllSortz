@@ -6,9 +6,14 @@ Created on May 17, 2012
 
 from django.utils.encoding import smart_str
 from photos.views import get_photo_web_url, get_photo_thumb_url
+from rateout.settings import FB_APP_SECRET
 from ratings.models import Rating
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     getBusAvg
+import base64
+import hashlib
+import hmac
+import json
 import logging
 import simplejson
 import urllib
