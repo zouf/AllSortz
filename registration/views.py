@@ -7,16 +7,10 @@ Views which allow users to create and activate accounts.
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
-from ratings.utility import fb_request_decode
 from registration.backends import get_backend
-import logging
 
-logger = logging.getLogger(__name__)
 
-def handle_fb_request(request):
-    facebook_data = fb_request_decode(request.POST.get('signed_request'))
-    logger.debug('zouf----')
-    logger.debug(facebook_data['fb_data'])
+
 
 def activate(request, backend,
              template_name='registration/activate.html',

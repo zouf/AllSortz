@@ -9,17 +9,16 @@
 	});
 </script>
 
- <div id="fb-root"></div>
+      <div id="fb-root"></div>
       <script>
         window.fbAsyncInit = function() {
           FB.init({
-            appId      : 'YOUR_APP_ID', // App ID
-            channelUrl : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
+            appId      : '260788694033894', // App ID
+            channelUrl : 'http://www.allsortz.com/handle_fb_login/', // Channel File
             status     : true, // check login status
             cookie     : true, // enable cookies to allow the server to access the session
             xfbml      : true  // parse XFBML
           });
-          // Additional initialization code here
         };
         // Load the SDK Asynchronously
         (function(d){
@@ -30,6 +29,10 @@
            ref.parentNode.insertBefore(js, ref);
          }(document));
       </script>
+
+      <div class="fb-login-button">Login with Facebook</div>
+      
+      
 
 <div class="content" >
 {% if form.errors %}

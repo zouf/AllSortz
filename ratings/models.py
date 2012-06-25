@@ -21,6 +21,11 @@ class Business(models.Model):
         return self.name
         
 
+class FacebookUser(models.Model):
+    fbuser_id = models.IntegerField()
+    user = models.ForeignKey(User)
+
+
 class PageRelationship(models.Model):
     page = models.ForeignKey(Page)
     business = models.ForeignKey(Business)
