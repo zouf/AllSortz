@@ -14,7 +14,7 @@
         window.fbAsyncInit = function() {
           FB.init({
             appId      : '260788694033894', // App ID
-            channelUrl : 'http://www.allsortz.com/handle_fb_login/', // Channel File
+            redirect_uri	: 'http://www.allsortz.com/handle_fb_login/', // Channel File
             status     : true, // check login status
             cookie     : true, // enable cookies to allow the server to access the session
             xfbml      : true  // parse XFBML
@@ -58,8 +58,7 @@
 </form>
 </div>
 
-<hr/>or<br/>
-   <div class="fb-login-button">Login with Facebook</div>
+
 
 </div>
 
