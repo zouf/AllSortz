@@ -34,9 +34,10 @@
     document.body.appendChild(form);
     form.submit();
 }
-      	
-      		  function handle_fb_login(arguments) {
-				alert('here');
+      	          function afterLoginButton()
+          {
+	  FB.getLoginStatus(function(response) {
+
 			if (response){
 			var method = 'POST';
 			var url = '/handle_fb_login/';
@@ -51,7 +52,9 @@
 
 			  // now dynamically show the login plugin
 			  }
-};
+});       	
+}	
+      	
         window.fbAsyncInit = function() {
           FB.init({
             appId      : '260788694033894', // App ID
@@ -61,8 +64,7 @@
             xfbml      : true  // parse XFBML
           });
           
-          
-       		
+
 };
         // Load the SDK Asynchronously
         (function(d){
@@ -74,7 +76,7 @@
          }(document));
       </script>
 
-      <div id="fbdiv" class="fb-login-button" registration-url="http://www.allsortz.com/accounts/register/"  on-login="handle_fb_login(arguments)">Login with Facebook</div>
+      <div id="fbdiv" class="fb-login-button" on-login="afterLoginButton()">Login with Facebook</div>
       
       
 
