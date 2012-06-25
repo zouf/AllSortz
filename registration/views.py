@@ -10,7 +10,7 @@ from django.template import RequestContext
 from registration.backends import get_backend
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("zouflogger")
 
 def handle_fb_request(request):
     logger.debug("fb auth hello")
