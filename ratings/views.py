@@ -491,7 +491,7 @@ def paginate_businesses(business_list,page, num):
 def index(request):
     
     if request.user.is_authenticated():
-        
+       	logger.debug("zouf logged in user!"); 
         community = get_community(request.user)
         businesses = []
         try:

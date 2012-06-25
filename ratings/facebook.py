@@ -3,6 +3,7 @@ Created on Jun 25, 2012
 
 @author: zouf
 '''
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from rateout.settings import FB_APP_SECRET
@@ -28,8 +29,11 @@ def handle_fb_request(request):
     fb_data = parse_signed_request(request.POST.get('signed_request'))
     logger.debug('Registering FB user')
     logger.debug(fb_data)
-    add_fb_user(fb_data)
-    return redirect(index)
+    newuser = add_fb_user(fb_data)
+    if newuser:
+        logger.debug("successfull logged in as "+str(request.user))
+        login(request,newuser)
+	return redirect(index)
 
 
 
@@ -69,7 +73,7 @@ def login_fb_user(fbdata):
         u = User.objects.create(username=name,email=email)
     except:
         logger.error("Could not find user from the facebook auth")
-    u.authenticate(u.username,"facebook")
+    authenticate(username=name,password="facebook")
     
 
 
@@ -78,7 +82,11 @@ def add_fb_user(fbdata):
     email = fbdata['registration']['email']
     fbuser_id = fbdata['user_id']
     location = fbdata['registration']['location']
-    u = User.objects.create(username=name,email=email)
+    try:
+	u = User.objects.create(username=name,email=email)
+    except:
+        u = User.objects.get(username=name,email=email)
     u.set_password("facebook")
+    u.save() 
     fbuser = FacebookUser.objects.create(fbuser_id=fbuser_id,user=u)
-    u.authenticate(u.username,"facebook")
+    return authenticate(username=name,password="facebook")
