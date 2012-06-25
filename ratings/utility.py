@@ -6,9 +6,14 @@ Created on May 17, 2012
 
 from django.utils.encoding import smart_str
 from photos.views import get_photo_web_url, get_photo_thumb_url
+from rateout.settings import FB_APP_SECRET
 from ratings.models import Rating
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     getBusAvg
+import base64
+import hashlib
+import hmac
+import json
 import logging
 import simplejson
 import urllib
@@ -18,6 +23,29 @@ import urllib2
 
 logger = logging.getLogger(__name__)
 
+
+def fb_request_decode(signed_request):
+    s = [s.encode('ascii') for s in signed_request.split('.')]
+
+    fb_sig = base64.urlsafe_b64decode(s[0] + '=')
+    fb_data = json.loads(base64.urlsafe_b64decode(s[1]))
+    fb_hash = hmac.new(FB_APP_SECRET, s[1], hashlib.sha256).digest()
+
+    sig_match = False
+    if fb_sig == fb_hash:
+        sig_match = True
+
+    auth = False
+    if 'user_id' in fb_data:
+        auth = True
+
+    return {
+        'fb_sig' : fb_sig,
+        'fb_data' : fb_data,
+        'fb_hash' : fb_hash,
+        'sig_match' : sig_match,
+        'auth' : auth,
+    }
 
 
 def get_bus_data(business_list,user):

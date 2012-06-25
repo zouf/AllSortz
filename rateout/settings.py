@@ -15,6 +15,10 @@ ADMINS = (
 DEV_BOXES = ['hydralisk', 'connie-VirtualBox'] # add your dev computer here
 
 
+#for integration with facebook
+FB_APP_SECRET = "586868267b93b17ed6c04e0a346018e5"
+FB_APP_ID = "260788694033894"
+
 #true if we're on the servers for deployment. In other words, any computer but
 # the dev computers
 
