@@ -15,7 +15,7 @@
 
 						 </select>
 							<br />
-							<input type="submit" value="Add"/>
+							<input class="buttonme" type="submit" value="Add"/>
 						</form>
 							<p style="font-size:10px"  onclick="showAddTag()" >Think we're missing a sort?</p>
 							
@@ -28,7 +28,7 @@
 							{%else%}
 								<div id="addTagDiv">
 								<form name="addUserTagTB" action="." method="post">{%csrf_token%}
-								<input type="text" value="" name="tag" />
+								<input  type="text" value="" name="tag" />
 								</form>
 								</div>
 							{%endif%}

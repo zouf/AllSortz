@@ -48,6 +48,12 @@ $(function() {
     });
 });
 
+
+function rebind_buttons()
+{
+	$(".buttonme").button();
+}
+
 $(document).ready(function(){
 	$("#addTagDiv").hide();
 
@@ -83,7 +89,7 @@ $("form[name=addTagTB]").live("submit", function(e){
          success: function(data){
          	document.getElementById("tag_list").innerHTML = data
          	 $("#addTagDiv").hide();
-         	$("#addTagButton").button();
+         	rebind_buttons();
          }
     });
     return false;
@@ -101,7 +107,7 @@ $("form[name=addTagDD]").live("submit", function(e){
          success: function(data){
          	document.getElementById("tag_list").innerHTML = data   
          	 $("#addTagDiv").hide();
-         	$("#addTagButton").button();
+         	rebind_buttons();
          }
     });
     return false;
@@ -129,7 +135,7 @@ $(document).ready(function(){
 	         success: function(data){
 	        	 document.getElementById("tag_list").innerHTML = data      
 	        	 $("#addTagDiv").hide();
-	        	 $("#addTagButton").button();
+	        	 rebind_buttons();
 	         }
 	    });
 	    return false;
@@ -146,7 +152,7 @@ $(document).ready(function(){
 	         success: function(data){
 	         	$("#tag_list").html( data)
 	         	 $("#addTagDiv").hide();
-	         	$("#addTagButton").button();
+	         	rebind_buttons();
 	         }
 	    });
 	    return false;

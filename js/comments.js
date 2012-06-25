@@ -60,7 +60,7 @@ $("form[name=addComment]").live("submit", function(e){
          success: function(data){
          	var elem = document.getElementById("comment_list")
          	elem.innerHTML = data
-         	$(". buttonme").button();
+         	$(".buttonme").button();
          }
     });
     return false;
@@ -80,7 +80,7 @@ $(document).ready(function(){
 	         success: function(data){
 	         	var elem = document.getElementById("comment_list")
 	         	elem.innerHTML = data
-	         	$(". buttonme").button();
+	         	$(".buttonme").button();
 	         }
 	    });
 	    return false;
@@ -102,7 +102,7 @@ $(document).ready(function(){
 	         data  : form.serialize(), // data to be submitted
 	         success: function(data){
 	         	document.getElementById("comment_list").innerHTML = data
-	         	$(". buttonme").button();
+	         	$(".buttonme").button();
 	         }	
 	     });
 		
@@ -126,7 +126,7 @@ $("form[name=addReply]").live("submit", function(e){
          data  : form.serialize(), // data to be submitted
          success: function(data){
          	document.getElementById("comment_list").innerHTML = data   
-         	$(". buttonme").button();
+         	$(".buttonme").button();
          }
      });
 	

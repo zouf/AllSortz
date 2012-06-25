@@ -63,6 +63,9 @@
 								<input type="submit" class="ui-widget buttonme" value="Reply"></p>
 								<input type="hidden" name="bid" value="{{business.id}}"/>
 								<input type="hidden" name="cid" id="comment_{{comment.pk}}" value="{{comment.pk}}"/> 
+								{%if tag %}
+									<input type="hidden" name="tid" value="{{tag.id}}"/> 
+								{% endif %}
 							</form>
 						</div>
 					</td>
