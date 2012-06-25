@@ -97,12 +97,7 @@ alert('here')
 		</tr>
 		<tr>
 			<td colspan="3">
-			<hr/ >
-			</td>			
-		</tr>
-		<tr>
-			<td colspan="3">
-				<table>
+				<table id="detail">
 					<tr>
 						<td valign="top">
 							<div id="discussion_list" class="ui-widget tips_feed">
@@ -112,8 +107,14 @@ alert('here')
 								{% else %}
 									{% include 'ratings/discussion/wikipages.html' %}
 								{% endif %}
-								
 							</div>
+							<br />
+							<div id="tag_list">
+								{% if not form %}
+								{% include 'ratings/tags.html' %}
+								{%endif%}
+							</div>
+						</td>
 						<td valign="top">
 							{% if not tag %}
 							<div id="comment_list">
@@ -123,33 +124,16 @@ alert('here')
 							</div>
 							{% endif%}
 						</td>
-						
-					</tr>
-					<tr>
-						<td colspan="2" valign="top" >
-							
-								
-								<div id="tag_list" class="ui-widget tags_feed">
-									{% if not form %}
-									{% include 'ratings/tags.html' %}
-									{%endif%}
-								</div>
-						</td>
 					</tr>
 				</table>
 			</td>
 		</tr>
 		</table>
     
-{% else %}
-    <p>Invalid business!.</p>
-{% endif %}
-
-	
+	{% else %}
+	    <p>Invalid business!.</p>
+	{% endif %}
 	</div>
-	
-<hr />
-
 
 {% endblock %}
 
