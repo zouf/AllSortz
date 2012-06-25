@@ -22,7 +22,10 @@ def handle_fb_login(request):
     fb_data = parse_signed_request(request.POST.get('signed_request'))
     logger.debug('Logging in FB user')
     logger.debug(fb_data)
-    login_fb_user(fb_data)
+    newuser = login_fb_user(fb_data)
+    if newuser:
+        logger.debug("LOGIN: successfully logged in as "+str(request.user))
+        login(request,newuser)
     return redirect(index)
 
 def handle_fb_request(request):
@@ -31,9 +34,9 @@ def handle_fb_request(request):
     logger.debug(fb_data)
     newuser = add_fb_user(fb_data)
     if newuser:
-        logger.debug("successfull logged in as "+str(request.user))
+        logger.debug("REGISTER: successfully logged in as "+str(request.user))
         login(request,newuser)
-	return redirect(index)
+    return redirect(index)
 
 
 
@@ -73,7 +76,7 @@ def login_fb_user(fbdata):
         u = User.objects.create(username=name,email=email)
     except:
         logger.error("Could not find user from the facebook auth")
-    authenticate(username=name,password="facebook")
+    return authenticate(username=name,password="facebook")
     
 
 
@@ -83,10 +86,10 @@ def add_fb_user(fbdata):
     fbuser_id = fbdata['user_id']
     location = fbdata['registration']['location']
     try:
-	u = User.objects.create(username=name,email=email)
+        u = User.objects.create(username=name,email=email)
+        FacebookUser.objects.create(fbuser_id=fbuser_id,user=u)
     except:
         u = User.objects.get(username=name,email=email)
     u.set_password("facebook")
     u.save() 
-    fbuser = FacebookUser.objects.create(fbuser_id=fbuser_id,user=u)
     return authenticate(username=name,password="facebook")
