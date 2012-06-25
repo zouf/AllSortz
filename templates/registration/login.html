@@ -14,12 +14,34 @@
         window.fbAsyncInit = function() {
           FB.init({
             appId      : '260788694033894', // App ID
-            redirect_uri	: 'http://www.allsortz.com/handle_fb_login/', // Channel File
-         //   status     : true, // check login status
-            cookie     : true, // enable cookies to allow the server to access the session
+            channelURL	: 'http://www.allsortz.com/handle_fb_login/', // Channel File
+            status     : true, // check login status
+//            cookie     : true, // enable cookies to allow the server to access the session
             xfbml      : true  // parse XFBML
           });
-        };
+	  FB.getLoginStatus(function(response) {
+
+			  $('#fbdiv').hide();      
+			  if (response.status === 'connected') {
+			  var uid = response.authResponse.userID;
+			  var accessToken = response.authResponse.accessToken;
+			  $.ajax({
+type: 'POST',
+url: '/handle_fb_login/',
+data: {sig:response.authResponse.signedRequest, fbuid:response.authResponse.userID},
+});
+			  } else {
+			  // Subscribe to the event 'auth.authResponseChange' and wait for the user to autenticate
+			  FB.Event.subscribe('auth.authResponseChange', function(response) {
+				  // nothing more needed than to reload the page
+				  window.location.reload();
+				  },true);      
+
+			  // now dynamically show the login plugin
+			  $('#fbdiv').show();      
+			  }
+});       		
+};
         // Load the SDK Asynchronously
         (function(d){
            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
@@ -30,7 +52,7 @@
          }(document));
       </script>
 
-      <div class="fb-login-button">Login with Facebook</div>
+      <div id="fbdiv" class="fb-login-button" >Login with Facebook</div>
       
       
 
