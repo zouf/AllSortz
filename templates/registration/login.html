@@ -35,22 +35,13 @@
     form.submit();
 }
       	
-      	
-        window.fbAsyncInit = function() {
-          FB.init({
-            appId      : '260788694033894', // App ID
-            channelURL	: 'http://www.allsortz.com/handle_fb_login/', // Channel File
-            status     : true, // check login status
-//            cookie     : true, // enable cookies to allow the server to access the session
-            xfbml      : true  // parse XFBML
-          });
-	  FB.getLoginStatus(function(response) {
-
-if (response){
-var method = 'POST';
-var url = '/handle_fb_login/';
-var params = {sig:response.authResponse.signedRequest, fbuid:response.authResponse.userID};
-post_to_url(url, params, method);
+      		  function handle_fb_login(arguments) {
+				alert('here');
+			if (response){
+			var method = 'POST';
+			var url = '/handle_fb_login/';
+			var params = {sig:response.authResponse.signedRequest, fbuid:response.authResponse.userID};
+			post_to_url(url, params, method);
 			  } else {
 			  // Subscribe to the event 'auth.authResponseChange' and wait for the user to autenticate
 			  FB.Event.subscribe('auth.authResponseChange', function(response) {
@@ -59,9 +50,19 @@ post_to_url(url, params, method);
 				  },true);      
 
 			  // now dynamically show the login plugin
-			  $('#fbdiv').show();      
 			  }
-});       		
+};
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '260788694033894', // App ID
+            channelURL	: 'http://www.allsortz.com/handle_fb_login/', // Channel File
+            status     : true, // check login status
+//            cookie     : true, // enable cookies to allow the server to access the session
+            xfbml      : true  // parse XFBML
+          });
+          
+          
+       		
 };
         // Load the SDK Asynchronously
         (function(d){
@@ -73,7 +74,7 @@ post_to_url(url, params, method);
          }(document));
       </script>
 
-      <div id="fbdiv" class="fb-login-button" >Login with Facebook</div>
+      <div id="fbdiv" class="fb-login-button" registration-url="http://www.allsortz.com/accounts/register/"  on-login="handle_fb_login(arguments)">Login with Facebook</div>
       
       
 
