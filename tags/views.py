@@ -83,7 +83,7 @@ def add_user_tag(request):
         user_tags = get_tags_user(u)
         tags = Tag.objects.all()
         print(user_tags)
-        return render_to_response('ratings/user/tags.html', {'user':request.user, 'tags': tags, 'user_sorts': user_tags})
+        return render_to_response('ratings/tags.html', {'user':request.user, 'tags': tags, 'user_sorts': user_tags})
 
 def get_top_tags(N):
     tags = Tag.objects.filter()[:N]
