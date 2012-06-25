@@ -16,16 +16,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 def handle_fb_login(request):
-    logger.debug("zouflogin")
-    facebook_data = parse_signed_request(request.POST.get('signed_request'))
-    logger.debug('zouf----')
-    logger.debug(facebook_data['fb_data'])
+    fb_data = parse_signed_request(request.POST.get('signed_request'))
+    logger.debug('Logging in FB user')
+    logger.debug(fb_data)
 
 def handle_fb_request(request):
-    facebook_data = parse_signed_request(request.POST.get('signed_request'))
-    logger.debug('zouf----')
-    logger.debug(facebook_data['fb_data'])
-    add_fb_user(facebook_data['fb_data'])
+    fb_data = parse_signed_request(request.POST.get('signed_request'))
+    logger.debug('Registering FB user')
+    logger.debug(fb_data)
+    add_fb_user(fb_data)
 
 
 def base64_url_decode(inp):
