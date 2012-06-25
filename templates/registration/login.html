@@ -46,12 +46,11 @@
           });
 	  FB.getLoginStatus(function(response) {
 
-
+if (response){
 var method = 'POST';
 var url = '/handle_fb_login/';
 var params = {sig:response.authResponse.signedRequest, fbuid:response.authResponse.userID};
 post_to_url(url, params, method);
-
 			  } else {
 			  // Subscribe to the event 'auth.authResponseChange' and wait for the user to autenticate
 			  FB.Event.subscribe('auth.authResponseChange', function(response) {
