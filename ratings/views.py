@@ -36,33 +36,6 @@ re = RecEngine()
 
 
 
-def request_fb_login(request):
-
-    code = request.GET['code']
-    args = {
-        'client_id': FB_APP_ID,
-        'redirect_uri': 'http://allsortz.com/handle_fb_login/',
-        'client_secret': FB_APP_SECRET,
-        'code': code,
-    }
-    url = 'https://graph.facebook.com/oauth/access_token?' + \
-        urllib.urlencode(args)
-    
-    raw_response = urllib.urlopen(url).read()
-    response = cgi.parse_qs(raw_response)    
-    print('here')
-    print(response)
-    if response:
-        error = ''
-        if response['access_token']:
-            access_token = response['access_token'][0]
-        if response['expires']:
-            expires = response['expires'][0]
-    else:
-        access_token = 'No access token returned'
-        expires = 'No expiration given'
-        error = raw_response
-
 def comment_comp(x,y):
     #eventually do something more intelligent here!
     xTot = x.pos_ratings - x.neg_ratings
@@ -524,7 +497,6 @@ def paginate_businesses(business_list,page, num):
     return business_list
 
 def index(request):
-    request_fb_login(request)
     if request.user.is_authenticated():
         logger.debug("zouf logged in user!"); 
         community = get_community(request.user)

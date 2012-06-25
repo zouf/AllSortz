@@ -11,6 +11,31 @@
 
       <div id="fb-root"></div>
       <script>
+      	function post_to_url(path, params, method) {
+		    method = method || "post"; // Set method to post by default, if not specified.
+		
+		    // The rest of this code assumes you are not using a library.
+		    // It can be made less wordy if you use one.
+		    var form = document.createElement("form");
+		    form.setAttribute("method", method);
+		    form.setAttribute("action", path);
+		
+		    for(var key in params) {
+		        if(params.hasOwnProperty(key)) {
+		            var hiddenField = document.createElement("input");
+		            hiddenField.setAttribute("type", "hidden");
+		            hiddenField.setAttribute("name", key);
+		            hiddenField.setAttribute("value", params[key]);
+		
+		            form.appendChild(hiddenField);
+		         }
+		    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+      	
+      	
         window.fbAsyncInit = function() {
           FB.init({
             appId      : '260788694033894', // App ID
@@ -21,16 +46,10 @@
           });
 	  FB.getLoginStatus(function(response) {
 
-			  $('#fbdiv').hide();      
-			  if (response.status === 'connected') {
-			  var uid = response.authResponse.userID;
-			  var accessToken = response.authResponse.accessToken;
-			  $.ajax({
-type: 'POST',
-url: '/handle_fb_login/',
-data: {sig:response.authResponse.signedRequest, fbuid:response.authResponse.userID},
-});
-		window.reload('/')
+var method = 'POST';
+var url = '/handle_fb_login/';
+var params = {sig:response.authResponse.signedRequest, fbuid:response.authResponse.userID};
+post_to_url(url, params, method);
 			  } else {
 			  // Subscribe to the event 'auth.authResponseChange' and wait for the user to autenticate
 			  FB.Event.subscribe('auth.authResponseChange', function(response) {
