@@ -60,7 +60,11 @@ urlpatterns = patterns('',
     url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.detail_keywords'),
     url(r'^ratings/search_tags/$', 'ratings.views.search'),
 	(r'^search/', include('haystack.urls')),
+    
+    #for adding content to the site
 	url(r'^ratings/add_business/$', 'ratings.views.add_business'),
+    url(r'^ratings/add_content/$', 'ratings.views.add_content'),
+
     url(r'^admin/', include(admin.site.urls)),
     # Login / logout.
     url(r'^login/$', 'django.contrib.auth.views.login'),

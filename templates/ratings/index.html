@@ -4,8 +4,6 @@
 <script type="text/javascript">
 $(function() {
 		$( "input:submit, a, button", ".demo" ).button();
-		$( "#submitBus").button();
-		$( "#submitBus" ).click(function() { window.location="/ratings/add_business/" });
 	});
 </script>
 
@@ -24,11 +22,6 @@ $(function() {
 		<td>
 			{% include 'ratings/buslist.html' %}
 		</td>
-		<td>
-		<div id="side_bar" style="float:left; width:200px">
-			<button id="submitBus">List</button>
-		</div>
-		</td>
 		</tr>
 		</table>
 	</div>
@@ -43,7 +36,7 @@ $(function() {
 	</div>
 
 {% else %}
-    <p>No businesses are available.</p>
-    <p><a href="/ratings/add_business/">Add a business</a></p>
+    <p>No businesses found. </p>
+    <p><a href="/ratings/add_business/">List a business</a></p>
 {% endif %}
 {% endblock %}

@@ -8,6 +8,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from photos.models import BusinessPhoto
 from photos.views import get_photo_thumb_url, get_photo_web_url
+from rateout.settings import FB_APP_ID, FB_APP_SECRET
 from ratings.forms import BusinessForm, CommentForm
 from ratings.models import Business, Comment, CommentRating, TagComment, \
     PageRelationship, BusinessComment
@@ -17,19 +18,26 @@ from ratings.utility import get_lat, get_bus_data
 from recommendation.normalization import getBusAvg, getNumPosRatings, \
     getNumNegRatings
 from recommendation.recengine import RecEngine
-from tags.models import CommentTag, Tag, BusinessTag, UserTag
+from tags.forms import HardTagForm
+from tags.models import CommentTag, Tag, BusinessTag, UserTag, HardTag, \
+    BooleanQuestion
 from tags.views import get_tags_business, get_pages, get_tags_user, get_top_tags, \
-    get_all_sorts
+    get_all_sorts, get_hard_tags
 from wiki.forms import PageForm
 from wiki.models import Page
 from wiki.views import view
+import cgi
 import logging
 import sys
+import urllib
 
 
 logger = logging.getLogger(__name__)
 
 re = RecEngine()
+
+
+
 def comment_comp(x,y):
     #eventually do something more intelligent here!
     xTot = x.pos_ratings - x.neg_ratings
@@ -121,6 +129,8 @@ def get_comments(b,user=False,q=""):
                 c.pos_ratings = 0
                 c.neg_ratings = 0
         results.append(c)
+
+        
     return results
 
 
@@ -206,23 +216,29 @@ def add_tag_comment(request):
     if request.method == 'POST':  # add a comment!
         form = request.POST       
         if 'tid'  in form:
+            print('in tid')
             print(form)
-
-            tid = form['tid']
-            bt = BusinessTag.objects.get(id=tid)
-            t = bt.tag
             
+            tid = form['tid']
+            try:
+                t = Tag.objects.get(id=tid)
+            except:
+                print('fucled')
+            #t = bt.tag
+
             if 'cid' not in form:      #root reply
                 print(form)
                 nm = form['comment']
-    
+                
                 k = Comment(descr=nm,user=request.user,reply_to=None)
                 k.save()
+                print('root comment')
                 tc = TagComment(tag=t,thread=k)
-                tc.save(0)
+                tc.save()
             else:  #reply to another comment submission
                 nm = form['comment']
                 cid = form['cid']
+                print('here')
                 c = Comment.objects.get(id=cid)
                 k = Comment.objects.create(descr=nm,user=request.user,reply_to=c)
                 k.save()
@@ -384,6 +400,8 @@ def edit_tag_discussion(request,bus_id,page_id):
     
     t = pgr.tag
     comments = get_tag_comments(t,request.user)
+    print(comments)
+    print('above are comments')
     user_tags = get_tags_user(request.user,"")
     top_tags = get_top_tags(10)   
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
@@ -423,7 +441,9 @@ def detail_keywords(request, bus_id):
         
     user_tags = get_tags_user(request.user,"")
     top_tags = get_top_tags(10)    
-        
+    hard_tags = get_hard_tags(b)   
+       
+     
     pages = get_pages(b,bus_tags)
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
     try:
@@ -443,10 +463,34 @@ def detail_keywords(request, bus_id):
         'user_sorts':user_tags,\
         'top_sorts':top_tags,\
         'all_sorts':get_all_sorts(4),\
+        'hard_tags':hard_tags,\
         'location_term':get_community(request.user)
         }
 
     return render_to_response('ratings/detail.html', context_instance=RequestContext(request,context))
+
+
+def add_content(request):
+    #post a question 
+    if request.method=='POST':
+        form = HardTagForm(request.POST,request.FILES)
+        question = form.data['question']
+        descr = form.data['descr']
+        
+        ht = HardTag.objects.create(creator=request.user,question=question,descr=descr)
+        return redirect(index)
+    else:
+        f = HardTagForm()
+        user_tags = get_tags_user(request.user,"")
+        top_tags = get_top_tags(10)    
+        
+        context = { 'form':f, \
+                    'user_sorts':user_tags,\
+                'top_sorts':top_tags,\
+                'all_sorts':get_all_sorts(4),\
+                'location_term':get_community(request.user) }
+        
+        return render_to_response('ratings/contribute/add_content.html', {'form': f}, context_instance=RequestContext(request))
 
 
 def add_business(request):
@@ -458,23 +502,47 @@ def add_business(request):
         address = form.data['address']
         city = form.data['city']
         state = form.data['state']
-        img = request.FILES['image']
-
+        
         b = create_business(name, address, state, city, 1, 1)
         b.save()
-       
-        bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
-        bp.save()
+        if 'image' in request.FILES:
+            img = request.FILES['image']
+            bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
+            bp.save()
+   
+      
         
         community = get_community(request.user)
         
         bm = BusinessMembership(business=b,community=community)
         bm.save()
         
+        values = request.POST.getlist('answers')
+        for v in values:
+            ans = v.split('_')[1]
+            qid = v.split('_')[0]
+            hardtag = HardTag.objects.get(id=qid)
+            if ans == 'y':
+                BooleanQuestion.objects.create(hardtag=hardtag,business = b,agree=True)
+            else:
+                BooleanQuestion.objects.create(hardtag=hardtag,business = b,agree=False) 
+        
         return redirect(detail_keywords,b.id)
     else:  # Print a boring business form
         f = BusinessForm()
-        return render_to_response('ratings/add_business.html', {'form': f}, context_instance=RequestContext(request))
+        user_tags = get_tags_user(request.user,"")
+        top_tags = get_top_tags(10)    
+        
+        questions = HardTag.objects.all()
+        
+        context = { 'form':f, \
+                    'user_sorts':user_tags,\
+                'top_sorts':top_tags,\
+                'questions':questions,\
+                'all_sorts':get_all_sorts(4),\
+                'location_term':get_community(request.user) }
+        
+        return render_to_response('ratings/contribute/add_business.html', context, context_instance=RequestContext(request))
 
 
 
@@ -489,9 +557,8 @@ def paginate_businesses(business_list,page, num):
     return business_list
 
 def index(request):
-    
     if request.user.is_authenticated():
-       	logger.debug("zouf logged in user!"); 
+        logger.debug("zouf logged in user!"); 
         community = get_community(request.user)
         businesses = []
         try:

@@ -33,9 +33,9 @@ def handle_fb_login(request):
         user = fbu.user
         authuser = authenticate(username=user.username,password="facebook");
         if authuser:
+		logger.debug("zouflogging logged in "+str(authuser.username))
                 login(request,authuser)
-        return redirect(index)
-            
+            	return redirect(index)
     #fb_data = parse_signed_request(request.POST.get('signed_request'))
     #logger.debug('Logging in FB user')
     #logger.debug(fb_data)
@@ -53,32 +53,8 @@ def handle_fb_request(request):
     if newuser:
         logger.debug("REGISTER: successfully logged in as "+str(request.user))
         login(request,newuser)
-    return redirect(index)
+    return True
 
-
-def request_fb_login():
-    state = "zouf1234"
-    args = {
-        'client_id': FB_APP_ID,
-        'redirect_uri': 'http://allsortz.com/handle_fb_login/',
-        'state': state
-    }
-    url = 'https://www.facebook.com/dialog/oauth?' + \
-            urllib.urlencode(args)
-    
-    raw_response = urllib.urlopen(url).read()
-    response = cgi.parse_qs(raw_response)    
-    
-    if response:
-        error = ''
-        if response['access_token']:
-            access_token = response['access_token'][0]
-        if response['expires']:
-            expires = response['expires'][0]
-    else:
-        access_token = 'No access token returned'
-        expires = 'No expiration given'
-        error = raw_response
 
 
 def base64_url_decode(inp):

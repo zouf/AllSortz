@@ -87,7 +87,21 @@ alert('here')
 				<br><br>
 				<img src="{{business.photourl}}"  />
 			</div>
-			
+			<ul>
+				
+			{% for ht in hard_tags %}
+				{% if ht.answer %}
+					<li>{{ht.question}}: Yes!</li>
+				{%else%}
+					<li>{{ht.question}}: No!</li>
+				{%endif%}
+			{% endfor%}
+			</ul>
+			{% if hard_tags%}
+			<a href="/ratings/answer_questions/{{ bus.id }}">Answer some questions yourself!</a>
+			{%else%}
+			<a href="/ratings/answer_questions/{{ bus.id }}">No one's answered any questions about {{business.name}}. Answer some yourself </a>
+			{%endif%}
 		</td>
 		<td>
 		</td>
@@ -124,6 +138,7 @@ alert('here')
 							</div>
 							{% endif%}
 						</td>
+						
 					</tr>
 				</table>
 			</td>

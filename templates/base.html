@@ -24,6 +24,7 @@
 		$( "input:submit").button();
 		$( "#topSorts").button();
 		$( "#yourSorts").button();
+		$( "#addStuff").button();
 	});
 </script>
 
@@ -89,19 +90,26 @@
 			</form>
 		</div>
 		<ul id="dropdown">
-			<li id="yourSorts" style="width:150px;">Your Sorts
+			<li id="yourSorts" style="width:120px;">Your Sorts
 				<ul id="dropdown-list1">
 					{% for sort in user_sorts %}
 					<li><p style="display:inline"><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></p></li>
 					{% endfor %}
-					<li><p style="display:inline"> <a href="/user_details/"> Add a Sort</a> </p></li>
 				</ul>
 			</li>
-			<li id="topSorts" style="width:150px;">AllSorts
+			<li id="topSorts" style="width:120px;">AllSorts
 				<ul id="dropdown-list2">
 					{% for sort in top_sorts %}
 					<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
 					{% endfor %}
+				</ul>
+			</li>
+			<li id="addStuff" style="width:120px;">Add
+				<ul id="dropdown-list3">
+
+					<li><a href="/ratings/add_business/">Businesses</a></li>
+					<li><a href="/ratings/add_content/">Tags</a></li>
+				
 				</ul>
 			</li>
 		</ul>

@@ -20,6 +20,7 @@ class Business(models.Model):
     def __unicode__(self):
         return self.name
         
+        
 
 class FacebookUser(models.Model):
     fbuser_id = models.IntegerField()

@@ -3,12 +3,14 @@ Created on Jun 12, 2012
 
 @author: zouf
 '''
+from django.db.models.aggregates import Count
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from ratings.models import Business, Comment, PageRelationship
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
-from tags.models import Tag, TagRating, CommentTag, UserTag, BusinessTag
+from tags.models import Tag, TagRating, CommentTag, UserTag, BusinessTag, \
+    BooleanQuestion, HardTag
 from wiki.models import Page
 import json
 import logging
@@ -17,6 +19,9 @@ import sys
 logger = logging.getLogger(__name__)
     
 
+    
+    
+    
     
 #sorts tags
 def tag_comp(x,y):
@@ -154,3 +159,30 @@ def get_tags_business(b,user=False,q=""):
     for bt in bustags:
         tags.append(bt.tag)
     return tags
+
+
+def get_hard_tags(b):
+    hardtags = HardTag.objects.all()
+    results = []
+    for ht in hardtags:
+        PosAnswers = BooleanQuestion.objects.filter(hardtag=ht,business=b,agree=True)
+        TotAnswers = BooleanQuestion.objects.filter(hardtag=ht,business=b)
+        
+        PosAnswers = PosAnswers.aggregate(Count('hardtag'))
+        TotAnswers = TotAnswers.aggregate(Count('hardtag'))
+        
+        numPos = PosAnswers['hardtag__count']
+        numTot = TotAnswers['hardtag__count']
+        
+        if numTot != 0:
+            if numPos / numTot > 0.5:
+                ans = True
+            else:
+                ans = False
+   
+            ques = dict()
+            ques['question'] = ht.question
+            ques['answer'] = ans
+            results.append(ques)
+    return results
+
