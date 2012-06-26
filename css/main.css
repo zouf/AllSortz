@@ -80,7 +80,10 @@ li
 #content
 {
     width: 100%;
-    height: 900px;
+    min-height: 900px;
+    margin-bottom: 25px;
+    padding: 5px 0px;
+    overflow: auto;
 }
 
 .section
@@ -99,7 +102,7 @@ li
 {
     float: left;
     width: 580px;
-    height: 300px;
+    min-height: 300px;
     margin-left: 12px;
 }
 
@@ -107,7 +110,7 @@ li
 {
     float: left;
     width: 580px;
-    height: 480px;
+    min-height: 480px;
     margin-left: 12px;
     margin-top: 20px;
 }
@@ -116,7 +119,7 @@ li
 {
     float: right;
     width: 330px;
-    height: 820px;
+    min-height: 820px;
     margin-right: 12px;
 }
 
