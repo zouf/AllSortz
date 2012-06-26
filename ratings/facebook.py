@@ -3,7 +3,6 @@ Created on Jun 25, 2012
 
 @author: zouf
 '''
-from IPython.config.configurable import MultipleInstanceError
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
