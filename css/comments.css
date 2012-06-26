@@ -7,9 +7,9 @@
 #comments ul
 {
     list-style: none;
-    background-color: #FFFFFF;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+    margin: 10px 0px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
 }
 
 #comments li
@@ -17,18 +17,11 @@
     font-size: 16px;
 }
 
-.commentListing
-{
-    padding: 10px;
-    margin-left: -40px;
-}
-
 /* Comments */
 #comments ul ul
 {
     list-style: none;
-    -moz-border-radius: 0px;
-    border-radius: 0px;
+    padding: 5px;
 }
 
 #comments ul ul li
@@ -41,12 +34,23 @@
 /* Replies */
 #comments ul ul ul
 {
-    padding: 5px auto;
-    border: none;
-    border-left: 1px solid #E0E0FF;
+    margin-left: 20px;
 }
 
-#comments ul ul ul li
+.commentListing
 {
-    
+    margin: 5px;
+    margin-left: 20px;
+}
+
+.even-background
+{
+	background-color: #F9FCEA;
+	border: 1px solid #070771;
+}
+
+.odd-background
+{
+	background-color: #CFDFDF;
+	border: 1px solid #070771;
 }
