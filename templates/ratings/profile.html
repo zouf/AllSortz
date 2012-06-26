@@ -2,14 +2,13 @@
 	<i>{{business.city}}, {{business.state}}</i>
 	
 	<table>
-	<tr>
-	<td width="40px">
-	{% include 'ratings/listing/vote_data.html' %}
-	</td><td>
-	<br><br>
-	<img src="{{business.photourl}}" />
-	</td>
-	</tr>
+		<tr>
+			<td width="40px">
+				{% include 'ratings/listing/vote_data.html' %}
+			</td><td>
+				<img src="{{business.photourl}}" />
+			</td>
+		</tr>
 	</table>
 	
 	{% for ht in hard_tags %}
@@ -33,6 +32,6 @@
 
 <div id="allSorts" style="float: right; margin: 0px 20px;">
 	{% if hard_tags %}
-	{% include 'ratings/sorts.html' %}
+		{% include 'ratings/sorts.html' %}
 	{%endif%}
 </div>
