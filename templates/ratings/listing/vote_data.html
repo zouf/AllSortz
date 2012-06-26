@@ -1,0 +1,34 @@
+    		<input type="hidden" value="business" id="vote_on" />
+<div id="answer_{{business.id}}" class="answer">
+					{% if business.this_rat > 0 %}
+						{% if business.this_rat > 2 %}
+							<div class="vote up">
+							<span id="vote_pos_{{business.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
+							</div>
+							<div class="vote down">
+							<span id="vote_neg_{{business.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+							</div>
+							
+						{% else %}
+							<div class="vote up">
+							<span id="vote_pos_{{business.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
+							</div>
+							<div class="vote down">
+							<span id="vote_neg_{{business.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
+							</div>
+						{%endif%}
+					{%else%}
+							<div class="vote up">
+							<span id="vote_pos_{{business.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
+							</div>
+							<div class="vote down">
+							<span id="vote_neg_{{business.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+							</div>
+					{% endif %}
+							  <table>
+							  <tr>
+							  <td><div id="pos_rating_{{business.id}}" class="pos_rating">{{business.pos_ratings}}</div></td>
+							  <td><div id="neg_rating_{{business.id}}" class="neg_rating">{{business.neg_ratings}}</div></td>
+							  </tr>
+							  </table>
+					</div>

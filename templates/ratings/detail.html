@@ -78,15 +78,28 @@ alert('here')
 		<tr >
 		<td>
     	<div id="prime_list" style="width:700px" >
-		
-			    
+		 
     <h1>{{ business.name }}</h1>
-	
-		    <div id="businessDetail" >
-				<i> {{ business.city }}, {{business.state}}</i>
-				<br><br>
-				<img src="{{business.photourl}}"  />
-			</div>
+    
+    
+					  <table>
+		    	<tr>
+					<td style="width:40px;">
+						{% include 'ratings/listing/vote_data.html' %}
+					</td>
+					<td>
+					
+						
+					    <div id="businessDetail" >
+							<i> {{ business.city }}, {{business.state}}</i>
+							<br><br>
+							<img src="{{business.photourl}}"  />
+						</div>
+			
+					</td>
+					</tr>
+					
+				  </table> 
 			<ul>
 				
 			{% for ht in hard_tags %}

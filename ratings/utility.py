@@ -24,6 +24,33 @@ import urllib2
 logger = logging.getLogger(__name__)
 
 
+def get_single_bus_data(b,user):
+    b.average_rating = round(getBusAvg(b.id) * 2) / 2
+    b.photourl = get_photo_thumb_url(b)
+    b.num_ratings = getNumRatings(b.id)
+       
+    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+    try:
+        b.photourl = get_photo_web_url(b)
+    except:
+        b.photourl= "" #NONE
+
+    if latlng:
+        b.lat=latlng[0]
+        b.lon = latlng[1]
+    else:
+        b.lat = 0
+        b.lon = 0
+    if user.is_authenticated():
+        b.pos_ratings = getNumPosRatings(b)
+        b.neg_ratings = getNumNegRatings(b)
+        thisRat = Rating.objects.filter(username=user, business=b)
+        if thisRat.count() > 0:
+            r = Rating.objects.get(username=user, business=b)
+            b.this_rat = r.rating
+        else:
+            b.this_rat = 0
+    return b
 
 def get_bus_data(business_list,user):
     for b in business_list:

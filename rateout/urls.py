@@ -54,6 +54,9 @@ urlpatterns = patterns('',
 
     #answer questions on businesses
     url(r'^ratings/answer_questions/(?P<bus_id>\d+)$','ratings.views.ans_business_questions'),
+    url(r'^ratings/answer_questions/(?P<bus_id>\d+)$','ratings.views.ans_business_questions'),
+
+    
     
     #url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),
@@ -65,7 +68,9 @@ urlpatterns = patterns('',
     
     #for adding content to the site
 	url(r'^ratings/add_business/$', 'ratings.views.add_business'),
-    url(r'^ratings/add_content/$', 'ratings.views.add_content'),
+    url(r'^ratings/add_question/$', 'ratings.views.add_question'),
+    url(r'^ratings/add_new_tag/$', 'ratings.views.add_new_tag'),
+
 
     url(r'^admin/', include(admin.site.urls)),
     # Login / logout.

@@ -42,6 +42,7 @@ def add_tag_business(request):
         nm = form['tag']
         logger.debug('Create a tag '+str(nm))
         bid = form['bid']
+            
         b = Business.objects.get(id=bid)
         try:
             tag = Tag.objects.get(descr=nm)

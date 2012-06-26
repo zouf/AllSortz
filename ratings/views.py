@@ -14,15 +14,15 @@ from ratings.models import Business, Comment, CommentRating, TagComment, \
     PageRelationship, BusinessComment
 from ratings.populate import create_business
 from ratings.search import search_site
-from ratings.utility import get_lat, get_bus_data
+from ratings.utility import get_lat, get_bus_data, get_single_bus_data
 from recommendation.normalization import getBusAvg, getNumPosRatings, \
     getNumNegRatings
 from recommendation.recengine import RecEngine
-from tags.form import HardTagForm
+from tags.form import HardTagForm, TagForm
 from tags.models import CommentTag, Tag, BusinessTag, UserTag, HardTag, \
     BooleanQuestion
 from tags.views import get_tags_business, get_pages, get_tags_user, get_top_tags, \
-    get_all_sorts, get_hard_tags, get_questions
+    get_all_sorts, get_hard_tags, get_questions, get_all_tags
 from wiki.forms import PageForm
 from wiki.models import Page
 from wiki.views import view
@@ -447,11 +447,13 @@ def detail_keywords(request, bus_id):
      
     pages = get_pages(b,bus_tags)
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+    b = get_single_bus_data(b,request.user)
+    
     try:
         b.photourl = get_photo_web_url(b)
     except:
         b.photourl= "" #NONE
-
+    
     if latlng:
         context =   { \
         'business' : b, \
@@ -471,12 +473,40 @@ def detail_keywords(request, bus_id):
     return render_to_response('ratings/detail.html', context_instance=RequestContext(request,context))
 
 
-def add_content(request):
+def add_new_tag(request):
     #post a question 
     if request.method=='POST':
-        form = HardTagForm(request.POST,request.FILES)
-        question = form.data['question']
+        form = TagForm(request.POST,request.FILES)
         descr = form.data['descr']
+       
+        
+        Tag.objects.create(creator=request.user,descr=descr)
+        return redirect(index)
+    else:
+        f = TagForm()
+        user_tags = get_tags_user(request.user,"")
+        top_tags = get_top_tags(10)    
+       
+        
+        context = { 'form':f, \
+                    'user_sorts':user_tags,\
+                'top_sorts':top_tags,\
+                'tags': Tag.objects.all(),\
+                'all_sorts':get_all_sorts(4),\
+                'location_term':get_community(request.user) }        
+        return render_to_response('ratings/contribute/add_content.html',context, context_instance=RequestContext(request))
+
+
+def add_question(request):
+    #post a question 
+    if request.method=='POST':
+        form = HardTagForm(request.POST)
+        question = form.data['question']
+        
+        if 'tag' in form.data:
+            descr = form.data['tag']
+        else:
+            descr = 'unset'
         
         ht = HardTag.objects.create(creator=request.user,question=question,descr=descr)
         return redirect(index)
@@ -488,41 +518,63 @@ def add_content(request):
         context = { 'form':f, \
                     'user_sorts':user_tags,\
                 'top_sorts':top_tags,\
+                 'tags': Tag.objects.all(),\
                 'all_sorts':get_all_sorts(4),\
-                'location_term':get_community(request.user) }
-        
-        return render_to_response('ratings/contribute/add_content.html', {'form': f}, context_instance=RequestContext(request))
+                'location_term':get_community(request.user) }        
+        return render_to_response('ratings/contribute/add_content.html', context, context_instance=RequestContext(request))
 
 def ans_business_questions(request,bus_id):
-    b = get_object_or_404(Business, pk=bus_id)
     if request.method == 'POST':
         if not request.user.is_authenticated():
             return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
  
-    user_tags = get_tags_user(request.user,"")
-    top_tags = get_top_tags(10)    
-
-   
-    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
-    try:
-        b.photourl = get_photo_web_url(b)
-    except:
-        b.photourl= "" #NONE
-    questions = get_questions(b,request.user)
-    if latlng:
-        context =   { \
-        'business' : b, \
-        'lat': latlng[0],\
-        'lng':latlng[1],  \
-        'questions':questions,\
-        'tags': Tag.objects.all(),\
-        'user_sorts':user_tags,\
-        'top_sorts':top_tags,\
-        'all_sorts':get_all_sorts(4),\
-        'location_term':get_community(request.user)
-        }
-
-    return render_to_response('ratings/detail.html', context_instance=RequestContext(request,context))
+    if request.method != 'POST':
+        b = get_object_or_404(Business, pk=bus_id)
+        user_tags = get_tags_user(request.user,"")
+        top_tags = get_top_tags(10)    
+    
+       
+        latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+        try:
+            b.photourl = get_photo_web_url(b)
+        except:
+            b.photourl= "" #NONE
+        questions = get_questions(b,request.user)
+        if latlng:
+            context =   { \
+            'business' : b, \
+            'lat': latlng[0],\
+            'lng':latlng[1],  \
+            'questions':questions,\
+            'tags': Tag.objects.all(),\
+            'user_sorts':user_tags,\
+            'top_sorts':top_tags,\
+            'all_sorts':get_all_sorts(4),\
+            'location_term':get_community(request.user)
+            }
+    
+        return render_to_response('ratings/contribute/ans_questions.html', context_instance=RequestContext(request,context))
+    else:
+        
+        bid = request.POST['bid']
+        values = []
+        #get the list of anwers
+        print(request.POST)
+        for key in request.POST:
+            if key.find('answer') > -1:
+                values.append(request.POST[key])
+                
+        b = Business.objects.get(id=bid)
+        
+        for v in values:
+            ans = v.split('_')[1]
+            qid = v.split('_')[0]
+            hardtag = HardTag.objects.get(id=qid)
+            if ans == 'y':
+                BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=True)
+            else:
+                BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=False) 
+        return redirect(detail_keywords,bus_id)
 
 def add_business(request):
  
@@ -554,9 +606,9 @@ def add_business(request):
             qid = v.split('_')[0]
             hardtag = HardTag.objects.get(id=qid)
             if ans == 'y':
-                BooleanQuestion.objects.create(hardtag=hardtag,business = b,agree=True)
+                BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=True)
             else:
-                BooleanQuestion.objects.create(hardtag=hardtag,business = b,agree=False) 
+                BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=False) 
         
         return redirect(detail_keywords,b.id)
     else:  # Print a boring business form

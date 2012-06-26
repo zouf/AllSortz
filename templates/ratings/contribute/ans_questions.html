@@ -7,20 +7,24 @@
 	});
 </script>
 	<div class="content ui-widget" >
-	<form action="." method="post" >{% csrf_token %}
+	{% if questions %}
+	<form action="/ratings/answer_questions/{{business.id}}" method="post" >{% csrf_token %}
 
-
+	
 		<div id="tagQuestions">
 			{% for q in questions %}
 					<p>{{q.question}}</p>
-					<input type="radio" name="answers" value="{{q.id}}_y"> Yes <br>
-					<input type="radio" name="answers" value="{{q.id}}_n"> No <br>
+					<input id="{{q.id}}_y" type="radio" name="answers_{{q.id}}" value="{{q.id}}_y"> Yes <br>
+					<input id="{{q.id}}_n" type="radio" name="answers_{{q.id}}" value="{{q.id}}_n"> No <br>
 			{% endfor %}	
 		
 		</div>
 				<p><input type="submit" value="Done" /></p>
-	
+				<input type="hidden" value="{{business.id}}" name="bid" />
 			</form>
+			{% else %}
+			<p><a href="/ratings/add_question/">Add Questions</a></p>
+			{%endif%}
 	</div>
 	
 	
