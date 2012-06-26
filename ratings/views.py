@@ -406,6 +406,7 @@ def edit_tag_discussion(request,bus_id,page_id):
     user_tags = get_tags_user(request.user,"")
     top_tags = get_top_tags(10)   
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+    b = get_single_bus_data(b,request.user)
     try:
         b.photourl = get_photo_web_url(b)
     except:
@@ -540,6 +541,8 @@ def ans_business_questions(request,bus_id):
         except:
             b.photourl= "" #NONE
         questions = get_questions(b,request.user)
+        b = get_single_bus_data(b,request.user)
+        
         if latlng:
             context =   { \
             'business' : b, \
