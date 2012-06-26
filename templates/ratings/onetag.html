@@ -10,35 +10,35 @@ $(function() {
 </script>
 
 {% if business_list %}
-	<div id="content">
-    <div id="trending" class="section" >
-    	
-    	{% if search_term %}
-			<h1>{{search_term}}</h1>
-			{%if location_term %}
-				<!--near <h2 class="search_term">{{location_term}}</h2>-->
-		     {%endif%}
-		{%endif%}
-	<table>
-		<tr>
-		<td>
-			{% include 'ratings/buslist.html' %}
-		</td>
-		<td>
-		</td>
-		</tr>
-		</table>
-	</div>
+	<div class="content">
+	    <div id="trending" class="section">
+	    	{% if search_term %}
+				<h1>{{search_term}}</h1>
+				{%if location_term %}
+					<!--near <h2 class="search_term">{{location_term}}</h2>-->
+			    {%endif%}
+			{%endif%}
+			<table>
+				<tr>
+				<td>
+					{% include 'ratings/buslist.html' %}
+				</td>
+				<td>
+				</td>
+				</tr>
+			</table>
+		</div>
+		
 		<div id="suggestions" class="section">
-    	
-    	{% if subscribed %}
-    		<p> You're subscribed to {{search_term}} </p>
-    	{%else%}
-    		<form name="addUserTag" action="." method="post">{% csrf_token %}
-    				<input type="hidden" name="tag" value="{{search_term}}" />
+	    	{% if subscribed %}
+	    		<p> You're subscribed to {{search_term}} </p>
+	    	{%else%}
+	    		<form name="addUserTag" action="." method="post">{% csrf_token %}
+	    			<input type="hidden" name="tag" value="{{search_term}}" />
 					<input type="submit" value="Subscribe to {{search_term}}"/>
-			</form>
-		{%endif%}
+				</form>
+			{%endif%}
+		</div>
     </div>
 	
 
