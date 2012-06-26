@@ -103,7 +103,7 @@ alert('here')
 			<div id="map_canvas"></div>
 			
 			<div id="allSorts" style="float: right; margin: 0px 20px;">
-				{% if not form %}
+				{% if hard_tags %}
 				{% include 'ratings/sorts.html' %}
 				{%endif%}
 			</div>
@@ -116,9 +116,9 @@ alert('here')
 				{% else %}
 					{% include 'ratings/discussion/wikipages.html' %}
 				{% endif %}
-			
+				</div>
 				{% if not tag %}
-			</div>
+			
 			<div id="comments">
 				{% include 'ratings/discussion/thread.html' %}
 			</div>
