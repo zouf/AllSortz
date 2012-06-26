@@ -78,7 +78,7 @@ $(document).ready(function(){
 	         type  : form.attr('method'),
 	         data  : serial, // data to be submitted
 	         success: function(data){
-	         	var elem = document.getElementById("comment_list")
+	         	var elem = document.getElementById("comments")
 	         	elem.innerHTML = data
 	         	$(".buttonme").button();
 	         }
@@ -114,6 +114,14 @@ $(document).ready(function(){
 
 
 $(document).ready(function(){
+	$('.replybox').live("keydown", function(e) {
+	     if(e.keyCode == 13) {
+	       e.preventDefault(); // Makes no difference
+	     $(this).parent().submit(); // Submit form it belongs to
+	   }
+	});
+	
+	
 $("form[name=addReply]").live("submit", function(e){
 	e.preventDefault();
 	var id = $(this).parents('div.comment').attr('id').split('_')[1];

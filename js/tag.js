@@ -75,6 +75,25 @@ $(document).ready(function(){
 	 });
 	});
 
+$(document).ready(function(){
+	$("form[name=addASort]").live("submit", function(e){
+		//e.preventDefault();
+		var form = $("form[name=addASort]")
+		var serial = form.serialize()
+	    
+		$.ajax({ 
+	         url   : '/api/add_a_sort/',
+	         type  : form.attr('method'),
+	         data  : serial, // data to be submitted
+	         success: function(data){
+	         	document.getElementById("tag_list").innerHTML = data
+	         	rebind_buttons();
+	         }
+	    });
+	    return false;
+	 });
+});
+
 
 $(document).ready(function(){
 $("form[name=addTagTB]").live("submit", function(e){
@@ -105,9 +124,12 @@ $("form[name=addTagDD]").live("submit", function(e){
          type  : form.attr('method'),
          data  : serial, // data to be submitted
          success: function(data){
-         	document.getElementById("tag_list").innerHTML = data   
+         /*	document.getElementById("tag_list").innerHTML = data   
          	 $("#addTagDiv").hide();
-         	rebind_buttons();
+         	rebind_buttons();*/
+
+         	window.location.reload();
+        
          }
     });
     return false;

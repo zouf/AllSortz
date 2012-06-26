@@ -37,6 +37,25 @@ def tag_comp(x,y):
         return 0
     
 @csrf_exempt
+def add_a_sort(request):
+    print ('in add a sort')
+    if request.method == 'POST':  # add a tag!
+        form = request.POST
+        nm = form['descr']
+        try:
+            tag = Tag.objects.get(descr=nm)
+        except:
+            tag = Tag.objects.create(descr=nm,creator=request.user)
+            
+        print(tag)
+
+
+   
+        return render_to_response('ratings/contribute/sortlist.html', {'tags':Tag.objects.all()})
+    
+    
+    
+@csrf_exempt
 def add_tag_business(request):
     print ('here')
     if request.method == 'POST':  # add a tag!
@@ -70,7 +89,7 @@ def add_tag_business(request):
         bus_tags = get_tags_business(b)
         
    
-        return render_to_response('ratings/tags.html', {'business':b, 'bus_tags': bus_tags, 'tags':Tag.objects.all()})
+        return render_to_response('ratings/sorts.html', {'business':b, 'bus_tags': bus_tags, 'tags':Tag.objects.all()})
     
     
 @csrf_exempt
@@ -91,7 +110,7 @@ def add_user_tag(request):
         user_tags = get_tags_user(u)
         tags = Tag.objects.all()
         print(user_tags)
-        return render_to_response('ratings/tags.html', {'user':request.user, 'tags': tags, 'user_sorts': user_tags})
+        return render_to_response('ratings/sorts.html', {'user':request.user, 'tags': tags, 'user_sorts': user_tags})
 
 def get_top_tags(N):
     tags = Tag.objects.filter()[:N]

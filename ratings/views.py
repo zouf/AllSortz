@@ -51,9 +51,42 @@ def comment_comp(x,y):
         return 0
 
 
-def get_business_comments(business,user=False):
-    buscomments = BusinessComment.objects.filter(business=business).order_by('-date')
+
+def get_default_bus_context(b,user):
+    comments = get_business_comments(b)
+    bus_tags = get_tags_business(b,user=user,q="")
+        
+        
+    user_tags = get_tags_user(user,"")
+    top_tags = get_top_tags(10)    
+    hard_tags = get_hard_tags(b)
     
+    pages = get_pages(b,bus_tags)
+    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+    b = get_single_bus_data(b,user)
+    context =   { \
+        'business' : b, \
+        'comments': comments, \
+        'lat': latlng[0],\
+        'lng':latlng[1],  \
+        'bus_tags':bus_tags, \
+        'pages': pages, \
+        'tags': Tag.objects.all(),\
+        'user_sorts':user_tags,\
+        'top_sorts':top_tags,\
+        'all_sorts':get_all_sorts(4),\
+        'hard_tags':hard_tags,\
+        'location_term':get_community(user)
+        }
+
+    return context
+
+
+def get_business_comments(business,user=False):
+    print('get bus comments')
+    buscomments = BusinessComment.objects.filter(business=business).order_by('-date').reverse()
+    for bc in buscomments:
+        print(bc.date)
     comment_list = []
     for bc in buscomments:
         if bc.thread.reply_to is None: #root tag comment
@@ -73,11 +106,11 @@ def get_business_comments(business,user=False):
                 c.pos_ratings = 0
                 c.neg_ratings = 0
         results.append(c)
+    print('return bus comments')
     return results
 
 def get_tag_comments(tag,user=False):
-    print(tag.id)
-    tagcomments = TagComment.objects.filter(tag=tag).order_by('-date')
+    tagcomments = TagComment.objects.filter(tag=tag).order_by('-date').reverse()
     
     comment_list = []
     for tc in tagcomments:
@@ -105,9 +138,9 @@ def get_tag_comments(tag,user=False):
 #adds tokens "open" and "close" to denote subcomments
 def get_comments(b,user=False,q=""):
     if q != "":
-        comments = Comment.objects.filter(descr__icontains=q)[:20]
+        comments = Comment.objects.filter(descr__icontains=q)[:20].order_by('-date')
     else:
-        comments = Comment.objects.filter(business=b)
+        comments = Comment.objects.filter(business=b).order_by('-date')
     
   
     comment_list = []
@@ -271,14 +304,12 @@ def add_tag_comment(request):
 
 def recurse_comments(comment,cur_list,even):
     cur_list.append(comment)
-    replies = Comment.objects.filter(reply_to=comment).order_by('-date')
+    replies = Comment.objects.filter(reply_to=comment).order_by('-date').reverse()
     for c in replies:
         if even:
             cur_list.append("open-even")
-            print('only even')
         else:
             cur_list.append("open-odd")
-            print('app odd!')
         recurse_comments(c,cur_list,not even)
         cur_list.append("close")
 
@@ -405,35 +436,15 @@ def edit_tag_discussion(request,bus_id,page_id):
     
     
     t = pgr.tag
-    comments = get_tag_comments(t,request.user)
-    print(comments)
-    print('above are comments')
-    user_tags = get_tags_user(request.user,"")
-    top_tags = get_top_tags(10)   
-    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
-    b = get_single_bus_data(b,request.user)
-    try:
-        b.photourl = get_photo_web_url(b)
-    except:
-        b.photourl= "" #NONE
 
-    if latlng:
-        context =   { \
-        'business' : b, \
-        'comments': comments, \
-        'tag': t,\
-        'lat': latlng[0],\
-        'lng':latlng[1],  \
-         'form': wiki_edit_form,\
-        'page': page, \
-        'user_sorts':user_tags,\
-        'top_sorts':top_tags,\
-        'all_sorts':get_all_sorts(4),\
-        'location_term':get_community(request.user)
-        }
 
+    context = get_default_bus_context(b, request.user)
+    context['form']=wiki_edit_form
     return render_to_response('ratings/detail.html',
         RequestContext(request, context))
+
+def how_it_works(request):
+    return render_to_response('how_it_works.html',context_instance=RequestContext(request))
 
 
 @csrf_exempt
@@ -442,38 +453,15 @@ def detail_keywords(request, bus_id):
     if request.method == 'POST':
         if not request.user.is_authenticated():
             return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-    comments = get_business_comments(b)
-    bus_tags = get_tags_business(b,user=request.user,q="")
-        
-        
-    user_tags = get_tags_user(request.user,"")
-    top_tags = get_top_tags(10)    
-    hard_tags = get_hard_tags(b)
+
     
-    pages = get_pages(b,bus_tags)
-    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
-    b = get_single_bus_data(b,request.user)
     
     try:
         b.photourl = get_photo_web_url(b)
     except:
         b.photourl= "" #NONE
     
-    if latlng:
-        context =   { \
-        'business' : b, \
-        'comments': comments, \
-        'lat': latlng[0],\
-        'lng':latlng[1],  \
-        'bus_tags':bus_tags, \
-        'pages': pages, \
-        'tags': Tag.objects.all(),\
-        'user_sorts':user_tags,\
-        'top_sorts':top_tags,\
-        'all_sorts':get_all_sorts(4),\
-        'hard_tags':hard_tags,\
-        'location_term':get_community(request.user)
-        }
+    context = get_default_bus_context(b, request.user)
 
     return render_to_response('ratings/detail.html', context_instance=RequestContext(request,context))
 
@@ -514,19 +502,19 @@ def add_question(request):
             descr = 'unset'
         
         ht = HardTag.objects.create(creator=request.user,question=question,descr=descr)
-        return redirect(index)
-    else:
-        f = HardTagForm()
-        user_tags = get_tags_user(request.user,"")
-        top_tags = get_top_tags(10)    
-        
-        context = { 'form':f, \
-                    'user_sorts':user_tags,\
-                'top_sorts':top_tags,\
-                 'tags': Tag.objects.all(),\
-                'all_sorts':get_all_sorts(4),\
-                'location_term':get_community(request.user) }        
-        return render_to_response('ratings/contribute/add_content.html', context, context_instance=RequestContext(request))
+
+    f = HardTagForm()
+    user_tags = get_tags_user(request.user,"")
+    top_tags = get_top_tags(10)    
+    
+    context = { 'form':f, \
+                'user_sorts':user_tags,\
+            'top_sorts':top_tags,\
+             'tags': Tag.objects.all(),\
+             'questions': HardTag.objects.all(),\
+            'all_sorts':get_all_sorts(4),\
+            'location_term':get_community(request.user) }        
+    return render_to_response('ratings/contribute/add_content.html', context, context_instance=RequestContext(request))
 
 def ans_business_questions(request,bus_id):
     if request.method == 'POST':

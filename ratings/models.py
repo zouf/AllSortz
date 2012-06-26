@@ -8,7 +8,7 @@ from wiki.models import Page
 #decribes a listing   
 class Business(models.Model):
     name = models.CharField(max_length=250)
-    date = models.DateField(auto_now=True)
+    date = models.DateTimeField(auto_now=True)
 
     lat = models.FloatField()
     lon = models.FloatField()
@@ -46,7 +46,7 @@ class Rating(models.Model):
 # Create your models here.
 class Comment(models.Model):
     user = models.ForeignKey(User)
-    date = models.DateField(auto_now=True)
+    date = models.DateTimeField(auto_now=True)
     reply_to = models.ForeignKey('self', related_name='replies', 
         null=True, blank=True)
     descr = models.TextField(max_length=2000)
@@ -55,13 +55,13 @@ class Comment(models.Model):
 class TagComment(models.Model):
     thread = models.ForeignKey(Comment)
     tag = models.ForeignKey('tags.Tag')
-    date = models.DateField(auto_now=True)
+    date = models.DateTimeField(auto_now=True)
   
 
 class BusinessComment(models.Model):
     business = models.ForeignKey(Business)
     thread = models.ForeignKey(Comment)
-    date = models.DateField(auto_now=True)
+    date = models.DateTimeField(auto_now=True)
 
 
 

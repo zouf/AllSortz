@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^api/remove_comment_vote*', 'ratings.vote.remove_comment_vote'),
     
     #api for tags
+    url(r'^api/add_a_sort/$', 'tags.views.add_a_sort'),
     url(r'^api/add_tag/$', 'tags.views.add_tag_business'),
     url(r'^api/add_user_tag/$', 'tags.views.add_user_tag'),
     url(r'^api/get_tags/', 'tags.views.get_all_tags', name='get_all_tags'),
@@ -79,6 +80,8 @@ urlpatterns = patterns('',
 	url(r'^accounts/', include('registration.urls')),
     url(r'^comments/add_comment/(?P<bus_id>\d+)/$','ratings.views.add_comment_form'),
 
+    
+    url(r'^how_it_works/$','ratings.views.how_it_works'),
     
     
     

@@ -32,7 +32,7 @@ class BusinessPhoto(models.Model):
     image_thumb = models.ImageField(upload_to=image_upload_to_thumb)
     image_large = models.ImageField(upload_to=image_upload_to_lg)
     
-    date = models.DateField(auto_now=True)
+    date = models.DateTimeField(auto_now=True)
     
     
     title = models.CharField(blank=True, max_length=300)

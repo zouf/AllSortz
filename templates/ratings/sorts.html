@@ -30,9 +30,9 @@ Apply Sort
 		<input class="buttonme" type="submit" value="Add"/>
 	</form>
 	
-	<p style="font-size:10px"  onclick="showAddTag()" >Think we're missing a sort?</p>
-		
-	<div id="addTagDiv">
+	<!--<p style="font-size:10px"  onclick="showAddTag()" >Think we're missing a sort?</p>-->
+	<a href="/ratings/add_new_tag/" style="font-size:10px"><p >Think we're missing a sort?</p></a>
+	<div id="addTagDiv" style="display:none;">
 		{%if business%}
 			<form name="addTagTB" action="." method="post">{%csrf_token%}
 				<input type="hidden" value="{{business.id}}" name="bid" />
