@@ -1,10 +1,10 @@
-#comment_list
+#comments
 {
     width: 100%;
 }
 
 /* Bounding box */
-#comment_list ul
+#comments ul
 {
     list-style: none;
     background-color: #FFFFFF;
@@ -12,7 +12,7 @@
     border-radius: 5px;
 }
 
-#comment_list li
+#comments li
 {
     font-size: 16px;
 }
@@ -24,14 +24,14 @@
 }
 
 /* Comments */
-#comment_list ul ul
+#comments ul ul
 {
     list-style: none;
     -moz-border-radius: 0px;
     border-radius: 0px;
 }
 
-#comment_list ul ul li
+#comments ul ul li
 {
     list-style: none;
     margin: 5px 0px;
@@ -39,14 +39,14 @@
 }
 
 /* Replies */
-#comment_list ul ul ul
+#comments ul ul ul
 {
     padding: 5px auto;
     border: none;
     border-left: 1px solid #E0E0FF;
 }
 
-#comment_list ul ul ul li
+#comments ul ul ul li
 {
     
 }
