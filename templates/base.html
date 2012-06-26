@@ -36,11 +36,9 @@
 <body onload="initialize()">
 
 	{% if not user.is_authenticated %}
-
-	<div id="account">
-		<a href="/">Home</a> | <a href="/accounts/login/?next=/">Login</a> | 
-
-	</div>
+		<div id="account">
+			<a href="/">Home</a> | <a href="/accounts/login/?next=/">Login</a> | 
+		</div>
 	{% endif %}
 
 	{% if user.is_authenticated %}
@@ -50,8 +48,9 @@
 	{% endif %}
 	
 	<div id="icon">
-		<a href="/" ><img src="{{STATIC_URL}}css/images/logo.png" width="420" height="140"></a>
+		<a href="/"><img src="{{STATIC_URL}}css/images/logo.png" width="420" height="140"></a>
 	</div>
+	
 	<div id="header">
 		<div style="position:absolute;top:80%;left:50%;margin-left:-175px;">
 			<i>All sorts of places for all sorts of people.</i>
@@ -68,7 +67,7 @@
 								{%endif%}
 							</td>
 							<td>
-					       	 	
+					       	 	near
 							</td>
 							<td>
 						       	{% if location_term %}
@@ -83,12 +82,13 @@
 							     
 					       </td>
 					       <td>
-					       	  <input type="submit" value="Find it!" />
+					       	  <input type="submit" class="ui-big-widget" value="Find it!" />
 					       </td>
 					       </tr>
 			      </table>
 			</form>
 		</div>
+		
 		<ul id="dropdown">
 			<li id="yourSorts"  class="ui-big-widget" style="width:120px;">Your Sorts
 				<ul id="dropdown-list1">
@@ -106,21 +106,14 @@
 			</li>
 			<li id="addStuff"  class="ui-big-widget" style="width:120px;">Add
 				<ul id="dropdown-list3">
-
 					<li><a href="/ratings/add_business/">Businesses</a></li>
 					<li><a href="/ratings/add_question/">Questions</a></li>
 					<li><a href="/ratings/add_new_tag/">Sorts</a></li>
-					
-				
 				</ul>
 			</li>
 		</ul>
 	</div>
-
-
-
-
-
+	
 	<div id="main">
     	{% block body %}{% endblock %}
     	
