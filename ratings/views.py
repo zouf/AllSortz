@@ -324,7 +324,7 @@ def display_tag(request,tag_id):
                 'all_sorts':get_all_sorts(4),\
                 'location_term':get_community(request.user)\
               }
-    return render_to_response('ratings/onetag.html',  context_instance=RequestContext(request,context))
+    return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
 
     
 
@@ -365,7 +365,7 @@ def search(request):
              'location_term':location\
              
           }
-    return render_to_response('ratings/onetag.html',  context_instance=RequestContext(request,context))
+    return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
 
 
 def edit_tag_discussion(request,bus_id,page_id):
@@ -440,12 +440,11 @@ def detail_keywords(request, bus_id):
     comments = get_business_comments(b)
     bus_tags = get_tags_business(b,user=request.user,q="")
         
-    print('detail stuff')
+        
     user_tags = get_tags_user(request.user,"")
     top_tags = get_top_tags(10)    
-    hard_tags = get_hard_tags(b)   
-       
-    print(bus_tags) 
+    hard_tags = get_hard_tags(b)
+    
     pages = get_pages(b,bus_tags)
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
     b = get_single_bus_data(b,request.user)

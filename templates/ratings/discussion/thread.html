@@ -1,4 +1,4 @@
-<h1>Comments</h3>
+<h3>Comments</h3>
 	<form name="addTagComment" action="." method="post">
   		<input id="id_comment" placeholder="Add a comment" class="comment_input_box" type="text"  name="comment" maxlength="150" onfocus="this.value='';"  />
 		<input type="submit" class="ui-widget  buttonme" value="Post"></p>
@@ -56,7 +56,7 @@
 					</td>
 					<td>
 						<div class="comment" id="comment_{{comment.pk}}">
-							<font style="font-size:14px; font-style:italic">posted by <a>{{comment.user}}</a> on {{comment.date}}</font><br />
+							<font style="font-size:14px; font-style:italic">posted by <a href="/user_details">{{comment.user}}</a> on {{comment.date}}</font><br />
 							<li>{{comment.descr}}</li>
 							<form action="." name="addReply" class="comment" id="comment_form_{{comment.pk}}" method="post">
 								<input type="text" name="comment" id="comment_{{comment.pk}}" placeholder="Reply"/>

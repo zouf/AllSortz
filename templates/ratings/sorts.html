@@ -1,0 +1,46 @@
+	<h3>Add a Sort</h3>
+
+	{% if business %}
+		<form name="addTagDD" action="." method="post">{% csrf_token %}
+		<input type="hidden" value="{{business.id}}" name="bid"/>
+	{%else%}
+		<form name="addUserTagDD" action="." method="post">{% csrf_token %}
+	{%endif%}
+	
+			<select name="tag" class="ui-widget">
+				{% for tag in tags %}
+					<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>
+				{%endfor%}
+			</select>
+			<br />
+			<input class="buttonme" type="submit" value="Add"/>
+		</form>
+		
+		<p style="font-size:10px"  onclick="showAddTag()" >Think we're missing a sort?</p>
+			
+		<div id="addTagDiv">
+			{%if business%}
+				<form name="addTagTB" action="." method="post">{%csrf_token%}
+					<input type="hidden" value="{{business.id}}" name="bid" />
+					<input type="text" id="addTagButton" value="Add a new Sort" name="tag" onfocus="this.value='';" />
+				</form>
+			{%else%}
+				<div id="addTagDiv">
+					<form name="addUserTagTB" action="." method="post">{%csrf_token%}
+						<input  type="text" value="" name="tag" />
+					</form>
+				</div>
+			{%endif%}
+		</div>
+		
+		{% if business %}
+			{% for tag in bus_tags %}
+				{{tag.descr}} |		
+			{%endfor%}
+		{%else%}
+			{% for tag in user_sorts %}
+				<div class="tagListing">
+					{{tag.descr}} 
+				</div>
+			{%endfor%}
+		{%endif%}

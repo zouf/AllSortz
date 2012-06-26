@@ -29,7 +29,7 @@
 </script>
 
 <head>
-<title>AllSorts</title>
+<title>All Sorts</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     {% block head %}{% endblock %}
 </head>
@@ -64,7 +64,7 @@
 								{% if search_term %}
 									 <input type="search" class="ui-widget" name="search" placeholder="{{search_term}}" />
 								{%else%}
-									<input type="search" class="ui-widget" name="search" placeholder="Find tag" />
+									<input type="search" class="ui-widget" name="search" placeholder="Find sorts" />
 								{%endif%}
 							</td>
 							<td>
@@ -97,7 +97,7 @@
 					{% endfor %}
 				</ul>
 			</li>
-			<li id="topSorts" style="width:120px;">AllSorts
+			<li id="topSorts" style="width:120px;">All Sorts
 				<ul id="dropdown-list2">
 					{% for sort in top_sorts %}
 					<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
@@ -109,7 +109,7 @@
 
 					<li><a href="/ratings/add_business/">Businesses</a></li>
 					<li><a href="/ratings/add_question/">Questions</a></li>
-					<li><a href="/ratings/add_new_tag/">Tags</a></li>
+					<li><a href="/ratings/add_new_tag/">Sorts</a></li>
 					
 				
 				</ul>

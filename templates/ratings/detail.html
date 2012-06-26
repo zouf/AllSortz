@@ -64,105 +64,65 @@ alert('here')
 
 </script>
 
-
-
-<style type="text/css">
-  #map_canvas { height: 50px; }
-</style>
-
-{% if business %}
-	
-	<div id="busDetail" class="content">
-
-    <table>
-		<tr >
-		<td>
-    	<div id="prime_list" style="width:700px" >
-		 
-    <h1>{{ business.name }}</h1>
-    
-    
-					  <table>
-		    	<tr>
-					<td style="width:40px;">
-						{% include 'ratings/listing/vote_data.html' %}
-					</td>
-					<td>
-					
-						
-					    <div id="businessDetail" >
-							<i> {{ business.city }}, {{business.state}}</i>
-							<br><br>
-							<img src="{{business.photourl}}"  />
-						</div>
+{% if business %}	
+	<div id="business" class="content">
+		<div id="profile" class="section">
+			<h1>{{ business.name }}</h1>
 			
-					</td>
-					</tr>
-					
-				  </table> 
-			<ul>
+		    <div id="details" >
+				<i>{{ business.city }}, {{ business.state }}</i>
 				
-			{% for ht in hard_tags %}
-				{% if ht.answer %}
-					<li>{{ht.question}}: Yes!</li>
+				{% include 'ratings/listing/vote_data.html' %}
+				
+				<br><br>
+				<img src="{{business.photourl}}" /><br />
+				
+				{% for ht in hard_tags %}
+				<ul>
+					{% if ht.answer %}
+						<li>{{ht.question}}: Yes!</li>
+					{%else%}
+						<li>{{ht.question}}: No!</li>
+					{%endif%}
+				</ul>
+				{% endfor%}
+				
+				{% if hard_tags%}
+					<a href="/ratings/answer_questions/{{business.id}}">Answer some questions yourself!</a>
 				{%else%}
-					<li>{{ht.question}}: No!</li>
+					<a href="/ratings/answer_questions/{{business.id }}">No one's answered any questions about {{business.name}}. Answer some yourself </a>
 				{%endif%}
-			{% endfor%}
-			</ul>
-			{% if hard_tags%}
-			<a href="/ratings/answer_questions/{{business.id}}">Answer some questions yourself!</a>
-			{%else%}
-			<a href="/ratings/answer_questions/{{business.id }}">No one's answered any questions about {{business.name}}. Answer some yourself </a>
-			{%endif%}
-		</td>
-		<td>
-		</td>
-		<td>
-			<div id="map_canvas" style="width:250px; height:250px"></div>
-		</td>
-		</tr>
-		<tr>
-			<td colspan="3">
-				<table id="detail">
-					<tr>
-						<td valign="top">
-							<div id="discussion_list" class="ui-widget tips_feed">
-
-								{%if form %}
-									{% include 'ratings/discussion/wikiedit.html' %}
-								{% else %}
-									{% include 'ratings/discussion/wikipages.html' %}
-								{% endif %}
-							</div>
-							<br />
-							<div id="tag_list">
-								{% if not form %}
-								{% include 'ratings/tags.html' %}
-								{%endif%}
-							</div>
-						</td>
-						<td valign="top">
-							{% if not tag %}
-							<div id="comment_list">
-								
-								{% include 'ratings/discussion/thread.html' %}
-								
-							</div>
-							{% endif%}
-						</td>
-						
-					</tr>
-				</table>
-			</td>
-		</tr>
-		</table>
-    
-	{% else %}
-	    <p>Invalid business!.</p>
-	{% endif %}
+			</div>
+			
+			<div id="map_canvas"></div>
+			
+			<div id="allSorts" style="float: right; margin: 0px 20px;">
+				{% if not form %}
+				{% include 'ratings/sorts.html' %}
+				{%endif%}
+			</div>
+		</div>
+		<div id="discussion" class="section">
+		<h1>Sort Discussion</h1>
+			<div id="sorts">
+				{%if form %}
+					{% include 'ratings/discussion/wikiedit.html' %}
+				{% else %}
+					{% include 'ratings/discussion/wikipages.html' %}
+				{% endif %}
+			
+				{% if not tag %}
+			</div>
+			<div id="comments">
+				{% include 'ratings/discussion/thread.html' %}
+			</div>
+			{% endif%}
+		</div>
 	</div>
-
+    
+{% else %}
+	<p>Invalid business.</p>
+{% endif %}
 {% endblock %}
 
 
