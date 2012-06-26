@@ -10,45 +10,41 @@
 
 
 			{% if form.question %}
-			<form action="." method="post" >{% csrf_token %}
-			<div class="input_box">
-			    {{ form.question.errors }}
-	
-	    		<textarea id="id_question" value="Question" name="question" cols="40" rows="10" onfocus="this.value='';"></textarea>
-	    		<br>
-	    		<label for="id_question" class="helpLink" title="Help text for pop up goes here">
-					Ask a question you'd like to know about a place (e.g. Does this restaurant server vegan food?)</label>
-				
-			</div>
-			<br/>
-			<p>Tag associated with question</p>
-					 	 <select name="tag" class="ui-widget">
-						
-						  {% for tag in tags %}
-						 	<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>
-						 {%endfor%}
-
-						 </select>
+				<form class="ui-widget"  action="." method="post" >{% csrf_token %}
+				<div class="input_box">
+				    {{ form.question.errors }}
 		
-			<p><a href="/ratings/add_new_tag/">Missing a tag you think should be here?</a></p>
-			<p><input type="submit" value="Done" /></p>
-			</form>
-			{% else %}
-			<form action="." method="post" >{% csrf_token %}
-			<div class="input_box">
-			    {{ form.descr.errors }}
-	
-	    		<input type="text" id="id_question" value="Tag Description" name="descr" onfocus="this.value='';" />
-	    		<br>
-	    		<label for="id_question" class="helpLink" title="Help text for pop up goes here">
-					Add a tag</label>
+		    		<textarea id="id_question" value="Question" name="question" cols="40" rows="10" onfocus="this.value='';"></textarea>
+		    		<br>
+		    		<label for="id_question" class="helpLink" title="Help text for pop up goes here">
+						Ask a question you'd like to know about a place (e.g. Does this restaurant server vegan food?)</label>
+					
+				</div>
+				<br/>
+				<p>Tag associated with question</p>
+						 	 <select name="tag" >
+							
+							  {% for tag in tags %}
+							 	<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>
+							 {%endfor%}
+		
+							 </select>
+			
+				<p><a href="/ratings/add_new_tag/">Missing a tag you think should be here?</a></p>
+				<p><input type="submit" value="Add the question" /></p>
+				</form>
 				
-			</div>
-			<p><input type="submit" value="Done" /></p>
-			</form>
-			
-			
-			
+				<h2> Current Questions: </h3>
+				
+				
+				{% for q in questions %}
+					<p>{{q.question}}</p>
+				{%endfor%}
+				</p>
+			{% else %}
+				<div id="tag_list">
+					{% include 'ratings/contribute/sortlist.html' %}
+				</div>
 			{%endif%}
 	
 	</div>

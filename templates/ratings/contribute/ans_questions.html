@@ -8,7 +8,7 @@
 </script>
 	<div class="content ui-widget" >
 	{% if questions %}
-	<form action="/ratings/answer_questions/{{business.id}}" method="post" >{% csrf_token %}
+	<form class="ui-widget" action="/ratings/answer_questions/{{business.id}}" method="post" >{% csrf_token %}
 
 	
 		<div id="tagQuestions">

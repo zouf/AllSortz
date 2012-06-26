@@ -1,0 +1,17 @@
+	<form name="addASort" action="." method="post" >{% csrf_token %}
+	<div class="input_box">
+	    {{ form.descr.errors }}
+
+		<input type="text" id="id_question" value="Tag Description" name="descr" onfocus="this.value='';" />
+		<br>
+		
+	</div>
+	<p><input type="submit" class="buttonme" value="Add a sort" /></p>
+	</form>
+	<p>Current Sorts:</p>
+
+
+{% for tag in tags %}
+	<a href="/ratings/disp/{{tag.id}}/">{{tag.descr}}</a> |
+{%endfor%}
+	

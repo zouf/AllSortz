@@ -44,7 +44,7 @@
 							<p style="font-size:10px"  onclick="showAddReply({{comment.pk}})" >Reply</p>
 							<div id="commentDiv{{comment.pk}}" style="display:none;">
 								<form action="." name="addReply" class="comment" id="comment_form_{{comment.pk}}" method="post">
-									<textarea name="comment" id="comment_{{comment.pk}}" placeholder="Reply"/></textarea>
+									<textarea name="comment" class="replybox" id="comment_{{comment.pk}}" placeholder="Reply"/></textarea>
 									<input type="submit" class="ui-widget buttonme" value="Reply"></p>
 									<input type="hidden" name="bid" value="{{business.id}}"/>
 									<input type="hidden" name="cid" id="comment_{{comment.pk}}" value="{{comment.pk}}"/> 

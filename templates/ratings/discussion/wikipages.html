@@ -1,26 +1,23 @@
-	{% if pages %}
-		
-			{% for page in pages %}
+{% if pages %}
+	
+	{% for page in pages %}
+		<a href="edit/{{ page.id }}/" rel="bookmark">
+			<div class="sort">
+				<h3>{{ page.name }}</h3>
 				
-				<div style="background-color:white; margin-top:5px;" >
+				{% if not page.id %}
+				<p>This page does not exist, <a href="edit/">create it now</a>?</p>
+				{% endif %}
 				
-					
-					<h1><a href="edit/{{ page.id }}/" rel="bookmark">{{ page.name }}</a></h1>
-					
-					{% if not page.id %}
-					<p>This page does not exist, <a href="edit/">create it now</a>?</p>
-					{% endif %}
-					
-					{{ page.rendered|safe|linebreaks }}
-					
-					
-					
-					<!--{% if page.id %}
-					<a href="edit/{{page.id}}/">Discuss / edit this tag</a>
-					{% else %}
-					<a href="edit/">Create this page</a>
-					{% endif %}-->
-				</div>
-			{% endfor %}
-		
-	{% endif %}
+				{{ page.rendered|safe|linebreaks }}
+				
+				<!--{% if page.id %}
+				<a href="edit/{{page.id}}/">Discuss / edit this tag</a>
+				{% else %}
+				<a href="edit/">Create this page</a>
+				{% endif %}-->
+			</div>
+		</a>
+	{% endfor %}
+	
+{% endif %}

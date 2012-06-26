@@ -67,47 +67,11 @@ alert('here')
 {% if business %}	
 	<div id="business" class="content">
 		<div id="profile" class="section">
-			<h1>{{ business.name }}</h1>
-			
-		    <div id="details">
-				<i>{{business.city}}, {{business.state}}</i>
-				
-				<table>
-				<tr>
-				<td width="40px">
-				{% include 'ratings/listing/vote_data.html' %}
-				</td><td>
-				<br><br>
-				<img src="{{business.photourl}}" />
-				</td>
-				</tr>
-				</table>
-				
-				{% for ht in hard_tags %}
-				<ul>
-					{% if ht.answer %}
-						<li>{{ht.question}}: Yes!</li>
-					{%else%}
-						<li>{{ht.question}}: No!</li>
-					{%endif%}
-				</ul>
-				{% endfor%}
-				
-				{% if hard_tags%}
-					<a href="/ratings/answer_questions/{{business.id}}">Answer some questions yourself!</a>
-				{%else%}
-					<a href="/ratings/answer_questions/{{business.id }}">No one's answered any questions about {{business.name}}. Answer some yourself </a>
-				{%endif%}
-			</div>
-			
-			<div id="map_canvas"></div>
-			
-			<div id="allSorts" style="float: right; margin: 0px 20px;">
-				{% if hard_tags %}
-				{% include 'ratings/sorts.html' %}
-				{%endif%}
-			</div>
+
+			<h1>{{ business.name }}</h1>    
+			{% include 'ratings/profile.html' %}
 		</div>
+		
 		<div id="discussion" class="section">
 		<h1>Sort Discussion</h1>
 			<div id="sorts">
@@ -118,8 +82,10 @@ alert('here')
 				{% endif %}
 				</div>
 				{% if not tag %}
-			
-			<div id="comments">
+
+			</div>
+			<div id="comment_list">
+
 				{% include 'ratings/discussion/thread.html' %}
 			</div>
 			{% endif%}
