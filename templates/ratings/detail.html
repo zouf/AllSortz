@@ -72,10 +72,17 @@ alert('here')
 		    <div id="details" >
 				<i>{{ business.city }}, {{ business.state }}</i>
 				
-				{% include 'ratings/listing/vote_data.html' %}
 				
+				<table>
+				<tr>
+				<td width="40px">
+				{% include 'ratings/listing/vote_data.html' %}
+				</td><td>
 				<br><br>
-				<img src="{{business.photourl}}" /><br />
+				<img src="{{business.photourl}}" />
+				</td>
+				</tr>
+				</table>
 				
 				{% for ht in hard_tags %}
 				<ul>

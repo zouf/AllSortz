@@ -58,7 +58,7 @@ $("form[name=addComment]").live("submit", function(e){
          type  : form.attr('method'),
          data  : serial, // data to be submitted
          success: function(data){
-         	var elem = document.getElementById("comment_list")
+         	var elem = document.getElementById("comments")
          	elem.innerHTML = data
          	$(".buttonme").button();
          }
@@ -125,7 +125,7 @@ $("form[name=addReply]").live("submit", function(e){
          type  : form.attr('method'),
          data  : form.serialize(), // data to be submitted
          success: function(data){
-         	document.getElementById("comment_list").innerHTML = data   
+         	document.getElementById("comments").innerHTML = data   
          	$(".buttonme").button();
          }
      });
@@ -135,6 +135,13 @@ $("form[name=addReply]").live("submit", function(e){
  });
 });
 
+
+function showAddReply(cid)
+{
+	
+	$("#commentDiv"+cid).toggle();
+
+}
 
 
 

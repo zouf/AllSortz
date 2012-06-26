@@ -57,12 +57,12 @@ def get_business_comments(business,user=False):
     comment_list = []
     for bc in buscomments:
         if bc.thread.reply_to is None: #root tag comment
-            comment_list.append("open")
-            recurse_comments(bc.thread,comment_list)
+            comment_list.append("open-even")
+            recurse_comments(bc.thread,comment_list,False)
             comment_list.append("close")    
     results = []              
     for c in comment_list:
-        if c != "open" and c != "close":
+        if c != "open-even" and c != "open-odd" and c != "close":
             try:
                 rat =  CommentRating.objects.get(comment=c)
                 c.this_rat = rat.rating
@@ -82,12 +82,12 @@ def get_tag_comments(tag,user=False):
     comment_list = []
     for tc in tagcomments:
         if tc.thread.reply_to is None: #root tag comment
-            comment_list.append("open")
-            recurse_comments(tc.thread,comment_list)
+            comment_list.append("open-even")
+            recurse_comments(tc.thread,comment_list,False)
             comment_list.append("close")    
     results = []              
     for c in comment_list:
-        if c != "open" and c != "close":
+        if c != "open-even" and c != "open-odd" and c != "close":
             try:
                 rat =  CommentRating.objects.get(comment=c)
                 c.this_rat = rat.rating
@@ -269,12 +269,17 @@ def add_tag_comment(request):
 
 
 
-def recurse_comments(comment,cur_list):
+def recurse_comments(comment,cur_list,even):
     cur_list.append(comment)
     replies = Comment.objects.filter(reply_to=comment).order_by('-date')
     for c in replies:
-        cur_list.append("open")
-        recurse_comments(c,cur_list)
+        if even:
+            cur_list.append("open-even")
+            print('only even')
+        else:
+            cur_list.append("open-odd")
+            print('app odd!')
+        recurse_comments(c,cur_list,not even)
         cur_list.append("close")
 
 
@@ -655,7 +660,7 @@ def index(request):
             businesses = Business.objects.all()
         
         business_list = get_bus_data(businesses,request.user)
-        business_list = paginate_businesses(business_list,request.GET.get('page'),1)
+        business_list = paginate_businesses(business_list,request.GET.get('page'),5)
         
         user_tags = get_tags_user(request.user,"")
         top_tags = get_top_tags(10)

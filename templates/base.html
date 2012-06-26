@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/main.css" />
-<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/comments.css" />
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/detail.css" />
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/header_footer.css" />
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/feeds.css" />
@@ -62,22 +61,22 @@
 							<tr>
 							<td>
 								{% if search_term %}
-									 <input type="search" class="ui-widget" name="search" placeholder="{{search_term}}" />
+									 <input type="search" class="ui-big-widget" name="search" placeholder="{{search_term}}" />
 								{%else%}
-									<input type="search" class="ui-widget" name="search" placeholder="Find sorts" />
+									<input type="search" class="ui-big-widget" name="search" placeholder="Search" />
 								{%endif%}
 							</td>
 							<td>
-					       	 	<span>near</span>
+					       	 	
 							</td>
 							<td>
 						       	{% if location_term %}
-					       			 <input type="search" class="ui-widget" name="location" placeholder="{{location_term}}" />
+					       			 <input type="search" class="ui-big-widget" name="location" placeholder="{{location_term}}" />
 								{%else%}
 									{%if community %}
-										<input type="search" class="ui-widget" name="location" placeholder="{{community.name}}" />
+										<input type="search" class="ui-big-widget" name="location" placeholder="{{community.name}}" />
 										{%else%}
-										<input type="search" class="ui-widget" name="location" placeholder="location" />
+										<input type="search" class="ui-big-widget" name="location" placeholder="location" />
 									{%endif%}
 								{%endif%}
 							     
@@ -90,21 +89,21 @@
 			</form>
 		</div>
 		<ul id="dropdown">
-			<li id="yourSorts" style="width:120px;">Your Sorts
+			<li id="yourSorts"  class="ui-big-widget" style="width:120px;">Your Sorts
 				<ul id="dropdown-list1">
 					{% for sort in user_sorts %}
 					<li><p style="display:inline"><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></p></li>
 					{% endfor %}
 				</ul>
 			</li>
-			<li id="topSorts" style="width:120px;">All Sorts
+			<li id="topSorts"  class="ui-big-widget" style="width:120px;">All Sorts
 				<ul id="dropdown-list2">
 					{% for sort in top_sorts %}
 					<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
 					{% endfor %}
 				</ul>
 			</li>
-			<li id="addStuff" style="width:120px;">Add
+			<li id="addStuff"  class="ui-big-widget" style="width:120px;">Add
 				<ul id="dropdown-list3">
 
 					<li><a href="/ratings/add_business/">Businesses</a></li>
