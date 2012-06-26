@@ -1,18 +1,20 @@
-	<h1>Sorted Under</h1>
+<h2>Sorted Under</h2>
 
-		{% if business %}
-			{% for tag in bus_tags %}
-				{{tag.descr}} |		
-			{%endfor%}
-		{%else%}
-			{% for tag in user_sorts %}
-				<div class="tagListing">
-					{{tag.descr}} 
-				</div>
-			{%endfor%}
-		{%endif%}
+	{% if business %}
+		{% for tag in bus_tags %}
+			{{tag.descr}} |		
+		{%endfor%}
+	{%else%}
+		{% for tag in user_sorts %}
+			<div class="tagListing">
+				{{tag.descr}} 
+			</div>
+		{%endfor%}
+	{%endif%}
 
-<br />
+	<br /><br />
+	Apply Sort
+	<br />
 	{% if business %}
 		<form name="addTagDD" action="." method="post">{% csrf_token %}
 		<input type="hidden" value="{{business.id}}" name="bid"/>
@@ -25,7 +27,6 @@
 					<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>
 				{%endfor%}
 			</select>
-			<br />
 			<input class="buttonme" type="submit" value="Add"/>
 		</form>
 		
@@ -45,5 +46,3 @@
 				</div>
 			{%endif%}
 		</div>
-		
-	

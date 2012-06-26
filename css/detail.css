@@ -1,15 +1,24 @@
+/* Profile of a business, includes details, map, and sorted categories */
 #profile
 {
     margin: 12px;
     text-align: left;
 }
 
+/* Business details */
 #details
 {
     float: left;
     margin: 10px;
 }
 
+/* Categories a business is sorted under */
+#sorted
+{
+     margin: 0px auto;
+}
+
+/* Map of business location */
 #map_canvas
 {
     float: right;
@@ -18,13 +27,33 @@
     margin: 10px;
 }
 
+/* Discussion section of a business, includes sort discussions and comments */
 #discussion
 {
     text-align: left;
     margin: 12px;
 }
 
+/* Discussion of sorts */
 #sorts
 {
     margin: 10px;
+    overflow: auto;
+}
+
+/* Sort under discussion */
+.sort
+{
+    text-align: center;
+    color: #000000;
+    background-color: #FFFFFF;
+    border: 1px solid #070771;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    float: left;
+    margin: 10px;
+    padding: 5px;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
 }

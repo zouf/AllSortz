@@ -42,6 +42,23 @@ h1
     margin: 0px;
 }
 
+h2
+{
+    color: #070771;
+    font-family: 'Serif';
+    font-size: 24px;
+    font-weight: normal;
+    margin: 5px;
+}
+
+h3
+{
+    color: #070771;
+    font-family: 'Serif';
+    font-size: 18px;
+    margin: 5px;
+}
+
 li
 {
     font-family: 'Trykker', serif;

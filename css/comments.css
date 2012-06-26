@@ -1,10 +1,11 @@
-#comments
+#comment_list
 {
     width: 100%;
+    margin-top: 20px;
 }
 
 /* Bounding box */
-#comments ul
+#comment_list ul
 {
     list-style: none;
     margin: 10px 0px;
@@ -12,19 +13,19 @@
     border-radius: 3px;
 }
 
-#comments li
+#comment_list li
 {
     font-size: 16px;
 }
 
 /* Comments */
-#comments ul ul
+#comment_list ul ul
 {
     list-style: none;
     padding: 5px;
 }
 
-#comments ul ul li
+#comment_list ul ul li
 {
     list-style: none;
     margin: 5px 0px;
@@ -32,7 +33,7 @@
 }
 
 /* Replies */
-#comments ul ul ul
+#comment_list ul ul ul
 {
     margin-left: 20px;
 }

@@ -1,24 +1,21 @@
-	<h1>Describe {{business.name}} for {{page.name}}</h1>
+<h3>Describe {{business.name}} for {{page.name}}</h3>
 
-	<form action="/ratings/{{business.id}}/edit/{{page.id}}/" method="post">
-		{% csrf_token %}
+<form action="/ratings/{{business.id}}/edit/{{page.id}}/" method="post">
+	{% csrf_token %}
 
-
-
-
-		<div class="field_wrapper required{% if form.content.errors %} errors{% endif %}" id="field_content">
-			<label for="id_content" class="field_name"></label>
-			{% if form.content.errors %}{{ form.content.errors }}{% endif %}
-			<div class="field textarea">
-				{{ form.content }}
-			</div>
+	<div class="field_wrapper required{% if form.content.errors %} errors{% endif %}" id="field_content">
+		<label for="id_content" class="field_name"></label>
+		{% if form.content.errors %}{{ form.content.errors }}{% endif %}
+		<div class="field textarea">
+			{{ form.content }}
 		</div>
+	</div>
 
-		<div class="submit">
-			<input type="submit" value="Save" />
-		</div>
-			</form>
-		
-		<div id="comment_list" class="ui-widget tags_feed">
-								{% include 'ratings/discussion/thread.html' %}
-		</div>
+	<div class="submit">
+		<input type="submit" value="Save" />
+	</div>
+</form>
+	
+<div id="comment_list">
+	{% include 'ratings/discussion/thread.html' %}
+</div>
