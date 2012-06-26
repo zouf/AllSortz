@@ -1,12 +1,17 @@
-<h3>Comments</h3>
-	<form name="addTagComment" action="." method="post">
-  		<input id="id_comment" placeholder="Add a comment" class="comment_input_box" type="text"  name="comment" maxlength="150" onfocus="this.value='';"  />
-		<input type="submit" class="ui-widget  buttonme" value="Post"></p>
-		<input id="bid" value="{{business.id}}" type="hidden" name="bid" />
-		{%if tag %}
-					<input type="hidden" name="tid" value="{{tag.id}}"/> 
-		{% endif %}
-	</form>
+<h1>Comments</h1>
+
+	
+	<p style="font-size:14px"  onclick="showAddReply('')" >Click to Add a Comment</p>
+	<div id="commentDiv" style="display:none;">
+		<form action="." name="addTagComment" class="comment" id="comment_form" method="post">
+			<textarea name="comment" class="replybox" id="comment" placeholder="Reply"/></textarea>
+			<input type="submit" class="ui-widget buttonme" value="Reply"></p>
+			<input type="hidden" name="bid" value="{{business.id}}"/>
+			{%if tag %}
+				<input type="hidden" name="tid" value="{{tag.id}}"/> 
+			{% endif %}
+		</form>
+	</div>
 	<ul>
 	{% for comment in comments %}
 		{% if comment == "open-even" %}
