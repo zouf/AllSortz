@@ -15,6 +15,7 @@ class HardTag(models.Model):
     
 class BooleanQuestion(models.Model):
     hardtag = models.ForeignKey(HardTag)
+    user = models.ForeignKey(User)
     business = models.ForeignKey('ratings.Business')
     date = models.DateField(auto_now=True)
     agree = models.BooleanField() 

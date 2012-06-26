@@ -16,7 +16,7 @@ def get_photo_thumb_url(b):
 def get_photo_web_url(b):
     qset  = BusinessPhoto.objects.filter(business=b)
     if qset.count() < 1:
-        return False
+        return None
     ph = qset[0].image
     return ph.url
 

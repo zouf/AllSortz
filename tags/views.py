@@ -161,6 +161,19 @@ def get_tags_business(b,user=False,q=""):
     return tags
 
 
+def get_questions(b,user):
+    if b is None:
+        return HardTag.objects.all()
+    hardtags = HardTag.objects.all()
+    results = []
+    for ht in hardtags:
+        qset = BooleanQuestion.objects.filter(hardtag=ht,business=b,user=user)
+        if qset.count() < 1: # has not been answered
+            results.append(ht)
+        
+    return results
+        
+
 def get_hard_tags(b):
     hardtags = HardTag.objects.all()
     results = []

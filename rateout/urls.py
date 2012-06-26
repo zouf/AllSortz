@@ -30,9 +30,13 @@ urlpatterns = patterns('',
     url(r'^api/act_vote/*', 'activities.vote.vote'),
     url(r'^api/rm_act_vote/*', 'activities.vote.remove_vote'),
 
+
+    #comments on discussion page
+    url(r'^api/add_tag_comment/$','ratings.views.add_tag_comment'),
+
+
     #favicon
     url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': STATIC_URL+'css/images/favicon.ico'}),
-    
     
     #URLS for editing wiki pages
     url(r'^ratings/(?P<bus_id>\d+)/edit/(?P<page_id>\d+)/$','ratings.views.edit_tag_discussion'),
@@ -47,11 +51,9 @@ urlpatterns = patterns('',
     
     #display businesses assoc with a tag
     url(r'^ratings/disp/(?P<tag_id>\d+)/$','ratings.views.display_tag'),
-    
-    #comments on discussion page
-    url(r'^api/add_tag_comment/$','ratings.views.add_tag_comment'),
 
-    
+    #answer questions on businesses
+    url(r'^ratings/answer_questions/(?P<bus_id>\d+)$','ratings.views.ans_business_questions'),
     
     #url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),

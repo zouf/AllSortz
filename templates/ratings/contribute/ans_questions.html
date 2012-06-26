@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block body %}
+<script>
+	$(function() {
+		$( "input:submit" ).button();
+	});
+</script>
+	<div class="content ui-widget" >
+	<form action="." method="post" >{% csrf_token %}
+
+
+		<div id="tagQuestions">
+			{% for q in questions %}
+					<p>{{q.question}}</p>
+					<input type="radio" name="answers" value="{{q.id}}_y"> Yes <br>
+					<input type="radio" name="answers" value="{{q.id}}_n"> No <br>
+			{% endfor %}	
+		
+		</div>
+				<p><input type="submit" value="Done" /></p>
+	
+			</form>
+	</div>
+	
+	
+
+{% endblock %}

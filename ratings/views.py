@@ -18,11 +18,11 @@ from ratings.utility import get_lat, get_bus_data
 from recommendation.normalization import getBusAvg, getNumPosRatings, \
     getNumNegRatings
 from recommendation.recengine import RecEngine
-from tags.forms import HardTagForm
+from tags.form import HardTagForm
 from tags.models import CommentTag, Tag, BusinessTag, UserTag, HardTag, \
     BooleanQuestion
 from tags.views import get_tags_business, get_pages, get_tags_user, get_top_tags, \
-    get_all_sorts, get_hard_tags
+    get_all_sorts, get_hard_tags, get_questions
 from wiki.forms import PageForm
 from wiki.models import Page
 from wiki.views import view
@@ -30,6 +30,7 @@ import cgi
 import logging
 import sys
 import urllib
+
 
 
 logger = logging.getLogger(__name__)
@@ -51,7 +52,7 @@ def comment_comp(x,y):
 
 
 def get_business_comments(business,user=False):
-    buscomments = BusinessComment.objects.filter(business=business)
+    buscomments = BusinessComment.objects.filter(business=business).order_by('-date')
     
     comment_list = []
     for bc in buscomments:
@@ -76,7 +77,7 @@ def get_business_comments(business,user=False):
 
 def get_tag_comments(tag,user=False):
     print(tag.id)
-    tagcomments = TagComment.objects.filter(tag=tag)
+    tagcomments = TagComment.objects.filter(tag=tag).order_by('-date')
     
     comment_list = []
     for tc in tagcomments:
@@ -270,7 +271,7 @@ def add_tag_comment(request):
 
 def recurse_comments(comment,cur_list):
     cur_list.append(comment)
-    replies = Comment.objects.filter(reply_to=comment)
+    replies = Comment.objects.filter(reply_to=comment).order_by('-date')
     for c in replies:
         cur_list.append("open")
         recurse_comments(c,cur_list)
@@ -492,6 +493,36 @@ def add_content(request):
         
         return render_to_response('ratings/contribute/add_content.html', {'form': f}, context_instance=RequestContext(request))
 
+def ans_business_questions(request,bus_id):
+    b = get_object_or_404(Business, pk=bus_id)
+    if request.method == 'POST':
+        if not request.user.is_authenticated():
+            return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+ 
+    user_tags = get_tags_user(request.user,"")
+    top_tags = get_top_tags(10)    
+
+   
+    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+    try:
+        b.photourl = get_photo_web_url(b)
+    except:
+        b.photourl= "" #NONE
+    questions = get_questions(b,request.user)
+    if latlng:
+        context =   { \
+        'business' : b, \
+        'lat': latlng[0],\
+        'lng':latlng[1],  \
+        'questions':questions,\
+        'tags': Tag.objects.all(),\
+        'user_sorts':user_tags,\
+        'top_sorts':top_tags,\
+        'all_sorts':get_all_sorts(4),\
+        'location_term':get_community(request.user)
+        }
+
+    return render_to_response('ratings/detail.html', context_instance=RequestContext(request,context))
 
 def add_business(request):
  
@@ -533,7 +564,7 @@ def add_business(request):
         user_tags = get_tags_user(request.user,"")
         top_tags = get_top_tags(10)    
         
-        questions = HardTag.objects.all()
+        questions = get_questions(None,request.user)
         
         context = { 'form':f, \
                     'user_sorts':user_tags,\

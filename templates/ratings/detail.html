@@ -98,9 +98,9 @@ alert('here')
 			{% endfor%}
 			</ul>
 			{% if hard_tags%}
-			<a href="/ratings/answer_questions/{{ bus.id }}">Answer some questions yourself!</a>
+			<a href="/ratings/answer_questions/{{business.id}}">Answer some questions yourself!</a>
 			{%else%}
-			<a href="/ratings/answer_questions/{{ bus.id }}">No one's answered any questions about {{business.name}}. Answer some yourself </a>
+			<a href="/ratings/answer_questions/{{business.id }}">No one's answered any questions about {{business.name}}. Answer some yourself </a>
 			{%endif%}
 		</td>
 		<td>
