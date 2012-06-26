@@ -439,12 +439,12 @@ def detail_keywords(request, bus_id):
     comments = get_business_comments(b)
     bus_tags = get_tags_business(b,user=request.user,q="")
         
-        
+    print('detail stuff')
     user_tags = get_tags_user(request.user,"")
     top_tags = get_top_tags(10)    
     hard_tags = get_hard_tags(b)   
        
-     
+    print(bus_tags) 
     pages = get_pages(b,bus_tags)
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
     try:

@@ -15,6 +15,7 @@ from wiki.models import Page
 import json
 import logging
 import sys
+from django.core.exceptions import MultipleObjectsReturned
 
 logger = logging.getLogger(__name__)
     
@@ -37,6 +38,7 @@ def tag_comp(x,y):
     
 @csrf_exempt
 def add_tag_business(request):
+    print ('here')
     if request.method == 'POST':  # add a tag!
         form = request.POST
         nm = form['tag']
@@ -48,22 +50,22 @@ def add_tag_business(request):
         except:
             tag = Tag.objects.create(descr=nm,creator=request.user)
             
-        
+        print(tag)
         try: 
             bustag = BusinessTag.objects.get(tag=tag,business=b)
         except:
             bustag = BusinessTag.objects.create(tag=tag,business=b,creator=request.user)
-            
-            try:
-                pg = Page.objects.get(name=nm)
-            except:
-                pg = Page(name=nm)
-                pg.save()
-            print('creating a page)')
-            print(tag)
-            pgr = PageRelationship(business=b,page=pg,tag=bustag.tag)
-            pgr.save()
-            print('page done')
+        print(bustag)
+        try:
+            pg = Page.objects.get(name=nm)
+        except:
+            pg = Page(name=nm)
+            pg.save()
+        print('creating a page)')
+        print(tag)
+        pgr = PageRelationship(business=b,page=pg,tag=bustag.tag)
+        pgr.save()
+        print('page done')
         bus_tags = get_tags_business(b)
         
    
@@ -134,10 +136,11 @@ def get_pages(business,tags):
             print(bt)
             relationship = PageRelationship.objects.get(business=business,tag=bt.tag)
             pages.append(relationship.page)
-        except:
-            logger.debug('error in getting relationships')
-            print('error in getting pages)')
-          
+        except MultipleObjectsReturned:
+            logger.error('error in getting relationships')
+            print('got multiple pages')
+            relationship = PageRelationship.objects.filter(business=business,tag=bt.tag)[0]
+            pages.append(relationship.page)
   
     print("pages are "+str(pages)) 
     return pages
