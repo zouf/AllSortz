@@ -77,7 +77,7 @@ li
     z-index: 0;
 }
 
-#content
+.content
 {
     width: 100%;
     min-height: 900px;
@@ -96,6 +96,7 @@ li
     -moz-box-shadow: 0px 0px 4px #4679ED;
     -webkit-box-shadow: 0px 0px 4px #4679ED;
     box-shadow: 0px 0px 4px #4679ED;
+    overflow: auto;
 }
 
 #trending
@@ -119,7 +120,7 @@ li
 {
     float: right;
     width: 330px;
-    min-height: 820px;
+    min-height: 100%;
     margin-right: 12px;
 }
 
