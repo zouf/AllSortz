@@ -324,7 +324,7 @@ def display_tag(request,tag_id):
                 'all_sorts':get_all_sorts(4),\
                 'location_term':get_community(request.user)\
               }
-    return render_to_response('ratings/onetag.html',  context_instance=RequestContext(request,context))
+    return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
 
     
 
@@ -365,7 +365,7 @@ def search(request):
              'location_term':location\
              
           }
-    return render_to_response('ratings/onetag.html',  context_instance=RequestContext(request,context))
+    return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
 
 
 def edit_tag_discussion(request,bus_id,page_id):
