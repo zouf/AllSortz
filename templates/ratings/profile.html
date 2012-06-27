@@ -8,7 +8,11 @@
 			</td>
 			<td>
 				<img src="{{business.photourl}}" />
-				
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
 				{% for ht in hard_tags %}
 				<ul>
 					{% if ht.answer %}
@@ -18,21 +22,30 @@
 					{%endif%}
 				</ul>
 				{% endfor%}
-	
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
 				{% if hard_tags%}
 					<a href="/ratings/answer_questions/{{business.id}}">Answer some questions yourself!</a>
 				{%else%}
-					<a href="/ratings/answer_questions/{{business.id }}">No one's answered any questions about {{business.name}}. Answer some yourself </a>
+					No one's answered any questions about {{business.name}}.<br><a href="/ratings/answer_questions/{{business.id }}">Answer some yourself!</a>
 				{%endif%}
 			</td>
 		</tr>
 	</table>
 </div>
 
-<div id="map_canvas"></div>
-
-<div id="allSorts" style="float: right; margin: 0px 20px;">
-	{% if hard_tags %}
-		{% include 'ratings/sorts.html' %}
-	{%endif%}
-</div>
+<table style="float: right;">
+	<tr>
+		<td><div id="map_canvas"></div></td>
+	</tr>
+	<tr>
+		<td>
+			<div id="sorted">
+				{% include 'ratings/sorts.html' %}
+			</div>
+		</td>
+	</tr>
+</table>

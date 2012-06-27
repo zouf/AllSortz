@@ -6,11 +6,9 @@
 		$( "input:submit" ).button();
 	});
 </script>
-	<div class="content ui-widget" >
-
-
+	<div class="content" >
 			{% if form.question %}
-				<form class="ui-widget"  action="." method="post" >{% csrf_token %}
+				<form  action="." method="post" >{% csrf_token %}
 				<div class="input_box">
 				    {{ form.question.errors }}
 		
@@ -21,17 +19,17 @@
 					
 				</div>
 				<br/>
-				<p>Tag associated with question</p>
-						 	 <select name="tag" >
-							
-							  {% for tag in tags %}
-							 	<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>
-							 {%endfor%}
-		
-							 </select>
+				<p>Sort associated with question</p>
+				 	<select name="tag" class="ui-big-widget">
+					
+					{% for tag in tags %}
+						<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>
+					{%endfor%}
+
+					 </select>
 			
-				<p><a href="/ratings/add_new_tag/">Missing a tag you think should be here?</a></p>
-				<p><input type="submit" value="Add the question" /></p>
+				<p><a href="/ratings/add_new_tag/">Missing a sort you think should be here?</a></p>
+				<p><input type="submit" class="ui-big-widget" value="Add the question" /></p>
 				</form>
 				
 				<h2> Current Questions: </h3>

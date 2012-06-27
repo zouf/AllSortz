@@ -10,18 +10,18 @@
 {
     float: left;
     margin: 10px;
+    width: 60%;
 }
 
 /* Categories a business is sorted under */
 #sorted
 {
-     margin: 0px auto;
+     margin: 0px 10px;
 }
 
 /* Map of business location */
 #map_canvas
 {
-    float: right;
     width: 250px;
     height: 250px;
     margin: 10px;

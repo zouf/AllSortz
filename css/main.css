@@ -98,8 +98,13 @@ li
 {
     width: 100%;
     margin-bottom: 25px;
-    padding: 5px 0px;
+    padding: 5px;
     overflow: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .section
@@ -161,6 +166,7 @@ li
 {
     text-align: right;
     vertical-align: center;
+    width: 196px;
 }
 
 /* End of homepage sections */
@@ -182,6 +188,17 @@ li
 .busCard:hover
 {
     background-color: #C0C0C0;
+}
+
+.busListing
+{
+    text-align: left;
+    width: 100%;
+}
+
+.busListing td
+{
+    padding-left: 5px;
 }
 
 .blocklink

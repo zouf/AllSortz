@@ -6,48 +6,48 @@
 		$( "input:submit" ).button();
 	});
 </script>
-	<div class="content ui-widget" >
-	<form action="." method="post" enctype="multipart/form-data" >{% csrf_token %}
-		<input type="hidden" name="community" value="{{community.id}}" />
-		{{ form.non_field_errors }}
-		<div class="input_box">
-		    {{ form.name.errors }}
-		    <p>
-    		<input id="id_name" value="Name" class="input_box" type="text"  name="name" maxlength="100" onfocus="this.value='';"  /></p>
-		</div>
-		<div class="input_box">
-		    {{ form.address.errors }}
-			<p>
-    		<input id="id_address" value="Address" class="input_box" type="text"  name="address" maxlength="100" onfocus="this.value='';"  /></p>
-		
-		</div>
-		<div class="input_box">
-		    {{ form.city.errors }}
-			<p>
-    		<input id="id_city" value="City" class="input_box" type="text"  name="city" maxlength="100" onfocus="this.value='';"  /></p>
-		</div>
-		
-		<div class="input_box">
-		    {{ form.state.errors }}
-			<p><label for="id_state">State</label>
-    		{{ form.state }}
-		</div>
+	<div class="content" >
+		<form action="." method="post" enctype="multipart/form-data" >{% csrf_token %}
+			<input type="hidden" name="community" value="{{community.id}}" />
+			{{ form.non_field_errors }}
+			<div class="input_box ui-widget">
+			    {{ form.name.errors }}
+			    <p>
+	    		<input id="id_name" value="Name" class="input_box" type="text"  name="name" maxlength="100" onfocus="this.value='';"  /></p>
+			</div>
 			
-		<div class="input_box">
-			<input type="file" name="image" id="id_image" />
-		</div>
+			<div class="input_box ui-widget">
+			    {{ form.address.errors }}
+				<p>
+	    		<input id="id_address" value="Address" class="input_box" type="text"  name="address" maxlength="100" onfocus="this.value='';"  /></p>
+			</div>
+			
+			<div class="input_box ui-widget">
+			    {{ form.city.errors }}
+				<p>
+	    		<input id="id_city" value="City" class="input_box" type="text"  name="city" maxlength="100" onfocus="this.value='';"  /></p>
+			</div>
+			
+			<div class="input_box ui-widget">
+			    {{ form.state.errors }}
+				<p><label for="id_state" style="font-size:18px;">State</label>
+	    		{{ form.state }}
+			</div>
+				
+			<div class="input_box ui-widget">
+				<input type="file" name="image" id="id_image" />
+			</div>
+			
+			<p><input type="submit" class="ui-big-widget" value="Done" /></p>
 		
-		<p><input type="submit" value="Done" /></p>
-	
-		<div id="tagQuestions">
-			{% for q in questions %}
+			<div id="tagQuestions">
+				{% for q in questions %}
 					<p>{{q.question}}</p>
 					<input type="radio" name="answers" value="{{q.id}}_y"> Yes <br>
 					<input type="radio" name="answers" value="{{q.id}}_n"> No <br>
-			{% endfor %}	
-		
-		</div>
-			</form>
+				{% endfor %}
+			</div>
+		</form>
 	</div>
 	
 	
