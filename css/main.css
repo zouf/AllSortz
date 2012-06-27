@@ -78,7 +78,7 @@ li
     min-height: 100%;
     margin-left: -500px;
     padding-top: 190px;
-    padding-bottom: 400px;
+    padding-bottom: 50px;
     background-color: #ECECFF;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
@@ -128,7 +128,7 @@ li
     margin-left: 12px;
 }
 
-#friends
+#community
 {
     float: left;
     width: 580px;
@@ -148,8 +148,6 @@ li
 /* Tag list */
 #browse
 {
-    position: absolute;
-    bottom: 50px;
     width: 980px;
     margin: 10px;
 }

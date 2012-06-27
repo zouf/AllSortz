@@ -42,12 +42,12 @@
 			<table>
 				<tr>
 					<td>
-						 <div class="businessPhoto"><a href="/ratings/{{ bus.id }}/" > <img src="{{bus.photourl}}"  /> </a></div>
+						 <a href="/ratings/{{ bus.id }}/"> <img src="{{bus.photourl}}" /> </a>
 					</td>
 					<td>
-						<div class="business_name"><a class="business_name" href="/ratings/{{ bus.id }}/" class="blocklink"> {{bus.name }} </a></div> 
-		   				<div class="location_name"> {{bus.city}}, {{bus.state}}</div>
-		   				Community: <em> {{community.name}} </em>
+						<a class="business_name" href="/ratings/{{ bus.id }}/" class="blocklink"><font style="font-size:20px;font-weight:bold;"> {{bus.name }} </font></a> 
+		   				<br>{{bus.city}}, {{bus.state}}
+		   				<br><br>Community: <em> {{community.name}} </em>
 					</td>
 				</tr>						
 			</table>
