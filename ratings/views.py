@@ -1,3 +1,4 @@
+from communities.forms import CommunityForm
 from communities.models import BusinessMembership
 from communities.views import get_community, get_default
 from django.contrib.auth import logout
@@ -8,10 +9,9 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from photos.models import BusinessPhoto
 from photos.views import get_photo_web_url
-
 from ratings.forms import BusinessForm, CommentForm
 from ratings.models import Business, Comment, CommentRating, TagComment, \
-    PageRelationship, BusinessComment
+    PageRelationship, BusinessComment, Community
 from ratings.populate import create_business
 from ratings.search import search_site
 from ratings.utility import get_lat, get_bus_data, get_single_bus_data
@@ -26,6 +26,7 @@ from wiki.forms import PageForm
 from wiki.models import Page
 import logging
 import sys
+
 
 
 
@@ -71,15 +72,16 @@ def get_default_tag_context(b,t,user):
 def get_default_blank_context(user):
     user_tags = get_tags_user(user,"")
     top_tags = get_top_tags(10)    
-    
+    community = get_community(user)
 
     context = {\
-               'user_sorts':user_tags,\
+               'community': community,\
+              'user_sorts':user_tags,\
             'top_sorts':top_tags,\
              'tags': Tag.objects.all(),\
              'questions': HardTag.objects.all(),\
             'all_sorts':get_all_sorts(4),\
-            'location_term':get_community(user) }   
+            'location_term':community }   
     return context     
 
 def get_default_bus_context(b,user):
@@ -380,7 +382,7 @@ def display_tag(request,tag_id):
         businesses = paginator.page(1)
     except EmptyPage:
         businesses = paginator.page(paginator.num_pages)
-
+    
     
     try:
         UserTag.objects.get(tag=t,user=request.user)
@@ -487,6 +489,21 @@ def detail_keywords(request, bus_id):
 def add_new_tag(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+
+    #adding a new sort
+    if request.method=='POST':
+        form = TagForm(request.POST,request.FILES)
+        descr = form.data['descr']    
+        Tag.objects.create(creator=request.user,descr=descr)
+
+    context = get_default_blank_context(request.user)
+    context['form'] =  TagForm()            
+    return render_to_response('ratings/contribute/add_content.html',context, context_instance=RequestContext(request))
+
+
+def add_community(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
         
     #post a question 
     if request.method=='POST':
@@ -495,20 +512,13 @@ def add_new_tag(request):
        
         
         Tag.objects.create(creator=request.user,descr=descr)
-        return redirect(index)
-    else:
-        f = TagForm()
-        user_tags = get_tags_user(request.user,"")
-        top_tags = get_top_tags(10)    
-       
-        
-        context = { 'form':f, \
-                    'user_sorts':user_tags,\
-                'top_sorts':top_tags,\
-                'tags': Tag.objects.all(),\
-                'all_sorts':get_all_sorts(4),\
-                'location_term':get_community(request.user) }        
-        return render_to_response('ratings/contribute/add_content.html',context, context_instance=RequestContext(request))
+
+    context = get_default_blank_context(request.user)
+    context['form'] =CommunityForm
+    context['communities'] = Community.objects.all()            
+    return render_to_response('ratings/contribute/add_content.html',context, context_instance=RequestContext(request))
+    
+    
 
 
 def add_question(request):
@@ -519,17 +529,15 @@ def add_question(request):
     if request.method=='POST':
 
         form = HardTagForm(request.POST)
-        question = form.data['question']
-        
+        question = form.data['question'] 
         if 'tag' in form.data:
             descr = form.data['tag']
         else:
             descr = 'unset'
-        
         HardTag.objects.create(creator=request.user,question=question,descr=descr)
 
     f = HardTagForm()
-    context = get_default_blank_context()
+    context = get_default_blank_context(request.user)
     context['form'] = f
     
     return render_to_response('ratings/contribute/add_content.html', context, context_instance=RequestContext(request))
@@ -656,7 +664,6 @@ def paginate_businesses(business_list,page, num):
 
 def index(request):
     if request.user.is_authenticated():
-        logger.debug("zouf logged in user!"); 
         community = get_community(request.user)
         businesses = []
         try:
@@ -669,20 +676,17 @@ def index(request):
         
         business_list = get_bus_data(businesses,request.user)
         business_list = paginate_businesses(business_list,request.GET.get('page'),5)
+
+        for b in business_list:
+            bustags = BusinessTag.objects.filter(business=b)
+            b.tags = []
+            for bt in bustags:
+                b.tags.append(bt.tag)
+            
+        context = get_default_blank_context(request.user)
         
-        user_tags = get_tags_user(request.user,"")
-        top_tags = get_top_tags(10)
         
-        
-        
-        
-        context = { 'business_list':business_list,\
-                    'community':community,\
-                    'top_sorts':top_tags,\
-                    'user_sorts': user_tags,\
-                    'all_sorts':get_all_sorts(4),\
-                    'location_term':get_community(request.user)
-                    }
+      
         return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
     else:
         businesses = []
