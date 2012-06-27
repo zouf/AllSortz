@@ -48,8 +48,9 @@
 						<a class="business_name" href="/ratings/{{ bus.id }}/" class="blocklink"><font style="font-size:20px;font-weight:bold;"> {{bus.name }} </font></a> 
 		   				<br>{{bus.city}}, {{bus.state}}
 		   				<br><br>Community: <em> {{community.name}} </em>
+		   				<br>Sorted Under: 
 		   				{% for tag in business.tags %}
-		   					{{tag.descr}}
+		   					{{tag.descr}} |
 		   				{%endfor%}
 					</td>
 				</tr>						
