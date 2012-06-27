@@ -46,7 +46,10 @@
 {
     text-align: center;
     color: #000000;
-    background-color: #FFFFFF;
+    background-color: #F0F0FF;
+    -moz-box-shadow: 0px 0px 4px #4679ED;
+    -webkit-box-shadow: 0px 0px 4px #4679ED;
+    box-shadow: 0px 0px 4px #4679ED;
     border: 1px solid #070771;
     -moz-border-radius: 20px;
     border-radius: 20px;

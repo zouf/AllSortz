@@ -440,6 +440,7 @@ def edit_tag_discussion(request,bus_id,page_id):
 
     context = get_default_bus_context(b, request.user)
     context['form']=wiki_edit_form
+    context['page']=page
     return render_to_response('ratings/detail.html',
         RequestContext(request, context))
 

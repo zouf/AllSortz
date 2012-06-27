@@ -48,7 +48,7 @@ h2
     font-family: 'Serif';
     font-size: 24px;
     font-weight: normal;
-    margin: 5px;
+    margin: 5px 0px;
 }
 
 h3
@@ -56,7 +56,7 @@ h3
     color: #070771;
     font-family: 'Serif';
     font-size: 18px;
-    margin: 5px;
+    margin: 5px 0px;
 }
 
 li

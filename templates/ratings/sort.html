@@ -35,7 +35,7 @@ $(function() {
 	    	{%else%}
 	    		<form name="addUserTag" action="." method="post">{% csrf_token %}
 	    			<input type="hidden" name="tag" value="{{search_term}}" />
-					<input type="submit" value="Subscribe to {{search_term}}"/>
+					<input type="submit" class="ui-big-widget" value="Subscribe to {{search_term}}"/>
 				</form>
 			{%endif%}
 		</div>

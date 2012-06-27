@@ -67,11 +67,11 @@ alert('here')
 {% if business %}	
 	<div id="business" class="content">
 		<div id="profile" class="section">
-
 			<h1>{{ business.name }}</h1>    
 			{% include 'ratings/profile.html' %}
 		</div>
 		
+		<a name="discuss"></a>
 		<div id="discussion" class="section">
 		<h1>Sort Discussion</h1>
 			<div id="sorts">
@@ -80,12 +80,12 @@ alert('here')
 				{% else %}
 					{% include 'ratings/discussion/wikipages.html' %}
 				{% endif %}
+			</div>
+			{% if not form %}
+				<div id="comment_list">
+					{% include 'ratings/discussion/thread.html' %}
 				</div>
-				{% if not tag %}
-					<div id="comment_list">
-						{% include 'ratings/discussion/thread.html' %}
-					</div>
-				{% endif%}
+			{% endif%}
 		</div>
 	</div>
     

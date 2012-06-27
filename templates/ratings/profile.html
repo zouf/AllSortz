@@ -5,27 +5,28 @@
 		<tr>
 			<td width="40px">
 				{% include 'ratings/listing/vote_data.html' %}
-			</td><td>
+			</td>
+			<td>
 				<img src="{{business.photourl}}" />
+				
+				{% for ht in hard_tags %}
+				<ul>
+					{% if ht.answer %}
+						<li>{{ht.question}}: Yes!</li>
+					{%else%}
+						<li>{{ht.question}}: No!</li>
+					{%endif%}
+				</ul>
+				{% endfor%}
+	
+				{% if hard_tags%}
+					<a href="/ratings/answer_questions/{{business.id}}">Answer some questions yourself!</a>
+				{%else%}
+					<a href="/ratings/answer_questions/{{business.id }}">No one's answered any questions about {{business.name}}. Answer some yourself </a>
+				{%endif%}
 			</td>
 		</tr>
 	</table>
-	
-	{% for ht in hard_tags %}
-	<ul>
-		{% if ht.answer %}
-			<li>{{ht.question}}: Yes!</li>
-		{%else%}
-			<li>{{ht.question}}: No!</li>
-		{%endif%}
-	</ul>
-	{% endfor%}
-	
-	{% if hard_tags%}
-		<a href="/ratings/answer_questions/{{business.id}}">Answer some questions yourself!</a>
-	{%else%}
-		<a href="/ratings/answer_questions/{{business.id }}">No one's answered any questions about {{business.name}}. Answer some yourself </a>
-	{%endif%}
 </div>
 
 <div id="map_canvas"></div>
