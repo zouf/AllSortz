@@ -9,24 +9,28 @@ $(function() {
 	});
 </script>
 
-{% if business_list %}
 	<div class="content">
 	    <div style="width:650px;float:left;margin-left:10px" class="section">
-	    	{% if search_term %}
-				<h1>{{search_term}}</h1>
-				{%if location_term %}
-					<!--near <h2 class="search_term">{{location_term}}</h2>-->
-			    {%endif%}
-			{%endif%}
-			<table style="width:100%;">
-				<tr>
-				<td>
-					{% include 'ratings/buslist.html' %}
-				</td>
-				<td>
-				</td>
-				</tr>
-			</table>
+		    {% if business_list %}
+		    	{% if search_term %}
+					<h1>{{search_term}}</h1>
+					{%if location_term %}
+						<!--near <h2 class="search_term">{{location_term}}</h2>-->
+				    {%endif%}
+				{%endif%}
+				<table style="width:100%;">
+					<tr>
+					<td>
+						{% include 'ratings/buslist.html' %}
+					</td>
+					<td>
+					</td>
+					</tr>
+				</table>
+			{% else %}
+				<p>No businesses are sorted under <em>{{search_term}}</em>.</p>
+				<p><a href="/ratings/add_business/">Add a business</a></p>
+			{% endif %}
 		</div>
 		
 		<div style="padding:10px;">
@@ -40,10 +44,4 @@ $(function() {
 			{%endif%}
 		</div>
     </div>
-	
-
-{% else %}
-    <p>No businesses are available.</p>
-    <p><a href="/ratings/add_business/">Add a business</a></p>
-{% endif %}
 {% endblock %}
