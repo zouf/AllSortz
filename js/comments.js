@@ -54,11 +54,11 @@ $("form[name=addComment]").live("submit", function(e){
 	var form = $("form[name=addComment]")
 	var serial = form.serialize()
     $.ajax({ 
-         url   : '/api/add_comment/',
+         url   : '/api/add_tag_comment/',
          type  : form.attr('method'),
          data  : serial, // data to be submitted
          success: function(data){
-         	var elem = document.getElementById("comments")
+         	var elem = document.getElementById("comment_list")
          	elem.innerHTML = data
          	$(".buttonme").button();
          }
@@ -78,7 +78,7 @@ $(document).ready(function(){
 	         type  : form.attr('method'),
 	         data  : serial, // data to be submitted
 	         success: function(data){
-	         	var elem = document.getElementById("comments")
+	         	var elem = document.getElementById("comment_list")
 	         	elem.innerHTML = data
 	         	$(".buttonme").button();
 	         }
@@ -133,7 +133,7 @@ $("form[name=addReply]").live("submit", function(e){
          type  : form.attr('method'),
          data  : form.serialize(), // data to be submitted
          success: function(data){
-         	document.getElementById("comments").innerHTML = data   
+         	document.getElementById("comment_list").innerHTML = data   
          	$(".buttonme").button();
          }
      });

@@ -24,7 +24,7 @@ function initialize() {
 }
 
 function calcRoute() {
-alert('here')
+ d
 	var start = "New York,NY";
 	var end  = "San Francisco,CA";
 	
@@ -67,7 +67,7 @@ alert('here')
 {% if business %}	
 	<div id="business" class="content">
 		<div id="profile" class="section">
-			<h1>{{ business.name }}</h1>    
+			<h1><a href="/ratings/{{business.id}}/">{{ business.name }}</a></h1>    
 			{% include 'ratings/profile.html' %}
 		</div>
 		

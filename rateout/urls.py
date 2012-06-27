@@ -10,7 +10,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     #api for comments
-    url(r'^api/add_comment/$', 'ratings.views.add_comment'),
+    #url(r'^api/add_comment/$', 'ratings.views.add_comment'),
     url(r'^api/comment_vote/$', 'ratings.vote.comment_vote'),
     url(r'^api/remove_comment_vote*', 'ratings.vote.remove_comment_vote'),
     

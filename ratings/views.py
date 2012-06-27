@@ -1,4 +1,4 @@
-from communities.models import UserMembership, Community, BusinessMembership
+from communities.models import BusinessMembership
 from communities.views import get_community, get_default
 from django.contrib.auth import logout
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
@@ -7,29 +7,25 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from photos.models import BusinessPhoto
-from photos.views import get_photo_thumb_url, get_photo_web_url
-from rateout.settings import FB_APP_ID, FB_APP_SECRET
+from photos.views import get_photo_web_url
+
 from ratings.forms import BusinessForm, CommentForm
 from ratings.models import Business, Comment, CommentRating, TagComment, \
     PageRelationship, BusinessComment
 from ratings.populate import create_business
 from ratings.search import search_site
 from ratings.utility import get_lat, get_bus_data, get_single_bus_data
-from recommendation.normalization import getBusAvg, getNumPosRatings, \
-    getNumNegRatings
+from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from recommendation.recengine import RecEngine
 from tags.form import HardTagForm, TagForm
 from tags.models import CommentTag, Tag, BusinessTag, UserTag, HardTag, \
     BooleanQuestion
 from tags.views import get_tags_business, get_pages, get_tags_user, get_top_tags, \
-    get_all_sorts, get_hard_tags, get_questions, get_all_tags
+    get_all_sorts, get_hard_tags, get_questions
 from wiki.forms import PageForm
 from wiki.models import Page
-from wiki.views import view
-import cgi
 import logging
 import sys
-import urllib
 
 
 
@@ -39,18 +35,52 @@ re = RecEngine()
 
 
 
-def comment_comp(x,y):
-    #eventually do something more intelligent here!
-    xTot = x.pos_ratings - x.neg_ratings
-    yTot = y.pos_ratings - y.neg_ratings
-    if (xTot > yTot):
-        return -1
-    elif (xTot < yTot ):
-        return 1
-    else:
-        return 0
+def get_default_tag_context(b,t,user):
+    comments = get_tag_comments(b,t)
+    bus_tags = get_tags_business(b,user=user,q="")
+        
+        
+    user_tags = get_tags_user(user,"")
+    top_tags = get_top_tags(10)    
+    hard_tags = get_hard_tags(b)
+    
+    pages = get_pages(b,bus_tags)
+    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+    b = get_single_bus_data(b,user)
+    
+
+    
+    context =   { \
+        'business' : b, \
+        'comments': comments, \
+        'lat': latlng[0],\
+        'lng':latlng[1],  \
+        'bus_tags':bus_tags, \
+        'pages': pages, \
+        'tags': Tag.objects.all(),\
+        'user_sorts':user_tags,\
+        'top_sorts':top_tags,\
+        'all_sorts':get_all_sorts(4),\
+        'hard_tags':hard_tags,\
+        'location_term':get_community(user)
+        }
+
+    return context
 
 
+def get_default_blank_context(user):
+    user_tags = get_tags_user(user,"")
+    top_tags = get_top_tags(10)    
+    
+
+    context = {\
+               'user_sorts':user_tags,\
+            'top_sorts':top_tags,\
+             'tags': Tag.objects.all(),\
+             'questions': HardTag.objects.all(),\
+            'all_sorts':get_all_sorts(4),\
+            'location_term':get_community(user) }   
+    return context     
 
 def get_default_bus_context(b,user):
     comments = get_business_comments(b)
@@ -82,8 +112,23 @@ def get_default_bus_context(b,user):
     return context
 
 
+def comment_comp(x,y):
+    #eventually do something more intelligent here!
+    xTot = x.pos_ratings - x.neg_ratings
+    yTot = y.pos_ratings - y.neg_ratings
+    if (xTot > yTot):
+        return -1
+    elif (xTot < yTot ):
+        return 1
+    else:
+        return 0
+
+
+
+
+
+
 def get_business_comments(business,user=False):
-    print('get bus comments')
     buscomments = BusinessComment.objects.filter(business=business).order_by('-date').reverse()
     for bc in buscomments:
         print(bc.date)
@@ -109,9 +154,10 @@ def get_business_comments(business,user=False):
     print('return bus comments')
     return results
 
-def get_tag_comments(tag,user=False):
-    tagcomments = TagComment.objects.filter(tag=tag).order_by('-date').reverse()
-    
+def get_tag_comments(b,tag):
+    print('get for'+str(b)+ ' and tag ' + str(tag.descr))
+    tagcomments = TagComment.objects.filter(business=b,tag=tag).order_by('-date').reverse()
+
     comment_list = []
     for tc in tagcomments:
         if tc.thread.reply_to is None: #root tag comment
@@ -204,88 +250,82 @@ def add_comment_form(request,bus_id):
 
 
 #adds comments to the database
-@csrf_exempt
-def add_comment(request):
-    logger.debug('in add comment')
-    print('in add comment regular')
-    if request.method == 'POST':  # add a comment!
-        form = request.POST       
-        print(form)
-        #base comment submission
-        if 'cid' not in form:   
-            print(form)   
-            nm = form['comment']
-            bid = form['bid']
-            b = Business.objects.get(id=bid)
-            keyset = Comment.objects.filter(descr=nm, business=b)
-            if(keyset.count() == 0):
-                try:
-                    k = Comment.objects.create(descr=nm,user=request.user,business=b,reply_to=None)
-                except:
-                    logger.error("Unexpected error:" + str(sys.exc_info()[0]))
-                k.save()
-        else:  #reply to another comment submission
-            nm = form['comment']
-            bid = form['bid']
-            print(form)
-            b = Business.objects.get(id=bid)
-            cid = form['cid']
-            c = Comment.objects.get(id=cid)
-            keyset = Comment.objects.filter(descr=nm, business=b)
-            if(keyset.count() == 0):
-                try:
-                    k = Comment.objects.create(descr=nm,user=request.user,reply_to=c)
-                except:
-                    logger.error("Unexpected error:" + str(sys.exc_info()[0]))
-                k.save()
-        comment_list = get_business_comments(b,request.user)
+#@csrf_exempt
+#def add_comment(request):
+#    logger.debug('in add comment')
+#    print('in add comment regular')
+#    if request.method == 'POST':  # add a comment!
+#        form = request.POST       
+#        print(form)
+#        #base comment submission
+#        if 'cid' not in form:   
+#            print(form)   
+#            nm = form['comment']
+#            bid = form['bid']
+#            b = Business.objects.get(id=bid)
+#            keyset = Comment.objects.filter(descr=nm, business=b)
+#            if(keyset.count() == 0):
+#                try:
+#                    k = Comment.objects.create(descr=nm,user=request.user,business=b,reply_to=None)
+#                except:
+#                    logger.error("Unexpected error:" + str(sys.exc_info()[0]))
+#                k.save()
+#        else:  #reply to another comment submission
+#            nm = form['comment']
+#            bid = form['bid']
+#            print(form)
+#            b = Business.objects.get(id=bid)
+#            cid = form['cid']
+#            c = Comment.objects.get(id=cid)
+#            keyset = Comment.objects.filter(descr=nm, business=b)
+#            if(keyset.count() == 0):
+#                try:
+#                    k = Comment.objects.create(descr=nm,user=request.user,reply_to=c)
+#                except:
+#                    logger.error("Unexpected error:" + str(sys.exc_info()[0]))
+#                k.save()
+#        comment_list = get_business_comments(b,request.user)
+#
+#        return render_to_response('ratings/discussion/thread.html', {'business':b, 'comments': comment_list})
 
-        return render_to_response('ratings/discussion/thread.html', {'business':b, 'comments': comment_list})
 
 
 @csrf_exempt
 def add_tag_comment(request):
     logger.debug('in add comment')
-    print('in add tag comment')
+    print('in add comments)')
     if request.method == 'POST':  # add a comment!
-        form = request.POST       
+        form = request.POST 
+        print(form)     
+        #add a comment to a business' tag page 
         if 'tid'  in form:
-            print('in tid')
-            print(form)
-            
+            bid =form['bid']
+            b = Business.objects.get(id=bid)
             tid = form['tid']
-            try:
-                t = Tag.objects.get(id=tid)
-            except:
-                print('fucled')
-            #t = bt.tag
-
-            if 'cid' not in form:      #root reply
-                print(form)
+            t = Tag.objects.get(id=tid)
+            print(form)
+            if 'cid' not in form:  #root reply
                 nm = form['comment']
-                
                 k = Comment(descr=nm,user=request.user,reply_to=None)
                 k.save()
-                print('root comment')
-                tc = TagComment(tag=t,thread=k)
+               
+                tc = TagComment(business=b,tag=t,thread=k)
                 tc.save()
             else:  #reply to another comment submission
                 nm = form['comment']
                 cid = form['cid']
-                print('here')
-                c = Comment.objects.get(id=cid)
-                k = Comment.objects.create(descr=nm,user=request.user,reply_to=c)
+                parent = Comment.objects.get(id=cid) #parent comment
+                k = Comment.objects.create(descr=nm,user=request.user,reply_to=parent) #new child
                 k.save()
-            comment_list = get_tag_comments(t)
+            comment_list = get_tag_comments(b,t)
             return render_to_response('ratings/discussion/thread.html', {'tag':t, 'comments': comment_list})
-
+        
+        # add a comment to a business's page alone
         else:
             bid =form['bid']
             b = Business.objects.get(id=bid)
             if 'cid' not in form:      #root reply
-                print(form)
                 nm = form['comment']
-    
                 k = Comment(descr=nm,user=request.user,reply_to=None)
                 k.save()
                 bc = BusinessComment(business=b,thread=k)
@@ -293,8 +333,8 @@ def add_tag_comment(request):
             else:  #reply to another comment submission
                 nm = form['comment']
                 cid = form['cid']
-                c = Comment.objects.get(id=cid)
-                k = Comment.objects.create(descr=nm,user=request.user,reply_to=c)
+                parent = Comment.objects.get(id=cid) #parent comment
+                k = Comment.objects.create(descr=nm,user=request.user,reply_to=parent)
                 k.save()
             comment_list = get_business_comments(b)
             return render_to_response('ratings/discussion/thread.html', {'business':b, 'comments': comment_list})
@@ -340,26 +380,18 @@ def display_tag(request,tag_id):
         businesses = paginator.page(1)
     except EmptyPage:
         businesses = paginator.page(paginator.num_pages)
-        
-        
-    user_tags = get_tags_user(request.user,"")
-    top_tags = get_top_tags(10)
+
     
     try:
-        ut = UserTag.objects.get(tag=t,user=request.user)
+        UserTag.objects.get(tag=t,user=request.user)
         subscribed=True
     except:
         subscribed=False
-    
-        
-    context = {'business_list': businesses,\
-                'search_term': t.descr,\
-                'user_sorts':user_tags,\
-                'top_sorts':top_tags,\
-                'subscribed':subscribed,\
-                'all_sorts':get_all_sorts(4),\
-                'location_term':get_community(request.user)\
-              }
+
+    context = get_default_blank_context(request.user)
+    context['search_term'] = t.descr
+    context['business_list'] = businesses
+    context['subscribed'] = subscribed
     return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
 
     
@@ -387,24 +419,17 @@ def search(request):
     except EmptyPage:
         businesses = paginator.page(paginator.num_pages)
         
-        
-        
-    user_tags = get_tags_user(request.user,"")
-    top_tags = get_top_tags(10)
-    
-    
-    context = {'business_list': businesses,\
-            'search_term': term,\
-             'user_sorts':user_tags,\
-             'top_sorts':top_tags,\
-             'all_sorts':get_all_sorts(4),\
-             'location_term':location\
-             
-          }
+
+    context = get_default_blank_context(request.user)
+    context['search_term'] = term
+    context['business_list'] = businesses
     return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
 
 
 def edit_tag_discussion(request,bus_id,page_id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+        
     b = get_object_or_404(Business, pk=bus_id)
     page = get_object_or_404(Page, pk=page_id)
 
@@ -423,24 +448,21 @@ def edit_tag_discussion(request,bus_id,page_id):
         else:
             wiki_edit_form = PageForm(initial={'name': page.name})
 
-
-        
-#  comments = get_comments(b,user=request.user,q="")
     
-    pg = get_object_or_404(Page, pk=page_id)
-    print('hey')
     try:
-        pgr = PageRelationship.objects.get(page=pg)
+        pgr = PageRelationship.objects.get(page=page)
     except:
-        pgr = PageRelationship.objects.filter(page=pg)[0]
-    
-    
+        pgr = PageRelationship.objects.filter(page=page)[0]
     t = pgr.tag
-
-
-    context = get_default_bus_context(b, request.user)
+    context = get_default_tag_context(b, t, request.user)
     context['form']=wiki_edit_form
     context['page']=page
+    context['tag'] =t 
+    
+    for tc in context['comments']:
+        print(tc)
+    
+    
     return render_to_response('ratings/detail.html',
         RequestContext(request, context))
 
@@ -451,12 +473,7 @@ def how_it_works(request):
 @csrf_exempt
 def detail_keywords(request, bus_id):
     b = get_object_or_404(Business, pk=bus_id)
-    if request.method == 'POST':
-        if not request.user.is_authenticated():
-            return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
 
-    
-    
     try:
         b.photourl = get_photo_web_url(b)
     except:
@@ -468,6 +485,9 @@ def detail_keywords(request, bus_id):
 
 
 def add_new_tag(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+        
     #post a question 
     if request.method=='POST':
         form = TagForm(request.POST,request.FILES)
@@ -492,8 +512,12 @@ def add_new_tag(request):
 
 
 def add_question(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+        
     #post a question 
     if request.method=='POST':
+
         form = HardTagForm(request.POST)
         question = form.data['question']
         
@@ -502,26 +526,18 @@ def add_question(request):
         else:
             descr = 'unset'
         
-        ht = HardTag.objects.create(creator=request.user,question=question,descr=descr)
+        HardTag.objects.create(creator=request.user,question=question,descr=descr)
 
     f = HardTagForm()
-    user_tags = get_tags_user(request.user,"")
-    top_tags = get_top_tags(10)    
+    context = get_default_blank_context()
+    context['form'] = f
     
-    context = { 'form':f, \
-                'user_sorts':user_tags,\
-            'top_sorts':top_tags,\
-             'tags': Tag.objects.all(),\
-             'questions': HardTag.objects.all(),\
-            'all_sorts':get_all_sorts(4),\
-            'location_term':get_community(request.user) }        
     return render_to_response('ratings/contribute/add_content.html', context, context_instance=RequestContext(request))
 
 def ans_business_questions(request,bus_id):
-    if request.method == 'POST':
-        if not request.user.is_authenticated():
-            return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
- 
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+
     if request.method != 'POST':
         b = get_object_or_404(Business, pk=bus_id)
         user_tags = get_tags_user(request.user,"")
@@ -573,8 +589,11 @@ def ans_business_questions(request,bus_id):
         return redirect(detail_keywords,bus_id)
 
 def add_business(request):
- 
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+        
     if request.method == 'POST':  # add a business
+
         form = BusinessForm(request.POST, request.FILES)
         name = form.data['name']
         logger.debug("Creation of business %s by  %s", name,request.user.username)
@@ -695,8 +714,6 @@ def user_details(request):
     if not request.user.is_authenticated():
         return redirect(index)
     
- 
-        
     user_tags = get_tags_user(request.user,"")
     top_tags = get_top_tags(10)
 
