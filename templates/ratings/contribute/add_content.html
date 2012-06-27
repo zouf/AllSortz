@@ -7,6 +7,7 @@
 	});
 </script>
 	<div class="content" >
+
 			{% if form.question %}
 				<form  action="." method="post" >{% csrf_token %}
 				<div class="input_box">
@@ -39,10 +40,38 @@
 					<p>{{q.question}}</p>
 				{%endfor%}
 				</p>
+			{%else%}{%if communities %}
+				<form  action="." method="post" >{% csrf_token %}
+					<div class="input_box ui-widget">
+					    {{ form.name.errors }}
+			    		<p><input id="id_name" value="Name" class="input_box" type="text"  name="name" maxlength="100" onfocus="this.value='';"  /></p>
+					</div>
+					<div class="input_box ui-widget">
+						{{ form.descr.errors }}
+						<p><textarea id="id_description" class="ui-widget" value="Description" name="descr" cols="40" rows="10" onfocus="this.value='';"></textarea></p>
+					</div>
+					<div class="input_box ui-widget">
+					    {{ form.city.errors }}
+						<p><input id="id_city" value="City" class="input_box" type="text"  name="city" maxlength="100" onfocus="this.value='';"  /></p>
+					</div>
+					<div class="input_box ui-widget">
+					    {{ form.state.errors }}
+						<p><label for="id_state" style="font-size:18px;">State</label></p>
+			    		{{ form.state }}
+					</div>
+				
+						<p><input type="submit" class="ui-big-widget" value="Add the community" /></p>
+					
+				</form>
+				<p>Current Communities</p>
+				{% for c in communities %}
+					{{c.name}}
+				{%endfor%}
 			{% else %}
 				<div id="tag_list">
 					{% include 'ratings/contribute/sortlist.html' %}
 				</div>
+			{%endif%}
 			{%endif%}
 	
 	</div>

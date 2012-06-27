@@ -10,7 +10,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     #api for comments
-    #url(r'^api/add_comment/$', 'ratings.views.add_comment'),
     url(r'^api/comment_vote/$', 'ratings.vote.comment_vote'),
     url(r'^api/remove_comment_vote*', 'ratings.vote.remove_comment_vote'),
     
@@ -71,6 +70,7 @@ urlpatterns = patterns('',
 	url(r'^ratings/add_business/$', 'ratings.views.add_business'),
     url(r'^ratings/add_question/$', 'ratings.views.add_question'),
     url(r'^ratings/add_new_tag/$', 'ratings.views.add_new_tag'),
+    url(r'^ratings/add_community/$', 'ratings.views.add_community'),
 
 
     url(r'^admin/', include(admin.site.urls)),

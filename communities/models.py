@@ -1,22 +1,10 @@
 from django.contrib.auth.models import User
-from django.contrib.localflavor.us.forms import USStateField
 from django.db import models
-from ratings.models import Business
+from ratings.models import Community
 
-# Create your models here.
+# Create your models he
 
 
-class Community(models.Model):
-    name = models.CharField(max_length=250)
-    descr = models.TextField()
-    date = models.DateTimeField(auto_now=True)
-
-    city = models.CharField(max_length=100)
-    state = USStateField()  # Yes, this is America-centric..
-
-    def __unicode__(self):
-        return self.name
-        
         
 class UserMembership(models.Model):
     user = models.ForeignKey(User)
@@ -26,6 +14,7 @@ class UserMembership(models.Model):
 
         
 class BusinessMembership(models.Model):
-    business = models.ForeignKey(Business)
+    business = models.ForeignKey('ratings.Business')
     community = models.ForeignKey(Community)
     date = models.DateTimeField(auto_now=True)
+

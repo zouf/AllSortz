@@ -1,6 +1,6 @@
 # Create your views here.
 
-from communities.models import Community, UserMembership
+from communities.models import UserMembership,Community
 import logging
 
 
@@ -11,7 +11,7 @@ def get_default():
         c = Community.objects.get(name="Princeton")
     except:
         logger.debug("Creating a default community of Princeton")
-        c = Community(name="Princeton", descr="Default Community of Princeton", city="Princeton")
+        c = Community(name="Princeton", descr="Default Community of Princeton", city="Princeton",state="NJ")
         c.save()
     return c
 
