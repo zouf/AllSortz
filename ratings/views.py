@@ -507,11 +507,12 @@ def add_community(request):
         
     #post a question 
     if request.method=='POST':
-        form = TagForm(request.POST,request.FILES)
+        form = CommunityForm(request.POST,request.FILES)
         descr = form.data['descr']
-       
-        
-        Tag.objects.create(creator=request.user,descr=descr)
+        city = form.data['city']
+        state = form.data['state']
+        name = form.data['name']
+        Community.objects.create(name=name,descr=descr,state=state,city=city)
 
     context = get_default_blank_context(request.user)
     context['form'] =CommunityForm
@@ -673,7 +674,7 @@ def index(request):
         except:
             logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
             businesses = Business.objects.all()
-        
+        print(businesses)
         business_list = get_bus_data(businesses,request.user)
         business_list = paginate_businesses(business_list,request.GET.get('page'),5)
 
@@ -684,7 +685,7 @@ def index(request):
                 b.tags.append(bt.tag)
             
         context = get_default_blank_context(request.user)
-        
+        context['business_list'] = business_list
         
       
         return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
