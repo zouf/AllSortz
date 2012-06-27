@@ -6,9 +6,9 @@
 		$( "input:submit" ).button();
 	});
 </script>
-	<div class="content ui-widget" >
+	<div class="content" >
 	{% if questions %}
-	<form class="ui-widget" action="/ratings/answer_questions/{{business.id}}" method="post" >{% csrf_token %}
+	<form class="ui-big-widget" action="/ratings/answer_questions/{{business.id}}" method="post" >{% csrf_token %}
 
 	
 		<div id="tagQuestions">
@@ -19,7 +19,7 @@
 			{% endfor %}	
 		
 		</div>
-				<p><input type="submit" value="Done" /></p>
+				<p><input class="ui-big-widget" type="submit" value="Done" /></p>
 				<input type="hidden" value="{{business.id}}" name="bid" />
 			</form>
 			{% else %}

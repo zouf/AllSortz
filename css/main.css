@@ -141,7 +141,7 @@ li
 {
     float: right;
     width: 330px;
-    min-height: 100%;
+    min-height: 822px;
     margin-right: 12px;
 }
 
@@ -151,22 +151,21 @@ li
     position: absolute;
     bottom: 50px;
     width: 980px;
-    height: 350px;
     margin: 10px;
 }
 
 #tags
 {
     border: none;
-    width: 95%;
-    height: 250px;
+    width: 90%;
+    margin-left: 10%;
 }
 
 #tags td
 {
-    text-align: right;
+    text-align: left;
     vertical-align: center;
-    width: 196px;
+    width: 100px;
 }
 
 /* End of homepage sections */

@@ -11,14 +11,14 @@ $(function() {
 
 {% if business_list %}
 	<div class="content">
-	    <div id="trending" class="section">
+	    <div style="width:650px;float:left;margin-left:10px" class="section">
 	    	{% if search_term %}
 				<h1>{{search_term}}</h1>
 				{%if location_term %}
 					<!--near <h2 class="search_term">{{location_term}}</h2>-->
 			    {%endif%}
 			{%endif%}
-			<table>
+			<table style="width:100%;">
 				<tr>
 				<td>
 					{% include 'ratings/buslist.html' %}
@@ -29,7 +29,7 @@ $(function() {
 			</table>
 		</div>
 		
-		<div id="suggestions" class="section">
+		<div style="padding:10px;">
 	    	{% if subscribed %}
 	    		<p> You're subscribed to {{search_term}} </p>
 	    	{%else%}
