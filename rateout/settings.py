@@ -32,7 +32,7 @@ else:
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'errors@allsortz.com'
-EMAIL_HOST_PASSWORD = 'sendserrors'
+EMAIL_HOST_PASSWORD = 'allsortz'
 EMAIL_PORT = 587
 
 
@@ -302,13 +302,13 @@ LOGGING = {
         }
     },
     'loggers': {
-        'ratings':{
-             'handlers': ['allsortz_handler', 'send_email'], #sends email on errors
-            'level': 'DEBUG',
-            'propagate': True      
-            },
+#        'ratings':{
+#             'handlers': ['allsortz_handler', 'send_email'], #sends email on errors
+#            'level': 'DEBUG',
+#            'propagate': True      
+#            },
         '': {
-            'handlers': ['default'],
+            'handlers': ['allsortz_handler', 'send_email'],
             'level': 'DEBUG',
             'propagate': True
         },

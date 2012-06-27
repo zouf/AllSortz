@@ -55,6 +55,7 @@ class Comment(models.Model):
 class TagComment(models.Model):
     thread = models.ForeignKey(Comment)
     tag = models.ForeignKey('tags.Tag')
+    business = models.ForeignKey(Business)
     date = models.DateTimeField(auto_now=True)
   
 
@@ -62,7 +63,6 @@ class BusinessComment(models.Model):
     business = models.ForeignKey(Business)
     thread = models.ForeignKey(Comment)
     date = models.DateTimeField(auto_now=True)
-
 
 
 class CommentRating(models.Model):
