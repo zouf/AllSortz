@@ -35,7 +35,7 @@ $(function() {
 		
 		<div style="padding:10px;">
 	    	{% if subscribed %}
-	    		<p> You're subscribed to {{search_term}} </p>
+	    		<p> You are subscribed to <em>{{search_term}}</em>. </p>
 	    	{%else%}
 	    		<form name="addUserTag" action="." method="post">{% csrf_token %}
 	    			<input type="hidden" name="tag" value="{{search_term}}" />
