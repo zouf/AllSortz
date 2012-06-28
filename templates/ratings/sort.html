@@ -3,48 +3,48 @@
 {% block body %}
 <script type="text/javascript">
 $(function() {
-		$( "input:submit, a, button", ".demo" ).button();
-		$( "#submitBus").button();
-		$( "#submitBus" ).click(function() { window.location="/ratings/add_business/" });
-	});
+	$( "input:submit, a, button", ".demo" ).button();
+	$( "#submitBus").button();
+	$( "#submitBus" ).click(function() { window.location="/ratings/add_business/" });
+});
 </script>
 
-	<div class="content">
-	    <div style="width:650px;float:left;margin-left:10px" class="section">
-		    {% if business_list %}
-		    	{% if search_term %}
-					<h1>{{search_term}}</h1>
-					{%if location_term %}
-						<!--near <h2 class="search_term">{{location_term}}</h2>-->
-				    {%endif%}
-				{%endif%}
-				<table style="width:100%;">
-					<tr>
-					<td>
-						{% include 'ratings/buslist.html' %}
-					</td>
-					<td>
-					</td>
-					</tr>
-				</table>
-			{% else %}
-				<p>No businesses are sorted under <em>{{search_term}}</em>.</p>
-				<p><a href="/ratings/add_business/">Add a business</a></p>
-			{% endif %}
-		</div>
-		
-		<div style="padding:10px;">
-	    	{% if subscribed %}
-	    		<form name="unsubscribeUser" action="." method="post">{% csrf_token %}
-	    			<input type="hidden" name="tag" value="{{search_term}}" />
-					<input type="submit" class="ui-big-widget" value="Unsubscribe to {{search_term}}"/>
-				</form>
-	    	{%else%}
-	    		<form name="subscribeUser" action="." method="post">{% csrf_token %}
-	    			<input type="hidden" name="tag" value="{{search_term}}" />
-					<input type="submit" class="ui-big-widget" value="Subscribe to {{search_term}}"/>
-				</form>
-			{% endif %}
-		</div>
-    </div>
+<div class="content">
+    <div style="width:650px;float:left;margin-left:10px" class="section">
+	    {% if business_list %}
+	    	{% if search_term %}
+				<h1>{{search_term}}</h1>
+				{%if location_term %}
+					<!--near <h2 class="search_term">{{location_term}}</h2>-->
+			    {%endif%}
+			{%endif%}
+			<table style="width:100%;">
+				<tr>
+				<td>
+					{% include 'ratings/buslist.html' %}
+				</td>
+				<td>
+				</td>
+				</tr>
+			</table>
+		{% else %}
+			<p>No businesses are sorted under <em>{{search_term}}</em>.</p>
+			<p><a href="/ratings/add_business/">Add a business</a></p>
+		{% endif %}
+	</div>
+	
+	<div style="padding:10px;">
+    	{% if subscribed %}
+    		<form name="unsubscribeUser" action="." method="post">{% csrf_token %}
+    			<input type="hidden" name="tag" value="{{search_term}}" />
+				<input type="submit" class="ui-big-widget" value="Unsubscribe to {{search_term}}"/>
+			</form>
+    	{%else%}
+    		<form name="subscribeUser" action="." method="post">{% csrf_token %}
+    			<input type="hidden" name="tag" value="{{search_term}}" />
+				<input type="submit" class="ui-big-widget" value="Subscribe to {{search_term}}"/>
+			</form>
+		{% endif %}
+	</div>
+</div>
 {% endblock %}
