@@ -143,35 +143,40 @@ function showAddTag()
 
 }
 
+function unsubUser(tag)
+{
+	$.ajax({ 
+        url   : '/api/remove_user_tag/',
+        type  : 'POST',
+        data  : {tag:tag}, // data to be submitted
+        success: function(data){	
+       	 rebind_buttons();
+        }
+   });
+}
+
+function subUser(tag)
+{
+	$.ajax({ 
+        url   : '/api/add_user_tag/',
+        type  : 'POST',
+        data  :{tag:tag}, // data to be submitted
+        success: function(data){
+       	 rebind_buttons();
+        }
+   });
+}
 
 $(document).ready(function(){
 	$("form[name=subscribeUser]").live("click",function(e){
 		var form = $("form[name=subscribeUser]")
-		$.ajax({ 
-	         url   : '/api/add_user_tag/',
-	         type  : form.attr('method'),
-	         data  : form.serialize(), // data to be submitted
-	         success: function(data){
-	        	 alert(data);
-	        	
-	        	 rebind_buttons();
-	         }
-	    });
+		subUser(form.serializeArray()[0].name);  //get the name of the tag
 	});
 	
 	$("form[name=unsubscribeUser]").live("click",function(e){
 		var form = $("form[name=unsubscribeUser]")
+		unsubUser(form.serializeArray()[0].name);
 		
-		$.ajax({ 
-	         url   : '/api/remove_user_tag/',
-	         type  : form.attr('method'),
-	         data  : form.serialize()['tag'], // data to be submitted
-	         success: function(data){
-	        	 alert(data);
-	        	
-	        	 rebind_buttons();
-	         }
-	    });
 	});
 	
 	
