@@ -78,7 +78,7 @@ li
     min-height: 100%;
     margin-left: -500px;
     padding-top: 190px;
-    padding-bottom: 50px;
+    padding-bottom: 300px;
     background-color: #ECECFF;
     border-left: 1px solid #000000;
     border-right: 1px solid #000000;
@@ -148,8 +148,12 @@ li
 /* Tag list */
 #browse
 {
+    position: absolute;
+    bottom: 50px;
     width: 980px;
+    height: 200px;
     margin: 10px;
+    overflow: hidden;
 }
 
 #tags
@@ -164,6 +168,7 @@ li
     text-align: left;
     vertical-align: center;
     width: 100px;
+    height: 25px;
 }
 
 /* End of homepage sections */
