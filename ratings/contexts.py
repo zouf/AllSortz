@@ -4,6 +4,7 @@ Created on Jun 27, 2012
 @author: zouf
 '''
 from communities.views import get_community
+from django.contrib.auth.models import AnonymousUser
 from ratings.models import Community, BusinessComment, CommentRating, TagComment, \
     Comment
 from ratings.utility import get_lat, get_single_bus_data
@@ -162,6 +163,6 @@ def get_unauthenticated_context():
     context = { \
             'top_sorts':top_tags,\
             'all_sorts':get_all_sorts(4),\
-            'location_term':get_community(None)
+            'location_term':get_community(AnonymousUser)
             }
     return context

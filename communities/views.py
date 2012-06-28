@@ -16,7 +16,7 @@ def get_default():
     return c
 
 def get_community(user):
-    if user is not None and user.is_authenticated():
+    if user.is_authenticated():
         try:
             membership = UserMembership.objects.get(user=user,default=True)
             return membership.community
