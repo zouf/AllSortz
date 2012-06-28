@@ -8,7 +8,7 @@
 </script>
 	<div class="content" >
 
-			{% if form.question %}
+			{% if type == 'question'' %}
 				<form  action="." method="post" >{% csrf_token %}
 				<div class="input_box">
 				    {{ form.question.errors }}
@@ -40,7 +40,7 @@
 					<p>{{q.question}}</p>
 				{%endfor%}
 				</p>
-			{%else%}{%if communities %}
+			{%else%}{%if type == 'tag' %}
 				<form  action="." method="post" >{% csrf_token %}
 					<div class="input_box ui-widget">
 					    {{ form.name.errors }}

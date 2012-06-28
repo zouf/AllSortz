@@ -3,11 +3,13 @@ Created on Jun 12, 2012
 
 @author: zouf
 '''
+from communities.models import UserMembership
+from django.core.exceptions import MultipleObjectsReturned
 from django.db.models.aggregates import Count
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from ratings.models import Business, Comment, PageRelationship
+from ratings.models import Business, Comment, PageRelationship, Community
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from tags.models import Tag, TagRating, CommentTag, UserTag, BusinessTag, \
     BooleanQuestion, HardTag
@@ -15,14 +17,8 @@ from wiki.models import Page
 import json
 import logging
 import sys
-from django.core.exceptions import MultipleObjectsReturned
 
 logger = logging.getLogger(__name__)
-    
-
-    
-    
-    
     
 #sorts tags
 def tag_comp(x,y):
@@ -46,11 +42,6 @@ def add_a_sort(request):
             tag = Tag.objects.get(descr=nm)
         except:
             tag = Tag.objects.create(descr=nm,creator=request.user)
-            
-        print(tag)
-
-
-   
         return render_to_response('ratings/contribute/sortlist.html', {'tags':Tag.objects.all()})
     
     
@@ -92,45 +83,85 @@ def add_tag_business(request):
         return render_to_response('ratings/sorts.html', {'business':b, 'bus_tags': bus_tags, 'tags':Tag.objects.all()})
     
     
+#Right now I'm trying to completely refactor this function to ahndle all user subscriptions
 @csrf_exempt
 def add_user_tag(request):
     u = request.user
     if request.method == 'POST':  # add a tag!
         form = request.POST
-        nm = form['tag']
-        logger.debug('Create a User tag '+str(nm))
-        try:
-            tag = Tag.objects.get(descr=nm)
-        except:
-            tag = Tag.objects.create(descr=nm,creator=request.user)
-        try: 
-            UserTag.objects.get(tag=tag,user=u)
-        except:
-            UserTag.objects.create(tag=tag,user=u)
-        user_tags = get_tags_user(u)
-        tags = Tag.objects.all()
-        print(user_tags)
-        return render_to_response('ratings/sorts.html', {'user':request.user, 'tags': tags, 'user_sorts': user_tags})
+        print(form)
+        print('before tag in form')
+        if form['type']  == 'tag':
+            nm = form['data']
+            print("TAGAGATAT")
+            logger.debug('Create a User tag '+str(nm))
+            try:
+                tag = Tag.objects.get(descr=nm)
+            except:
+                tag = Tag.objects.create(descr=nm,creator=request.user)
+            try: 
+                UserTag.objects.get(tag=tag,user=u)
+            except:
+                UserTag.objects.create(tag=tag,user=u)
+            user_tags = get_tags_user(u)
+            tags = Tag.objects.all()
+            print(user_tags)
+            return render_to_response('ratings/sorts.html', {'user':request.user, 'tags': tags, 'user_sorts': user_tags})
+        elif form['type']=="comm": #associate a user with a community
+            nm = form['data']
+            logger.debug('Create a User tag '+str(nm))
+            try:
+                community = Community.objects.get(name=nm)
+            except:
+                logger.error("Unexpected error:" + str(sys.exc_info()[0]))
+                print("Unexpected error:" + str(sys.exc_info()[0]))
+            print(community)
+            
+            
+            if UserMembership.objects.filter().count() == 0:
+                UserMembership.objects.create(community=community,user=u,logged_in=False)
+           
+            response_data = dict()
+            response_data['success'] = 'true'
+            return HttpResponse(json.dumps(response_data), mimetype="application/json")
+        
 
 @csrf_exempt
 def remove_user_tag(request):
     u = request.user
     if request.method == 'POST':  # add a tag!
         form = request.POST
-        nm = form['tag']
-        logger.debug('Remove a User tag '+str(nm))
-        try:
-            tag = Tag.objects.get(descr=nm)
-        except:
-            tag = Tag.objects.create(descr=nm,creator=request.user)
-        try: 
-            UserTag.objects.filter(tag=tag,user=u).delete()
-        except:
-            logger.error('error in deleting a user tag')
-        user_tags = get_tags_user(u)
-        tags = Tag.objects.all()
-        print(user_tags)
-        return render_to_response('ratings/sorts.html', {'user':request.user, 'tags': tags, 'user_sorts': user_tags})
+        print(form)
+        print('delete a tag in form')
+        if form['type']  == 'tag':
+            nm = form['data']
+            logger.debug('delete a User tag '+str(nm))
+            try:
+                tag = Tag.objects.get(descr=nm)
+                UserTag.objects.filter(tag=tag,user=u).delete()
+            except: 
+                print('exception goddamit')
+                logger.error("trying to delete a user tag hat wasn't there")
+                
+            response_data = dict()
+            response_data['success'] = 'true'
+            return HttpResponse(json.dumps(response_data), mimetype="application/json")
+        elif form['type']=="comm": #associate a user with a community
+            nm = form['data']
+            logger.debug('delete a community relationship '+str(nm))
+            try:
+                community = Community.objects.get(name=nm)  
+                UserMembership.objects.filter(community=community,user=u).delete()
+            except:
+                logger.error("trying to delete a relationship with a community that wasn't there")
+    
+            response_data = dict()
+            response_data['success'] = 'true'
+            return HttpResponse(json.dumps(response_data), mimetype="application/json")
+        
+            
+            
+
 
 
 def get_top_tags(N):

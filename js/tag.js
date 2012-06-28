@@ -143,24 +143,24 @@ function showAddTag()
 
 }
 
-function unsubUser(tag)
+function unsubUser(type,data)
 {
 	$.ajax({ 
         url   : '/api/remove_user_tag/',
         type  : 'POST',
-        data  : {tag:tag}, // data to be submitted
+        data  : {type:type,data:data}, // data to be submitted
         success: function(data){	
        	 rebind_buttons();
         }
    });
 }
 
-function subUser(tag)
+function subUser(type,data)
 {
 	$.ajax({ 
         url   : '/api/add_user_tag/',
         type  : 'POST',
-        data  :{tag:tag}, // data to be submitted
+        data  :{type:type,data:data}, // data to be submitted
         success: function(data){
        	 rebind_buttons();
         }
@@ -169,13 +169,14 @@ function subUser(tag)
 
 $(document).ready(function(){
 	$("form[name=subscribeUser]").live("click",function(e){
-		var form = $("form[name=subscribeUser]")
-		subUser(form.serializeArray()[0].name);  //get the name of the tag
+		var form =  $(this);//$("form[name=subscribeUser]")
+		subUser(form.serializeArray()[0].name,form.serializeArray()[0].value);  //get the name of the tag
+
 	});
 	
 	$("form[name=unsubscribeUser]").live("click",function(e){
-		var form = $("form[name=unsubscribeUser]")
-		unsubUser(form.serializeArray()[0].name);
+		var form = $(this);//"form[name=unsubscribeUser]")
+		unsubUser(form.serializeArray()[0].name,form.serializeArray()[0].value);
 		
 	});
 	

@@ -1,5 +1,5 @@
 from communities.forms import CommunityForm
-from communities.models import BusinessMembership
+from communities.models import BusinessMembership, UserMembership
 from communities.views import get_community, get_default
 from django.contrib.auth import logout
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
@@ -75,7 +75,8 @@ def get_default_blank_context(user):
     community = get_community(user)
 
     context = {\
-               'community': community,\
+               'communities': Community.objects.all(),\
+              'community': community,\
               'user_sorts':user_tags,\
             'top_sorts':top_tags,\
              'tags': Tag.objects.all(),\
@@ -494,7 +495,8 @@ def add_new_tag(request):
         Tag.objects.create(creator=request.user,descr=descr)
 
     context = get_default_blank_context(request.user)
-    context['form'] =  TagForm()            
+    context['form'] =  TagForm()         
+    context['type'] = 'tag'   
     return render_to_response('ratings/contribute/add_content.html',context, context_instance=RequestContext(request))
 
 
@@ -512,8 +514,7 @@ def add_community(request):
         Community.objects.create(name=name,descr=descr,state=state,city=city)
 
     context = get_default_blank_context(request.user)
-    context['form'] =CommunityForm
-    context['communities'] = Community.objects.all()            
+    context['form'] =CommunityForm     
     return render_to_response('ratings/contribute/add_content.html',context, context_instance=RequestContext(request))
     
     
@@ -537,7 +538,7 @@ def add_question(request):
     f = HardTagForm()
     context = get_default_blank_context(request.user)
     context['form'] = f
-    
+    context['type'] = 'question'
     return render_to_response('ratings/contribute/add_content.html', context, context_instance=RequestContext(request))
 
 def ans_business_questions(request,bus_id):
@@ -788,19 +789,14 @@ def index(request):
 def user_details(request):
     if not request.user.is_authenticated():
         return redirect(index)
-    
-    user_tags = get_tags_user(request.user,"")
-    top_tags = get_top_tags(10)
-
-    context = {\
-        'user': request.user,\
-        'tags':Tag.objects.all(),\
-         'top_sorts':top_tags,\
-        'user_sorts': user_tags,\
-        'all_sorts':get_all_sorts(4),\
-        'location_term':get_community(request.user)
-    }
-    
+  
+    context = get_default_blank_context(request.user)
+    communities = []
+    for um in UserMembership.objects.filter(user=request.user):
+        communities.append(um.community)
+    context['user_communities'] = communities
+    #context['user_favorites'] = UserMembership.objects.filter(user=request.user)
+    #context['user_traits'] = UserMembership.objects.filter(user=request.user)
     return render_to_response('ratings/user/user_detail.html', context_instance=RequestContext(request,context))
     
 

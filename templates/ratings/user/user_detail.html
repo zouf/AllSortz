@@ -23,12 +23,24 @@
 		
 		<div class="userDetails">
 			<h2>{{user}}'s Communities</h2>
-			communities here
+			{% for community in user_communities %}
+				{{community.name}} |
+			{% endfor %}
+			<form name="subscribeUser" action="." method="post">
+				<select name="comm" class="ui-widget">
+				{% for comm in communities %}
+					<option name="comm" value="{{community.name}}">{{community.name}}</option>
+				{%endfor%}
+				</select>
+				<input type="submit" value="+"/>
+			</form>
 		</div>
 		
 		<div class="userDetails">
-			<h2>{{user}}'s Favorites</h2>
-			favorites here
+			<h2>{{user}}'s Watchlist</h2>
+			{% for watch in user_watchlist %}
+				{{watch.name}} |
+			{% endfor %}
 		</div>
 	</div>
 </div>

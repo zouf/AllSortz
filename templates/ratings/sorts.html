@@ -5,7 +5,13 @@
 	<br>
 {%else%}
 	{% for tag in user_sorts %}
-		{{tag.descr}}<br>
+		{{tag.descr}} 
+		<form name="unsubscribeUser" action="." method="post">
+			<input type="hidden" name="tag" value="{{tag.descr}}" />
+			<input type="submit" value="-" />
+		</form>
+		
+		<br>
 	{%endfor%}
 {%endif%}
 
@@ -16,12 +22,12 @@ Apply Sort
 	<form name="addTagDD" action="." method="post">{% csrf_token %}
 	<input type="hidden" value="{{business.id}}" name="bid"/>
 {%else%}
-	<form name="addUserTagDD" action="." method="post">{% csrf_token %}
+<form name="subscribeUser" action="." method="post">
 {%endif%}
 
 		<select name="tag" class="ui-widget">
 			{% for tag in tags %}
-				<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>
+				<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>-
 			{%endfor%}
 		</select>
 		<input class="buttonme" type="submit" value="Add"/>
@@ -29,7 +35,7 @@ Apply Sort
 	
 	<!--<p style="font-size:10px"  onclick="showAddTag()" >Think we're missing a sort?</p>-->
 	<a href="/ratings/add_new_tag/" style="font-size:10px"><p >Think we're missing a sort?</p></a>
-	<div id="addTagDiv" style="display:none;">
+<!--<div id="addTagDiv" style="display:none;">
 		{%if business%}
 			<form name="addTagTB" action="." method="post">{%csrf_token%}
 				<input type="hidden" value="{{business.id}}" name="bid" />
@@ -42,4 +48,4 @@ Apply Sort
 				</form>
 			</div>
 		{%endif%}
-	</div>
+	</div>-->
