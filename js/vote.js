@@ -63,8 +63,7 @@ $(document).ready(function(){
 	$("select[name=ratingDD]").live("change", function(e){
 		var rating = this.value
 		var id = $(this).parents('form').attr('name').split('_')[1];
-		alert(rating + ' for ' + id );
-		
+	
 	
 		$.ajax({ 
 	         url   : '/api/add_bus_rating/',

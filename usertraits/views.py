@@ -45,7 +45,6 @@ def add_trait_relationships(request):
             
     
     for v in values:
-
         ans = v.split('_')[1]
         tid = v.split('_')[0]
         trait = Trait.objects.get(id=tid)

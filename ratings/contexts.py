@@ -3,7 +3,7 @@ Created on Jun 27, 2012
 
 @author: zouf
 '''
-from communities.views import get_community
+from communities.views import get_community, get_default
 from django.contrib.auth.models import AnonymousUser
 from ratings.models import Community, BusinessComment, CommentRating, TagComment, \
     Comment
