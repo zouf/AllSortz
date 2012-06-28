@@ -163,6 +163,6 @@ def get_unauthenticated_context():
     context = { \
             'top_sorts':top_tags,\
             'all_sorts':get_all_sorts(4),\
-            'location_term':get_default()\
+            'location_term':get_community(None)\
             }
     return context
