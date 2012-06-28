@@ -1,14 +1,14 @@
 <table class="busListing">
 	<tr>
 		<td style="width:40px;">
-			<div id="answer_{{bus.id}}" class="answer">
-			<form name="rateBusiness_{{bus.id}}" action="." >
+			<div id="answer_{{business.id}}" class="answer">
+			<form name="rateBusiness_{{business.id}}" action="." >
 				<select name="ratingDD" class="ui-widget">
-					<option value="0"  {% if not bus.rating %} selected="selected" {%endif%} >--</option>
-					<option value="1" {% if bus.rating == 1 %} selected="selected" {%endif%}>Hated</option>
-					<option value="2" {% if bus.rating == 2 %} selected="selected" {%endif%}>Meh</option>
-					<option value="3" {% if bus.rating == 3 %} selected="selected" {%endif%}>Liked</option>
-					<option value="4" {% if bus.rating == 4 %} selected="selected" {%endif%}>Loved</option>
+					<option value="0"  {% if not business.rating %} selected="selected" {%endif%} >--</option>
+					<option value="1" {% if business.rating == 1 %} selected="selected" {%endif%}>Hated</option>
+					<option value="2" {% if business.rating == 2 %} selected="selected" {%endif%}>Meh</option>
+					<option value="3" {% if business.rating == 3 %} selected="selected" {%endif%}>Liked</option>
+					<option value="4" {% if business.rating == 4 %} selected="selected" {%endif%}>Loved</option>
 				</select>
 		
 			</form>
@@ -20,16 +20,16 @@
 			<table>
 				<tr>
 					<td>
-						 <a href="/ratings/{{ bus.id }}/"> <img src="{{bus.photourl}}" /> </a>
+						 <a href="/ratings/{{ business.id }}/"> <img src="{{ business.photourl }}" /> </a>
 					</td>
 					<td>
-						<a class="business_name" href="/ratings/{{ bus.id }}/" class="blocklink"><font style="font-size:20px;font-weight:bold;"> {{bus.name }} </font></a> 
-		   				<br>{{bus.city}}, {{bus.state}}
+						<a class="business_name" href="/ratings/{{ business.id }}/" class="blocklink"><font style="font-size:20px;font-weight:bold;"> {{business.name }} </font></a> 
+		   				<br>{{business.city}}, {{business.state}}
 		   				<br><br>Community: <em> {{community.name}} </em>
 
 		   				<br>Sorted Under: 
 
-		   				{% for tag in bus.tags %}
+		   				{% for tag in business.tags %}
 		   					{{tag.descr}} |
 		   				{% endfor %}
 					</td>
