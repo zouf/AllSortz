@@ -112,6 +112,27 @@ def add_user_tag(request):
         print(user_tags)
         return render_to_response('ratings/sorts.html', {'user':request.user, 'tags': tags, 'user_sorts': user_tags})
 
+@csrf_exempt
+def remove_user_tag(request):
+    u = request.user
+    if request.method == 'POST':  # add a tag!
+        form = request.POST
+        nm = form['tag']
+        logger.debug('Remove a User tag '+str(nm))
+        try:
+            tag = Tag.objects.get(descr=nm)
+        except:
+            tag = Tag.objects.create(descr=nm,creator=request.user)
+        try: 
+            UserTag.objects.filter(tag=tag,user=u).delete()
+        except:
+            logger.error('error in deleting a user tag')
+        user_tags = get_tags_user(u)
+        tags = Tag.objects.all()
+        print(user_tags)
+        return render_to_response('ratings/sorts.html', {'user':request.user, 'tags': tags, 'user_sorts': user_tags})
+
+
 def get_top_tags(N):
     tags = Tag.objects.filter()[:N]
     return tags

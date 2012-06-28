@@ -113,6 +113,14 @@ def get_default_bus_context(b,user):
 
     return context
 
+def get_unauthenticated_context():
+    top_tags = get_top_tags(10)
+    context = { \
+            'top_sorts':top_tags,\
+            'all_sorts':get_all_sorts(4),\
+            'location_term':get_community(None)
+            }
+    return context
 
 def comment_comp(x,y):
     #eventually do something more intelligent here!
@@ -367,22 +375,9 @@ def coming_soon(request):
 
 
 def display_tag(request,tag_id):
+    print('disp tag')
     t = get_object_or_404(Tag, pk=tag_id)
-    bustags = BusinessTag.objects.filter(tag=t)
-    business_list = []
-    for bt in bustags:
-        business_list.append(bt.business)    
-
-    businesses = get_bus_data(business_list,request.user)
-    paginator = Paginator(businesses, 10)  # Show 25 contacts per page
-    page = request.GET.get('page')
-    try:
-        businesses = paginator.page(page)
-    except (PageNotAnInteger, TypeError):
-        businesses = paginator.page(1)
-    except EmptyPage:
-        businesses = paginator.page(paginator.num_pages)
-    
+    businesses = get_businesses_by_tag(t,request.user, request.GET.get('page'))
     
     try:
         UserTag.objects.get(tag=t,user=request.user)
@@ -426,6 +421,8 @@ def search(request):
     context['search_term'] = term
     context['business_list'] = businesses
     return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
+
+
 
 
 def edit_tag_discussion(request,bus_id,page_id):
@@ -664,7 +661,7 @@ def paginate_businesses(business_list,page, num):
     return business_list
 
 
-def get_community_businesses(user,page,checkForIntersection):
+def get_businesses_by_community(user,page,checkForIntersection):
     alreadyThere = dict()
     for nt in checkForIntersection:
         alreadyThere[nt] = True
@@ -693,7 +690,7 @@ def get_community_businesses(user,page,checkForIntersection):
         
     return business_list
 
-def get_all_businesses(user,page,checkForIntersection):
+def get_businesses_trending(user,page,checkForIntersection):
     alreadyThere = dict()
     for nt in checkForIntersection:
         alreadyThere[nt] = True
@@ -721,7 +718,7 @@ def get_all_businesses(user,page,checkForIntersection):
     return business_list
         
         
-def get_your_businesses(user,page,checkForIntersection):
+def get_businesses_by_your(user,page,checkForIntersection):
     alreadyThere = dict()
     for nt in checkForIntersection:
         alreadyThere[nt] = True
@@ -735,37 +732,38 @@ def get_your_businesses(user,page,checkForIntersection):
     except:
         logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
         businesses = Business.objects.all()
-    print(businesses)
     business_list = get_bus_data(businesses,user)
     business_list = paginate_businesses(business_list,page,5)
-
-    for b in business_list:
-        bustags = BusinessTag.objects.filter(business=b)
-        b.tags = []
-        for bt in bustags:
-            b.tags.append(bt.tag)
-
-        
     return business_list
+
+
+def get_businesses_by_tag(t,user,page):
+    bustags = BusinessTag.objects.filter(tag=t)
+    businesses = []
+    for bt in bustags:
+        businesses.append(bt.business)    
+    business_list = get_bus_data(businesses,user)
+    business_list = paginate_businesses(business_list,page,5)
+    return business_list
+
         
 def index(request):
     if request.user.is_authenticated():
         current_businesses = []
         
        
-        community_businesses = get_community_businesses(request.user,request.GET.get('page'),current_businesses)
+        community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),current_businesses)
         current_businesses+=community_businesses.object_list
         
-        all_businesses = get_all_businesses(request.user,request.GET.get('page'),current_businesses)
+        all_businesses = get_businesses_trending(request.user,request.GET.get('page'),current_businesses)
         current_businesses+=all_businesses.object_list
 
-        your_businesses = get_your_businesses(request.user,request.GET.get('page'),current_businesses)
+        your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),current_businesses)
         current_businesses+=your_businesses.object_list
 
             
             
         context = get_default_blank_context(request.user)
-        print(context)
         context['community_businesses'] = community_businesses
         context['your_businesses'] = your_businesses
         context['all_businesses'] = all_businesses
@@ -782,19 +780,9 @@ def index(request):
             businesses = Business.objects.all()
         
         
-        top_tags = get_top_tags(10)
+ 
         
-        
-        
-        
-        context = { \
-                    #'business_list':business_list,\
-                   # 'community':community,\
-                    'top_sorts':top_tags,\
-                   # 'user_sorts': user_tags,\
-                    'all_sorts':get_all_sorts(4),\
-                    'location_term':get_community(request.user)
-                    }
+        context = get_unauthenticated_context()
         return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
 
 def user_details(request):

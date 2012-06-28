@@ -10,6 +10,7 @@ from rateout.settings import FB_APP_SECRET
 from ratings.models import Rating
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     getBusAvg
+from tags.models import BusinessTag
 import base64
 import hashlib
 import hmac
@@ -48,38 +49,24 @@ def get_single_bus_data(b,user):
         if thisRat.count() > 0:
             r = Rating.objects.get(username=user, business=b)
             b.this_rat = r.rating
+            b.rating = r.rating
         else:
             b.this_rat = 0
+            b.rating = 0
+            
+        bustags = BusinessTag.objects.filter(business=b)
+        b.tags = []
+        for bt in bustags:
+            b.tags.append(bt.tag)
+                
     return b
 
+
+
+#TODO: matt fix this to handle ratings from 1-4
 def get_bus_data(business_list,user):
     for b in business_list:
-        b.average_rating = round(getBusAvg(b.id) * 2) / 2
-        b.photourl = get_photo_thumb_url(b)
-        b.num_ratings = getNumRatings(b.id)
-           
-        latlng = get_lat(b.address + " " + b.city + ", " + b.state)
-        try:
-            b.photourl = get_photo_web_url(b)
-        except:
-            b.photourl= "" #NONE
-
-        if latlng:
-            b.lat=latlng[0]
-            b.lon = latlng[1]
-        else:
-            b.lat = 0
-            b.lon = 0
-        if user.is_authenticated():
-            b.pos_ratings = getNumPosRatings(b)
-            b.neg_ratings = getNumNegRatings(b)
-            thisRat = Rating.objects.filter(username=user, business=b)
-            if thisRat.count() > 0:
-                r = Rating.objects.get(username=user, business=b)
-                b.this_rat = r.rating
-            else:
-                b.this_rat = 0
-                
+        b = get_single_bus_data(b,user)
         
     return business_list
 

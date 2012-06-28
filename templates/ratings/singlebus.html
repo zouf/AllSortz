@@ -1,19 +1,7 @@
 <table class="busListing">
 	<tr>
 		<td style="width:40px;">
-			<div id="answer_{{business.id}}" class="answer">
-			<form name="rateBusiness_{{business.id}}" action="." >
-				<select name="ratingDD" class="ui-widget">
-					<option value="0"  {% if not business.rating %} selected="selected" {%endif%} >--</option>
-					<option value="1" {% if business.rating == 1 %} selected="selected" {%endif%}>Hated</option>
-					<option value="2" {% if business.rating == 2 %} selected="selected" {%endif%}>Meh</option>
-					<option value="3" {% if business.rating == 3 %} selected="selected" {%endif%}>Liked</option>
-					<option value="4" {% if business.rating == 4 %} selected="selected" {%endif%}>Loved</option>
-				</select>
-		
-			</form>
-			
-			</div>
+			{% include 'ratings/listing/rate_data.html' %}
 
 		</td>
 		<td>

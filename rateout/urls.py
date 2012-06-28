@@ -17,6 +17,8 @@ urlpatterns = patterns('',
     url(r'^api/add_a_sort/$', 'tags.views.add_a_sort'),
     url(r'^api/add_tag/$', 'tags.views.add_tag_business'),
     url(r'^api/add_user_tag/$', 'tags.views.add_user_tag'),
+    url(r'^api/remove_user_tag/$', 'tags.views.remove_user_tag'),
+
     url(r'^api/get_tags/', 'tags.views.get_all_tags', name='get_all_tags'),
     url(r'^api/tag_vote*', 'tags.vote.tag_vote'),
     url(r'^api/remove_tag_vote*', 'tags.vote.remove_tag_vote'),
@@ -25,6 +27,7 @@ urlpatterns = patterns('',
     #api for voting on businesses
     url(r'^api/vote*', 'ratings.vote.vote'),
     url(r'^api/rm_vote*', 'ratings.vote.remove_vote'),
+    url(r'^api/add_bus_rating/', 'ratings.vote.add_bus_rating'),
 
     #api for voting on activities
     url(r'^api/act_vote/*', 'activities.vote.vote'),

@@ -193,3 +193,34 @@ def remove_vote(request):
         return HttpResponse(json.dumps(response_data), mimetype="application/json")
     else:
         raise Http404('What are you doing here?')
+    
+def add_bus_rating(request):
+    if request.method == 'POST':
+        try:
+            business = Business.objects.get(id=request.POST['bid'])
+        except Business.DoesNotExist:
+            print("bus does not exist!")
+            return HttpResponse("{'success': 'false'}")
+        
+        
+        rat =  request.POST['rating'] 
+        try:
+            rating = Rating.objects.get(business=business, username=request.user)
+        except Rating.DoesNotExist:
+            logger.debug("In vote create a new rating!")
+            rating = Rating(business=business, username=request.user, rating=rat)
+        else:
+            Rating.objects.filter(business=business,username=request.user).delete()
+            rating = Rating(business=business, username=request.user, rating=rat)
+
+        rating.save()
+        response_data = dict()
+        response_data['bid'] = str(request.POST['bid'])
+        response_data['success'] = 'true'
+        response_data['rating'] = rat
+        return HttpResponse(json.dumps(response_data), mimetype="application/json")
+        #return HttpResponse("{'success':'true', 'rating': '" + str(rat) + "'}")
+    else:
+        raise Http404('What are you doing here?')
+
+                

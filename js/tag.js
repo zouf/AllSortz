@@ -145,6 +145,38 @@ function showAddTag()
 
 
 $(document).ready(function(){
+	$("form[name=subscribeUser]").live("click",function(e){
+		var form = $("form[name=subscribeUser]")
+		$.ajax({ 
+	         url   : '/api/add_user_tag/',
+	         type  : form.attr('method'),
+	         data  : form.serialize(), // data to be submitted
+	         success: function(data){
+	        	 alert(data);
+	        	
+	        	 rebind_buttons();
+	         }
+	    });
+	});
+	
+	$("form[name=unsubscribeUser]").live("click",function(e){
+		var form = $("form[name=unsubscribeUser]")
+		
+		$.ajax({ 
+	         url   : '/api/remove_user_tag/',
+	         type  : form.attr('method'),
+	         data  : form.serialize()['tag'], // data to be submitted
+	         success: function(data){
+	        	 alert(data);
+	        	
+	        	 rebind_buttons();
+	         }
+	    });
+	});
+	
+	
+	
+	
 	$("form[name=addUserTagDD]").live("submit", function(e){
 	//	e.preventDefault();
 		var form = $("form[name=addUserTagDD]")

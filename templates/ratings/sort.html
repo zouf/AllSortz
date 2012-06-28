@@ -35,9 +35,12 @@ $(function() {
 		
 		<div style="padding:10px;">
 	    	{% if subscribed %}
-	    		<p> You are subscribed to <em>{{search_term}}</em>. </p>
+	    		<form name="unsubscribeUser" action="." method="post">{% csrf_token %}
+	    			<input type="hidden" name="tag" value="{{search_term}}" />
+					<input type="submit" class="ui-big-widget" value="Unsubscribe to {{search_term}}"/>
+				</form>
 	    	{%else%}
-	    		<form name="addUserTag" action="." method="post">{% csrf_token %}
+	    		<form name="subscribeUser" action="." method="post">{% csrf_token %}
 	    			<input type="hidden" name="tag" value="{{search_term}}" />
 					<input type="submit" class="ui-big-widget" value="Subscribe to {{search_term}}"/>
 				</form>

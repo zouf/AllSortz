@@ -1,5 +1,9 @@
 // use live handlers in general. They allow the innerHTML to be changed and still allow the jscript bindings to be teh same
 
+function bus_rating(obj,url)
+{
+	alert('change of business rating')
+}
 
 function vote_func(obj,url)
 {
@@ -54,7 +58,30 @@ function vote_func(obj,url)
 
 }
 
+
+$(document).ready(function(){
+	$("select[name=ratingDD]").live("change", function(e){
+		var rating = this.value
+		var id = $(this).parents('form').attr('name').split('_')[1];
+		alert(rating + ' for ' + id );
+		
+	
+		$.ajax({ 
+	         url   : '/api/add_bus_rating/',
+	         type  : 'POST',
+	         data  : { rating: rating, bid: id }, // data to be submitted
+	         success: function(data){
+	         	
+	         }
+	    });
+	    return false;
+		
+	});
+});
+
+
 $(function() {
+
 
       $('div.answer div.vote').click(function() {
     	  var vote_on = document.getElementById('vote_on');
