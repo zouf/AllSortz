@@ -465,7 +465,7 @@ def edit_tag_discussion(request,bus_id,page_id):
         print(tc)
     
     
-    return render_to_response('ratings/detail.html',
+    return render_to_response('ratings/busdetail.html',
         RequestContext(request, context))
 
 def how_it_works(request):
@@ -483,7 +483,7 @@ def detail_keywords(request, bus_id):
     
     context = get_default_bus_context(b, request.user)
 
-    return render_to_response('ratings/detail.html', context_instance=RequestContext(request,context))
+    return render_to_response('ratings/busdetail.html', context_instance=RequestContext(request,context))
 
 
 def add_new_tag(request):

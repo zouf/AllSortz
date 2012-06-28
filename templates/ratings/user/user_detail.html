@@ -2,7 +2,36 @@
 
 {% block body %}
 
-
+<div class="content">
+	<div id="userProfile">
+		<div class="userDetails" style="width:600px;height:200px;">
+			<h1>{{user}}'s Profile</h1>
+			<h3>About Connie</h3>
+			<div style="margin:5px 20px;">
+				trait: description<br>
+				trait: description<br>
+				trait: description<br>
+				trait: description<br>
+				trait: description<br>
+			</div>
+		</div>
+		
+		<div class="userDetails" style="min-height:200px;float:right;">
+			<h2>{{user}}'s Sorts</h2>
+			{% include 'ratings/sorts.html' %}
+		</div>
+		
+		<div class="userDetails">
+			<h2>{{user}}'s Communities</h2>
+			communities here
+		</div>
+		
+		<div class="userDetails">
+			<h2>{{user}}'s Favorites</h2>
+			favorites here
+		</div>
+	</div>
+</div>
 
 {% endblock %}
 
