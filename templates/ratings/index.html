@@ -24,7 +24,7 @@ $(function() {
 					<input type="hidden" value="business" id="vote_on" />
 					{% for bus in all_businesses.object_list %}
 						{%include 'ratings/singlebus.html' %}
-						<hr />
+					
 					{%endfor %}
 					<span class="step-links">
 					    {% if all_businesses.has_previous %}
@@ -51,7 +51,7 @@ $(function() {
 					<input type="hidden" value="business" id="vote_on" />
 					{% for bus in your_businesses.object_list %}
 						{%include 'ratings/singlebus.html' %}
-						<hr />
+						
 					{%endfor %}
 					<span class="step-links">
 					    {% if your_businesses.has_previous %}
@@ -79,8 +79,9 @@ $(function() {
 					<input type="hidden" value="business" id="vote_on" />
 					{% for bus in community_businesses.object_list %}
 						{%include 'ratings/singlebus.html' %}
-						<hr />
-					{%endfor %}			
+						
+					{%endfor %}		
+	
 					<span class="step-links">
 					    {% if community_businesses.has_previous %}
 					        <a href="?page={{ community_businesses.previous_page_number }}">previous</a>
