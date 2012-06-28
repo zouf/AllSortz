@@ -18,6 +18,7 @@ import logging
 import simplejson
 import urllib
 import urllib2
+from ratings.favorite import get_user_favorites
 #from rateout.settings import LOG_FILE
 #import time
 
@@ -176,7 +177,7 @@ def get_businesses_by_your(user,page,checkForIntersection):
         
     businesses = []
     try:
-        allBus = Business.objects.all() # order by rating
+        allBus = get_user_favorites(user) # order by rating
         for b in allBus:
             if b not in alreadyThere:
                 businesses.append(b.business)

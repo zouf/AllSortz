@@ -12,6 +12,7 @@ from photos.views import get_photo_web_url
 from ratings.contexts import get_default_blank_context, get_default_tag_context, \
     get_default_bus_context, get_unauthenticated_context, get_business_comments, \
     recurse_comments, get_tag_comments
+from ratings.favorite import get_user_favorites, is_user_subscribed
 from ratings.forms import BusinessForm, CommentForm
 from ratings.models import Business, Comment, CommentRating, TagComment, \
     PageRelationship, BusinessComment, Community
@@ -340,7 +341,7 @@ def detail_keywords(request, bus_id):
         b.photourl= "" #NONE
     
     context = get_default_bus_context(b, request.user)
-
+    context['following_business'] = is_user_subscribed(b,request.user)
     return render_to_response('ratings/busdetail.html', context_instance=RequestContext(request,context))
 
 
@@ -487,13 +488,13 @@ def index(request):
         
        
         community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),current_businesses)
-        current_businesses+=community_businesses.object_list
+        #current_businesses+=community_businesses.object_list
         
         all_businesses = get_businesses_trending(request.user,request.GET.get('page'),current_businesses)
-        current_businesses+=all_businesses.object_list
+        #current_businesses+=all_businesses.object_list
 
         your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),current_businesses)
-        current_businesses+=your_businesses.object_list
+        #current_businesses+=your_businesses.object_list
 
         context = get_default_blank_context(request.user)
         context['community_businesses'] = community_businesses
@@ -523,7 +524,7 @@ def user_details(request):
     for um in UserMembership.objects.filter(user=request.user):
         communities.append(um.community)
     context['user_communities'] = communities
-    #context['user_favorites'] = UserMembership.objects.filter(user=request.user)
+    context['user_favorites'] = get_user_favorites(request.user)
     context['user_traits'] = get_user_traits(request.user)
     return render_to_response('ratings/user/user_detail.html', context_instance=RequestContext(request,context))
     

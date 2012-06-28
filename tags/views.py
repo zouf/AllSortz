@@ -9,15 +9,16 @@ from django.db.models.aggregates import Count
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from ratings.models import Business, Comment, PageRelationship, Community
+from ratings.models import Business, Comment, PageRelationship, Community, \
+    UserFavorite
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from tags.models import Tag, TagRating, CommentTag, UserTag, BusinessTag, \
     BooleanQuestion, HardTag
+from usertraits.models import TraitRelationship
 from wiki.models import Page
 import json
 import logging
 import sys
-from usertraits.models import TraitRelationship
 
 logger = logging.getLogger(__name__)
     
@@ -90,8 +91,7 @@ def add_user_tag(request):
     u = request.user
     if request.method == 'POST':  # add a tag!
         form = request.POST
-        print(form)
-        print('before tag in form')
+
         if form['type']  == 'tag':
             nm = form['data']
             print("TAGAGATAT")
@@ -122,6 +122,26 @@ def add_user_tag(request):
             response_data = dict()
             response_data['success'] = 'true'
             return HttpResponse(json.dumps(response_data), mimetype="application/json")
+        elif form['type']=="bid": #associate a user with a community
+            bid = form['data']
+            print('add favorite!')
+
+            try:
+                business = Business.objects.get(id=bid)
+            except:
+                print('error')
+                logger.error("Unexpected error:" + str(sys.exc_info()[0]))
+                
+            if UserFavorite.objects.filter(business=business,user=u).count() > 0:
+                print('create a favorite')
+                UserFavorite.objects.filter(business=business,user=u).delete()
+            UserFavorite.objects.create(business=business,user=u)
+           
+           
+            response_data = dict()
+            response_data['success'] = 'true'
+            return HttpResponse(json.dumps(response_data), mimetype="application/json")
+
 
 @csrf_exempt
 def remove_user_tag(request):
@@ -156,6 +176,17 @@ def remove_user_tag(request):
             response_data['success'] = 'true'
             return HttpResponse(json.dumps(response_data), mimetype="application/json")
 
+        elif form['type']=="bid": #associate a user with a community
+            bid = form['data']
+            try:
+                business = Business.objects.get(id=bid)  
+                UserFavorite.objects.filter(business=business,user=u).delete()
+            except:
+                logger.error("trying to delete a relationship with a community that wasn't there")
+    
+            response_data = dict()
+            response_data['success'] = 'true'
+            return HttpResponse(json.dumps(response_data), mimetype="application/json")
 
 
 
@@ -204,7 +235,8 @@ def get_pages(business,tags):
             relationship = PageRelationship.objects.get(business=business,tag=bt.tag)
             pages.append(relationship.page)
         except MultipleObjectsReturned:
-            logger.error('Multiple Pages returned in '+str(__name__))
+            #logger.error('Multiple Pages returned in '+str(__name__))
+            #XXX 
             relationship = PageRelationship.objects.filter(business=business,tag=bt.tag)[0]
             pages.append(relationship.page)
   
