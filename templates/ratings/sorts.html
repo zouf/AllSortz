@@ -1,20 +1,17 @@
-<h2>Sorted Under</h2>
-
 {% if business %}
 	{% for tag in bus_tags %}
 		{{tag.descr}} |
 	{%endfor%}
+	<br>
 {%else%}
 	{% for tag in user_sorts %}
-		<div class="tagListing">
-			{{tag.descr}} 
-		</div>
+		{{tag.descr}}<br>
 	{%endfor%}
 {%endif%}
 
-<br /><br />
+<br>
 Apply Sort
-<br />
+<br>
 {% if business %}
 	<form name="addTagDD" action="." method="post">{% csrf_token %}
 	<input type="hidden" value="{{business.id}}" name="bid"/>

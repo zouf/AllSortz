@@ -1,16 +1,16 @@
 /* Profile of a business, includes details, map, and sorted categories */
-#profile
+#busProfile
 {
     margin: 12px;
     text-align: left;
 }
 
 /* Business details */
-#details
+#busDetails
 {
     float: left;
     margin: 10px;
-    width: 60%;
+    width: 600px;
 }
 
 /* Categories a business is sorted under */
