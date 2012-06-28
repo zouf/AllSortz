@@ -1,5 +1,11 @@
 <div id="busDetails">
 	<i>{{business.city}}, {{business.state}}</i>
+	{% if business.watch %}
+		<a href="#">Stop following</a>
+	{% else %}
+		<a href="#">Follow</a>
+	{%endif%}
+	
 	
 	<table>
 		<tr>
@@ -16,9 +22,9 @@
 				{% for ht in hard_tags %}
 				<ul>
 					{% if ht.answer %}
-						<li>{{ht.question}}: Yes!</li>
+						<li>{{ht.question}}| <b>Yes</b></li>
 					{%else%}
-						<li>{{ht.question}}: No!</li>
+						<li>{{ht.question}}| <b>No></b></li>
 					{%endif%}
 				</ul>
 				{% endfor%}
