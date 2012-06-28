@@ -5,12 +5,13 @@
 	<br>
 {%else%}
 	{% for tag in user_sorts %}
-		{{tag.descr}} 
+		<table><tr><td>
+		{{tag.descr}} </td><td>
 		<form name="unsubscribeUser" action="." method="post">
 			<input type="hidden" name="tag" value="{{tag.descr}}" />
 			<input type="submit" value="-" />
 		</form>
-		
+		</td></tr></table>
 		<br>
 	{%endfor%}
 {%endif%}
@@ -30,7 +31,7 @@ Apply Sort
 				<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>-
 			{%endfor%}
 		</select>
-		<input class="buttonme" type="submit" value="Add"/>
+		<input class="buttonme" type="submit" value="+"/>
 	</form>
 	
 	<!--<p style="font-size:10px"  onclick="showAddTag()" >Think we're missing a sort?</p>-->

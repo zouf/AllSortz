@@ -17,6 +17,7 @@ from wiki.models import Page
 import json
 import logging
 import sys
+from usertraits.models import TraitRelationship
 
 logger = logging.getLogger(__name__)
     
@@ -114,17 +115,13 @@ def add_user_tag(request):
                 community = Community.objects.get(name=nm)
             except:
                 logger.error("Unexpected error:" + str(sys.exc_info()[0]))
-                print("Unexpected error:" + str(sys.exc_info()[0]))
-            print(community)
-            
-            
+                
             if UserMembership.objects.filter().count() == 0:
                 UserMembership.objects.create(community=community,user=u,logged_in=False)
            
             response_data = dict()
             response_data['success'] = 'true'
             return HttpResponse(json.dumps(response_data), mimetype="application/json")
-        
 
 @csrf_exempt
 def remove_user_tag(request):
@@ -158,9 +155,7 @@ def remove_user_tag(request):
             response_data = dict()
             response_data['success'] = 'true'
             return HttpResponse(json.dumps(response_data), mimetype="application/json")
-        
-            
-            
+
 
 
 
@@ -209,12 +204,10 @@ def get_pages(business,tags):
             relationship = PageRelationship.objects.get(business=business,tag=bt.tag)
             pages.append(relationship.page)
         except MultipleObjectsReturned:
-            logger.error('error in getting relationships')
-            print('got multiple pages')
+            logger.error('Multiple Pages returned in '+str(__name__))
             relationship = PageRelationship.objects.filter(business=business,tag=bt.tag)[0]
             pages.append(relationship.page)
   
-    print("pages are "+str(pages)) 
     return pages
 
 

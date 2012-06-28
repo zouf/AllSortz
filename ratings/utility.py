@@ -4,17 +4,16 @@ Created on May 17, 2012
 @author: zouf
 '''
 
+from communities.models import BusinessMembership
+from communities.views import get_community
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils.encoding import smart_str
 from photos.views import get_photo_web_url, get_photo_thumb_url
-from rateout.settings import FB_APP_SECRET
-from ratings.models import Rating
+from ratings.models import Rating, Business
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     getBusAvg
 from tags.models import BusinessTag
-import base64
-import hashlib
-import hmac
-import json
+
 import logging
 import simplejson
 import urllib
@@ -103,3 +102,99 @@ def get_lat(loc):
         return [lat, lng]
     return False
 
+
+
+def paginate_businesses(business_list,page, num):
+    paginator = Paginator(business_list, num)  # Show 25 contacts per page
+    try:
+        business_list = paginator.page(page)
+    except (PageNotAnInteger, TypeError):
+        business_list = paginator.page(1)
+    except EmptyPage:
+        business_list = paginator.page(paginator.num_pages)
+    return business_list
+
+
+def get_businesses_by_community(user,page,checkForIntersection):
+    alreadyThere = dict()
+    for nt in checkForIntersection:
+        alreadyThere[nt] = True
+    community = get_community(user)
+    businesses = []
+    try:
+        busMembership = BusinessMembership.objects.filter(community = community)
+        for b in busMembership:
+            if b not in alreadyThere:
+                businesses.append(b.business)
+    except:
+        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+        businesses = Business.objects.all()
+    print(businesses)
+    business_list = get_bus_data(businesses,user)
+    business_list = paginate_businesses(business_list,page,5)
+
+    for b in business_list:
+        bustags = BusinessTag.objects.filter(business=b)
+        b.tags = []
+        for bt in bustags:
+            b.tags.append(bt.tag)
+        
+    return business_list
+
+def get_businesses_trending(user,page,checkForIntersection):
+    alreadyThere = dict()
+    for nt in checkForIntersection:
+        alreadyThere[nt] = True
+        
+    businesses = []
+    try:
+        allBus = Business.objects.all() # order by rating
+        for b in allBus:
+            if b not in alreadyThere:
+                businesses.append(b.business)
+    except:
+        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+        businesses = Business.objects.all()
+        
+        
+    business_list = get_bus_data(businesses,user)
+    business_list = paginate_businesses(business_list,page,5)
+
+    for b in business_list:
+        bustags = BusinessTag.objects.filter(business=b)
+        b.tags = []
+        for bt in bustags:
+            b.tags.append(bt.tag)
+
+    return business_list
+        
+        
+def get_businesses_by_your(user,page,checkForIntersection):
+    alreadyThere = dict()
+    for nt in checkForIntersection:
+        alreadyThere[nt] = True
+        
+    businesses = []
+    try:
+        allBus = Business.objects.all() # order by rating
+        for b in allBus:
+            if b not in alreadyThere:
+                businesses.append(b.business)
+    except:
+        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+        businesses = Business.objects.all()
+    business_list = get_bus_data(businesses,user)
+    business_list = paginate_businesses(business_list,page,5)
+    return business_list
+
+
+def get_businesses_by_tag(t,user,page):
+    bustags = BusinessTag.objects.filter(tag=t)
+    businesses = []
+    for bt in bustags:
+        businesses.append(bt.business)    
+    business_list = get_bus_data(businesses,user)
+    business_list = paginate_businesses(business_list,page,5)
+    return business_list
+
+        

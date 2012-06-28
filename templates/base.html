@@ -43,7 +43,7 @@
 
 	{% if user.is_authenticated %}
 		<div id="account">
-		<p style="display:inline"> <a href="/user_details/"> {{user}}</a> </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
+		<p style="display:inline"> Howdy, <a href="/user_details/"> {{user.first_name}}</a> </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
 		</div>
 	{% endif %}
 	
@@ -110,6 +110,7 @@
 					<li><a href="/ratings/add_question/">Questions</a></li>
 					<li><a href="/ratings/add_new_tag/">Sorts</a></li>
 					<li><a href="/ratings/add_community/">Communities</a></li>
+					<li><a href="/ratings/add_trait/">User Traits</a></li>
 				</ul>
 			</li>
 		</ul>

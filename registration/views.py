@@ -177,6 +177,7 @@ def register(request, backend, success_url=None, form_class=None,
     
     """
     backend = get_backend(backend)
+    print(backend)
     if not backend.registration_allowed(request):
         return redirect(disallowed_url)
     if form_class is None:
@@ -186,6 +187,9 @@ def register(request, backend, success_url=None, form_class=None,
         form = form_class(data=request.POST, files=request.FILES)
         if form.is_valid():
             new_user = backend.register(request, **form.cleaned_data)
+            new_user.first_name =request.POST['firstname'] 
+            new_user.last_name =request.POST['lastname'] 
+            
             new_user.save()
             new_user = authenticate(username=request.POST['username'],
                                     password=request.POST['password1'])

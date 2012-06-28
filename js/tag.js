@@ -150,7 +150,7 @@ function unsubUser(type,data)
         type  : 'POST',
         data  : {type:type,data:data}, // data to be submitted
         success: function(data){	
-       	 rebind_buttons();
+        	window.location="."
         }
    });
 }
@@ -162,19 +162,21 @@ function subUser(type,data)
         type  : 'POST',
         data  :{type:type,data:data}, // data to be submitted
         success: function(data){
-       	 rebind_buttons();
+       	 window.location="."
         }
    });
 }
 
 $(document).ready(function(){
 	$("form[name=subscribeUser]").live("click",function(e){
+		e.preventDefault();
 		var form =  $(this);//$("form[name=subscribeUser]")
 		subUser(form.serializeArray()[0].name,form.serializeArray()[0].value);  //get the name of the tag
 
 	});
 	
 	$("form[name=unsubscribeUser]").live("click",function(e){
+		e.preventDefault();
 		var form = $(this);//"form[name=unsubscribeUser]")
 		unsubUser(form.serializeArray()[0].name,form.serializeArray()[0].value);
 		

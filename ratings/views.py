@@ -9,19 +9,25 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from photos.models import BusinessPhoto
 from photos.views import get_photo_web_url
+from ratings.contexts import get_default_blank_context, get_default_tag_context, \
+    get_default_bus_context, get_unauthenticated_context, get_business_comments, \
+    recurse_comments, get_tag_comments
 from ratings.forms import BusinessForm, CommentForm
 from ratings.models import Business, Comment, CommentRating, TagComment, \
     PageRelationship, BusinessComment, Community
 from ratings.populate import create_business
 from ratings.search import search_site
-from ratings.utility import get_lat, get_bus_data, get_single_bus_data
+from ratings.utility import get_lat, get_bus_data, get_single_bus_data, \
+    get_businesses_by_tag, get_businesses_by_community, get_businesses_trending, \
+    get_businesses_by_your
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from recommendation.recengine import RecEngine
 from tags.form import HardTagForm, TagForm
 from tags.models import CommentTag, Tag, BusinessTag, UserTag, HardTag, \
     BooleanQuestion
-from tags.views import get_tags_business, get_pages, get_tags_user, get_top_tags, \
-    get_all_sorts, get_hard_tags, get_questions
+from tags.views import get_questions
+from usertraits.models import TraitRelationship, Trait
+from usertraits.views import get_user_traits
 from wiki.forms import PageForm
 from wiki.models import Page
 import logging
@@ -36,226 +42,91 @@ re = RecEngine()
 
 
 
-def get_default_tag_context(b,t,user):
-    comments = get_tag_comments(b,t)
-    bus_tags = get_tags_business(b,user=user,q="")
-        
-        
-    user_tags = get_tags_user(user,"")
-    top_tags = get_top_tags(10)    
-    hard_tags = get_hard_tags(b)
-    
-    pages = get_pages(b,bus_tags)
-    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
-    b = get_single_bus_data(b,user)
-    
 
-    
-    context =   { \
-        'business' : b, \
-        'comments': comments, \
-        'lat': latlng[0],\
-        'lng':latlng[1],  \
-        'bus_tags':bus_tags, \
-        'pages': pages, \
-        'tags': Tag.objects.all(),\
-        'user_sorts':user_tags,\
-        'top_sorts':top_tags,\
-        'all_sorts':get_all_sorts(4),\
-        'hard_tags':hard_tags,\
-        'location_term':get_community(user)
-        }
-
-    return context
-
-
-def get_default_blank_context(user):
-    user_tags = get_tags_user(user,"")
-    top_tags = get_top_tags(10)    
-    community = get_community(user)
-
-    context = {\
-               'communities': Community.objects.all(),\
-              'community': community,\
-              'user_sorts':user_tags,\
-            'top_sorts':top_tags,\
-             'tags': Tag.objects.all(),\
-             'questions': HardTag.objects.all(),\
-            'all_sorts':get_all_sorts(4),\
-            'location_term':community }   
-    return context     
-
-def get_default_bus_context(b,user):
-    comments = get_business_comments(b)
-    bus_tags = get_tags_business(b,user=user,q="")
-        
-        
-    user_tags = get_tags_user(user,"")
-    top_tags = get_top_tags(10)    
-    hard_tags = get_hard_tags(b)
-    
-    pages = get_pages(b,bus_tags)
-    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
-    b = get_single_bus_data(b,user)
-    context =   { \
-        'business' : b, \
-        'comments': comments, \
-        'lat': latlng[0],\
-        'lng':latlng[1],  \
-        'bus_tags':bus_tags, \
-        'pages': pages, \
-        'tags': Tag.objects.all(),\
-        'user_sorts':user_tags,\
-        'top_sorts':top_tags,\
-        'all_sorts':get_all_sorts(4),\
-        'hard_tags':hard_tags,\
-        'location_term':get_community(user)
-        }
-
-    return context
-
-def get_unauthenticated_context():
-    top_tags = get_top_tags(10)
-    context = { \
-            'top_sorts':top_tags,\
-            'all_sorts':get_all_sorts(4),\
-            'location_term':get_community(None)
-            }
-    return context
-
-def comment_comp(x,y):
-    #eventually do something more intelligent here!
-    xTot = x.pos_ratings - x.neg_ratings
-    yTot = y.pos_ratings - y.neg_ratings
-    if (xTot > yTot):
-        return -1
-    elif (xTot < yTot ):
-        return 1
-    else:
-        return 0
+#def comment_comp(x,y):
+#    #eventually do something more intelligent here!
+#    xTot = x.pos_ratings - x.neg_ratings
+#    yTot = y.pos_ratings - y.neg_ratings
+#    if (xTot > yTot):
+#        return -1
+#    elif (xTot < yTot ):
+#        return 1
+#    else:
+#        return 0
 
 
 
 
 
 
-def get_business_comments(business,user=False):
-    buscomments = BusinessComment.objects.filter(business=business).order_by('-date').reverse()
-    for bc in buscomments:
-        print(bc.date)
-    comment_list = []
-    for bc in buscomments:
-        if bc.thread.reply_to is None: #root tag comment
-            comment_list.append("open-even")
-            recurse_comments(bc.thread,comment_list,False)
-            comment_list.append("close")    
-    results = []              
-    for c in comment_list:
-        if c != "open-even" and c != "open-odd" and c != "close":
-            try:
-                rat =  CommentRating.objects.get(comment=c)
-                c.this_rat = rat.rating
-                c.pos_ratings = getNumPosRatings(c)
-                c.neg_ratings = getNumNegRatings(c)
-            except:
-                c.this_rat = 0
-                c.pos_ratings = 0
-                c.neg_ratings = 0
-        results.append(c)
-    print('return bus comments')
-    return results
 
-def get_tag_comments(b,tag):
-    print('get for'+str(b)+ ' and tag ' + str(tag.descr))
-    tagcomments = TagComment.objects.filter(business=b,tag=tag).order_by('-date').reverse()
 
-    comment_list = []
-    for tc in tagcomments:
-        if tc.thread.reply_to is None: #root tag comment
-            comment_list.append("open-even")
-            recurse_comments(tc.thread,comment_list,False)
-            comment_list.append("close")    
-    results = []              
-    for c in comment_list:
-        if c != "open-even" and c != "open-odd" and c != "close":
-            try:
-                rat =  CommentRating.objects.get(comment=c)
-                c.this_rat = rat.rating
-                c.pos_ratings = getNumPosRatings(c)
-                c.neg_ratings = getNumNegRatings(c)
-            except:
-                c.this_rat = 0
-                c.pos_ratings = 0
-                c.neg_ratings = 0
-        results.append(c)
-    return results
 
 
 #gets all the comments, including nested ones
 #adds tokens "open" and "close" to denote subcomments
-def get_comments(b,user=False,q=""):
-    if q != "":
-        comments = Comment.objects.filter(descr__icontains=q)[:20].order_by('-date')
-    else:
-        comments = Comment.objects.filter(business=b).order_by('-date')
-    
-  
-    comment_list = []
-    for c in comments:
-        if c.reply_to is None:
-            comment_list.append("open")
-            recurse_comments(c,comment_list)
-            comment_list.append("close")
-    
-    results = []              
-    for c in comment_list:
-        if c != "open" and c != "close":
-            try:
-                rat =  CommentRating.objects.get(comment=c)
-                c.this_rat = rat.rating
-                c.pos_ratings = getNumPosRatings(c)
-                c.neg_ratings = getNumNegRatings(c)
-            except:
-                c.this_rat = 0
-                c.pos_ratings = 0
-                c.neg_ratings = 0
-        results.append(c)
+#def get_comments(b,user=False,q=""):
+#    if q != "":
+#        comments = Comment.objects.filter(descr__icontains=q)[:20].order_by('-date')
+#    else:
+#        comments = Comment.objects.filter(business=b).order_by('-date')
+#    
+#  
+#    comment_list = []
+#    for c in comments:
+#        if c.reply_to is None:
+#            comment_list.append("open")
+#            recurse_comments(c,comment_list)
+#            comment_list.append("close")
+#    
+#    results = []              
+#    for c in comment_list:
+#        if c != "open" and c != "close":
+#            try:
+#                rat =  CommentRating.objects.get(comment=c)
+#                c.this_rat = rat.rating
+#                c.pos_ratings = getNumPosRatings(c)
+#                c.neg_ratings = getNumNegRatings(c)
+#            except:
+#                c.this_rat = 0
+#                c.pos_ratings = 0
+#                c.neg_ratings = 0
+#        results.append(c)
+#
+#        
+#    return results
 
-        
-    return results
 
-
-
-def add_comment_form(request,bus_id):
-    business = get_object_or_404(Business, pk=bus_id)
-    if request.method == 'POST':  # add a business
-        form = CommentForm(request.POST)
-        descr = form.data['descr']
-        tags = request.POST.getlist('tag')
-
-        c = Comment(user = request.user, business=business,descr=descr)
-        c.save()
-        
-        for t in tags:
-            try:
-                ct = CommentTag(descr=t , comment=c,creator=request.user)
-                try:
-                    tags = Tag.objects.get(descr=t)
-                except:
-                    tag = Tag(descr=t,creator=request.user,business=business)
-                    tag.save()
-                ct.save()
-            except:
-                print('error in creating a tag for comments')
-                logger.error("somethign went wrong in creating a tag for comments")
-        
-        
-        return redirect(detail_keywords,bus_id)
-        #return detail_keywords(request,bus_id)
-        
-    else:  # Print a boring business form
-        f = CommentForm()
-        return render_to_response('comments/add_comment.html', {'form': f}, context_instance=RequestContext(request))
+#
+#def add_comment_form(request,bus_id):
+#    business = get_object_or_404(Business, pk=bus_id)
+#    if request.method == 'POST':  # add a business
+#        form = CommentForm(request.POST)
+#        descr = form.data['descr']
+#        tags = request.POST.getlist('tag')
+#
+#        c = Comment(user = request.user, business=business,descr=descr)
+#        c.save()
+#        
+#        for t in tags:
+#            try:
+#                ct = CommentTag(descr=t , comment=c,creator=request.user)
+#                try:
+#                    tags = Tag.objects.get(descr=t)
+#                except:
+#                    tag = Tag(descr=t,creator=request.user,business=business)
+#                    tag.save()
+#                ct.save()
+#            except:
+#                logger.error("something went wrong in creating a tag for comments")
+#        
+#        
+#        return redirect(detail_keywords,bus_id)
+#        #return detail_keywords(request,bus_id)
+#        
+#    else:  # Print a boring business form
+#        f = CommentForm()
+#        return render_to_response('comments/add_comment.html', {'form': f}, context_instance=RequestContext(request))
 
 
 
@@ -352,17 +223,6 @@ def add_tag_comment(request):
 
 
 
-
-def recurse_comments(comment,cur_list,even):
-    cur_list.append(comment)
-    replies = Comment.objects.filter(reply_to=comment).order_by('-date').reverse()
-    for c in replies:
-        if even:
-            cur_list.append("open-even")
-        else:
-            cur_list.append("open-odd")
-        recurse_comments(c,cur_list,not even)
-        cur_list.append("close")
 
 
 
@@ -516,8 +376,6 @@ def add_community(request):
     context = get_default_blank_context(request.user)
     context['form'] =CommunityForm     
     return render_to_response('ratings/contribute/add_content.html',context, context_instance=RequestContext(request))
-    
-    
 
 
 def add_question(request):
@@ -547,31 +405,15 @@ def ans_business_questions(request,bus_id):
 
     if request.method != 'POST':
         b = get_object_or_404(Business, pk=bus_id)
-        user_tags = get_tags_user(request.user,"")
-        top_tags = get_top_tags(10)    
-    
-       
-        latlng = get_lat(b.address + " " + b.city + ", " + b.state)
         try:
             b.photourl = get_photo_web_url(b)
         except:
             b.photourl= "" #NONE
         questions = get_questions(b,request.user)
         b = get_single_bus_data(b,request.user)
-        
-        if latlng:
-            context =   { \
-            'business' : b, \
-            'lat': latlng[0],\
-            'lng':latlng[1],  \
-            'questions':questions,\
-            'tags': Tag.objects.all(),\
-            'user_sorts':user_tags,\
-            'top_sorts':top_tags,\
-            'all_sorts':get_all_sorts(4),\
-            'location_term':get_community(request.user)
-            }
-    
+
+        context = get_default_bus_context(b, request.user)
+        context['questions'] = questions
         return render_to_response('ratings/contribute/ans_questions.html', context_instance=RequestContext(request,context))
     else:
         
@@ -615,8 +457,6 @@ def add_business(request):
             bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
             bp.save()
    
-      
-        
         community = get_community(request.user)
         
         bm = BusinessMembership(business=b,community=community)
@@ -633,121 +473,14 @@ def add_business(request):
                 BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=False) 
         
         return redirect(detail_keywords,b.id)
-    else:  # Print a boring business form
-        f = BusinessForm()
-        user_tags = get_tags_user(request.user,"")
-        top_tags = get_top_tags(10)    
-        
-        questions = get_questions(None,request.user)
-        
-        context = { 'form':f, \
-                    'user_sorts':user_tags,\
-                'top_sorts':top_tags,\
-                'questions':questions,\
-                'all_sorts':get_all_sorts(4),\
-                'location_term':get_community(request.user) }
-        
+    else:  # Print a  business form
+        context = get_default_blank_context(request.user)
+        context['questions'] = get_questions(None,request.user)
+        context['form'] = BusinessForm()
         return render_to_response('ratings/contribute/add_business.html', context, context_instance=RequestContext(request))
 
 
 
-def paginate_businesses(business_list,page, num):
-    paginator = Paginator(business_list, num)  # Show 25 contacts per page
-    try:
-        business_list = paginator.page(page)
-    except (PageNotAnInteger, TypeError):
-        business_list = paginator.page(1)
-    except EmptyPage:
-        business_list = paginator.page(paginator.num_pages)
-    return business_list
-
-
-def get_businesses_by_community(user,page,checkForIntersection):
-    alreadyThere = dict()
-    for nt in checkForIntersection:
-        alreadyThere[nt] = True
-        
-        
-    community = get_community(user)
-    businesses = []
-    try:
-        busMembership = BusinessMembership.objects.filter(community = community)
-        for b in busMembership:
-            if b not in alreadyThere:
-                businesses.append(b.business)
-    except:
-        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
-        businesses = Business.objects.all()
-    print(businesses)
-    business_list = get_bus_data(businesses,user)
-    business_list = paginate_businesses(business_list,page,5)
-
-    for b in business_list:
-        bustags = BusinessTag.objects.filter(business=b)
-        b.tags = []
-        for bt in bustags:
-            b.tags.append(bt.tag)
-
-        
-    return business_list
-
-def get_businesses_trending(user,page,checkForIntersection):
-    alreadyThere = dict()
-    for nt in checkForIntersection:
-        alreadyThere[nt] = True
-        
-    businesses = []
-    try:
-        allBus = Business.objects.all() # order by rating
-        for b in allBus:
-            if b not in alreadyThere:
-                businesses.append(b.business)
-    except:
-        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
-        businesses = Business.objects.all()
-        
-        
-    business_list = get_bus_data(businesses,user)
-    business_list = paginate_businesses(business_list,page,5)
-
-    for b in business_list:
-        bustags = BusinessTag.objects.filter(business=b)
-        b.tags = []
-        for bt in bustags:
-            b.tags.append(bt.tag)
-
-    return business_list
-        
-        
-def get_businesses_by_your(user,page,checkForIntersection):
-    alreadyThere = dict()
-    for nt in checkForIntersection:
-        alreadyThere[nt] = True
-        
-    businesses = []
-    try:
-        allBus = Business.objects.all() # order by rating
-        for b in allBus:
-            if b not in alreadyThere:
-                businesses.append(b.business)
-    except:
-        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
-        businesses = Business.objects.all()
-    business_list = get_bus_data(businesses,user)
-    business_list = paginate_businesses(business_list,page,5)
-    return business_list
-
-
-def get_businesses_by_tag(t,user,page):
-    bustags = BusinessTag.objects.filter(tag=t)
-    businesses = []
-    for bt in bustags:
-        businesses.append(bt.business)    
-    business_list = get_bus_data(businesses,user)
-    business_list = paginate_businesses(business_list,page,5)
-    return business_list
-
-        
 def index(request):
     if request.user.is_authenticated():
         current_businesses = []
@@ -762,8 +495,6 @@ def index(request):
         your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),current_businesses)
         current_businesses+=your_businesses.object_list
 
-            
-            
         context = get_default_blank_context(request.user)
         context['community_businesses'] = community_businesses
         context['your_businesses'] = your_businesses
@@ -779,10 +510,7 @@ def index(request):
         except:
             logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
             businesses = Business.objects.all()
-        
-        
- 
-        
+               
         context = get_unauthenticated_context()
         return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
 
@@ -796,11 +524,9 @@ def user_details(request):
         communities.append(um.community)
     context['user_communities'] = communities
     #context['user_favorites'] = UserMembership.objects.filter(user=request.user)
-    #context['user_traits'] = UserMembership.objects.filter(user=request.user)
+    context['user_traits'] = get_user_traits(request.user)
     return render_to_response('ratings/user/user_detail.html', context_instance=RequestContext(request,context))
     
-
-
 def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')

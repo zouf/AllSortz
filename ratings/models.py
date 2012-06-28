@@ -22,6 +22,11 @@ class Business(models.Model):
         
 
      
+class UserFavorite(models.Model):
+    business= models.ForeignKey(Business)
+    user = models.ForeignKey(User)
+    date = models.DateTimeField(auto_now=True)
+     
         
 #decribes a listing   
 class Community(models.Model):

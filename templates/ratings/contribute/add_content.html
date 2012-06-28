@@ -8,7 +8,7 @@
 </script>
 	<div class="content" >
 
-			{% if type == 'question'' %}
+			{% if type == 'question' %}
 				<form  action="." method="post" >{% csrf_token %}
 				<div class="input_box">
 				    {{ form.question.errors }}
@@ -40,7 +40,7 @@
 					<p>{{q.question}}</p>
 				{%endfor%}
 				</p>
-			{%else%}{%if type == 'tag' %}
+			{%else%}{%if type == 'community' %}
 				<form  action="." method="post" >{% csrf_token %}
 					<div class="input_box ui-widget">
 					    {{ form.name.errors }}
@@ -67,10 +67,27 @@
 				{% for c in communities %}
 					{{c.name}} | 
 				{%endfor%}
-			{% else %}
+			{% else %}{% if type == 'tag' %}
 				<div id="tag_list">
 					{% include 'ratings/contribute/sortlist.html' %}
 				</div>
+			{%else %}
+				<form  action="." method="post" >{% csrf_token %}
+				<div class="input_box ui-widget">
+				    {{ form.name.errors }}
+					<p><input id="id_name" value="Name" class="input_box" type="text"  name="name" maxlength="100" onfocus="this.value='';"  /></p>
+				</div>
+				<div class="input_box ui-widget">
+					{{ form.descr.errors }}
+					Description<p><textarea id="id_description" class="ui-widget" value="Description" name="descr" cols="40" rows="10" onfocus="this.value='';"></textarea></p>
+				</div>
+				<p><input type="submit" class="ui-big-widget" value="+" /></p>
+				</form>
+				<p>Current Possible Traits:</p>
+				{% for t in traits %}
+					{{t.name}} | 
+				{%endfor%}
+			{%endif%}
 			{%endif%}
 			{%endif%}
 	

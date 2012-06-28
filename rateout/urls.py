@@ -30,8 +30,8 @@ urlpatterns = patterns('',
     url(r'^api/add_bus_rating/', 'ratings.vote.add_bus_rating'),
 
     #api for voting on activities
-    url(r'^api/act_vote/*', 'activities.vote.vote'),
-    url(r'^api/rm_act_vote/*', 'activities.vote.remove_vote'),
+#    url(r'^api/act_vote/*', 'activities.vote.vote'),
+#    url(r'^api/rm_act_vote/*', 'activities.vote.remove_vote'),
 
 
     #comments on discussion page
@@ -45,9 +45,9 @@ urlpatterns = patterns('',
     url(r'^ratings/(?P<bus_id>\d+)/edit/(?P<page_id>\d+)/$','ratings.views.edit_tag_discussion'),
     
     #activity URLs
-    url(r'acts/$', 'activities.views.activities'),    
-    url(r'acts/add_activity/', 'activities.views.add_activity'),    
-    url(r'^acts/(?P<act_id>\d+)/$', 'activities.views.detail_activity'),
+#    url(r'acts/$', 'activities.views.activities'),    
+#    url(r'acts/add_activity/', 'activities.views.add_activity'),    
+#    url(r'^acts/(?P<act_id>\d+)/$', 'activities.views.detail_activity'),
     
     #URL for user details
     url(r'^user_details/$','ratings.views.user_details'),
@@ -57,9 +57,10 @@ urlpatterns = patterns('',
 
     #answer questions on businesses
     url(r'^ratings/answer_questions/(?P<bus_id>\d+)$','ratings.views.ans_business_questions'),
-    url(r'^ratings/answer_questions/(?P<bus_id>\d+)$','ratings.views.ans_business_questions'),
 
-    
+    #relate traits to yourself 
+    url(r'^ratings/user_traits/$','usertraits.views.add_trait_relationships'),
+
     
     #url(r'^$','ratings.views.coming_soon'),
     url(r'^$', 'ratings.views.index'),
@@ -72,6 +73,7 @@ urlpatterns = patterns('',
     #for adding content to the site
 	url(r'^ratings/add_business/$', 'ratings.views.add_business'),
     url(r'^ratings/add_question/$', 'ratings.views.add_question'),
+    url(r'^ratings/add_trait/$','usertraits.views.add_trait'),
     url(r'^ratings/add_new_tag/$', 'ratings.views.add_new_tag'),
     url(r'^ratings/add_community/$', 'ratings.views.add_community'),
 
@@ -81,7 +83,7 @@ urlpatterns = patterns('',
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', logout_page),
 	url(r'^accounts/', include('registration.urls')),
-    url(r'^comments/add_comment/(?P<bus_id>\d+)/$','ratings.views.add_comment_form'),
+#    url(r'^comments/add_comment/(?P<bus_id>\d+)/$','ratings.views.add_comment_form'),
 
     
     url(r'^how_it_works/$','ratings.views.how_it_works'),
