@@ -663,36 +663,118 @@ def paginate_businesses(business_list,page, num):
         business_list = paginator.page(paginator.num_pages)
     return business_list
 
+
+def get_community_businesses(user,page,checkForIntersection):
+    alreadyThere = dict()
+    for nt in checkForIntersection:
+        alreadyThere[nt] = True
+        
+        
+    community = get_community(user)
+    businesses = []
+    try:
+        busMembership = BusinessMembership.objects.filter(community = community)
+        for b in busMembership:
+            if b not in alreadyThere:
+                businesses.append(b.business)
+    except:
+        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+        businesses = Business.objects.all()
+    print(businesses)
+    business_list = get_bus_data(businesses,user)
+    business_list = paginate_businesses(business_list,page,5)
+
+    for b in business_list:
+        bustags = BusinessTag.objects.filter(business=b)
+        b.tags = []
+        for bt in bustags:
+            b.tags.append(bt.tag)
+
+        
+    return business_list
+
+def get_all_businesses(user,page,checkForIntersection):
+    alreadyThere = dict()
+    for nt in checkForIntersection:
+        alreadyThere[nt] = True
+        
+    businesses = []
+    try:
+        allBus = Business.objects.all() # order by rating
+        for b in allBus:
+            if b not in alreadyThere:
+                businesses.append(b.business)
+    except:
+        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+        businesses = Business.objects.all()
+        
+        
+    business_list = get_bus_data(businesses,user)
+    business_list = paginate_businesses(business_list,page,5)
+
+    for b in business_list:
+        bustags = BusinessTag.objects.filter(business=b)
+        b.tags = []
+        for bt in bustags:
+            b.tags.append(bt.tag)
+
+    return business_list
+        
+        
+def get_your_businesses(user,page,checkForIntersection):
+    alreadyThere = dict()
+    for nt in checkForIntersection:
+        alreadyThere[nt] = True
+        
+    businesses = []
+    try:
+        allBus = Business.objects.all() # order by rating
+        for b in allBus:
+            if b not in alreadyThere:
+                businesses.append(b.business)
+    except:
+        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+        businesses = Business.objects.all()
+    print(businesses)
+    business_list = get_bus_data(businesses,user)
+    business_list = paginate_businesses(business_list,page,5)
+
+    for b in business_list:
+        bustags = BusinessTag.objects.filter(business=b)
+        b.tags = []
+        for bt in bustags:
+            b.tags.append(bt.tag)
+
+        
+    return business_list
+        
 def index(request):
     if request.user.is_authenticated():
-        community = get_community(request.user)
-        businesses = []
-        try:
-            busMembership = BusinessMembership.objects.filter(community = community)
-            for b in busMembership:
-                businesses.append(b.business)
-        except:
-            logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
-            businesses = Business.objects.all()
-        print(businesses)
-        business_list = get_bus_data(businesses,request.user)
-        business_list = paginate_businesses(business_list,request.GET.get('page'),5)
+        current_businesses = []
+        
+       
+        community_businesses = get_community_businesses(request.user,request.GET.get('page'),current_businesses)
+        current_businesses+=community_businesses.object_list
+        
+        all_businesses = get_all_businesses(request.user,request.GET.get('page'),current_businesses)
+        current_businesses+=all_businesses.object_list
 
-        for b in business_list:
-            bustags = BusinessTag.objects.filter(business=b)
-            b.tags = []
-            for bt in bustags:
-                b.tags.append(bt.tag)
+        your_businesses = get_your_businesses(request.user,request.GET.get('page'),current_businesses)
+        current_businesses+=your_businesses.object_list
+
+            
             
         context = get_default_blank_context(request.user)
-        context['business_list'] = business_list
-        
-      
+        print(context)
+        context['community_businesses'] = community_businesses
+        context['your_businesses'] = your_businesses
+        context['all_businesses'] = all_businesses
+    
         return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
     else:
         businesses = []
         try:
-            busMembership = BusinessMembership.objects.filter(community = community)
+            busMembership = BusinessMembership.objects.filter(community = get_default())
             for b in busMembership:
                 businesses.append(b.business)
         except:

@@ -7,8 +7,9 @@ $(function() {
 	});
 </script>
 
-{% if business_list %}
-	<div id="index" class="content">
+<div id="index" class="content">
+{% if community_businesses %}
+
     <div id="trending" class="section">
     	<h1>Now Trending</h1>
     	{% if search_term %}
@@ -17,26 +18,92 @@ $(function() {
 				near <h2 class="search_term">{{location_term}}</h2>
 		     {%endif%}
 		{%endif%}
-	<table style="width:100%;">
-		<tr>
-		<td>
-			{% include 'ratings/buslist.html' %}
-		</td>
-		</tr>
+		<table style="width:100%;">
+			<tr>
+				<td>
+					<input type="hidden" value="business" id="vote_on" />
+					{% for bus in all_businesses.object_list %}
+						{%include 'ratings/singlebus.html' %}
+						<hr />
+					{%endfor %}
+					<span class="step-links">
+					    {% if all_businesses.has_previous %}
+					        <a href="?page={{ all_businesses.previous_page_number }}">previous</a>
+					    {% endif %}
+					
+					    <span class="current">
+					        Page {{ all_businesses.number }} of {{ all_businesses.paginator.num_pages }}.
+					    </span>
+					
+					    {% if all_businesses.has_next %}
+					        <a href="?page={{ all_businesses.next_page_number }}">next</a>
+					    {% endif %}
+					</span>
+				</td>
+			</tr>
 		</table>
 	</div>
 	<div id="suggestions" class="section">
     	<h1>For You</h1>
-    	more here
+    	<table style="width:100%;">
+			<tr>
+				<td>
+					<input type="hidden" value="business" id="vote_on" />
+					{% for bus in your_businesses.object_list %}
+						{%include 'ratings/singlebus.html' %}
+						<hr />
+					{%endfor %}
+					<span class="step-links">
+					    {% if your_businesses.has_previous %}
+					        <a href="?page={{ your_businesses.previous_page_number }}">previous</a>
+					    {% endif %}
+					
+					    <span class="current">
+					        Page {{ your_businesses.number }} of {{ your_businesses.paginator.num_pages }}.
+					    </span>
+					
+					    {% if your_businesses.has_next %}
+					        <a href="?page={{ your_businesses.next_page_number }}">next</a>
+					    {% endif %}
+					</span>
+					
+				</td>
+			</tr>
+		</table>
     </div>
 	<div id="community" class="section">
 		<h1>Your Community: {{community.name}}</h1>
-		more here
+		<table style="width:100%;">
+			<tr>
+				<td>
+					<input type="hidden" value="business" id="vote_on" />
+					{% for bus in community_businesses.object_list %}
+						{%include 'ratings/singlebus.html' %}
+						<hr />
+					{%endfor %}			
+					<span class="step-links">
+					    {% if community_businesses.has_previous %}
+					        <a href="?page={{ community_businesses.previous_page_number }}">previous</a>
+					    {% endif %}
+					
+					    <span class="current">
+					        Page {{ community_businesses.number }} of {{ community_businesses.paginator.num_pages }}.
+					    </span>
+					
+					    {% if community_businesses.has_next %}
+					        <a href="?page={{ community_businesses.next_page_number }}">next</a>
+					    {% endif %}
+					</span>
+					
+				</td>
+			</tr>
+		</table>
 	</div>
-	</div>
+
 
 {% else %}
     <p>No businesses found. </p>
     <p><a href="/ratings/add_business/">List a business</a></p>
 {% endif %}
+	</div>
 {% endblock %}
