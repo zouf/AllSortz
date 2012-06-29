@@ -12,12 +12,14 @@
 					<td>
 						<a class="business_name" href="/ratings/{{ business.id }}/" class="blocklink"><font style="font-size:20px;font-weight:bold;"> {{business.name }} </font></a> 
 		   				<br>{{business.city}}, {{business.state}}
-		   				<br><br>Community: <em> {{community.name}} </em>
+		   				<br>Community: <em> {{community.name}} </em>
 
-		   				<br>Sorted Under: 
-		   				{% for sort in business.tags %}
-		   					{{sort.descr}} |
-		   				{% endfor %}
+						{% if business.tags %}
+			   				<br>Sorted Under: 
+			   				{% for sort in business.tags %}
+			   					{{sort.descr}} |
+			   				{% endfor %}
+			   			{% endif %}
 					</td>
 				</tr>						
 			</table>
