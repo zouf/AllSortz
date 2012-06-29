@@ -76,7 +76,16 @@
 			<h2>{{user}}'s Activity Feed</h2>
 			{% for item in feed %}
 				
-				{{item.type}}
+				{% if item.type == "business" %}
+					<a href="/ratings/{{ item.business.id }}/"> <img src="{{ item.business.photourl }}" /> </a>Rated <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a> with {{item.rating}}
+				{%endif%}
+				{% if item.type == "buscomment" %}				
+					<a href="/ratings/{{ item.business.id }}/"> <img src="{{ item.business.photourl }}" /> </a> Comment in <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>: <i>{{item.thread.descr}}</i> 
+				{%endif%}
+				{% if item.type == "tagcomment" %}				
+					Comment in <a href="/ratings/{{ item.business.id }}/"> </a>under {{item.tag.name}}: <i>{{item.thread.descr}}</i> 
+				{%endif%}
+				<hr>
 			{% endfor %}
 		</div>
 	</div>

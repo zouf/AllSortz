@@ -488,10 +488,10 @@ def index(request):
         current_businesses = []
         
        
-        community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),current_businesses,False)
+        community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),current_businesses,True)
         current_businesses+=community_businesses.object_list
         
-        all_businesses = get_businesses_trending(request.user,request.GET.get('page'),current_businesses,False)
+        all_businesses = get_businesses_trending(request.user,request.GET.get('page'),current_businesses,True)
         current_businesses+=all_businesses.object_list
 
         your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),current_businesses,True)
@@ -524,18 +524,21 @@ def get_user_activity(user):
     
     for r in ratings:
         r.type = "business"
+        r.business = get_single_bus_data(r.business, user, isSideBar=True)
         feed.append(r)
     allcomments = Comment.objects.filter(user=user).order_by('-date')
     for c in allcomments:
         try: 
             tc = TagComment.objects.get(thread=c)
             tc.type = "tagcomment"
+            tc.business = get_single_bus_data(tc.business, user, isSideBar=True)
             feed.append(tc)
         except:
             pass
         
         try:
             bc = BusinessComment.objects.get(thread=c)
+            bc.business = get_single_bus_data(bc.business, user, isSideBar=True)
             bc.type = "buscomment"
             feed.append(bc)
         except:

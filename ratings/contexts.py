@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 def recurse_comments(comment,cur_list,even):
     cur_list.append(comment)
-    replies = Comment.objects.filter(reply_to=comment).order_by('-date').reverse()
+    replies = Comment.objects.filter(reply_to=comment).order_by('-date')
     for c in replies:
         if even:
             cur_list.append("open-even")
@@ -31,7 +31,7 @@ def recurse_comments(comment,cur_list,even):
 
 def get_tag_comments(b,tag):
     logger.debug('get for'+str(b)+ ' and tag ' + str(tag.descr))
-    tagcomments = TagComment.objects.filter(business=b,tag=tag).order_by('-date').reverse()
+    tagcomments = TagComment.objects.filter(business=b,tag=tag).order_by('-date')
 
     comment_list = []
     for tc in tagcomments:
@@ -56,7 +56,7 @@ def get_tag_comments(b,tag):
 
 
 def get_business_comments(business,user=False):
-    buscomments = BusinessComment.objects.filter(business=business).order_by('-date').reverse()
+    buscomments = BusinessComment.objects.filter(business=business).order_by('-date')
     for bc in buscomments:
         print(bc.date)
     comment_list = []
