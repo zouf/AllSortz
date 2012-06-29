@@ -88,13 +88,14 @@ urlpatterns = patterns('',
     
     url(r'^help/$','ratings.views.help'),
     
+    url(r'^ratings/reset_db/$','ratings.populate.prepopulate_database'),
     
     
     url(r'^handle_fb_login/$','ratings.facebook.handle_fb_login'),
     url(r'^fbauth/$','ratings.facebook.handle_fb_request'),
     
     (r'^mywiki/', include('wiki.urls')),
-    
+        
     
  
 

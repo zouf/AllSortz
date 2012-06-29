@@ -456,6 +456,7 @@ def add_business(request):
         b.save()
         if 'image' in request.FILES:
             img = request.FILES['image']
+            print(img)
             bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
             bp.save()
    
@@ -501,7 +502,9 @@ def index(request):
         context['community_businesses'] = community_businesses
         context['your_businesses'] = your_businesses
         context['all_businesses'] = all_businesses
-    
+        
+        context['nonempty'] = True
+        
         return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
     else:
         businesses = []

@@ -8,7 +8,8 @@ from communities.models import BusinessMembership
 from communities.views import get_community
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils.encoding import smart_str
-from photos.views import get_photo_mini_url, get_photo_web_url
+from photos.views import get_photo_mini_url, get_photo_web_url, \
+    get_photo_thumb_url
 from ratings.favorite import get_user_favorites
 from ratings.models import Rating, Business
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
@@ -30,7 +31,10 @@ def get_single_bus_data(b,user,isSideBar=False):
     b.average_rating = round(getBusAvg(b.id) * 2) / 2
     
     if isSideBar:
-        b.photourl = get_photo_mini_url(b)
+        b.photourl = get_photo_thumb_url(b)
+        print('url:')
+        print(b.photourl)
+        print('end')
     else:
         b.photourl = get_photo_web_url(b)
 
@@ -154,6 +158,7 @@ def get_businesses_trending(user,page,checkForIntersection,isSideBar=False):
     businesses = []
     try:
         allBus = Business.objects.all() # order by rating
+        print('get bus')
         for b in allBus:
             if b not in alreadyThere:
                 businesses.append(b.business)

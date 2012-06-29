@@ -9,7 +9,7 @@ import datetime
 # Create your models here.
 
 
-class BusinessPhoto(models.Model):
+class  BusinessPhoto(models.Model):
 
     user = models.ForeignKey(User)
     business = models.ForeignKey(Business)
@@ -27,17 +27,17 @@ class BusinessPhoto(models.Model):
         today = datetime.datetime.today()
         return 'user_uploads/%s/%s-%s-%s.%s.%s/thumb/%s' % (self.user.username, today.year, today.month, today.day, today.hour, today.minute, filename)
 
-    
-    def image_upload_to_mini(self,filename):
-        today = datetime.datetime.today()
-        return 'user_uploads/%s/%s-%s-%s.%s.%s/mini/%s' % (self.user.username, today.year, today.month, today.day, today.hour, today.minute, filename)
-        
-
-    
+#    
+#    def image_upload_to_mini(self,filename):
+#        today = datetime.datetime.today()
+#        return 'user_uploads/%s/%s-%s-%s.%s.%s/thumb2/%s' % (self.user.username, today.year, today.month, today.day, today.hour, today.minute, filename)
+#        
+#
+#    
     image = models.ImageField(upload_to=image_upload_to_web)
     image_thumb = models.ImageField(upload_to=image_upload_to_thumb)
     image_large = models.ImageField(upload_to=image_upload_to_lg)
-    image_mini = models.ImageField(upload_to=image_upload_to_mini)
+    #image_mini = models.ImageField(upload_to=image_upload_to_mini)
 
     date = models.DateTimeField(auto_now=True)
     
@@ -46,8 +46,7 @@ class BusinessPhoto(models.Model):
     caption = models.TextField(blank=True)
     def save(self):
         #Original photo
-        imgFile = Image.open(self.image)
-        
+        imgFile = Image.open(str(self.image))
         #Convert to RGB
         if imgFile.mode not in ('L', 'RGB'):
             imgFile = imgFile.convert('RGB')
@@ -56,8 +55,8 @@ class BusinessPhoto(models.Model):
         #The IMAGE_SIZES looks like:
         IMAGE_SIZES = { 'image'      : (300, 348),
                     'image_large'    : (600, 450),
-                    'image_thumb'    : (200, 200),
-                    'image_mini'    : (50, 50) }
+                    'image_thumb'    : (100,100)}
+                    #'image_mini'    : (50, 50) }
 
         #each of which corresponds to an ImageField of the same name
         for field_name, size in IMAGE_SIZES.iteritems():

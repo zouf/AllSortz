@@ -50,7 +50,9 @@ CELERY_RESULT_BACKEND = "amqp"
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 AWS_ACCESS_KEY_ID='AKIAJNT6HH4SMZYBZJKQ'
 AWS_SECRET_ACCESS_KEY='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'
-AWS_STORAGE_BUCKET_NAME='rateoutimages'
+#AWS_STORAGE_BUCKET_NAME='rateoutimages'
+AWS_STORAGE_BUCKET_NAME='allsortz'
+
 AWS_CALLING_FORMAT=CallingFormat.SUBDOMAIN
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 #import djcelery
