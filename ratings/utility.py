@@ -8,33 +8,36 @@ from communities.models import BusinessMembership
 from communities.views import get_community
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils.encoding import smart_str
-from photos.views import get_photo_web_url, get_photo_thumb_url
+from photos.views import get_photo_web_url, get_photo_thumb_url, \
+    get_photo_mini_url
+from ratings.favorite import get_user_favorites
 from ratings.models import Rating, Business
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     getBusAvg
 from tags.models import BusinessTag
-
 import logging
 import simplejson
 import urllib
 import urllib2
-from ratings.favorite import get_user_favorites
+
 #from rateout.settings import LOG_FILE
 #import time
 
 logger = logging.getLogger(__name__)
 
-
-def get_single_bus_data(b,user):
+#isSideBar is true if we're using small images
+def get_single_bus_data(b,user,isSideBar=False):
     b.average_rating = round(getBusAvg(b.id) * 2) / 2
-    b.photourl = get_photo_mini_url(b)
+    
+    if isSideBar:
+        b.photourl = get_photo_mini_url(b)
+    else:
+        b.photourl = get_photo_web_url(b)
+
     b.num_ratings = getNumRatings(b.id)
        
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)
-    try:
-        b.photourl = get_photo_web_url(b)
-    except:
-        b.photourl= "" #NONE
+
 
     if latlng:
         b.lat=latlng[0]
@@ -64,9 +67,10 @@ def get_single_bus_data(b,user):
 
 
 #TODO: matt fix this to handle ratings from 1-4
-def get_bus_data(business_list,user):
+#is SideBar is true if we're going to use smaller data 
+def get_bus_data(business_list,user,isSideBar=False):
     for b in business_list:
-        b = get_single_bus_data(b,user)
+        b = get_single_bus_data(b,user,isSideBar)
         
     return business_list
 
@@ -116,7 +120,7 @@ def paginate_businesses(business_list,page, num):
     return business_list
 
 
-def get_businesses_by_community(user,page,checkForIntersection):
+def get_businesses_by_community(user,page,checkForIntersection,isSideBar=False):
     alreadyThere = dict()
     for nt in checkForIntersection:
         alreadyThere[nt] = True
@@ -131,7 +135,7 @@ def get_businesses_by_community(user,page,checkForIntersection):
         logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
         businesses = Business.objects.all()
     print(businesses)
-    business_list = get_bus_data(businesses,user)
+    business_list = get_bus_data(businesses,user,isSideBar)
     business_list = paginate_businesses(business_list,page,5)
 
     for b in business_list:
@@ -142,7 +146,7 @@ def get_businesses_by_community(user,page,checkForIntersection):
         
     return business_list
 
-def get_businesses_trending(user,page,checkForIntersection):
+def get_businesses_trending(user,page,checkForIntersection,isSideBar=False):
     alreadyThere = dict()
     for nt in checkForIntersection:
         alreadyThere[nt] = True
@@ -158,7 +162,7 @@ def get_businesses_trending(user,page,checkForIntersection):
         businesses = Business.objects.all()
         
         
-    business_list = get_bus_data(businesses,user)
+    business_list = get_bus_data(businesses,user,isSideBar)
     business_list = paginate_businesses(business_list,page,5)
 
     for b in business_list:
@@ -170,7 +174,7 @@ def get_businesses_trending(user,page,checkForIntersection):
     return business_list
         
         
-def get_businesses_by_your(user,page,checkForIntersection):
+def get_businesses_by_your(user,page,checkForIntersection,isSideBar=False):
     alreadyThere = dict()
     for nt in checkForIntersection:
         alreadyThere[nt] = True
@@ -184,7 +188,7 @@ def get_businesses_by_your(user,page,checkForIntersection):
     except:
         logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
         businesses = Business.objects.all()
-    business_list = get_bus_data(businesses,user)
+    business_list = get_bus_data(businesses,user,isSideBar)
     business_list = paginate_businesses(business_list,page,5)
     return business_list
 
