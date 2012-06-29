@@ -523,27 +523,21 @@ def get_user_activity(user):
     feed = []
     
     for r in ratings:
-        item = {}
-        item.type = "business"
-        item.data = r
-        feed.append(item)
+        r.type = "business"
+        feed.append(r)
     allcomments = Comment.objects.filter(user=user).order_by('-date')
     for c in allcomments:
         try: 
             tc = TagComment.objects.get(thread=c)
-            item = {}
-            item.type = "tagcomment"
-            item.data = tc
-            feed.append(item)
+            tc.type = "tagcomment"
+            feed.append(tc)
         except:
             pass
         
         try:
             bc = BusinessComment.objects.get(thread=c)
-            item = {}
-            item.type = "buscomment"
-            item.data = bc
-            feed.append(item)
+            bc.type = "buscomment"
+            feed.append(bc)
         except:
             pass
     return feed
