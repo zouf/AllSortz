@@ -40,7 +40,7 @@
 		{% if not user.is_authenticated %}
 			<a href="/help/">Help</a> | <a href="/accounts/login/?next=/">Login</a> | <a href="/accounts/register/">Register</a>
 		{% else %}
-			<p style="display:inline"> Howdy, <a href="/user_details/"> {{user.first_name}}</a> </p> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
+			<p style="display:inline"> Howdy, <a href="/user_details/"> {{user.first_name}}</a> </p> | <a href="/help/">Help</a> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
 		{% endif %}
 	</div>
 	
@@ -141,7 +141,7 @@
     		<a href="/">Home</a> |
     		<a href="/">About</a> |
     		<a href="/">Contact</a> |
-    		<a href="/">Help</a>
+    		<a href="/help/">Help</a>
     	</div>
 	</div>
 
