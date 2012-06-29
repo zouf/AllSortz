@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 def get_single_bus_data(b,user):
     b.average_rating = round(getBusAvg(b.id) * 2) / 2
-    b.photourl = get_photo_thumb_url(b)
+    b.photourl = get_photo_mini_url(b)
     b.num_ratings = getNumRatings(b.id)
        
     latlng = get_lat(b.address + " " + b.city + ", " + b.state)

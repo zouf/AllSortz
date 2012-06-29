@@ -28,3 +28,11 @@ def get_photo_large_url(b):
         return False
     ph = qset[0].image_large
     return ph.url
+
+#gets web photo (large)
+def get_photo_mini_url(b):
+    qset  = BusinessPhoto.objects.filter(business=b)
+    if qset.count() < 1:
+        return False
+    ph = qset[0].image_mini
+    return ph.url
