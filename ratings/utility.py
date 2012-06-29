@@ -48,9 +48,9 @@ def get_single_bus_data(b,user,isSideBar=False):
     if user.is_authenticated():
         b.pos_ratings = getNumPosRatings(b)
         b.neg_ratings = getNumNegRatings(b)
-        thisRat = Rating.objects.filter(username=user, business=b)
+        thisRat = Rating.objects.filter(user=user, business=b)
         if thisRat.count() > 0:
-            r = Rating.objects.get(username=user, business=b)
+            r = Rating.objects.get(user=user, business=b)
             b.this_rat = r.rating
             b.rating = r.rating
         else:

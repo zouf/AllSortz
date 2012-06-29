@@ -86,8 +86,8 @@ $(document).ready(function(){
 	         type  : form.attr('method'),
 	         data  : serial, // data to be submitted
 	         success: function(data){
-	         	document.getElementById("tag_list").innerHTML = data
-	         	rebind_buttons();
+	        	 window.location="."
+
 	         }
 	    });
 	    return false;

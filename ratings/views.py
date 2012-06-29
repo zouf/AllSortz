@@ -2,6 +2,7 @@ from communities.forms import CommunityForm
 from communities.models import BusinessMembership, UserMembership
 from communities.views import get_community, get_default
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, redirect
@@ -15,7 +16,7 @@ from ratings.contexts import get_default_blank_context, get_default_tag_context,
 from ratings.favorite import get_user_favorites, is_user_subscribed
 from ratings.forms import BusinessForm, CommentForm
 from ratings.models import Business, Comment, CommentRating, TagComment, \
-    PageRelationship, BusinessComment, Community
+    PageRelationship, BusinessComment, Community, Rating
 from ratings.populate import create_business
 from ratings.search import search_site
 from ratings.utility import get_lat, get_bus_data, get_single_bus_data, \
@@ -515,7 +516,37 @@ def index(request):
         context = get_unauthenticated_context()
         return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
 
-def user_details(request):
+def get_user_activity(user):
+ 
+    ratings = Rating.objects.filter(user=user).order_by('-date')[:5]
+   
+    feed = []
+    
+    for r in ratings:
+        r.type = "business"
+        feed.append(r)
+    allcomments = Comment.objects.filter(user=user).order_by('-date')
+    for c in allcomments:
+        try: 
+            tc = TagComment.objects.get(thread=c)
+            tc.type = "tagcomment"
+            feed.append(tc)
+        except:
+            pass
+        
+        try:
+            bc = BusinessComment.objects.get(thread=c)
+            bc.type = "buscomment"
+            feed.append(bc)
+        except:
+            pass
+    return feed
+    
+    
+    
+    
+
+def user_details(request,uid):
     if not request.user.is_authenticated():
         return redirect(index)
   
@@ -526,6 +557,11 @@ def user_details(request):
     context['user_communities'] = communities
     context['user_favorites'] = get_user_favorites(request.user)
     context['user_traits'] = get_user_traits(request.user)
+    
+    checkon = User.objects.get(id=uid)
+
+    context['checkon'] = checkon
+    context['feed'] = get_user_activity(checkon)
     return render_to_response('ratings/user/user_detail.html', context_instance=RequestContext(request,context))
     
 def logout_page(request):

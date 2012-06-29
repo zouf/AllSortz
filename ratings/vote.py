@@ -74,10 +74,10 @@ def vote(request):
             res = 'neg'
 
         try:
-            rating = Rating.objects.get(business=business, username=request.user)
+            rating = Rating.objects.get(business=business, user=request.user)
         except Rating.DoesNotExist:
             logger.debug("In vote create a new rating!")
-            rating = Rating.objects.create(business=business, username=request.user, rating=rat)
+            rating = Rating.objects.create(business=business, user=request.user, rating=rat)
         else:
             sys.stderr.write("rating already exists :(")
             return HttpResponse("{'success': 'false'}")
@@ -177,7 +177,7 @@ def remove_vote(request):
             return HttpResponse("{'success': 'false'}")
 
         try:
-            rating = Rating.objects.filter(business=business, username=request.user)
+            rating = Rating.objects.filter(business=business, user=request.user)
         except Rating.DoesNotExist:
             pass
         else:
@@ -205,13 +205,13 @@ def add_bus_rating(request):
         
         rat =  request.POST['rating'] 
         try:
-            rating = Rating.objects.get(business=business, username=request.user)
+            rating = Rating.objects.get(business=business, user=request.user)
         except Rating.DoesNotExist:
             logger.debug("In vote create a new rating!")
-            rating = Rating(business=business, username=request.user, rating=rat)
+            rating = Rating(business=business, user=request.user, rating=rat)
         else:
-            Rating.objects.filter(business=business,username=request.user).delete()
-            rating = Rating(business=business, username=request.user, rating=rat)
+            Rating.objects.filter(business=business,user=request.user).delete()
+            rating = Rating(business=business, user=request.user, rating=rat)
 
         rating.save()
         response_data = dict()

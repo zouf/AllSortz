@@ -55,11 +55,11 @@ class PageRelationship(models.Model):
     
 class Rating(models.Model):
     business = models.ForeignKey(Business)
-    username = models.ForeignKey(User)
+    user = models.ForeignKey(User)
     rating = models.PositiveSmallIntegerField()
-
+    date = models.DateTimeField(auto_now=True)
     def __unicode__(self):
-        return self.username.username + " " + self.business.name + " " + str(self.rating)
+        return self.user.user + " " + self.business.name + " " + str(self.rating)
 
 
 # Create your models here.

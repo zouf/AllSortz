@@ -6,8 +6,10 @@
 	<div id="userProfile">
 		<div class="userDetails" style="width:600px;height:600px;">
 			<h1>{{user}}'s Profile</h1>
-			<h3>About {{user}}</h3>
+			<h3>{{user}} traits</h3>
 			<div style="margin:5px 20px;">
+				{% if checkon == user %}
+				
 				<form class="ui-big-widget" action="/ratings/user_traits/" method="post" >{% csrf_token %}
 					{% for t in user_traits %}
 						<table><tr><td>
@@ -22,7 +24,18 @@
 					{%endfor%}
 					<p><input class="ui-big-widget" type="submit" value="Done" /></p>
 				</form>
+				{%else %}
+					{% for t in user_traits %}
+						<table><tr><td>
+						<p>{{t.name}}:</p>
+						</td><td>
+						{{t.value}}
+						</td></tr></table>
+					{%endfor%}
+				
+				{%endif%}
 			</div>
+			<p><a href="/ratings/add_trait/" style="font-size:10px"><p >Think we're missing a trait?</p></a>
 		</div>
 		
 		<div class="userDetails" style="min-height:200px;float:right;">
@@ -50,12 +63,20 @@
 				</select>
 				<input type="submit" value="+"/>
 			</form>
+			<p><a href="/ratings/add_community/" style="font-size:10px"><p >Think we're missing a community?</p></a>	
 		</div>
 		
 		<div class="userDetails">
 			<h2>{{user}}'s Watchlist</h2>
 			{% for watch in user_favorites %}
-				{{watch.name}} |
+				 <a href="/ratings/{{ business.id }}/"> {{watch.name}} </a> |
+			{% endfor %}
+		</div>
+		<div class="userDetails">
+			<h2>{{user}}'s Activity Feed</h2>
+			{% for item in feed %}
+				
+				{{item.type}}
 			{% endfor %}
 		</div>
 	</div>

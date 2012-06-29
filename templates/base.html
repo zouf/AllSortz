@@ -34,7 +34,24 @@
     {% block head %}{% endblock %}
 </head>
 
-<body onload="document.user.id_username.focus(); initialize();">
+<script type="text/javascript">
+
+
+function setupPage()
+{
+	 
+	if(document.user)
+	{
+		document.user.id_username.focus()
+	}
+	
+	initialize();
+
+
+}
+</script>
+
+<body onload="setupPage()">
 	
 	<div id="account">
 		{% if not user.is_authenticated %}
