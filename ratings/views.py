@@ -327,8 +327,8 @@ def edit_tag_discussion(request,bus_id,page_id):
     return render_to_response('ratings/busdetail.html',
         RequestContext(request, context))
 
-def how_it_works(request):
-    return render_to_response('how_it_works.html',context_instance=RequestContext(request))
+def help(request):
+    return render_to_response('help.html',context_instance=RequestContext(request))
 
 
 @csrf_exempt

@@ -86,7 +86,7 @@ urlpatterns = patterns('',
 #    url(r'^comments/add_comment/(?P<bus_id>\d+)/$','ratings.views.add_comment_form'),
 
     
-    url(r'^how_it_works/$','ratings.views.how_it_works'),
+    url(r'^help/$','ratings.views.help'),
     
     
     

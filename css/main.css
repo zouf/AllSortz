@@ -228,6 +228,12 @@ li
     border-radius: 5px;
 }
 
+#help
+{
+    text-align: left;
+    margin: 12px;
+}
+
 .blocklink
 {
     display: inline-block;
