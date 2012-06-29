@@ -210,7 +210,7 @@ def add_bus_rating(request):
             logger.debug("In vote create a new rating!")
             rating = Rating(business=business, username=request.user, rating=rat)
         else:
-            Rating.objects.filter(business=business,username=request.user).delete()
+            Rating.objects.filter(business=business,user=request.user).delete()
             rating = Rating(business=business, username=request.user, rating=rat)
 
         rating.save()

@@ -148,9 +148,9 @@ def pare_dataset(filterFood):
 
   usrs = User.objects.all()
   for u in usrs:
-    c = Rating.objects.filter(username=u.id).aggregate(Count('rating'))
+    c = Rating.objects.filter(user=u.id).aggregate(Count('rating'))
     if c['rating__count'] < user_rating_threshold:
-      Rating.objects.filter(username=u.id).delete()
+      Rating.objects.filter(user=u.id).delete()
       u.delete()
   print("Ratings after user delete - "+str(Rating.objects.count()))
   businesses = Business.objects.all()

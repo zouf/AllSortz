@@ -50,7 +50,7 @@ urlpatterns = patterns('',
 #    url(r'^acts/(?P<act_id>\d+)/$', 'activities.views.detail_activity'),
     
     #URL for user details
-    url(r'^user_details/$','ratings.views.user_details'),
+    url(r'^user_details/(?P<uid>\d+)/$','ratings.views.user_details'),
     
     #display businesses assoc with a tag
     url(r'^ratings/disp/(?P<tag_id>\d+)/$','ratings.views.display_tag'),

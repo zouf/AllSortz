@@ -6,7 +6,7 @@
 {%else%}
 	{% for tag in user_sorts %}
 		<table><tr><td>
-		{{tag.descr}} </td><td>
+		<a href="/ratings/disp/{{tag.id}}/">{{tag.descr}}</a>  </td><td>
 		<form name="unsubscribeUser" action="." method="post">
 			<input type="hidden" name="tag" value="{{tag.descr}}" />
 			<input type="submit" value="-" />
