@@ -487,14 +487,14 @@ def index(request):
         current_businesses = []
         
        
-        community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),current_businesses)
-        #current_businesses+=community_businesses.object_list
+        community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),current_businesses,False)
+        current_businesses+=community_businesses.object_list
         
-        all_businesses = get_businesses_trending(request.user,request.GET.get('page'),current_businesses)
-        #current_businesses+=all_businesses.object_list
+        all_businesses = get_businesses_trending(request.user,request.GET.get('page'),current_businesses,False)
+        current_businesses+=all_businesses.object_list
 
-        your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),current_businesses)
-        #current_businesses+=your_businesses.object_list
+        your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),current_businesses,True)
+        current_businesses+=your_businesses.object_list
 
         context = get_default_blank_context(request.user)
         context['community_businesses'] = community_businesses
