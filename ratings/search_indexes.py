@@ -30,3 +30,5 @@ class CommentIndex(indexes.SearchIndex, indexes.Indexable):
         """Used when the entire index for model is updated."""
         return self.get_model().objects.all()
     
+
+
