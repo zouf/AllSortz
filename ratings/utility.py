@@ -8,7 +8,7 @@ from communities.models import BusinessMembership
 from communities.views import get_community
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils.encoding import smart_str
-from photos.views import get_photo_web_url, get_photo_thumb_url
+from photos.views import get_photo_web_url, get_photo_thumb_url, get_photo_mini_url
 from ratings.models import Rating, Business
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     getBusAvg
