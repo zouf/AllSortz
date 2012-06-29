@@ -8,8 +8,7 @@ from communities.models import BusinessMembership
 from communities.views import get_community
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils.encoding import smart_str
-from photos.views import get_photo_web_url, get_photo_thumb_url, \
-    get_photo_mini_url
+from photos.views import get_photo_mini_url, get_photo_web_url
 from ratings.favorite import get_user_favorites
 from ratings.models import Rating, Business
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
@@ -19,6 +18,7 @@ import logging
 import simplejson
 import urllib
 import urllib2
+
 
 #from rateout.settings import LOG_FILE
 #import time
