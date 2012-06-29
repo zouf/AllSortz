@@ -9,21 +9,20 @@
 			<h3>{{user}} traits</h3>
 			<div style="margin:5px 20px;">
 				{% if checkon == user %}
-				
-				<form class="ui-big-widget" action="/ratings/user_traits/" method="post" >{% csrf_token %}
-					{% for t in user_traits %}
-						<table><tr><td>
-						<p>{{t.name}}:</p>
-						</td><td>
-						<input id="{{t.id}}_1" type="radio" name="answers_{{t.id}}" value="{{t.id}}_1" {%if t.value == 1 %}checked{%endif%}> 1 <br>
-						</td><td>
-						<input id="{{t.id}}_2" type="radio" name="answers_{{t.id}}" value="{{t.id}}_2" {%if t.value == 2 %}checked{%endif%}> 2 <br>
-						</td><td>
-						<input id="{{t.id}}_3" type="radio" name="answers_{{t.id}}" value="{{t.id}}_3" {%if t.value == 3 %}checked{%endif%}> 3 <br>
-						</td></tr></table>
-					{%endfor%}
-					<p><input class="ui-big-widget" type="submit" value="Done" /></p>
-				</form>
+					<form class="ui-big-widget" action="/ratings/user_traits/" method="post" >{% csrf_token %}
+						{% for t in user_traits %}
+							<table><tr><td>
+							<p>{{t.name}}:</p>
+							</td><td>
+							<input id="{{t.id}}_1" type="radio" name="answers_{{t.id}}" value="{{t.id}}_1" {%if t.value == 1 %}checked{%endif%}> 1 <br>
+							</td><td>
+							<input id="{{t.id}}_2" type="radio" name="answers_{{t.id}}" value="{{t.id}}_2" {%if t.value == 2 %}checked{%endif%}> 2 <br>
+							</td><td>
+							<input id="{{t.id}}_3" type="radio" name="answers_{{t.id}}" value="{{t.id}}_3" {%if t.value == 3 %}checked{%endif%}> 3 <br>
+							</td></tr></table>
+						{%endfor%}
+						<p><input class="ui-big-widget" type="submit" value="Save" /></p>
+					</form>
 				{%else %}
 					{% for t in user_traits %}
 						<table><tr><td>
@@ -80,10 +79,10 @@
 					<a href="/ratings/{{ item.business.id }}/"> <img src="{{ item.business.photourl }}" /> </a>Rated <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a> with {{item.rating}}
 				{%endif%}
 				{% if item.type == "buscomment" %}				
-					<a href="/ratings/{{ item.business.id }}/"> <img src="{{ item.business.photourl }}" /> </a> Comment in <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>: <i>{{item.thread.descr}}</i> 
+					<a href="/ratings/{{ item.business.id }}/"> <img src="{{ item.business.photourl }}" /> </a> Comment on <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>: <i>{{item.thread.descr}}</i> 
 				{%endif%}
 				{% if item.type == "tagcomment" %}				
-					Comment in <a href="/ratings/{{ item.business.id }}/"> </a>under {{item.tag.name}}: <i>{{item.thread.descr}}</i> 
+					Comment on <a href="/ratings/{{ item.business.id }}/"> </a>under {{item.tag.name}}: <i>{{item.thread.descr}}</i> 
 				{%endif%}
 				<hr>
 			{% endfor %}

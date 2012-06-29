@@ -56,7 +56,7 @@ def add_trait_relationships(request):
             TraitRelationship.objects.filter(trait=trait,user=request.user).delete()
             TraitRelationship.objects.create(trait=trait,user=request.user,relationship=ans)
 
-    return HttpResponseRedirect('/user_details/')
+    return HttpResponseRedirect('/user_details/' + str(request.user.id) + '/')
 
     
 def get_user_traits(user):
