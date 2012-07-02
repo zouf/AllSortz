@@ -133,12 +133,13 @@ def prepopulate_database(request):
     #if request.user.username != 'zouf':
     #    return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
     
-    
-    Business.objects.all().delete()
-    HardTag.objects.all().delete()
-    Tag.objects.all().delete()
-    Trait.objects.all().delete()
-    
+#    UNCOMMENT TO DELETE
+
+#    Business.objects.all().delete()
+#    HardTag.objects.all().delete()
+#    Tag.objects.all().delete()
+#    Trait.objects.all().delete()
+#    
     prepop_businesses(request.user)
     prepop_sorts(request.user)
     prepop_traits(request.user)
