@@ -1,1 +1,21 @@
-Sort,DescriptionSandwiches,Has sandwichesChinese,Has Chinese food
+Sort,Description
+Value,Has good quantity for price
+Atmosphere,Has a good ambient atmosphere
+Italian,Has Italian food
+Mexican,Has Mexican food
+Chinese,Has Chinese food
+Japanese,Has Japanese food
+Fast,Fast food restaurant
+Bar,Has a bar
+Dessert,Has desserts
+Coffee,Has coffee
+Sandwiches,Has sandwiches
+Pizza,Has pizza
+Seafood,Has seafood dishes
+Classy,Has a classy feel
+Vegetarian,Has vegetarian selections
+Kosher,Has kosher food
+Halal,Has halal food
+Local,Has local cuisine
+Authentic,Has authentic cuisine
+Buffet,Has a buffet
