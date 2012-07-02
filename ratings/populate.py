@@ -33,13 +33,15 @@ def prepop_sorts(user):
         if i == 1:
             continue
        
-        name = row[0]
-        descr = row[1]
+        descr = row[0]
 
-        print('tag name: '+str(name))
-        print('tag descr: '+str(descr))
+        print('Tag name: '+str(descr))   
         
-        t = Tag(name=name,descr=descr)
+        tset = Tag.objects.filter(descr=descr)
+        if tset.count() > 0:
+            continue
+             
+        t = Tag(descr=descr,creator=user)
         t.save()
         
         
@@ -54,10 +56,14 @@ def prepop_traits(user):
         name = row[0]
         descr = row[1]
 
-        print('trait name: '+str(name))
+        print('Trait name: '+str(name))
         print('trait descr: '+str(descr))
         
-        t = Trait(name=name,descr=descr)
+        tset = Trait.objects.filter(name=name)
+        if tset.count() > 0:
+            continue
+        
+        t = Trait(name=name,descr=descr,creator=user)
         t.save()
 
 def prepop_questions(user):
@@ -73,7 +79,11 @@ def prepop_questions(user):
         print('tag question: '+str(question))
         print('tag descr: '+str(descr))
         
-        t = HardTag(descr=descr,question=question)
+        tset = HardTag.objects.filter(question=question)
+        if tset.count() > 0:
+            continue
+        
+        t = HardTag(descr=descr,question=question,creator=user)
         t.save()
 
 def prepop_businesses(user):
@@ -93,6 +103,12 @@ def prepop_businesses(user):
         print('addr: '+str(addr))
         print('city: '+str(city))
         print('state: '+str(state))
+        
+        
+        bset = Business.objects.filter(name=name,address=addr,state=state,city=city)
+        if bset.count() > 0:
+            continue  
+        
         
         b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8"), lat=0, lon=0)
         b.save()
@@ -114,9 +130,14 @@ def prepop_businesses(user):
 def prepopulate_database(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-    if request.user.username != 'zouf':
-        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-
+    #if request.user.username != 'zouf':
+    #    return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+    
+    
+    Business.objects.all().delete()
+    HardTag.objects.all().delete()
+    Tag.objects.all().delete()
+    Trait.objects.all().delete()
     
     prepop_businesses(request.user)
     prepop_sorts(request.user)
@@ -134,6 +155,10 @@ def create_rating(user, business, rating):
 
 
 def create_business(name, address, state, city, lat, lon):
+    bset = Business.objects.filter(name=name,address=address,state=state,city=city)
+    if bset.count() > 0:
+        return
+    
     b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=address.encode("utf8"), lat=lat, lon=lon)
     return b
 

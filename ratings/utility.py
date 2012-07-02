@@ -32,9 +32,6 @@ def get_single_bus_data(b,user,isSideBar=False):
     
     if isSideBar:
         b.photourl = get_photo_thumb_url(b)
-        print('url:')
-        print(b.photourl)
-        print('end')
     else:
         b.photourl = get_photo_web_url(b)
 

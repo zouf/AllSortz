@@ -377,6 +377,7 @@ def add_community(request):
 
     context = get_default_blank_context(request.user)
     context['form'] =CommunityForm     
+    context['type'] = 'community'
     return render_to_response('ratings/contribute/add_content.html',context, context_instance=RequestContext(request))
 
 
