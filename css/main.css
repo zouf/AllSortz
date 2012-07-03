@@ -12,6 +12,7 @@ body
     background-image: url(images/darkdenim.png);
     background-repeat: repeat;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 a:link
