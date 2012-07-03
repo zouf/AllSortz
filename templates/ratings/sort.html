@@ -29,12 +29,12 @@ $(function() {
 				</table>
 			{% else %}
 				<p>No businesses are sorted under <em>{{search_term}}</em>.</p>
-				<p><a href="/ratings/add_business/">Add a business</a></p>
+				<!--<p><a href="/ratings/add_business/">Add a business</a></p>-->
 			{% endif %}
 		</div>
 		
 		<div style="padding:10px;">
-	    	{% if subscribed %}
+	    	<!--{% if subscribed %}
 	    		<form name="unsubscribeUser" action="." method="post">{% csrf_token %}
 	    			<input type="hidden" name="tag" value="{{search_term}}" />
 	    			
@@ -45,7 +45,7 @@ $(function() {
 	    			<input type="hidden" name="tag" value="{{search_term}}" />
 					<input type="submit" class="ui-big-widget" value="Subscribe to {{search_term}}"/>
 				</form>
-			{% endif %}
+			{% endif %}-->
 		</div>
     </div>
 {% endblock %}

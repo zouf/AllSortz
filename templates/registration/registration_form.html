@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<p> Or register with Facebook </p>
+<!--<p> Or register with Facebook </p>
 
 <div id="fb-root"></div>
 <script src="https://connect.facebook.net/en_US/all.js#appId=260788694033894&xfbml=1"></script>
@@ -12,8 +12,8 @@
 	redirect-uri="http://www.allsortz.com/fbauth/"
 	width="530">
 </fb:registration>
-
-<form action="." method="post" name="user">{% csrf_token %}
+-->
+<form action="." method="post" class="ui-big-widget" name="user">{% csrf_token %}
 	{{ form.as_p }}
 	<input type="submit" class="ui-big-widget" value="Submit" />
 </form>

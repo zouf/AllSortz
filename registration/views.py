@@ -5,8 +5,10 @@ Views which allow users to create and activate accounts.
 
 
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
+from privatebeta.models import InviteRequest
 from registration.backends import get_backend
 
 
@@ -189,6 +191,16 @@ def register(request, backend, success_url=None, form_class=None,
             new_user = backend.register(request, **form.cleaned_data)
             new_user.first_name =request.POST['firstname'] 
             new_user.last_name =request.POST['lastname'] 
+            new_user.email = request.POST['email']
+            
+            try:
+                ir = InviteRequest.objects.get(email=new_user.emai)
+                if ir.invited == False:
+                    return HttpResponseRedirect("/invites/signuprequired/")
+            except:
+                return HttpResponseRedirect("/invites/signuprequired/")
+                
+            
             
             new_user.save()
             new_user = authenticate(username=request.POST['username'],

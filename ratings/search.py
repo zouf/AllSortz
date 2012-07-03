@@ -15,6 +15,8 @@ def search_site(searchTerm, locationTerm):
     logger.debug("Searching for "+str(searchTerm) + " near " + str(locationTerm))
     print("Searching for "+str(searchTerm) + " near " + str(locationTerm))
     search_results = (SearchQuerySet().filter(content=searchTerm))
+    
+    print(search_results)
     location_results = (SearchQuerySet().filter(content=locationTerm))
     locations = []
     for l in location_results:
@@ -24,6 +26,7 @@ def search_site(searchTerm, locationTerm):
     businesses = []
     for sr in search_results:
         bus = None
+        print(sr)
         if sr.model_name == "business":
             bus = sr.object
         elif sr.model_name == "tag":
@@ -33,8 +36,8 @@ def search_site(searchTerm, locationTerm):
         else:
             logger.error('error in search_site')
         
-        if in_location(bus,locations):
-            businesses.append(bus)
+        #if in_location(bus,locations):
+        businesses.append(bus)
     
     return businesses   
 
