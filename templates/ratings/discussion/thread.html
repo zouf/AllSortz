@@ -1,10 +1,10 @@
-<h2>Comments</h2>
+<h2>Discussions</h2>
 
-<p style="font-size:14px"  onclick="showAddReply('')">Click to Add a Comment</p>
+<p style="font-size:14px"  onclick="showAddReply('')">Click to start a discussion</p>
 <div id="commentDiv" style="display:none;">
 	<form action="." name="addTagComment" class="comment" id="comment_form" method="post">
-		<textarea name="comment" class="replybox" id="comment" placeholder="Reply"/></textarea>
-		<input type="submit" class="ui-widget buttonme" value="Reply"></p>
+		<textarea name="comment" class="replybox" id="comment" placeholder="Start a discussion"/></textarea>
+		<input type="submit" class="ui-widget buttonme" value="Post"></p>
 		<input type="hidden" name="bid" value="{{business.id}}"/>
 		{%if tag %}
 			<input type="hidden" name="tid" value="{{tag.id}}"/>

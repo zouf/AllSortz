@@ -9,7 +9,11 @@
 				<p>This page does not exist, <a href="edit/">create it now</a>?</p>
 				{% endif %}
 				
-				{{ page.rendered|safe|linebreaks }}
+				{% if page.rendered %}
+					{{ page.rendered|safe|linebreaks }}
+				{% else %}
+					<p><em><font color="#999999">No description, click to add.</font></em></p>
+				{% endif %}
 				
 				<!--{% if page.id %}
 				<a href="edit/{{page.id}}/">Discuss / edit this tag</a>

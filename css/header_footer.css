@@ -31,16 +31,16 @@ body
 #icon
 {
     background-color: #317BE2;
-    padding-left: 12px;
-    padding-top: 12px;
-    width: 150px;
-    height: 150px;
+    padding-left: 17px;
+    padding-top: 17px;
+    width: 160px;
+    height: 160px;
     position: absolute;
-    top: 20px;
+    top: 23px;
     left: 50%;
     margin-left: -610px;
-    -moz-border-radius: 90px;
-    border-radius: 90px;
+    -moz-border-radius: 95px;
+    border-radius: 95px;
     z-index: 1000;
 }
 
@@ -142,6 +142,7 @@ body
 #dropdown li:hover ul li a:hover
 {
 	background:#DDDDDD;
+	text-decoration: none;
 }
 
 #search

@@ -23,7 +23,7 @@ a:link
 a:hover
 {
     color: #4679ED;
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 a:visited

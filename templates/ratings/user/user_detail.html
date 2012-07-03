@@ -6,7 +6,7 @@
 	<div id="userProfile">
 		<div class="userDetails" style="width:600px;float:left;">
 			<h1>{{user}}'s Profile</h1>
-			<h3>{{user}} traits</h3>
+			<h3>{{user}}'s traits</h3>
 			<div style="margin:5px 20px;">
 				{% if checkon == user %}
 					<form class="ui-big-widget" action="/ratings/user_traits/" method="post" >{% csrf_token %}
@@ -37,7 +37,7 @@
 			<p><a href="/ratings/add_trait/" style="font-size:10px"><p >Think we're missing a trait?</p></a>
 		</div>
 		
-		<div class="userDetails" style="min-height:200px;float:right;">
+		<div class="userDetails">
 			<h2>{{user}}'s Sorts</h2>
 			{% include 'ratings/sorts.html' %}
 		</div>
@@ -54,6 +54,8 @@
 				</td></tr></table>
 				<br>
 			{% endfor %}
+			
+			<br>Apply Community
 			<form name="subscribeUser" action="." method="post">
 				<select name="comm" class="ui-widget">
 				{% for comm in communities %}
@@ -62,7 +64,7 @@
 				</select>
 				<input type="submit" value="+"/>
 			</form>
-			<p><a href="/ratings/add_community/" style="font-size:10px"><p >Think we're missing a community?</p></a>	
+			<a href="/ratings/add_community/" style="font-size:10px">Think we're missing a community?</a>	
 		</div>
 		
 		<div class="userDetails">
@@ -79,10 +81,10 @@
 					<a href="/ratings/{{ item.business.id }}/"> <img src="{{ item.business.photourl }}" /> </a>Rated <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a> with {{item.rating}}
 				{%endif%}
 				{% if item.type == "buscomment" %}				
-					<a href="/ratings/{{ item.business.id }}/"> <img src="{{ item.business.photourl }}" /> </a> Comment on <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>: <i>{{item.thread.descr}}</i> 
+					<a href="/ratings/{{ item.business.id }}/"> <img src="{{ item.business.photourl }}" /> </a> Discussion of <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>: <i>{{item.thread.descr}}</i> 
 				{%endif%}
 				{% if item.type == "tagcomment" %}				
-					Comment on <a href="/ratings/{{ item.business.id }}/"> </a>under {{item.tag.name}}: <i>{{item.thread.descr}}</i> 
+					Discussion of <a href="/ratings/{{ item.business.id }}/"> </a>under {{item.tag.name}}: <i>{{item.thread.descr}}</i> 
 				{%endif%}
 				<hr>
 			{% endfor %}
