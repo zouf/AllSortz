@@ -3,6 +3,7 @@ from communities.models import BusinessMembership, UserMembership
 from communities.views import get_community, get_default
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from django.core.mail.message import EmailMessage
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, redirect
@@ -173,14 +174,26 @@ re = RecEngine()
 #        return render_to_response('ratings/discussion/thread.html', {'business':b, 'comments': comment_list})
 
 
+def feedback(request):
+    if request.user.is_authenticated():
+        
+        if request.method == 'POST':
+            user = request.user
+            content = request.POST['feedback']
+            print('feedback'+ str(content))
+            mail = EmailMessage('Feedback', 'Feedback from:'+str(user.username) + '\n\n'+str(content), to=['mattzouf@gmail.com'])
+            mail.send()
+            logger.info('Feedback form user'+str(user.username))
+            return redirect(index)
+        else:
+            return render_to_response('webadmin/feedback.html', context_instance=RequestContext(request))
+ 
 
 @csrf_exempt
 def add_tag_comment(request):
     logger.debug('in add comment')
-    print('in add comments)')
     if request.method == 'POST':  # add a comment!
         form = request.POST 
-        print(form)     
         #add a comment to a business' tag page 
         if 'tid'  in form:
             bid =form['bid']
@@ -238,7 +251,6 @@ def coming_soon(request):
 
 
 def display_tag(request,tag_id):
-    print('disp tag')
     t = get_object_or_404(Tag, pk=tag_id)
     businesses = get_businesses_by_tag(t,request.user, request.GET.get('page'))
     

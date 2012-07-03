@@ -168,14 +168,14 @@ function subUser(type,data)
 }
 
 $(document).ready(function(){
-	$("form[name=subscribeUser]").live("click",function(e){
+	$("form[name=subscribeUser]").live("submit",function(e){
 		e.preventDefault();
 		var form =  $(this);//$("form[name=subscribeUser]")
 		subUser(form.serializeArray()[0].name,form.serializeArray()[0].value);  //get the name of the tag
 
 	});
 	
-	$("form[name=unsubscribeUser]").live("click",function(e){
+	$("form[name=unsubscribeUser]").live("submit",function(e){
 		e.preventDefault();
 		var form = $(this);//"form[name=unsubscribeUser]")
 		unsubUser(form.serializeArray()[0].name,form.serializeArray()[0].value);

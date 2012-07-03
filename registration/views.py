@@ -178,6 +178,7 @@ def register(request, backend, success_url=None, form_class=None,
     argument.
     
     """
+    print('rec form')
     backend = get_backend(backend)
     print(backend)
     if not backend.registration_allowed(request):
@@ -194,10 +195,13 @@ def register(request, backend, success_url=None, form_class=None,
             new_user.email = request.POST['email']
             
             try:
-                ir = InviteRequest.objects.get(email=new_user.emai)
+                ir = InviteRequest.objects.get(email=new_user.email)
+                print('checking for '+str(new_user.email))
                 if ir.invited == False:
+                    print('not invited!')
                     return HttpResponseRedirect("/invites/signuprequired/")
-            except:
+            except: 
+                print('error in signgup')
                 return HttpResponseRedirect("/invites/signuprequired/")
                 
             

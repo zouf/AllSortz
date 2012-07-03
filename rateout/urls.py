@@ -78,6 +78,9 @@ urlpatterns = patterns('',
     url(r'^ratings/add_community/$', 'ratings.views.add_community'),
 
 
+    #feedback
+    url(r'^ratings/feedback/$','ratings.views.feedback'),
+
     url(r'^admin/', include(admin.site.urls)),
     # Login / logout.
     url(r'^login/$', 'django.contrib.auth.views.login'),
@@ -90,6 +93,7 @@ urlpatterns = patterns('',
     
     url(r'^ratings/reset_db/$','ratings.populate.prepopulate_database'),
     
+    #facebook stuff
     
     url(r'^handle_fb_login/$','ratings.facebook.handle_fb_login'),
     url(r'^fbauth/$','ratings.facebook.handle_fb_request'),

@@ -55,9 +55,10 @@ function setupPage()
 	
 	<div id="account">
 		{% if not user.is_authenticated %}
-			<a href="/help/">Help</a> | <a href="/accounts/login/?next=/">Login</a> | <a href="/accounts/register/">Register</a>
+			<a href="/help/">Help</a> | <a href="/accounts/login/?next=/">Login</a> | <a href="/accounts/register/">Register</a> | <a href="/ratings/feedback/">Feedback </a>
 		{% else %}
-			<p style="display:inline"> Howdy, <a href="/user_details/{{user.id}}/"> {{user.first_name}}</a> </p> | <a href="/help/">Help</a> | <a href="/">Home</a> | <a href="/accounts/logout/?next=/">logout</a>
+			<p style="display:inline"> Howdy, <a href="/user_details/{{user.id}}/"> {{user.first_name}}</a> </p> | <a href="/help/">Help</a> | <a href="/">Home</a> |  <a href="/ratings/feedback/">Feedback </a> | <a href="/accounts/logout/?next=/">logout</a>
+			
 		{% endif %}
 	</div>
 	
@@ -159,7 +160,9 @@ function setupPage()
     		<a href="/">About</a> |
     		<a href="/">Contact</a> |
     		<a href="/help/">Help</a> |
-    		<a href="/ratings/reset_db/">Prepopulate</a>
+    		<!--<a href="/ratings/reset_db/">Prepopulate</a>-->|
+    	
+    		<a href="/ratings/feedback/">Feedback </a>
     		
     	</div>
 	</div>
