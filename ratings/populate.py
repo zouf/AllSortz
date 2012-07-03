@@ -119,7 +119,7 @@ def prepop_businesses(user):
         urlretrieve(phurl, outpath)
         bp = BusinessPhoto(user=user, business=b, image=outpath, title="test main", caption="test cap")
         try:
-            bp.save()
+            bp.save(False)
         except:
             print("Unexpected error:" + str(sys.exc_info()[0]))
             logger.error("Unexpected error:" + str(sys.exc_info()[0]))

@@ -44,9 +44,13 @@ class  BusinessPhoto(models.Model):
     
     title = models.CharField(blank=True, max_length=300)
     caption = models.TextField(blank=True)
-    def save(self):
+    def save(self, isUpload):
         #Original photo
-        imgFile = Image.open(str(self.image))
+        
+        if isUpload:
+            imgFile = Image.open(self.image)
+        else:
+            imgFile = Image.open(str(self.image))
         #Convert to RGB
         if imgFile.mode not in ('L', 'RGB'):
             imgFile = imgFile.convert('RGB')

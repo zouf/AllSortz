@@ -38,8 +38,7 @@
 				<input type="file" name="image" id="id_image" />
 			</div>
 			
-			<p><input type="submit" class="ui-big-widget" value="Done" /></p>
-		
+
 			<div id="tagQuestions">
 				{% for q in questions %}
 					<p>{{q.question}}</p>
@@ -47,6 +46,9 @@
 					<input type="radio" name="answers" value="{{q.id}}_n"> No <br>
 				{% endfor %}
 			</div>
+			
+			<p><input type="submit" class="ui-big-widget" value="Done" /></p>
+		
 		</form>
 	</div>
 	
