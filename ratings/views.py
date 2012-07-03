@@ -459,7 +459,7 @@ def add_business(request):
             img = request.FILES['image']
             print(img)
             bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
-            bp.save()
+            bp.save(True)
    
         community = get_community(request.user)
         
