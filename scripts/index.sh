@@ -1,3 +1,3 @@
 
 
-python /home/ubuntu/deploy/manage.py rebuild_index
+python /home/ubuntu/deploy/manage.py update_index
