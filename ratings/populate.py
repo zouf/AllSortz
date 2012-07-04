@@ -128,8 +128,10 @@ def prepop_businesses(user):
 
 
 def prepopulate_database(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_superuser:
         return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+    else:
+        print('not su')
     #if request.user.username != 'zouf':
     #    return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
     

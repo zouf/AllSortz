@@ -281,6 +281,7 @@ def search(request):
         location = get_default()
         
     business_list = search_site(term, location)
+    print(business_list)
     businesses = get_bus_data(business_list,request.user)
     paginator = Paginator(businesses, 10)  # Show 25 contacts per page
     page = request.GET.get('page')

@@ -17,11 +17,11 @@ def search_site(searchTerm, locationTerm):
     search_results = (SearchQuerySet().filter(content=searchTerm))
     
     print(search_results)
-    location_results = (SearchQuerySet().filter(content=locationTerm))
-    locations = []
-    for l in location_results:
-        if l.model_name == "community":
-            locations.append(l.object)
+    #location_results = (SearchQuerySet().filter(content=locationTerm))
+    #locations = []
+    #for l in location_results:
+    #    if l.model_name == "community":
+    #        locations.append(l.object)
     
     businesses = []
     for sr in search_results:
