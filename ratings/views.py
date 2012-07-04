@@ -196,7 +196,9 @@ def add_tag_comment(request):
         form = request.POST 
         #add a comment to a business' tag page 
         if 'tid'  in form:
+            print('in tid')
             bid =form['bid']
+            print(bid)
             b = Business.objects.get(id=bid)
             tid = form['tid']
             t = Tag.objects.get(id=tid)
@@ -215,7 +217,7 @@ def add_tag_comment(request):
                 k = Comment.objects.create(descr=nm,user=request.user,reply_to=parent) #new child
                 k.save()
             comment_list = get_tag_comments(b,t)
-            return render_to_response('ratings/discussion/thread.html', {'tag':t, 'comments': comment_list})
+            return render_to_response('ratings/discussion/thread.html', {'tag':t, 'business': b, 'comments': comment_list})
         
         # add a comment to a business's page alone
         else:
