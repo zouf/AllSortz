@@ -43,12 +43,17 @@ def invite(request, form_class=InviteRequestForm, template_name="privatebeta/inv
     
     form = form_class(request.POST or None)
     if form.is_valid():
-        email = form['email']
-       
+        
         email = request.POST['email']
         
+<<<<<<< HEAD
         InviteRequest.objects.create(email=email,invited=False)
         mail = EmailMessage('Invite Request', 'User with email ' + str(email) + 'requested access. ', to=['matt@allsortz.com'])
+=======
+        InviteRequest.objects.create(email=email)
+        mail = EmailMessage('Invite Request', 'User with email ' + str(email) + ' has requested access. \
+            Go to http://www.allsortz.com/admin/ and login as zouf to accept the request', to=['matt@allsortz.com'])
+>>>>>>> 3d34156c2943f0491c2e6dff60414208bf57c2ae
         mail.send()
         #end_mail('Invite Request', 'Welcome to AllSortz. Go to http://www.allsortz.com/accounts/register to register!', 'matt@allsortz.com',
         #          [email], fail_silently=False)
@@ -64,22 +69,6 @@ def invite(request, form_class=InviteRequestForm, template_name="privatebeta/inv
     return render_to_response(template_name, context,
         context_instance=RequestContext(request))
 
-def accept(email):
-    
-    try:
-        ir = InviteRequest.objects.get(email=email)
-        ir.invited = True
-        ir.save() 
-        mail = EmailMessage('Welcome to AllSortz should never be called!', 'Go to http://www.allsortz.com/accounts/register/\
-            to register your account\n\n\n - The AllSortz Team ', to=[ir.email])
-        mail.send()
- 
-        
-    except:
-        logger.ERROR('Invalid invite request')
-        print('error invalid invite request')
-   
-   
 def signupreq(request):
     return render_to_response('privatebeta/signuprequired.html',  context_instance=RequestContext(request))
 
