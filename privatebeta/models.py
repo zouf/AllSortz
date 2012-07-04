@@ -13,6 +13,12 @@ class InviteRequest(models.Model):
 
     def __unicode__(self):
         return _('Invite for %(email)s') % {'email': self.email}
+    
+    def save(self, *args, **kwargs):
+        if self.invited:
+            self.accept()
+        super(InviteRequest, self).save(*args, **kwargs)
+    
     def accept(self):
         try:
             self.invited = True
@@ -24,4 +30,4 @@ class InviteRequest(models.Model):
         
         except:
             logger.ERROR('Invalid invite request')
-            print('error invalid invite request'))
+            print('error invalid invite request')

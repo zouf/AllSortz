@@ -146,7 +146,7 @@ LOG_FILE = STATIC_ROOT+'/log.txt'
 if not DEPLOY:
     STATIC_URL='/static/'
 else:
-    STATIC_URL='http://rateoutimages.s3-website-us-east-1.amazonaws.com/'
+    STATIC_URL='http://allsortz.s3-website-us-east-1.amazonaws.com/'
     
 DATASET_LOCATION = BASE_DIR+'/data_import/michigan_dataset.json'
 RESULTS_DIR = '/tmp/'
