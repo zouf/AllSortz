@@ -56,11 +56,8 @@ class PrivateBetaMiddleware(object):
             return HttpResponseRedirect(self.redirect_url)
 
         if full_view_name in self.always_allow_views:
-            print('in good 1')
             return
         if '%s' % view_func.__module__ in whitelisted_modules:
-            print('in good 2')
             return
         else:
-            print('redir')
             return HttpResponseRedirect(self.redirect_url)

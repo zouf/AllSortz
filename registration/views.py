@@ -178,7 +178,6 @@ def register(request, backend, success_url=None, form_class=None,
     argument.
     
     """
-    print('rec form')
     backend = get_backend(backend)
     print(backend)
     if not backend.registration_allowed(request):
