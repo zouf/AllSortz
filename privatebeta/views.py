@@ -47,8 +47,7 @@ def invite(request, form_class=InviteRequestForm, template_name="privatebeta/inv
         email = request.POST['email']
         
         InviteRequest.objects.create(email=email)
-        mail = EmailMessage('Invite Request', 'User with email ' + str(email) + ' has requested access. \
-            Go to http://www.allsortz.com/admin/ and login as zouf to accept the request', to=['matt@allsortz.com'])
+        mail = EmailMessage('Invite Request', 'User with email ' + str(email) + ' has requested access. Go to http://www.allsortz.com/admin/ and login as zouf to accept the request', to=['matt@allsortz.com'])
         mail.send()
         #end_mail('Invite Request', 'Welcome to AllSortz. Go to http://www.allsortz.com/accounts/register to register!', 'matt@allsortz.com',
         #          [email], fail_silently=False)
