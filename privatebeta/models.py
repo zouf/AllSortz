@@ -24,4 +24,4 @@ class InviteRequest(models.Model):
         
         except:
             logger.ERROR('Invalid invite request')
-            print('error invalid invite request'))
+            print('error invalid invite request')
