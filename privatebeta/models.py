@@ -15,9 +15,9 @@ class InviteRequest(models.Model):
         return _('Invite for %(email)s') % {'email': self.email}
     
     def save(self, *args, **kwargs):
+        super(InviteRequest, self).save(*args, **kwargs)
         if self.invited:
             self.accept()
-        super(InviteRequest, self).save(*args, **kwargs)
     
     def accept(self):
         try:
