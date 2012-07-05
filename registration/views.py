@@ -188,14 +188,13 @@ def register(request, backend, success_url=None, form_class=None,
     if request.method == 'POST':
         form = form_class(data=request.POST, files=request.FILES)
         if form.is_valid():
-            new_user = backend.register(request, **form.cleaned_data)
-            new_user.first_name =request.POST['firstname'] 
-            new_user.last_name =request.POST['lastname'] 
-            new_user.email = request.POST['email']
+            first_name =request.POST['firstname'] 
+            last_name =request.POST['lastname'] 
+            email = request.POST['email']
             
             try:
-                ir = InviteRequest.objects.get(email=new_user.email)
-                print('checking for '+str(new_user.email))
+                ir = InviteRequest.objects.get(email=email)
+                print('checking for '+str(email))
                 if ir.invited == False:
                     print('not invited!')
                     return HttpResponseRedirect("/invites/signuprequired/")
@@ -204,7 +203,10 @@ def register(request, backend, success_url=None, form_class=None,
                 return HttpResponseRedirect("/invites/signuprequired/")
                 
             
-            
+            new_user = backend.register(request, **form.cleaned_data)
+            new_user.first_name = first_name
+            new_user.last_name = last_name
+            new_user.email = email
             new_user.save()
             new_user = authenticate(username=request.POST['username'],
                                     password=request.POST['password1'])

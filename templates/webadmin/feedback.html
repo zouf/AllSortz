@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block body %}
+
+
+<h3>Feedback</h3>
+<form  action="." method="post" >{% csrf_token %}
+			<div class="input_box ui-widget">
+				{{ form.descr.errors }}
+				<p><textarea id="id_feedback" class="ui-widget" value="Feedback" name="feedback" cols="40" rows="10" onfocus="this.value='';"></textarea></p>
+			</div>
+		
+				<p><input type="submit" class="ui-big-widget" value="Send" /></p>
+			
+		</form>
+{% endblock %}
+
