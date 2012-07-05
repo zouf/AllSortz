@@ -33,8 +33,10 @@ from usertraits.models import TraitRelationship, Trait
 from usertraits.views import get_user_traits
 from wiki.forms import PageForm
 from wiki.models import Page
+import datetime
 import logging
 import sys
+import time
 
 
 
@@ -179,9 +181,10 @@ def feedback(request):
         
         if request.method == 'POST':
             user = request.user
-            content = request.POST['feedback']
-            print('feedback'+ str(content))
-            mail = EmailMessage('Feedback', 'Feedback from:'+str(user.username) + '\n\n'+str(content), to=['mattzouf@gmail.com'])
+            content = request.POST['feedback']   
+
+    
+            mail = EmailMessage('AllSortz Feedback', '\nuname: '+str(user.username) + '\n firstname: ' + str(user.first_name) +  '\nlastname: ' + str(user.last_name) + '\nemail: ' +str(user.email)+ '\ntime: ' + str(time.asctime())+  '\n\n'+str(content), to=['mattzouf@gmail.com'])
             mail.send()
             logger.info('Feedback form user'+str(user.username))
             return redirect(index)
