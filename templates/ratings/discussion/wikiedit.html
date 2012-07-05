@@ -1,4 +1,6 @@
 <h3>Describe {{business.name}} for {{page.name}}</h3>
+<div id="sortDivEdit" style="display:none;">
+
 
 <form action="/ratings/{{business.id}}/edit/{{page.id}}/#discuss" method="post">
 	{% csrf_token %}
@@ -14,7 +16,14 @@
 		<input type="submit" value="Save" />
 	</div>
 </form>
+</div>
+<div id="sortDivDisplay" >
+
+	{{ page.rendered|safe|linebreaks }}
+	<p style="font-size:14px"  onclick="showEditWiki()">Edit the description</p>
 	
+</div>
+
 <div id="comment_list">
 	{% include 'ratings/discussion/thread.html' %}
 </div>

@@ -146,7 +146,6 @@ $("form[name=addReply]").live("submit", function(e){
 
 function showAddReply(cid)
 {
-	
 	$("#commentDiv"+cid).toggle();
 
 }

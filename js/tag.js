@@ -221,3 +221,12 @@ $(document).ready(function(){
 	 });
 	});
 
+function showEditWiki()
+{
+	$("#sortDivDisplay").toggle()
+	$("#sortDivEdit").toggle()
+
+
+}
+
+
