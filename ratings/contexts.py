@@ -98,7 +98,7 @@ def get_default_tag_context(b,t,user):
         'business' : b, \
         'comments': comments, \
         'lat': b.lat,\
-        'lon':b.lon,  \
+        'lng':b.lon,  \
         'bus_tags':bus_tags, \
         'pages': pages, \
         'tags': Tag.objects.all(),\
@@ -143,7 +143,7 @@ def get_default_bus_context(b,user):
         'business' : b, \
         'comments': comments, \
         'lat':b.lat,\
-        'lon':b.lon,  \
+        'lng':b.lon,  \
         'bus_tags':bus_tags, \
         'pages': pages, \
         'tags': Tag.objects.all(),\
