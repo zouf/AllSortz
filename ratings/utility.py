@@ -8,7 +8,6 @@ from communities.models import BusinessMembership
 from communities.views import get_community
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils.encoding import smart_str
-from findertools import sleep
 from photos.views import get_photo_mini_url, get_photo_web_url, \
     get_photo_thumb_url
 from ratings.favorite import get_user_favorites
