@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from endless_pagination.decorators import page_template
 from photos.models import BusinessPhoto
 from photos.views import get_photo_web_url
 from ratings.contexts import get_default_blank_context, get_default_tag_context, \
@@ -501,30 +502,52 @@ def add_business(request):
         context['form'] = BusinessForm()
         return render_to_response('ratings/contribute/add_business.html', context, context_instance=RequestContext(request))
 
+@page_template("ratings/listing/entry.html") # just add this decorator
+def entry_list(request,template='ratings/listing/entry_list.html',extra_context=None):
+    context = {'all_businesses' : get_businesses_trending(request.user,request.GET.get('page'),[],True),
+               'your_businesses' :get_businesses_by_your(request.user,request.GET.get('page'),[],True), 
+               'community_businesses' :get_businesses_by_community(request.user,request.GET.get('page'),[],True)
+            }
 
+               
+               
+    if extra_context is not None:
+        context.update(extra_context)
+    return render_to_response(template, context,
+        context_instance=RequestContext(request))
 
-def index(request):
+@page_template("ratings/listing/entry.html") # just add this decorator
+def index(request, template='ratings/index.html',
+    extra_context=None):
+
     if request.user.is_authenticated():
         current_businesses = []
         
        
         community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),current_businesses,True)
-        current_businesses+=community_businesses.object_list
+        current_businesses+=community_businesses#.object_list
         
         all_businesses = get_businesses_trending(request.user,request.GET.get('page'),current_businesses,True)
-        current_businesses+=all_businesses.object_list
+        current_businesses+=all_businesses#.object_list
 
         your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),current_businesses,True)
-        current_businesses+=your_businesses.object_list
+        current_businesses+=your_businesses#.object_list
 
         context = get_default_blank_context(request.user)
         context['community_businesses'] = community_businesses
         context['your_businesses'] = your_businesses
         context['all_businesses'] = all_businesses
-        
+
         context['nonempty'] = True
-        
-        return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
+        context.update( {
+            'all_businesses' : all_businesses,
+            'your_businesses' : your_businesses,
+            'community_businesses' : community_businesses,
+
+            'page_template': "ratings/listing/entry.html",
+        } )
+        print(context['page_template'])
+        return render_to_response(template, context_instance=RequestContext(request,context))
     else:
         businesses = []
         try:

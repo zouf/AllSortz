@@ -111,6 +111,7 @@ def get_lat(loc):
 
 
 def paginate_businesses(business_list,page, num):
+    return business_list
     paginator = Paginator(business_list, num)  # Show 25 contacts per page
     try:
         business_list = paginator.page(page)
