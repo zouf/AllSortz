@@ -32,8 +32,7 @@ def convertAddressToLatLng():
     for b in Business.objects.all():
         loc = b.address + " " + b.city + ", " + b.state
         i = 0
-        while i < 10000:
-            i+=1
+        time.sleep(5)
         latlng = get_lat(loc)
         if latlng:
             b.lat = latlng[0]
