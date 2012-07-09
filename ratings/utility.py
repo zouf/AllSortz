@@ -17,6 +17,7 @@ from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
 from tags.models import BusinessTag
 import logging
 import simplejson
+import time
 import urllib
 import urllib2
 
@@ -26,26 +27,32 @@ import urllib2
 
 logger = logging.getLogger(__name__)
 
+def convertAddressToLatLng():
+    for b in Business.objects.all():
+        loc = b.address + " " + b.city + ", " + b.state
+        i = 0
+        time.sleep(5)
+        latlng = get_lat(loc)
+        if latlng:
+            b.lat = latlng[0]
+            b.lon = latlng[1]
+            b.save()
+
 #isSideBar is true if we're using small images
 def get_single_bus_data(b,user,isSideBar=False):
     b.average_rating = round(getBusAvg(b.id) * 2) / 2
-    
+
     if isSideBar:
         b.photourl = get_photo_thumb_url(b)
     else:
         b.photourl = get_photo_web_url(b)
-
+    
+    
     b.num_ratings = getNumRatings(b.id)
-       
-    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
+    
 
 
-    if latlng:
-        b.lat=latlng[0]
-        b.lon = latlng[1]
-    else:
-        b.lat = 0
-        b.lon = 0
+        
     if user.is_authenticated():
         b.pos_ratings = getNumPosRatings(b)
         b.neg_ratings = getNumNegRatings(b)
@@ -62,7 +69,8 @@ def get_single_bus_data(b,user,isSideBar=False):
         b.tags = []
         for bt in bustags:
             b.tags.append(bt.tag)
-                
+
+    
     return b
 
 
@@ -102,11 +110,12 @@ def get_lat(loc):
     location = urllib.quote_plus(smart_str(loc))
     dd = urllib2.urlopen("http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % location).read() 
     ft = simplejson.loads(dd)
+    print(ft)
     if ft["status"] == 'OK':
         lat = str(ft["results"][0]['geometry']['location']['lat']) 
         lng = str(ft["results"][0]['geometry']['location']['lng'])
         return [lat, lng]
-    return False
+    return None
 
 
 
@@ -129,6 +138,7 @@ def get_businesses_by_community(user,page,checkForIntersection,isSideBar=False):
     businesses = []
     try:
         busMembership = BusinessMembership.objects.filter(community = community)
+
         for b in busMembership:
             if b not in alreadyThere:
                 businesses.append(b.business)
@@ -152,27 +162,23 @@ def get_businesses_trending(user,page,checkForIntersection,isSideBar=False):
     for nt in checkForIntersection:
         alreadyThere[nt] = True
         
+    print('getting everything')
     businesses = []
     try:
         allBus = Business.objects.all() # order by rating
-        print('get bus')
         for b in allBus:
             if b not in alreadyThere:
                 businesses.append(b.business)
     except:
         logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
         businesses = Business.objects.all()
-        
-        
     business_list = get_bus_data(businesses,user,isSideBar)
-    business_list = paginate_businesses(business_list,page,5)
-
+    #business_list = paginate_businesses(business_list,page,5)
     for b in business_list:
         bustags = BusinessTag.objects.filter(business=b)
         b.tags = []
         for bt in bustags:
             b.tags.append(bt.tag)
-
     return business_list
         
         

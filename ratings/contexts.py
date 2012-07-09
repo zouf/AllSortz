@@ -90,7 +90,6 @@ def get_default_tag_context(b,t,user):
     hard_tags = get_hard_tags(b)
     
     pages = get_pages(b,bus_tags)
-    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
     b = get_single_bus_data(b,user)
     
 
@@ -98,8 +97,8 @@ def get_default_tag_context(b,t,user):
     context =   { \
         'business' : b, \
         'comments': comments, \
-        'lat': latlng[0],\
-        'lng':latlng[1],  \
+        'lat': b.lat,\
+        'lng':b.lon,  \
         'bus_tags':bus_tags, \
         'pages': pages, \
         'tags': Tag.objects.all(),\
@@ -139,13 +138,12 @@ def get_default_bus_context(b,user):
     hard_tags = get_hard_tags(b)
     
     pages = get_pages(b,bus_tags)
-    latlng = get_lat(b.address + " " + b.city + ", " + b.state)
     b = get_single_bus_data(b,user)
     context =   { \
         'business' : b, \
         'comments': comments, \
-        'lat': latlng[0],\
-        'lng':latlng[1],  \
+        'lat':b.lat,\
+        'lng':b.lon,  \
         'bus_tags':bus_tags, \
         'pages': pages, \
         'tags': Tag.objects.all(),\

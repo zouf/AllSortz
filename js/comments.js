@@ -150,5 +150,24 @@ function showAddReply(cid)
 
 }
 
+$("#prev1").live("click", function(e){
+	alert('yoyo');
+	e.preventDefault();
+	
+	$.ajax({
+		url   : '/api/add_tag_comment/',
+         type  : form.attr('method'),
+         data  : form.serialize(), // data to be submitted
+         success: function(data){
+         	document.getElementById("comment_list").innerHTML = data   
+         	$(".buttonme").button();
+         }
+     });
+
+});
+
+
+
+
 
 

@@ -22,23 +22,7 @@ $(function() {
 			<tr>
 				<td>
 					<input type="hidden" value="business" id="vote_on" />
-					{% for business in all_businesses.object_list %}
-						{%include 'ratings/singlebus.html' %}
-					
-					{%endfor %}
-					<span class="step-links">
-					    {% if all_businesses.has_previous %}
-					        <a href="?page={{ all_businesses.previous_page_number }}">previous</a>
-					    {% endif %}
-					
-					    <span class="current">
-					        Page {{ all_businesses.number }} of {{ all_businesses.paginator.num_pages }}.
-					    </span>
-					
-					    {% if all_businesses.has_next %}
-					        <a href="?page={{ all_businesses.next_page_number }}">next</a>
-					    {% endif %}
-					</span>
+					{% include 'ratings/listing/entry_list.html' %}
 				</td>
 			</tr>
 		</table>
@@ -49,24 +33,7 @@ $(function() {
 			<tr>
 				<td>
 					<input type="hidden" value="business" id="vote_on" />
-					{% for business in your_businesses.object_list %}
-						{%include 'ratings/singlebus.html' %}
-						
-					{%endfor %}
-					<span class="step-links">
-					    {% if your_businesses.has_previous %}
-					        <a href="?page={{ your_businesses.previous_page_number }}">previous</a>
-					    {% endif %}
-					
-					    <span class="current">
-					        Page {{your_businesses.number}} of {{your_businesses.paginator.num_pages}}.
-					    </span>
-					
-					    {% if your_businesses.has_next %}
-					        <a href="?page={{ your_businesses.next_page_number }}">next</a>
-					    {% endif %}
-					</span>
-					
+					{% include 'ratings/listing/entry_list.html' %}
 				</td>
 			</tr>
 		</table>
@@ -77,25 +44,7 @@ $(function() {
 			<tr>
 				<td>
 					<input type="hidden" value="business" id="vote_on" />
-					{% for business in community_businesses.object_list %}
-						{%include 'ratings/singlebus.html' %}
-						
-					{%endfor %}		
-	
-					<span class="step-links">
-					    {% if community_businesses.has_previous %}
-					        <a href="?page={{ community_businesses.previous_page_number }}">previous</a>
-					    {% endif %}
-					
-					    <span class="current">
-					        Page {{community_businesses.number}} of {{community_businesses.paginator.num_pages}}.
-					    </span>
-					
-					    {% if community_businesses.has_next %}
-					        <a href="?page={{ community_businesses.next_page_number }}">next</a>
-					    {% endif %}
-					</span>
-					
+					{% include 'ratings/listing/entry_list.html' %}				
 				</td>
 			</tr>
 		</table>
