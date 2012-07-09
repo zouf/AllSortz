@@ -23,11 +23,6 @@ $(function() {
 				<td>
 					<input type="hidden" value="business" id="vote_on" />
 					{% include 'ratings/listing/entry_list.html' %}
-					<!--{% for business in all_businesses.object_list %}
-						{%include 'ratings/singlebus.html' %}
-					
-					{%endfor %}-->
-
 				</td>
 			</tr>
 		</table>
@@ -38,11 +33,7 @@ $(function() {
 			<tr>
 				<td>
 					<input type="hidden" value="business" id="vote_on" />
-					<--{% for business in your_businesses.object_list %}
-						{%include 'ratings/singlebus.html' %}
-						
-					{%endfor %}-->
-
+					{% include 'ratings/listing/entry_list.html' %}
 				</td>
 			</tr>
 		</table>
@@ -53,13 +44,7 @@ $(function() {
 			<tr>
 				<td>
 					<input type="hidden" value="business" id="vote_on" />
-					<!--{% for business in community_businesses.object_list %}
-						{%include 'ratings/singlebus.html' %}
-						
-					{%endfor %}-->	
-	
-					
-					
+					{% include 'ratings/listing/entry_list.html' %}				
 				</td>
 			</tr>
 		</table>

@@ -524,13 +524,13 @@ def index(request, template='ratings/index.html',
         current_businesses = []
         
        
-        community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),current_businesses,True)
+        community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),[],True)
         current_businesses+=community_businesses#.object_list
         
-        all_businesses = get_businesses_trending(request.user,request.GET.get('page'),current_businesses,True)
+        all_businesses = get_businesses_trending(request.user,request.GET.get('page'),[],True)
         current_businesses+=all_businesses#.object_list
 
-        your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),current_businesses,True)
+        your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),[],True)
         current_businesses+=your_businesses#.object_list
 
         context = get_default_blank_context(request.user)

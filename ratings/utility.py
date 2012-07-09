@@ -130,6 +130,7 @@ def get_businesses_by_community(user,page,checkForIntersection,isSideBar=False):
     businesses = []
     try:
         busMembership = BusinessMembership.objects.filter(community = community)
+
         for b in busMembership:
             if b not in alreadyThere:
                 businesses.append(b.business)
@@ -156,7 +157,6 @@ def get_businesses_trending(user,page,checkForIntersection,isSideBar=False):
     businesses = []
     try:
         allBus = Business.objects.all() # order by rating
-        print('get bus')
         for b in allBus:
             if b not in alreadyThere:
                 businesses.append(b.business)
