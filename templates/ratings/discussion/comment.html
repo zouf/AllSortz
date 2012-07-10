@@ -41,7 +41,7 @@
 							<font style="font-size:14px; font-style:italic">posted by <a href="/user_details/{{comment.user.id}}/">{{comment.user}}</a> on {{comment.date}}</font><br />
 							<li>{{comment.descr}}</li>
 							
-							<p style="font-size:10px"  onclick="showAddReply({{comment.pk}})" >Reply</p>
+							<a style="font-size:10px"  href="#" class="addReply"  id="reply_{{comment.pk}}">Reply</a>
 							<div id="commentDiv{{comment.pk}}" style="display:none;">
 								<form action="." name="addReply" class="comment" id="comment_form_{{comment.pk}}" method="post">
 									<textarea name="comment" class="replybox" id="comment_{{comment.pk}}" placeholder="Reply"/></textarea>

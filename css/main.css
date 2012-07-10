@@ -45,7 +45,8 @@ h1
 
 h2
 {
-    color: #6F6FD6;
+    /*color: #6F6FD6;*/
+    color: #070771;
     font-family: 'Helvetica';
     font-size: 24px;
     font-weight: normal;
@@ -54,7 +55,8 @@ h2
 
 h3
 {
-    color: #6F6FD6;
+    /*color: #6F6FD6;*/
+    color: #070771;
     font-family: 'Helvetica';
     font-size: 18px;
     margin: 5px 0px;
@@ -212,6 +214,11 @@ li
     height:130px;
 }
 
+.busImage
+{
+	text-align:center;
+}
+
 .busListing td
 {
     padding-left: 5px;
@@ -329,6 +336,13 @@ div.vote
 	color: #6F6FD6;
 	text-align:center;
 	font-size:12px;
-	
+
+}
+
+textarea
+{
+	font-size:14px;
+	font-family: 'Helvetica', sans-serif;
+	padding: 2px 2px 2px 2px;
 	
 }

@@ -12,9 +12,9 @@ from django.views.decorators.csrf import csrf_exempt
 from endless_pagination.decorators import page_template
 from photos.models import BusinessPhoto
 from photos.views import get_photo_web_url
-from ratings.contexts import get_default_blank_context, get_default_tag_context, \
-    get_default_bus_context, get_unauthenticated_context, get_business_comments, \
-    recurse_comments, get_tag_comments
+from ratings.contexts import get_tag_comments, get_business_comments, \
+    get_default_blank_context, get_default_tag_context, get_default_bus_context, \
+    get_unauthenticated_context
 from ratings.favorite import get_user_favorites, is_user_subscribed
 from ratings.forms import BusinessForm, CommentForm
 from ratings.models import Business, Comment, CommentRating, TagComment, \
@@ -29,7 +29,7 @@ from recommendation.recengine import RecEngine
 from tags.form import HardTagForm, TagForm
 from tags.models import CommentTag, Tag, BusinessTag, UserTag, HardTag, \
     BooleanQuestion
-from tags.views import get_questions
+from tags.views import get_questions, get_master_summary_tag, add_tag_to_bus
 from usertraits.models import TraitRelationship, Trait
 from usertraits.views import get_user_traits
 from wiki.forms import PageForm
@@ -42,9 +42,11 @@ import time
 
 
 
+
 logger = logging.getLogger(__name__)
 
 re = RecEngine()
+
 
 
 @csrf_exempt
@@ -106,7 +108,8 @@ def coming_soon(request):
 
 
 
-def display_tag(request,tag_id):
+@page_template("ratings/listing/entry.html") # just add this decorator
+def display_tag(request,tag_id,extra_context=None):
     t = get_object_or_404(Tag, pk=tag_id)
     businesses = get_businesses_by_tag(t,request.user, request.GET.get('page'))
     
@@ -118,8 +121,9 @@ def display_tag(request,tag_id):
 
     context = get_default_blank_context(request.user)
     context['search_term'] = t.descr
-    context['business_list'] = businesses
+    context['all_businesses'] = businesses
     context['subscribed'] = subscribed
+    context['page_template'] = "ratings/listing/entry.html"
     return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
 
     
@@ -138,14 +142,6 @@ def search(request):
         
     business_list = search_site(term, location)
     businesses = get_bus_data(business_list,request.user,True)
-    paginator = Paginator(businesses, 10)  # Show 25 contacts per page
-    page = request.GET.get('page')
-    try:
-        businesses = paginator.page(page)
-    except (PageNotAnInteger, TypeError):
-        businesses = paginator.page(1)
-    except EmptyPage:
-        businesses = paginator.page(paginator.num_pages)
         
 
     context = get_default_blank_context(request.user)
@@ -157,6 +153,54 @@ def search(request):
         'page_template': "ratings/listing/entry.html",
     } )
     return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
+
+
+
+
+def edit_master_tag_discussion(request,bus_id,page_id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+        
+    b = get_object_or_404(Business, pk=bus_id)
+    page = get_object_or_404(Page, pk=page_id)
+
+    try:
+        b.photourl = get_photo_web_url(b)
+    except:
+        b.photourl= "" #NONE
+    
+
+
+
+    if request.method == 'POST':
+        form = PageForm(request.POST)
+        if form.is_valid():
+            if not page:
+                page = Page()
+            page.content = form.cleaned_data['content']
+
+            page.save()
+            return redirect(detail_keywords, bus_id=bus_id)
+    else:
+        if page:
+            wiki_edit_form = PageForm(initial=page.__dict__)
+        else:
+            wiki_edit_form = PageForm(initial={'name': page.name})
+
+    
+    try:
+        pgr = PageRelationship.objects.get(page=page)
+    except:
+        pgr = PageRelationship.objects.filter(page=page)[0]
+    t = pgr.tag
+    context = get_default_bus_context(b, request.user)
+    context['form']=wiki_edit_form
+    context['page']=page
+    context['tag'] =t 
+    
+
+    
+    return render_to_response('ratings/busdetail.html', context_instance=RequestContext(request,context))
 
 
 
@@ -214,6 +258,8 @@ def detail_keywords(request, bus_id):
     
     context = get_default_bus_context(b, request.user)
     context['following_business'] = is_user_subscribed(b,request.user)
+    
+    
     return render_to_response('ratings/busdetail.html', context_instance=RequestContext(request,context))
 
 
@@ -331,7 +377,9 @@ def add_business(request):
             b   = create_business(name, address, state, city, lat=latlng[0], lon =latlng[1])
         else:
             b = create_business(name, address, state, city, lat=0, lon =0)
-        b.save()
+            
+   
+  
         if 'image' in request.FILES:
             img = request.FILES['image']
             print(img)
@@ -381,17 +429,13 @@ def index(request, template='ratings/index.html',
     if request.user.is_authenticated():
         current_businesses = []
         
-        print('get bus by community')
         community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),[],True)
         current_businesses+=community_businesses#.object_list
         
-        print('get bus by trending')
 
         all_businesses = get_businesses_trending(request.user,request.GET.get('page'),[],True)
-        print(len(all_businesses))
         current_businesses+=all_businesses#.object_list
 
-        print('get bus by personal')
 
         your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),[],True)
         current_businesses+=your_businesses#.object_list

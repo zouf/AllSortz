@@ -2,7 +2,7 @@
 	<table width="100%">
 		<tr>
 			<td style="width:125px;">
-				<div class="busPic">
+				<div class="busImage">
 				 <a href="/ratings/{{ business.id }}/"> <img src="{{ business.photourl }}" /> </a>
 				 </div>
 				
@@ -19,6 +19,9 @@
    				{%if business.loved %}
    				 {{business.loved}} loved it!
    				 {%endif%}
+   				 
+   				 
+   				 {{ business.master_page.rendered|safe|linebreaks }}
    				</p>
 				
 				{% if business.tags %}

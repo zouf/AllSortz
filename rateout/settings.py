@@ -15,8 +15,10 @@ ADMINS = (
 DEV_BOXES = ['hydralisk', 'connie-VirtualBox'] # add your dev computer here
 
 #always use https
-SESSION_COOKIE_SECURE= True
-CSRF_COOKIE_SECURE = True
+#SESSION_COOKIE_SECURE= True
+#CSRF_COOKIE_SECURE = True
+#CSRF_COOKIE_NAME = 'allsortz-cookie'
+#CSRF_COOKIE_DOMAIN = 'allsortz.com' #your domain name
 
 
 #for integration with facebook
@@ -196,7 +198,7 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'privatebeta.middleware.PrivateBetaMiddleware',

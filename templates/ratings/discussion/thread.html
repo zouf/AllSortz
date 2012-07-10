@@ -1,10 +1,17 @@
-<h2>Discussions</h2>
+<hr>
 
-<p style="font-size:14px"  onclick="showAddReply('')">Click to start a discussion</p>
+{%if  comments%}
+	<a style="font-size:14px"  href="#" class="addReply"  id="reply_{{comment.pk}}">Reply</a>
+{%else%}
+	<a style="font-size:14px"  href="#" class="addReply"  id="reply_{{comment.pk}}">Start a discussion</a>
+{%endif%}
+
+
 <div id="commentDiv" style="display:none;">
 	<form action="." name="addTagComment" class="comment" id="comment_form" method="post">
 		<textarea name="comment" class="replybox" id="comment" placeholder="Start a discussion"/></textarea>
-		<input type="submit" class="ui-widget buttonme" value="Post"></p>
+
+			<input type="submit" class="ui-widget buttonme" value="Reply"></p>
 		<input type="hidden" name="bid" value="{{business.id}}"/>
 		{%if tag %}
 			<input type="hidden" name="tid" value="{{tag.id}}"/>

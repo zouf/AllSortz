@@ -7,11 +7,14 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from photos.models import BusinessPhoto
 from rateout import settings
-from ratings.models import Business, Rating
+from ratings.models import Business, Rating, Comment, TagComment, \
+    PageRelationship
 from recommendation.models import Recommendation, UserFactor, BusinessFactor
-from tags.models import Tag, HardTag
+from tags.models import Tag, HardTag, BusinessTag
+from tags.views import add_tag_to_bus, get_master_summary_tag, get_default_user
 from urllib import urlretrieve
 from usertraits.models import Trait
+from wiki.models import Page
 import csv
 import logging
 import string
@@ -87,7 +90,12 @@ def prepop_questions(user):
         t.save()
 
 def prepop_businesses(user):
-    BusinessPhoto.objects.all().delete()
+
+    for b in Business.objects.all():
+        add_tag_to_bus(b, get_master_summary_tag(), get_default_user())
+    
+    return
+    
     reader = csv.reader(open(settings.BASE_DIR+'/prepop/businesses.csv', 'U'), delimiter=',', quotechar='"')
     i = 0
     for row in reader:
@@ -107,13 +115,17 @@ def prepop_businesses(user):
         
         
         bset = Business.objects.filter(name=name,address=addr,state=state,city=city)
-#        if bset.count() > 0:
-#            continue  
-#        
-#        
-        #b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8"), lat=0, lon=0)
-        #b.save()
+        if bset.count() == 0:
+            b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8"), lat=0, lon=0)
+            b.save()
+        elif bset.count() > 1:
+            Business.objects.filter(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8")).delete()
+            b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8"), lat=0, lon=0)
+            b.save()
+        
         b = Business.objects.get(name=name)
+        
+        add_tag_to_bus(b, get_master_summary_tag(), get_default_user())
         outpath =settings.STATIC_ROOT+'img'+str(i)+'.jpg'
         
 
@@ -141,8 +153,15 @@ def prepopulate_database(request):
     
 #    UNCOMMENT TO DELETE
 
-#    Business.objects.all().delete()
-
+    #Business.objects.all().delete()
+#    BusinessPhoto.objects.all().delete(0)
+#    Comment.objects.all().delete()
+    BusinessTag.objects.all().delete()
+    TagComment.objects.all().delete()
+    Page.objects.all().delete()
+    PageRelationship.objects.all().delete()
+    
+    
 #    HardTag.objects.all().delete()
 #    Tag.objects.all().delete()
 #    Trait.objects.all().delete()
@@ -168,7 +187,10 @@ def create_business(name, address, state, city, lat, lon):
         return
     
     b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=address.encode("utf8"), lat=lat, lon=lon)
+    b.save()
+    add_tag_to_bus(b,get_master_summary_tag())
     return b
+        
 
 
 def clear_all_tables():

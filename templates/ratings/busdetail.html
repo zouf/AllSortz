@@ -73,11 +73,11 @@ function calcRoute() {
 		
 		<a name="discuss"></a>
 		<div id="discussion" class="section">
-		<h1>Sort Discussion</h1>
 			<div id="sorts">
 				{%if form %}
 					{% include 'ratings/discussion/wikiedit.html' %}
 				{% else %}
+				
 					{% include 'ratings/discussion/wikipages.html' %}
 				{% endif %}
 			</div>

@@ -43,6 +43,8 @@ urlpatterns = patterns('',
     
     #URLS for editing wiki pages
     url(r'^ratings/(?P<bus_id>\d+)/edit/(?P<page_id>\d+)/$','ratings.views.edit_tag_discussion'),
+    url(r'^ratings/(?P<bus_id>\d+)/edit_master/(?P<page_id>\d+)/$','ratings.views.edit_master_tag_discussion'),
+
     
     #activity URLs
 #    url(r'acts/$', 'activities.views.activities'),    

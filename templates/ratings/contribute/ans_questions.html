@@ -12,11 +12,15 @@
 
 	
 		<div id="tagQuestions">
+			<table>
 			{% for q in questions %}
-					<p>{{q.question}}</p>
-					<input id="{{q.id}}_y" type="radio" name="answers_{{q.id}}" value="{{q.id}}_y"> Yes <br>
-					<input id="{{q.id}}_n" type="radio" name="answers_{{q.id}}" value="{{q.id}}_n"> No <br>
+			<tr>
+					<td><p>{{q.question}}</p></td>
+					<td><input id="{{q.id}}_y" type="radio" name="answers_{{q.id}}" value="{{q.id}}_y"> Yes</td>
+					<td><input id="{{q.id}}_n" type="radio" name="answers_{{q.id}}" value="{{q.id}}_n"> No </td>
+			</tr>
 			{% endfor %}	
+			</table>
 		
 		</div>
 				<p><input class="ui-big-widget" type="submit" value="Done" /></p>

@@ -5,14 +5,17 @@ Created on Jun 27, 2012
 '''
 from communities.views import get_community, get_default
 from django.contrib.auth.models import AnonymousUser
+from ratings.favorite import is_user_subscribed
 from ratings.models import Community, BusinessComment, CommentRating, TagComment, \
     Comment
 from ratings.utility import get_lat, get_single_bus_data
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
-from tags.models import Tag, HardTag
+from tags.models import Tag, HardTag, BusinessTag
 from tags.views import get_tags_business, get_tags_user, get_top_tags, \
-    get_hard_tags, get_pages, get_all_sorts
+    get_hard_tags, get_all_sorts, get_master_summary_tag, get_pages, \
+    get_bus_master_tag
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -83,8 +86,7 @@ def get_business_comments(business,user=False):
 def get_default_tag_context(b,t,user):
     comments = get_tag_comments(b,t)
     bus_tags = get_tags_business(b,user=user,q="")
-        
-        
+
     user_tags = get_tags_user(user,"")
     top_tags = get_top_tags(10)    
     hard_tags = get_hard_tags(b)
@@ -92,7 +94,9 @@ def get_default_tag_context(b,t,user):
     pages = get_pages(b,bus_tags)
     b = get_single_bus_data(b,user)
     
-
+    bus_master_tag = get_bus_master_tag(b,user=user,q="")
+    master_page = get_pages(b,[bus_master_tag.tag])
+        
     
     context =   { \
         'communities': Community.objects.all(),\
@@ -102,6 +106,7 @@ def get_default_tag_context(b,t,user):
         'lng':b.lon,  \
         'bus_tags':bus_tags, \
         'pages': pages, \
+        'master_page':master_page,\
         'tags': Tag.objects.all(),\
         'user_sorts':user_tags,\
         'top_sorts':top_tags,\
@@ -147,13 +152,16 @@ def get_default_bus_context(b,user):
         'lng':b.lon,  \
         'bus_tags':bus_tags, \
         'pages': pages, \
+        'master_summary': get_master_summary_tag(),\
         'tags': Tag.objects.all(),\
         'user_sorts':user_tags,\
         'top_sorts':top_tags,\
         'all_sorts':get_all_sorts(4),\
         'hard_tags':hard_tags,\
         'location_term':get_community(user) ,\
-        'communities': Community.objects.all()
+        'communities': Community.objects.all(),\
+        'following_business': is_user_subscribed(b,user),\
+
         }
 
     return context
