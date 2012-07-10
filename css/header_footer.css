@@ -59,6 +59,14 @@ body
     z-index: 1000;
 }
 
+.helper_text
+{
+	font-size: 16px;
+	color: #ECECFF;
+	font-family: 'Helvetica', sans-serif;
+	position: relative;
+}
+
 /* Dropdown bar */
 #dropdown
 {
