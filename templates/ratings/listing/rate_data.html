@@ -1,12 +1,8 @@
-
 <div id="answer_{{business.id}}" class="answer">
-	
-	
-
 		<form id ="rateBusiness_{{business.id}}" name="rateBusiness_{{business.id}}" action="."  style=" text-align:center">
 		{% csrf_token %}
 		<select name="ratingDD" class="ui-widget">
-			<option value="0"  {% if not business.rating %} selected="true" {%endif%} >--</option>
+			<option value="0" {% if not business.rating %}  selected="true" {%endif%} >--</option>
 			<option value="1" {% if business.rating == 1 %} selected="true" {%endif%}>Hated</option>
 			<option value="2" {% if business.rating == 2 %} selected="true" {%endif%}>Meh</option>
 			<option value="3" {% if business.rating == 3 %} selected="true" {%endif%}>Liked</option>
