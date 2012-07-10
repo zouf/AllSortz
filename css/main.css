@@ -13,6 +13,7 @@ body
     background-repeat: repeat;
     overflow-y: scroll;
     overflow-x: hidden;
+	font-family:'Helvetica';
 }
 
 a:link
@@ -206,11 +207,6 @@ li
     border-bottom: 1px solid #1c3752;
     margin: 5px 0px;
     height:130px;
-}
-
-.busImage
-{
-	text-align:center;
 }
 
 .busListing td

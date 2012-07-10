@@ -1,37 +1,45 @@
 <div class="busListing">
 	<table width="100%">
 		<tr>
-			<td style="width:125px;">
-				<div class="busImage">
-				 <a href="/ratings/{{ business.id }}/"> <img src="{{ business.photourl }}" /> </a>
-				 </div>
-				
-				
+			<td valign="middle" style="width:125px;">
+				<a href="/ratings/{{business.id}}/"> <img src="{{business.photourl}}" /> </a>
 			</td>
-			<td>
-				<a class="business_name" href="/ratings/{{ business.id }}/" class="blocklink"><font style="font-size:20px;font-weight:bold;"> {{business.name }} </font></a> 
-   				<br>{{business.city}}, {{business.state}}
-   				
-   				<p style="font-size:14px">
-   				{% if business.liked %}
-   				{{business.liked}} liked it.
-   				{%endif%}
-   				{%if business.loved %}
-   				 {{business.loved}} loved it!
-   				 {%endif%}
-   				 
-   				 
-   				 {{ business.master_page.rendered|safe|linebreaks }}
-   				</p>
-				
-				{% if business.tags %}
-	   				{% for sort in business.tags %}
-	   					<a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a> |
-	   				{% endfor %}
-	   			{% endif %}
-			</td>
-			<td>
-				{% include 'ratings/listing/rate_data.html' %}
+			<td valign="top">
+				<table>
+				<tr>
+					<td style="width:475px;">
+						<a class="business_name" href="/ratings/{{business.id}}/" class="blocklink">
+							<h3>{{business.name}}</h3>
+						</a>
+					</td>
+					<td>
+						{% include 'ratings/listing/rate_data.html' %}
+					</td>
+				</tr>
+				<tr>
+					<td style="width:475px;">
+						{{business.city}}, {{business.state}}
+						
+						{{ business.master_page.rendered|safe|linebreaks }}
+						
+						{% if business.tags %}
+							{% for sort in business.tags %}
+								<a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a> |
+							{% endfor %}
+						{% endif %}
+					</td>
+					<td>
+						<p style="font-size:14px">
+							{% if business.liked %}
+								{{business.liked}} liked it.
+							{%endif%}
+							{% if business.loved %}
+								{{business.loved}} loved it!
+							{% endif%}
+						</p>
+					</td>
+				</tr>
+				</table>
 			</td>
 		</tr>						
 	</table>

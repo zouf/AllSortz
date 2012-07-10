@@ -117,34 +117,31 @@ function setupPage()
 			      </table>
 			</form>
 		</div>
-		
-		<div id="dropdowns" style="padding-top:10px">
-			<ul id="dropdown">
-				<li id="yourSorts"  class="ui-big-widget" style="width:120px;">Your Sorts
-					<ul id="dropdown-list1">
-						{% for sort in user_sorts %}
-						<li><p style="display:inline"><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></p></li>
-						{% endfor %}
-					</ul>
-				</li>
-				<li id="topSorts"  class="ui-big-widget" style="width:120px;">All Sorts
-					<ul id="dropdown-list2">
-						{% for sort in top_sorts %}
-						<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
-						{% endfor %}
-					</ul>
-				</li>
-				<li id="addStuff"  class="ui-big-widget" style="width:120px;">Add
-					<ul id="dropdown-list3">
-						<li><a href="/ratings/add_business/">Businesses</a></li>
-						<li><a href="/ratings/add_question/">Questions</a></li>
-						<li><a href="/ratings/add_new_tag/">Sorts</a></li>
-					<!--	<li><a href="/ratings/add_community/">Communities</a></li> -->
-						<li><a href="/ratings/add_trait/">User Traits</a></li>
-					</ul>
-				</li>
-			</ul>
-		</div>
+		<ul id="dropdown">
+			<li id="yourSorts"  class="ui-big-widget" style="width:120px;">Your Sorts
+				<ul id="dropdown-list1">
+					{% for sort in user_sorts %}
+					<li><p style="display:inline"><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></p></li>
+					{% endfor %}
+				</ul>
+			</li>
+			<li id="topSorts"  class="ui-big-widget" style="width:120px;">All Sorts
+				<ul id="dropdown-list2">
+					{% for sort in top_sorts %}
+					<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
+					{% endfor %}
+				</ul>
+			</li>
+			<li id="addStuff"  class="ui-big-widget" style="width:120px;">Add
+				<ul id="dropdown-list3">
+					<li><a href="/ratings/add_business/">Businesses</a></li>
+					<li><a href="/ratings/add_question/">Questions</a></li>
+					<li><a href="/ratings/add_new_tag/">Sorts</a></li>
+				<!--	<li><a href="/ratings/add_community/">Communities</a></li> -->
+					<li><a href="/ratings/add_trait/">User Traits</a></li>
+				</ul>
+			</li>
+		</ul>
 	</div>
 	
 	<div id="main">

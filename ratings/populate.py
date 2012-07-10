@@ -90,7 +90,7 @@ def prepop_questions(user):
         t.save()
 
 def prepop_businesses(user):
-   
+
     reader = csv.reader(open(settings.BASE_DIR+'/prepop/businesses.csv', 'U'), delimiter=',', quotechar='"')
     i = 0
     for row in reader:
@@ -146,8 +146,8 @@ def prepopulate_database(request):
     
 #    UNCOMMENT TO DELETE
 
-    #Business.objects.all().delete()
-#    BusinessPhoto.objects.all().delete(0)
+    Business.objects.all().delete()
+    BusinessPhoto.objects.all().delete()
 #    Comment.objects.all().delete()
 #    BusinessTag.objects.all().delete()
 #    TagComment.objects.all().delete()
