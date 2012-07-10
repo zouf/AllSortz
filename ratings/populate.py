@@ -156,11 +156,11 @@ def prepopulate_database(request):
     #Business.objects.all().delete()
 #    BusinessPhoto.objects.all().delete(0)
 #    Comment.objects.all().delete()
-    BusinessTag.objects.all().delete()
-    TagComment.objects.all().delete()
-    Page.objects.all().delete()
-    PageRelationship.objects.all().delete()
-    
+#    BusinessTag.objects.all().delete()
+#    TagComment.objects.all().delete()
+#    Page.objects.all().delete()
+#    PageRelationship.objects.all().delete()
+#    
     
 #    HardTag.objects.all().delete()
 #    Tag.objects.all().delete()
