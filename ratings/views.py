@@ -49,21 +49,6 @@ re = RecEngine()
 
 
 
-def feedback(request):
-    if request.user.is_authenticated():
-        
-        if request.method == 'POST':
-            user = request.user
-            content = request.POST['feedback']   
-
-    
-            mail = EmailMessage('AllSortz Feedback', '\nuname: '+str(user.username) + '\n firstname: ' + str(user.first_name) +  '\nlastname: ' + str(user.last_name) + '\nemail: ' +str(user.email)+ '\ntime: ' + str(time.asctime())+  '\n\n'+str(content), to=['mattzouf@gmail.com'])
-            mail.send()
-            logger.info('Feedback form user'+str(user.username))
-            return redirect(index)
-        else:
-            return render_to_response('webadmin/feedback.html', context_instance=RequestContext(request))
- 
 
 @csrf_exempt
 def add_tag_comment(request):
@@ -72,21 +57,14 @@ def add_tag_comment(request):
         form = request.POST 
         #add a comment to a business' tag page 
         if 'tid'  in form:
-            print('in tid')
             bid =form['bid']
-            print(bid)
             b = Business.objects.get(id=bid)
             tid = form['tid']
             t = Tag.objects.get(id=tid)
-            print(form)
             if 'cid' not in form:  #root reply
                 nm = form['comment']
                 k = Comment(descr=nm,user=request.user,reply_to=None)
                 k.save()
-                print('save tag comment)')
-                print(k)
-                print(b)
-                print(t)
                 tc = TagComment(business=b,tag=t,thread=k)
                 tc.save()
             else:  #reply to another comment submission
@@ -222,8 +200,6 @@ def edit_tag_discussion(request,bus_id,page_id):
     return render_to_response('ratings/busdetail.html',
         RequestContext(request, context))
 
-def help(request):
-    return render_to_response('help.html',context_instance=RequestContext(request))
 
 
 @csrf_exempt

@@ -78,9 +78,13 @@ urlpatterns = patterns('',
     url(r'^ratings/add_community/$', 'ratings.views.add_community'),
 
 
-    #feedback
-    url(r'^ratings/feedback/$','ratings.views.feedback'),
+    #misc. admin stuff
+    url(r'^feedback/$','ratings.webadmin.feedback'),
+    url(r'^contact/$','ratings.webadmin.feedback'),
+    url(r'^about/$', 'ratings.webadmin.allsortz_about'),
+    url(r'^help/$','ratings.webadmin.allsortz_help'),
 
+    
     url(r'^admin/', include(admin.site.urls)),
     # Login / logout.
     url(r'^login/$', 'django.contrib.auth.views.login'),
@@ -89,7 +93,6 @@ urlpatterns = patterns('',
 #    url(r'^comments/add_comment/(?P<bus_id>\d+)/$','ratings.views.add_comment_form'),
 
     
-    url(r'^help/$','ratings.views.help'),
     
     url(r'^ratings/reset_db/$','ratings.populate.prepopulate_database'),
     
