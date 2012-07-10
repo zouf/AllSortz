@@ -59,7 +59,7 @@ class Rating(models.Model):
     rating = models.PositiveSmallIntegerField()
     date = models.DateTimeField(auto_now=True)
     def __unicode__(self):
-        return self.user.user + " " + self.business.name + " " + str(self.rating)
+        return str(self.user) + " " + str(self.business.name) + " " + str(self.rating)
 
 
 # Create your models here.

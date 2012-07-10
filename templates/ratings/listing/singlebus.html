@@ -1,11 +1,10 @@
 <div class="busListing">
-	<table>
+	<table width="100%">
 		<tr>
-			<td>
-				<div class="busPic" style="height:50px border: 1 1 1 1;">
+			<td style="width:125px;">
+				<div class="busPic">
 				 <a href="/ratings/{{ business.id }}/"> <img src="{{ business.photourl }}" /> </a>
 				 </div>
-				 {% include 'ratings/listing/rate_data.html' %}
 				
 				
 			</td>
@@ -21,12 +20,15 @@
    				 {{business.loved}} loved it!
    				 {%endif%}
    				</p>
-			
+				
 				{% if business.tags %}
 	   				{% for sort in business.tags %}
 	   					<a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a> |
 	   				{% endfor %}
 	   			{% endif %}
+			</td>
+			<td>
+				{% include 'ratings/listing/rate_data.html' %}
 			</td>
 		</tr>						
 	</table>

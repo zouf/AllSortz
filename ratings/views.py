@@ -47,9 +47,6 @@ logger = logging.getLogger(__name__)
 re = RecEngine()
 
 
-
-
-
 @csrf_exempt
 def add_tag_comment(request):
     logger.debug('in add comment')

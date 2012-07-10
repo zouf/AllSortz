@@ -48,7 +48,8 @@ $.fn.spin = function(opts) {
             });
             return false;
         });
-        $("a.endless_page_link").live("click", function() {
+        $("a.endless_page_link").live("click", function(e) {
+ 
             var page_template = $(this).closest(".endless_page_template");
         	var opts = {
       			  lines: 13, // The number of lines to draw

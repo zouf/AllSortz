@@ -1,7 +1,7 @@
 	{% load endless %}
 	
 	{% paginate all_businesses %}
-	
+
 		{% if all_businesses %}
 			{% for business in all_businesses %}
 				{%include 'ratings/listing/singlebus.html' %}
