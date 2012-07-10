@@ -1,4 +1,6 @@
 
+
+
 $(function() {
 
       $('div.comment div.vote').live("click", function () {

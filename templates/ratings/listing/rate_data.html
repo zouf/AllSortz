@@ -4,8 +4,7 @@
 	
 
 		<form id ="rateBusiness_{{business.id}}" name="rateBusiness_{{business.id}}" action="."  style=" text-align:center">
-	
-	
+		{% csrf_token %}
 		<select name="ratingDD" class="ui-widget">
 			<option value="0"  {% if not business.rating %} selected="true" {%endif%} >--</option>
 			<option value="1" {% if business.rating == 1 %} selected="true" {%endif%}>Hated</option>
