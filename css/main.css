@@ -17,24 +17,24 @@ body
 
 a:link
 {
-    color: #6F6FD6;
+    color: #4985c2;
     text-decoration: none;
 }
 
 a:hover
 {
-    color: #6F6FD6;
+    color: #4985c2;
     text-decoration: none;
 }
 
 a:visited
 {
-    color: #6F6FD6;
+    color: #4985c2;
 }
 
 h1
 {
-    color: #070771;
+    color: #1c3752;
     font-family: 'Helvetica';
     font-style: normal;
     font-weight: normal;
@@ -46,7 +46,7 @@ h1
 h2
 {
     /*color: #6F6FD6;*/
-    color: #070771;
+    color: #4985c2;
     font-family: 'Helvetica';
     font-size: 24px;
     font-weight: normal;
@@ -55,20 +55,14 @@ h2
 
 h3
 {
+
     /*color: #6F6FD6;*/
-    color: #070771;
+
+    color: #4985c2;
     font-family: 'Helvetica';
     font-size: 18px;
     margin: 5px 0px;
 }
-
-.helper_text
-{
-	font-size: 16px;
-	color: #ECECFF;
-	font-family: 'Helvetica', sans-serif;
-}
-
 
 li
 {
@@ -88,11 +82,11 @@ li
     margin-left: -500px;
     padding-top: 190px;
     padding-bottom: 300px;
-    background-color: #ECECFF;
-    border-left: 1px solid #000000;
-    border-right: 1px solid #000000;
-    -moz-box-shadow: 0px 0px 8px #4679ED;
-    -webkit-box-shadow: 0px 0px 8px #4679ED;
+    background-color: #ECEFFF;
+    border-left: 1px solid #1c3752;
+    border-right: 1px solid #1c3752;
+    -moz-box-shadow: 0px 0px 8px #4985c2;
+    -webkit-box-shadow: 0px 0px 8px #4985c2;
     box-shadow: 0px 0px 8px #4679ED;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -118,13 +112,13 @@ li
 
 .section
 {
-    border: 1px solid #070771;
+    border: 1px solid #1c3752;
     padding: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
     background-color: #FFFFFF;
-    -moz-box-shadow: 0px 0px 4px #4679ED;
-    -webkit-box-shadow: 0px 0px 4px #4679ED;
+    -moz-box-shadow: 0px 0px 4px #4985c2;
+    -webkit-box-shadow: 0px 0px 4px #4985c2;
     box-shadow: 0px 0px 4px #4679ED;
     overflow: auto;
 }
@@ -209,7 +203,7 @@ li
     text-align: left;
     font-size: 16px;
     width: 100%;
-    border-bottom: 1px solid #070771;
+    border-bottom: 1px solid #1c3752;
     margin: 5px 0px;
     height:130px;
 }
@@ -245,7 +239,7 @@ li
     -moz-box-shadow: 0px 0px 4px #4679ED;
     -webkit-box-shadow: 0px 0px 4px #4679ED;
     box-shadow: 0px 0px 4px #4679ED;
-    border: 1px solid #070771;
+    border: 1px solid #1c3752;
     -moz-border-radius: 5px;
     border-radius: 5px;
 }
