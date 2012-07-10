@@ -90,12 +90,7 @@ def prepop_questions(user):
         t.save()
 
 def prepop_businesses(user):
-
-    for b in Business.objects.all():
-        add_tag_to_bus(b, get_master_summary_tag(), get_default_user())
-    
-    return
-    
+   
     reader = csv.reader(open(settings.BASE_DIR+'/prepop/businesses.csv', 'U'), delimiter=',', quotechar='"')
     i = 0
     for row in reader:
@@ -142,12 +137,10 @@ def prepop_businesses(user):
 
 
 def prepopulate_database(request):
-    print request.user.is_superuser
-    print request.user
+
     if not request.user.is_superuser:
         return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-    else:
-        print('not su')
+
     #if request.user.username != 'zouf':
     #    return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
     
