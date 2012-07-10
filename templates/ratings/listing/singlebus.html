@@ -1,4 +1,7 @@
 <div class="busListing">
+
+
+
 	<table width="100%">
 		<tr>
 			<td valign="middle" style="width:125px;">
@@ -7,26 +10,30 @@
 			<td valign="top">
 				<table>
 				<tr>
-					<td style="width:475px;">
+					<td style="width:125px;">
 						<a class="business_name" href="/ratings/{{business.id}}/" class="blocklink">
-							<h3>{{business.name}}</h3>
+							<h3>{{business.name}}</h3 
 						</a>
+					</td>
+					<td style="width:475px;">
+						<i>{{business.city}}, {{business.state}}</i>
 					</td>
 					<td>
 						{% include 'ratings/listing/rate_data.html' %}
 					</td>
 				</tr>
 				<tr>
-					<td style="width:475px;">
-						{{business.city}}, {{business.state}}
+					<td style="width:475px;" colspan="2">
 						
+						<div class="page_text">
 						{{ business.master_page.rendered|safe|linebreaks }}
-						
+						</div>
 						{% if business.tags %}
 							{% for sort in business.tags %}
-								<a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a> |
+								<a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a> &middot;
 							{% endfor %}
 						{% endif %}
+						</div>
 					</td>
 					<td>
 						<p style="font-size:14px">

@@ -334,5 +334,9 @@ textarea
 	font-size:14px;
 	font-family: 'Helvetica', sans-serif;
 	padding: 2px 2px 2px 2px;
-	
 }
+
+.page_text
+{
+	font-size:12px;
+}	
