@@ -72,12 +72,11 @@ $.fn.spin = function(opts) {
             if (!page_template.hasClass("endless_page_skip")) {
                 var data = "querystring_key=" + $(this).attr("rel").split(" ")[0];
                 var hgt = page_template.height()
-                
+                var wdth = page_template.width()
                 page_template.empty()
                 page_template.height(hgt)
                 page_template.spin(opts)
                 page_template.load($(this).attr("href"), data);
-                
                 return false;
             };
         }); 

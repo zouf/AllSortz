@@ -83,7 +83,10 @@ def add_tag_comment(request):
                 nm = form['comment']
                 k = Comment(descr=nm,user=request.user,reply_to=None)
                 k.save()
-               
+                print('save tag comment)')
+                print(k)
+                print(b)
+                print(t)
                 tc = TagComment(business=b,tag=t,thread=k)
                 tc.save()
             else:  #reply to another comment submission
@@ -421,6 +424,8 @@ def index(request, template='ratings/index.html',
         context['your_businesses'] = your_businesses
         context['all_businesses'] = all_businesses
 
+        context['feed'] = get_recent_activity()
+
         context['nonempty'] = True
         context.update( {
             'all_businesses' : all_businesses,
@@ -444,6 +449,42 @@ def index(request, template='ratings/index.html',
                
         context = get_unauthenticated_context()
         return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
+
+
+
+def get_recent_activity():
+ 
+    ratings = Rating.objects.filter().order_by('-date')[:5]
+   
+    feed = []
+    
+    for r in ratings:
+        r.type = "business"
+        r.business = get_single_bus_data(r.business, r.user, isSideBar=True)
+        feed.append(r)
+    allcomments = Comment.objects.filter().order_by('-date')
+    for c in allcomments:
+        try: 
+            tc = TagComment.objects.get(thread=c)
+            tc.type = "tagcomment"
+            tc.business = get_single_bus_data(tc.business, c.user, isSideBar=True)
+            tc.user = c.user
+            feed.append(tc)
+        except:
+            pass
+        
+        try:
+            bc = BusinessComment.objects.get(thread=c)
+            bc.business = get_single_bus_data(bc.business, c.user, isSideBar=True)
+            bc.type = "buscomment"
+            bc.user = c.user
+            feed.append(bc)
+        except:
+            pass
+    return feed
+    
+    
+    
 
 def get_user_activity(user):
  

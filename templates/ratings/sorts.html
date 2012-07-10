@@ -16,9 +16,11 @@
 	{%endfor%}
 {%endif%}
 
-<br>
-Apply Sort
-<br>
+
+{% if not checkon or checkon == user  %}
+
+<p style="font-size:14px;">Apply a Sort <a style="font-size:14px;" href="/help/">?</a></p> 
+
 {% if business %}
 	<form name="addTagDD" action="." method="post">{% csrf_token %}
 	<input type="hidden" value="{{business.id}}" name="bid"/>
@@ -33,20 +35,5 @@ Apply Sort
 		</select>
 		<input class="buttonme" type="submit" value="+"/>
 	</form>
-	
-	<!--<p style="font-size:10px"  onclick="showAddTag()" >Think we're missing a sort?</p>-->
-	<a href="/ratings/add_new_tag/" style="font-size:10px"><p >Think we're missing a sort?</p></a>
-<!--<div id="addTagDiv" style="display:none;">
-		{%if business%}
-			<form name="addTagTB" action="." method="post">{%csrf_token%}
-				<input type="hidden" value="{{business.id}}" name="bid" />
-				<input type="text" id="addTagButton" value="Add a new Sort" name="tag" onfocus="this.value='';" />
-			</form>
-		{%else%}
-			<div id="addTagDiv">
-				<form name="addUserTagTB" action="." method="post">{%csrf_token%}
-					<input  type="text" value="" name="tag" />
-				</form>
-			</div>
-		{%endif%}
-	</div>-->
+{%endif%}
+	<!--<a href="/ratings/add_new_tag/" style="font-size:10px"><p >Think we're missing a sort?</p></a>-->

@@ -1,0 +1,32 @@
+{% for item in feed %}
+	
+	{% if item.type == "business" %}
+		<p  class="feed_text" ><a href="/user_details/{{item.user.id}}/" >{{item.user}} </a>
+			{% if item.rating == 0 %}
+				didn't care for
+			{%else%}{%if item.rating == 1 %}
+				wasn't impressed with  
+			{%else%}{%if item.rating == 2%} 
+				liked 
+			{%else%}
+				loved 
+			{%endif %}{%endif%}{%endif%}
+			
+			<a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>
+		</p> 
+	{%endif%}
+	{% if item.type == "buscomment" %}				
+		<p class="feed_text"  ><a href="/user_details/{{item.user.id}}/"> {{item.user}} </a> 
+				discussed  <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a> 
+				<br> <i>{{item.thread.descr}}</i>
+		</p> 
+	{%endif%}
+	{% if item.type == "tagcomment" %}				
+			<p class="feed_text"  ><a href="/user_details/{{item.user.id}}/"> {{item.user}} </a> 
+				was part of a discussion on  <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a> 
+				for <a href="/ratings/disp/{{item.tag.id}}/">{{item.tag.descr}}</a> lovers 
+				<br> <i>{{item.thread.descr}}</i>
+			 </p>
+	{%endif%}
+	<hr>
+{% endfor %}

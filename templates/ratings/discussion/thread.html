@@ -13,9 +13,7 @@
 </div>
 <ul>
 
-{% load endless %}
 
-{% paginate comments %}
 {% for comment in comments %}
 	{% if comment == "open-even" %}
 		<ul class="even-background">
@@ -31,6 +29,5 @@
 	{%endif%}
 	{%endif%}
 {%endfor%}
-{% show_pages %}
 
 </ul>

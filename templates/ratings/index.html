@@ -11,7 +11,7 @@ $(function() {
 {% if nonempty %}
 
     <div id="trending" class="section">
-    	<h1>Now Trending</h1>
+    	<h1>Trending</h1>
     	{% if search_term %}
 			<h2 class="search_term">{{search_term}}</h2>
 			{%if location_term %}
@@ -28,18 +28,17 @@ $(function() {
 		</table>
 	</div>
 	<div id="personalized" class="section">
-    	<h1>For You</h1>
+    	<h1>Recent Activity</h1>
     	<table style="width:100%;">
 			<tr>
 				<td>
-					<input type="hidden" value="business" id="vote_on" />
-					{% include 'ratings/listing/entry_list.html' %}
+					{% include 'ratings/feed/activity_feed.html' %}
 				</td>
 			</tr>
 		</table>
     </div>
 	<div id="community" class="section">
-		<h1>Your Community: {{community.name}}</h1>
+		<h1>Top Picks for {{user}}</h1>
 		<table style="width:100%;">
 			<tr>
 				<td>

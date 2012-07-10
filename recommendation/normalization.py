@@ -13,6 +13,31 @@ import math
 
 
 
+def getNumLiked(bus):
+    ratingFilter = Rating.objects.filter(business=bus, rating__range=["3", "3"])
+    ratingFilter = ratingFilter.aggregate(Count('rating'))
+    countRating = ratingFilter['rating__count']
+    return countRating
+
+
+def getNumLoved(bus):
+    ratingFilter = Rating.objects.filter(business=bus, rating__range=["4", "4"])
+    ratingFilter = ratingFilter.aggregate(Count('rating'))
+    countRating = ratingFilter['rating__count']
+    return countRating
+
+def getNumDisliked(bus):
+    ratingFilter = Rating.objects.filter(business=bus, rating__range=["2", "2"])
+    ratingFilter = ratingFilter.aggregate(Count('rating'))
+    countRating = ratingFilter['rating__count']
+    return countRating
+
+def getNumHated(bus):
+    ratingFilter = Rating.objects.filter(business=bus, rating__range=["1", "1"])
+    ratingFilter = ratingFilter.aggregate(Count('rating'))
+    countRating = ratingFilter['rating__count']
+    return countRating
+
 def getNumPosRatings(o):
     #get class name
     t = o.__class__.__name__

@@ -15,35 +15,32 @@
 	
 	<table>
 		<tr>
-			<td width="40px">
-				{% include 'ratings/listing/rate_data.html' %}
-			</td>
 			<td>
+				
 				<img src="{{business.photourl}}" />
+				{% include 'ratings/listing/rate_data.html' %}
+				
 			</td>
 		</tr>
 		<tr>
-			<td></td>
+	
 			<td>
+				<table>
 				{% for ht in hard_tags %}
-				<ul>
+				
 					{% if ht.answer %}
-						<li>{{ht.question}}: Yes!</li>
+						<tr><td>{{ht.question}}</td><td>Yes</td></tr>
 					{%else%}
-						<li>{{ht.question}}: No!</li>
+						<tr><td>{{ht.question}}</td><td>No</td></tr>
 					{%endif%}
-				</ul>
+				
 				{% endfor%}
+				</table>
 			</td>
 		</tr>
 		<tr>
-			<td></td>
 			<td>
-				{% if hard_tags%}
-					<a href="/ratings/answer_questions/{{business.id}}">Answer some questions yourself!</a>
-				{%else%}
-					No one's answered any questions about {{business.name}}.<br><a href="/ratings/answer_questions/{{business.id }}">Answer some yourself!</a>
-				{%endif%}
+				<p style="font-size: 14px"><a href="/ratings/answer_questions/{{business.id }}">What do you know about {{business.name}}?</a></p>
 			</td>
 		</tr>
 	</table>
@@ -56,7 +53,6 @@
 	<tr>
 		<td>
 			<div id="sorted">
-				<h2>Sorted Under</h2>
 				{% include 'ratings/sorts.html' %}
 			</div>
 		</td>

@@ -225,8 +225,6 @@ function showEditWiki()
 {
 	$("#sortDivDisplay").toggle()
 	$("#sortDivEdit").toggle()
-
-
 }
 
 

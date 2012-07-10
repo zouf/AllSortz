@@ -27,7 +27,8 @@ if socket.gethostname() in DEV_BOXES:
 else:
     DEPLOY = True
 
-
+#paginator settings
+ENDLESS_PAGINATION_PER_PAGE =4 
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'

@@ -128,6 +128,8 @@ def prepop_businesses(user):
 
 
 def prepopulate_database(request):
+    print request.user.is_superuser
+    print request.user
     if not request.user.is_superuser:
         return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
     else:
@@ -137,7 +139,8 @@ def prepopulate_database(request):
     
 #    UNCOMMENT TO DELETE
 
-#    Business.objects.all().delete()
+    Business.objects.all().delete()
+
 #    HardTag.objects.all().delete()
 #    Tag.objects.all().delete()
 #    Trait.objects.all().delete()

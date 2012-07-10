@@ -1,28 +1,27 @@
-<table class="busListing">
-	<tr>
-		<td style="width:40px;">
-			{% include 'ratings/listing/rate_data.html' %}
-		</td>
-		<td>
-			<table>
-				<tr>
-					<td>
-						 <a href="/ratings/{{ business.id }}/"> <img src="{{ business.photourl }}" /> </a>
-					</td>
-					<td>
-						<a class="business_name" href="/ratings/{{ business.id }}/" class="blocklink"><font style="font-size:20px;font-weight:bold;"> {{business.name }} </font></a> 
-		   				<br>{{business.city}}, {{business.state}}
-		   				<br>Community: <em> {{community.name}} </em>
-
-						{% if business.tags %}
-			   				<br>Sorted Under: 
-			   				{% for sort in business.tags %}
-			   					{{sort.descr}} |
-			   				{% endfor %}
-			   			{% endif %}
-					</td>
-				</tr>						
-			</table>
-		</td>
-	</tr>
-</table>
+<div class="busListing">
+	<table>
+		<tr>
+			<td>
+				<div class="busPic" style="height:50px border: 1 1 1 1;">
+				 <a href="/ratings/{{ business.id }}/"> <img src="{{ business.photourl }}" /> </a>
+				 </div>
+				 {% include 'ratings/listing/rate_data.html' %}
+				
+				
+			</td>
+			<td>
+				<a class="business_name" href="/ratings/{{ business.id }}/" class="blocklink"><font style="font-size:20px;font-weight:bold;"> {{business.name }} </font></a> 
+   				<br>{{business.city}}, {{business.state}}
+   				<p style="font-size:14px">
+   				{{business.liked}} liked it. {{business.loved}} loved it!
+   				</p>
+			
+				{% if business.tags %}
+	   				{% for sort in business.tags %}
+	   					<a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a> |
+	   				{% endfor %}
+	   			{% endif %}
+			</td>
+		</tr>						
+	</table>
+</div>

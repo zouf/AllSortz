@@ -1,9 +1,12 @@
 // use live handlers in general. They allow the innerHTML to be changed and still allow the jscript bindings to be teh same
 
-function bus_rating(obj,url)
-{
-	alert('change of business rating')
-}
+
+$(function() {
+    $('p.rateme').live('click', function(e) {
+    	var id = $(this).attr('id').split('_')[1];
+		$("#rateBusiness_"+id).toggle();
+    });
+});
 
 function vote_func(obj,url)
 {
