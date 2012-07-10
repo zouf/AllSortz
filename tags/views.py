@@ -29,8 +29,10 @@ def get_default_user():
     try:
         user = User.objects.get(username='zouf')
     except:
-        logger.error('Zouf isn\'t a user on the system!')
-        user = None
+        user = User(first_name='Matt', email='matty@allsortz.com', username='zouf')
+        user.set_password("testing")
+        user.save()
+        
     return user
 
 #sorts tags
@@ -80,6 +82,7 @@ def add_tag_to_bus(b,tag,user=get_default_user()):
         bustag = BusinessTag.objects.get(tag=tag,business=b)
     except:
         bustag = BusinessTag.objects.create(tag=tag,business=b,creator=user)
+    
     try:
         PageRelationship.objects.get(business=b,tag=bustag.tag)
     except PageRelationship.DoesNotExist:
