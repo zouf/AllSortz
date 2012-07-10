@@ -4,15 +4,15 @@
 	
 		{% if all_businesses %}
 			{% for business in all_businesses %}
-				{%include 'ratings/singlebus.html' %}
+				{%include 'ratings/listing/singlebus.html' %}
 			{% endfor %}
 		{% else %}{% if your_businesses %}
 			{% for business in your_businesses %}
-				{%include 'ratings/singlebus.html' %}
+				{%include 'ratings/listing/singlebus.html' %}
 			{% endfor %}
 		{% else %}{% if community_businesses %}
 			{% for business in community_businesses %}
-				{%include 'ratings/singlebus.html' %}
+				{%include 'ratings/listing/singlebus.html' %}
 			{% endfor %}
 		{%endif%}{%endif%}{%endif%}
 
