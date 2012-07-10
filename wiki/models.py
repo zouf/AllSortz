@@ -4,7 +4,7 @@ from templatetags.wiki import wikify
 
 
 class Page(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255, unique=False)
     content = models.TextField()
     rendered = models.TextField()
 

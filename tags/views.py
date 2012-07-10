@@ -4,6 +4,7 @@ Created on Jun 12, 2012
 @author: zouf
 '''
 from communities.models import UserMembership
+from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.db.models.aggregates import Count
 from django.http import HttpResponse
@@ -22,6 +23,16 @@ import sys
 
 logger = logging.getLogger(__name__)
     
+    
+
+def get_default_user():
+    try:
+        user = User.objects.get(username='zouf')
+    except:
+        logger.error('Zouf isn\'t a user on the system!')
+        user = None
+    return user
+
 #sorts tags
 def tag_comp(x,y):
     #eventually do something more intelligent here!
@@ -36,7 +47,6 @@ def tag_comp(x,y):
     
 @csrf_exempt
 def add_a_sort(request):
-    print ('in add a sort')
     if request.method == 'POST':  # add a tag!
         form = request.POST
         nm = form['descr']
@@ -45,40 +55,54 @@ def add_a_sort(request):
         except:
             tag = Tag.objects.create(descr=nm,creator=request.user)
         return render_to_response('ratings/contribute/sortlist.html', {'tags':Tag.objects.all()})
+   
+   
+def is_master_summary_tag(t): 
+    if t == get_master_summary_tag():
+        return True
+    return False
     
     
-    
+def get_master_summary_tag():
+    try:
+        tag = Tag.objects.get(descr="The Bottom Line")
+    except:
+        tag = Tag.objects.create(descr="The Bottom Line", creator=get_default_user())
+    return tag
+
+def get_master_page_business(b):
+    pages = get_pages(b,[get_master_summary_tag()])
+    return pages[0]
+
+
+def add_tag_to_bus(b,tag,user=get_default_user()):    
+    try: 
+        bustag = BusinessTag.objects.get(tag=tag,business=b)
+    except:
+        bustag = BusinessTag.objects.create(tag=tag,business=b,creator=user)
+    try:
+        PageRelationship.objects.get(business=b,tag=bustag.tag)
+    except PageRelationship.DoesNotExist:
+        pg = Page.objects.create(name=tag.descr)
+        PageRelationship.objects.create(business=b,tag=bustag.tag,page = pg)
+        
+
+
 @csrf_exempt
 def add_tag_business(request):
-    print ('here')
     if request.method == 'POST':  # add a tag!
         form = request.POST
         nm = form['tag']
-        logger.debug('Create a tag '+str(nm))
+  
         bid = form['bid']
-            
+        logger.debug('Create a tag '+str(nm))
         b = Business.objects.get(id=bid)
         try:
             tag = Tag.objects.get(descr=nm)
         except:
             tag = Tag.objects.create(descr=nm,creator=request.user)
             
-        print(tag)
-        try: 
-            bustag = BusinessTag.objects.get(tag=tag,business=b)
-        except:
-            bustag = BusinessTag.objects.create(tag=tag,business=b,creator=request.user)
-        print(bustag)
-        try:
-            pg = Page.objects.get(name=nm)
-        except:
-            pg = Page(name=nm)
-            pg.save()
-        print('creating a page)')
-        print(tag)
-        pgr = PageRelationship(business=b,page=pg,tag=bustag.tag)
-        pgr.save()
-        print('page done')
+        add_tag_to_bus(b,tag,request.user)
         bus_tags = get_tags_business(b)
         
    
@@ -227,11 +251,11 @@ def get_all_tags(request):
 #get pages for the wiki style entry
 def get_pages(business,tags):
     pages = []
+
     for t in tags:
        
         try:
             bt = BusinessTag.objects.get(business=business,tag=t)
-            print(bt)
             relationship = PageRelationship.objects.get(business=business,tag=bt.tag)
             pages.append(relationship.page)
         except MultipleObjectsReturned:
@@ -239,8 +263,17 @@ def get_pages(business,tags):
             #XXX 
             relationship = PageRelationship.objects.filter(business=business,tag=bt.tag)[0]
             pages.append(relationship.page)
+        except :
+            add_tag_to_bus(business,t,get_default_user())
+            bt = BusinessTag.objects.get(business=business,tag=t)
+            relationship = PageRelationship.objects.get(business=business,tag=t)
+            pages.append(relationship.page)
+            print relationship.page.id
+           
   
     return pages
+
+
 
 
 def get_tags_user(user,q=""):
@@ -254,11 +287,14 @@ def get_tags_user(user,q=""):
 
 def get_tags_business(b,user=False,q=""):
     #bustags = BusinessTag.objects.filter(descr__icontains=q)[:20]
-    bustags = BusinessTag.objects.filter(business=b)
+    bustags = BusinessTag.objects.filter(business=b).exclude(tag=get_master_summary_tag())
     tags = []
     for bt in bustags:
         tags.append(bt.tag)
     return tags
+
+def get_bus_master_tag(b,user=False,q=""):
+    return BusinessTag.objects.filter(business=b).filter(tag=get_master_summary_tag())[0]
 
 
 def get_questions(b,user):

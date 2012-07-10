@@ -15,6 +15,8 @@ from ratings.models import Rating, Business
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     getBusAvg, getNumLoved, getNumLiked
 from tags.models import BusinessTag
+from tags.views import get_pages, get_master_summary_tag, is_master_summary_tag,\
+    get_master_page_business
 import logging
 import simplejson
 import time
@@ -64,22 +66,23 @@ def get_single_bus_data(b,user,isSideBar=False):
         b.this_rat = 0
         b.rating = 0
         
-    bustags = BusinessTag.objects.filter(business=b)
+    bustags = BusinessTag.objects.filter(business=b).exclude(tag=get_master_summary_tag())
     b.tags = []
     for bt in bustags:
-        b.tags.append(bt.tag)
+        if not is_master_summary_tag(bt.tag):
+            b.tags.append(bt.tag)
 
     
+    b.master_page = get_master_page_business(b)
     return b
 
 
 
 #TODO: matt fix this to handle ratings from 1-4
 #is SideBar is true if we're going to use smaller data 
-def get_bus_data(business_list,user,isSideBar=True):
+def  get_bus_data(business_list,user,isSideBar=True):
     for b in business_list:
         b = get_single_bus_data(b,user,isSideBar)
-        
     return business_list
 
 
@@ -118,15 +121,15 @@ def get_lat(loc):
 
 
 
-def paginate_businesses(business_list,page, num):
-    paginator = Paginator(business_list, num)  # Show 25 contacts per page
-    try:
-        business_list = paginator.page(page)
-    except (PageNotAnInteger, TypeError):
-        business_list = paginator.page(1)
-    except EmptyPage:
-        business_list = paginator.page(paginator.num_pages)
-    return business_list
+#def paginate_businesses(business_list,page, num):
+#    paginator = Paginator(business_list, num)  # Show 25 contacts per page
+#    try:
+#        business_list = paginator.page(page)
+#    except (PageNotAnInteger, TypeError):
+#        business_list = paginator.page(1)
+#    except EmptyPage:
+#        business_list = paginator.page(paginator.num_pages)
+#    return business_list
 
 
 def get_businesses_by_community(user,page,checkForIntersection,isSideBar=False):
@@ -144,16 +147,9 @@ def get_businesses_by_community(user,page,checkForIntersection,isSideBar=False):
     except:
         logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
         businesses = Business.objects.all()
-    print(businesses)
     business_list = get_bus_data(businesses,user,isSideBar)
-    business_list = paginate_businesses(business_list,page,5)
 
-    for b in business_list:
-        bustags = BusinessTag.objects.filter(business=b)
-        b.tags = []
-        for bt in bustags:
-            b.tags.append(bt.tag)
-        
+
     return business_list
 
 def get_businesses_trending(user,page,checkForIntersection,isSideBar=False):
@@ -161,7 +157,6 @@ def get_businesses_trending(user,page,checkForIntersection,isSideBar=False):
     for nt in checkForIntersection:
         alreadyThere[nt] = True
         
-    print('getting everything')
     businesses = []
     try:
         allBus = Business.objects.all() # order by rating
@@ -172,12 +167,7 @@ def get_businesses_trending(user,page,checkForIntersection,isSideBar=False):
         logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
         businesses = Business.objects.all()
     business_list = get_bus_data(businesses,user,isSideBar)
-    #business_list = paginate_businesses(business_list,page,5)
-    for b in business_list:
-        bustags = BusinessTag.objects.filter(business=b)
-        b.tags = []
-        for bt in bustags:
-            b.tags.append(bt.tag)
+
     return business_list
         
         
@@ -196,7 +186,6 @@ def get_businesses_by_your(user,page,checkForIntersection,isSideBar=False):
         logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
         businesses = Business.objects.all()
     business_list = get_bus_data(businesses,user,isSideBar)
-    business_list = paginate_businesses(business_list,page,5)
     return business_list
 
 
@@ -206,7 +195,6 @@ def get_businesses_by_tag(t,user,page):
     for bt in bustags:
         businesses.append(bt.business)    
     business_list = get_bus_data(businesses,user)
-    business_list = paginate_businesses(business_list,page,5)
     return business_list
 
         

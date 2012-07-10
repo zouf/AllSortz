@@ -1,7 +1,18 @@
-<h3>Describe {{business.name}} for {{page.name}}</h3>
+<h3> {{page.name}} for {{business.name}}  </h3>
+
+<div id="sortDivDisplay" >
+
+	{{ page.rendered|safe|linebreaks }}
+	<a id="showEditWiki" style="font-size:14px" href="#">Edit</a>
+
+</div>
+
+{% if page.rendered%}	
 <div id="sortDivEdit" style="display:none;">
+{%else%}
+<div id="sortDivEdit" >
 
-
+{%endif%}
 <form action="/ratings/{{business.id}}/edit/{{page.id}}/#discuss" method="post">
 	{% csrf_token %}
 
@@ -17,12 +28,7 @@
 	</div>
 </form>
 </div>
-<div id="sortDivDisplay" >
 
-	{{ page.rendered|safe|linebreaks }}
-	<p style="font-size:14px"  onclick="showEditWiki()">Edit the description</p>
-	
-</div>
 
 <div id="comment_list">
 	{% include 'ratings/discussion/thread.html' %}

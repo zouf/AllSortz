@@ -1,4 +1,6 @@
 
+
+
 $(function() {
 
       $('div.comment div.vote').live("click", function () {
@@ -144,14 +146,16 @@ $("form[name=addReply]").live("submit", function(e){
 });
 
 
-function showAddReply(cid)
-{
+$(".addReply").live("click", function(e){
+	e.preventDefault();
+	var cid = $(this).attr('id').split('_')[1];
 	$("#commentDiv"+cid).toggle();
 
-}
+	
+});
+
 
 $("#prev1").live("click", function(e){
-	alert('yoyo');
 	e.preventDefault();
 	
 	$.ajax({

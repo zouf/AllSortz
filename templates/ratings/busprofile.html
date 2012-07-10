@@ -1,4 +1,5 @@
-<div id="busDetails">
+<table>
+<tr><td><div id="busDetails">
 	<i>{{business.city}}, {{business.state}}</i>
 	{%if not following_business %}
 		<form  name="subscribeUser" action="." method="post">
@@ -15,9 +16,11 @@
 	
 	<table>
 		<tr>
-			<td>
+			<td>	
+				<div class="busImage">
 				
 				<img src="{{business.photourl}}" />
+				</div>
 				{% include 'ratings/listing/rate_data.html' %}
 				
 			</td>
@@ -45,6 +48,55 @@
 		</tr>
 	</table>
 </div>
+</td>
+<td>
+	{% if page.name != business.master_page.name %}
+	<div id="masterDiscussion">
+		<a href="edit_master/{{ business.master_page.id }}/#discuss" rel="bookmark">
+			<div class="sort">
+				<h3>{{ business.master_page.name }}</h3>
+				
+				{% if not business.master_page.id %}
+				<p>This page does not exist, <a href="edit/">create it now</a>?</p>
+				{% endif %}
+				
+				{% if business.master_page.rendered %}
+					{{ business.master_page.rendered|safe|linebreaks }}
+				{% else %}
+					<p><em><font color="#999999">No description, click to add.</font></em></p>
+				{% endif %}
+				
+				<!--{% if page.id %}
+				<a href="edit/{{page.id}}/">Discuss / edit this tag</a>
+				{% else %}
+				<a href="edit/">Create this page</a>
+				{% endif %}-->
+			</div>
+		</a>
+	</div>
+	{%else%}
+			<div id="masterDiscussion">
+			<a href="#discuss" rel="bookmark">
+				<div class="sort">
+					<h3>{{ business.master_page.name }}</h3>
+				
+					
+					
+					{{ business.master_page.rendered|safe|linebreaks }}
+				
+					
+					<!--{% if page.id %}
+					<a href="edit/{{page.id}}/">Discuss / edit this tag</a>
+					{% else %}
+					<a href="edit/">Create this page</a>
+					{% endif %}-->
+				</div>
+			</a>
+		</div>
+	{%endif%}
+</td>
+<td>
+
 
 <table style="float:right;width:250px;">
 	<tr>
@@ -58,3 +110,4 @@
 		</td>
 	</tr>
 </table>
+</td></tr></table>
