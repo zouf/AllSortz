@@ -66,9 +66,9 @@
 #dropdown
 {
     list-style: none;
-    width: 600px;
+    width: 500px;
     position: relative;
-    top: 0px;
+    top: 10px;
     left: 50%;
     padding: 0px;
     margin-left: 20px;
@@ -174,19 +174,6 @@
     margin-left: 200px;
     z-index: 1100;
 }
-
-#dropdowns
-{
-    text-align: right;
-    width: 500px;
-    height: 30px;
-    position: relative;
-    top: 0px;
-    left: 18%;
-    margin-left: 150px;
-    z-index: 1100;
-}
-
 
 #footer
 {
