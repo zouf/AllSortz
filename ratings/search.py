@@ -3,10 +3,10 @@ Created on Jun 12, 2012
 
 @author: zouf
 '''
-from haystack.query import SearchQuerySet
-from tags.models import Tag
-import logging
 from communities.models import BusinessMembership
+from haystack.query import SearchQuerySet
+from tags.models import Tag, BusinessTag
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -29,15 +29,21 @@ def search_site(searchTerm, locationTerm):
         print(sr)
         if sr.model_name == "business":
             bus = sr.object
+            businesses.append(bus)
         elif sr.model_name == "tag":
-            bus = sr.object.business
+            bustags = BusinessTag.objects.filter(tag=sr.object)
+            for bt in bustags:
+                print(bt)
+                businesses.append(bt.business)
         elif sr.model_name == "comment":
             bus = sr.object.business
+            businesses.append(bus)
         else:
+            print('error')
             logger.error('error in search_site')
         
         #if in_location(bus,locations):
-        businesses.append(bus)
+        
     
     return businesses   
 
