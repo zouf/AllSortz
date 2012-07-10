@@ -31,16 +31,16 @@ body
 #icon
 {
     background-color: #6F6FD6;
-    padding-left: 17px;
-    padding-top: 17px;
+    padding-left: 27px;
+    padding-top: 27px;
     width: 160px;
     height: 160px;
     position: absolute;
     top: 23px;
     left: 50%;
     margin-left: -610px;
-    -moz-border-radius: 95px;
-    border-radius: 95px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
     z-index: 1000;
 }
 
