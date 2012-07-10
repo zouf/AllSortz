@@ -14,6 +14,10 @@ ADMINS = (
 
 DEV_BOXES = ['hydralisk', 'connie-VirtualBox'] # add your dev computer here
 
+#always use https
+SESSION_COOKIE_SECURE= True
+CSRF_COOKIE_SECURE = True
+
 
 #for integration with facebook
 FB_APP_SECRET = "586868267b93b17ed6c04e0a346018e5"

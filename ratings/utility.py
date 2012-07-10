@@ -76,7 +76,7 @@ def get_single_bus_data(b,user,isSideBar=False):
 
 #TODO: matt fix this to handle ratings from 1-4
 #is SideBar is true if we're going to use smaller data 
-def get_bus_data(business_list,user,isSideBar=False):
+def get_bus_data(business_list,user,isSideBar=True):
     for b in business_list:
         b = get_single_bus_data(b,user,isSideBar)
         

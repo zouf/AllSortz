@@ -18,3 +18,11 @@ from ratings.models import Business, Rating
 #admin.site.register(Rating)
 #admin.site.register(Business, BusinessAdmin)
 #admin.site.register(Grouping)
+
+
+class BusinessAdmin(admin.ModelAdmin):
+    date_hierarchy = 'date'
+    list_display = ('name', 'date',)
+    list_filter = ('name', 'date',)
+
+admin.site.register(Business, BusinessAdmin)

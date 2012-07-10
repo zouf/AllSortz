@@ -21,7 +21,8 @@ $(function() {
 				<table style="width:100%;">
 					<tr>
 					<td>
-						{% include 'ratings/buslist.html' %}
+						<input type="hidden" value="business" id="vote_on" />
+						{% include 'ratings/listing/entry_list.html' %}
 					</td>
 					<td>
 					</td>

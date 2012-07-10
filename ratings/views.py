@@ -137,8 +137,7 @@ def search(request):
         location = get_default()
         
     business_list = search_site(term, location)
-    print(business_list)
-    businesses = get_bus_data(business_list,request.user)
+    businesses = get_bus_data(business_list,request.user,True)
     paginator = Paginator(businesses, 10)  # Show 25 contacts per page
     page = request.GET.get('page')
     try:
@@ -152,6 +151,11 @@ def search(request):
     context = get_default_blank_context(request.user)
     context['search_term'] = term
     context['business_list'] = businesses
+    context['nonempty'] = True
+    context.update( {
+        'all_businesses' : businesses,
+        'page_template': "ratings/listing/entry.html",
+    } )
     return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
 
 
@@ -407,8 +411,6 @@ def index(request, template='ratings/index.html',
 
             'page_template': "ratings/listing/entry.html",
         } )
-        print('zouf get extra')
-        print(context['page_template'])
         return render_to_response(template, context_instance=RequestContext(request,context))
     else:
         businesses = []
