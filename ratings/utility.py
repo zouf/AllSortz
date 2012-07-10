@@ -13,7 +13,7 @@ from photos.views import get_photo_mini_url, get_photo_web_url, \
 from ratings.favorite import get_user_favorites
 from ratings.models import Rating, Business
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
-    getBusAvg
+    getBusAvg, getNumLoved, getNumLiked
 from tags.models import BusinessTag
 import logging
 import simplejson
@@ -52,23 +52,22 @@ def get_single_bus_data(b,user,isSideBar=False):
     
 
 
+
+    b.loved = getNumLoved(b)
+    b.liked = getNumLiked(b)
+    thisRat = Rating.objects.filter(user=user, business=b)
+    if thisRat.count() > 0:
+        r = Rating.objects.get(user=user, business=b)
+        b.this_rat = r.rating
+        b.rating = r.rating
+    else:
+        b.this_rat = 0
+        b.rating = 0
         
-    if user.is_authenticated():
-        b.pos_ratings = getNumPosRatings(b)
-        b.neg_ratings = getNumNegRatings(b)
-        thisRat = Rating.objects.filter(user=user, business=b)
-        if thisRat.count() > 0:
-            r = Rating.objects.get(user=user, business=b)
-            b.this_rat = r.rating
-            b.rating = r.rating
-        else:
-            b.this_rat = 0
-            b.rating = 0
-            
-        bustags = BusinessTag.objects.filter(business=b)
-        b.tags = []
-        for bt in bustags:
-            b.tags.append(bt.tag)
+    bustags = BusinessTag.objects.filter(business=b)
+    b.tags = []
+    for bt in bustags:
+        b.tags.append(bt.tag)
 
     
     return b
@@ -77,7 +76,7 @@ def get_single_bus_data(b,user,isSideBar=False):
 
 #TODO: matt fix this to handle ratings from 1-4
 #is SideBar is true if we're going to use smaller data 
-def get_bus_data(business_list,user,isSideBar=False):
+def get_bus_data(business_list,user,isSideBar=True):
     for b in business_list:
         b = get_single_bus_data(b,user,isSideBar)
         

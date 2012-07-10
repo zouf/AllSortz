@@ -95,6 +95,7 @@ def get_default_tag_context(b,t,user):
 
     
     context =   { \
+        'communities': Community.objects.all(),\
         'business' : b, \
         'comments': comments, \
         'lat': b.lat,\
@@ -151,7 +152,8 @@ def get_default_bus_context(b,user):
         'top_sorts':top_tags,\
         'all_sorts':get_all_sorts(4),\
         'hard_tags':hard_tags,\
-        'location_term':get_community(user)
+        'location_term':get_community(user) ,\
+        'communities': Community.objects.all()
         }
 
     return context

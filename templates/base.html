@@ -51,13 +51,18 @@ function setupPage()
 }
 </script>
 
+{% autoescape on %}
+
 <body onload="setupPage()">
 	
 	<div id="account">
 		{% if not user.is_authenticated %}
-			<a href="/help/">Help</a> | <a href="/accounts/login/?next=/">Login</a> | <a href="/accounts/register/">Register</a> | <a href="/ratings/feedback/">Feedback </a>
+			<a href="/help/">Help</a> | <a href="/accounts/login/?next=/">Login</a> | <a href="/accounts/register/">Register</a> | <a href="/feedback/">Feedback </a>
 		{% else %}
-			<p style="display:inline"> Howdy, <a href="/user_details/{{user.id}}/"> {{user.first_name}}</a> </p> | <a href="/help/">Help</a> | <a href="/">Home</a> |  <a href="/ratings/feedback/">Feedback </a> | <a href="/accounts/logout/?next=/">logout</a>
+			 <p style="display:inline;">Howdy, <a href="/user_details/{{user.id}}/">{{user.first_name}}</a></p>
+			 | <a href="/help/">Help</a> 
+			 |  <a href="/feedback/">Feedback </a>
+			 | <a href="/accounts/logout/?next=/">Logout</a>
 			
 		{% endif %}
 	</div>
@@ -67,8 +72,8 @@ function setupPage()
 	</div>
 	
 	<div id="header">
-		<div style="position:absolute;top:80%;left:50%;margin-left:-175px;">
-			<i>All sorts of places for all sorts of people.</i>
+		<div style="position:absolute;top:70%;left:50%;margin-left:-175px;">
+			<p class="helper_text" style="font-style:italic;" >All sorts of places for all sorts of people</p>
 		</div>
 		<div id="search">
 				<form method="get" action="/ratings/search_tags/">{% csrf_token %}
@@ -78,13 +83,14 @@ function setupPage()
 								{% if search_term %}
 									 <input type="search" class="ui-big-widget" name="search" placeholder="{{search_term}}" />
 								{%else%}
-									<input type="search" class="ui-big-widget" name="search" placeholder="Search" />
+									<input type="search" class="ui-big-widget" name="search" placeholder="Name, Tag, etc." />
 								{%endif%}
 							</td>
 							<td>
-					       	 		
+					       	 	<p class="helper_text">Near</p>	
 							</td>
 							<td>
+							<!--
 						       	{% if location_term %}
 					       			 <input type="search" class="ui-big-widget" name="location" placeholder="{{location_term}}" />
 								{%else%}
@@ -93,47 +99,56 @@ function setupPage()
 									{%else%}
 										<input type="search" class="ui-big-widget" name="location" placeholder="location" />
 									{%endif%}
-								{%endif%}
-							     
+								{%endif%}-->
+									<select name="location" class="ui-big-widget">
+										{% for c in communities %}
+											<option value="{{c.name}}" {% if c.name == community.name %} select="true" {%endif%} >
+												{{c.name}}</option>
+										{%endfor%}
+
+									</select>
 					       </td>
 					       <td>
-					       	  <input type="submit" class="ui-big-widget" value="Find it!" />
+					       	 <input type="submit" class="ui-big-widget" value="Go" />
 					       </td>
 					       </tr>
 			      </table>
 			</form>
 		</div>
 		
-		<ul id="dropdown">
-			<li id="yourSorts"  class="ui-big-widget" style="width:120px;">Your Sorts
-				<ul id="dropdown-list1">
-					{% for sort in user_sorts %}
-					<li><p style="display:inline"><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></p></li>
-					{% endfor %}
-				</ul>
-			</li>
-			<li id="topSorts"  class="ui-big-widget" style="width:120px;">All Sorts
-				<ul id="dropdown-list2">
-					{% for sort in top_sorts %}
-					<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
-					{% endfor %}
-				</ul>
-			</li>
-			<li id="addStuff"  class="ui-big-widget" style="width:120px;">Add
-				<ul id="dropdown-list3">
-					<li><a href="/ratings/add_business/">Businesses</a></li>
-					<li><a href="/ratings/add_question/">Questions</a></li>
-					<li><a href="/ratings/add_new_tag/">Sorts</a></li>
-					<li><a href="/ratings/add_community/">Communities</a></li>
-					<li><a href="/ratings/add_trait/">User Traits</a></li>
-				</ul>
-			</li>
-		</ul>
+		<div id="dropdowns" style="padding-top:10px">
+			<ul id="dropdown">
+				<li id="yourSorts"  class="ui-big-widget" style="width:120px;">Your Sorts
+					<ul id="dropdown-list1">
+						{% for sort in user_sorts %}
+						<li><p style="display:inline"><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></p></li>
+						{% endfor %}
+					</ul>
+				</li>
+				<li id="topSorts"  class="ui-big-widget" style="width:120px;">All Sorts
+					<ul id="dropdown-list2">
+						{% for sort in top_sorts %}
+						<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
+						{% endfor %}
+					</ul>
+				</li>
+				<li id="addStuff"  class="ui-big-widget" style="width:120px;">Add
+					<ul id="dropdown-list3">
+						<li><a href="/ratings/add_business/">Businesses</a></li>
+						<li><a href="/ratings/add_question/">Questions</a></li>
+						<li><a href="/ratings/add_new_tag/">Sorts</a></li>
+					<!--	<li><a href="/ratings/add_community/">Communities</a></li> -->
+						<li><a href="/ratings/add_trait/">User Traits</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
 	</div>
 	
 	<div id="main">
     	{% block body %}{% endblock %}
     	
+    	{% if user.is_authenticated %}
     	<div id="browse">
     		<h1>Browse Sorts</h1>
     		<table id="tags">
@@ -152,21 +167,19 @@ function setupPage()
     		</table>
     		<!--<p align="right"><a href="/">and more (eventually)...</a></p>-->
     	</div>
-    	
+    	{%endif%}
     	<div id="footer">
     		<img src="{{STATIC_URL}}css/images/icon.png" width="18" height="25">
     		All Rights Reserved, AllSortz, Inc. |
     		<a href="/">Home</a> |
-    		<a href="/">About</a> |
-    		<a href="/">Contact</a> |
+    		<a href="/about/">About</a> |
+    		<a href="/contact/">Contact</a> |
     		<a href="/help/">Help</a> |
-    		<!--<a href="/ratings/reset_db/">Prepopulate</a> | -->
-    	
-    		<a href="/ratings/feedback/">Feedback </a>
+    		<a href="/feedback/">Feedback </a>
     		
     	</div>
 	</div>
 
 </body>
-
+{% endautoescape %}
 </html>

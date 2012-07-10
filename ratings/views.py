@@ -47,24 +47,6 @@ logger = logging.getLogger(__name__)
 re = RecEngine()
 
 
-
-
-def feedback(request):
-    if request.user.is_authenticated():
-        
-        if request.method == 'POST':
-            user = request.user
-            content = request.POST['feedback']   
-
-    
-            mail = EmailMessage('AllSortz Feedback', '\nuname: '+str(user.username) + '\n firstname: ' + str(user.first_name) +  '\nlastname: ' + str(user.last_name) + '\nemail: ' +str(user.email)+ '\ntime: ' + str(time.asctime())+  '\n\n'+str(content), to=['mattzouf@gmail.com'])
-            mail.send()
-            logger.info('Feedback form user'+str(user.username))
-            return redirect(index)
-        else:
-            return render_to_response('webadmin/feedback.html', context_instance=RequestContext(request))
- 
-
 @csrf_exempt
 def add_tag_comment(request):
     logger.debug('in add comment')
@@ -72,18 +54,14 @@ def add_tag_comment(request):
         form = request.POST 
         #add a comment to a business' tag page 
         if 'tid'  in form:
-            print('in tid')
             bid =form['bid']
-            print(bid)
             b = Business.objects.get(id=bid)
             tid = form['tid']
             t = Tag.objects.get(id=tid)
-            print(form)
             if 'cid' not in form:  #root reply
                 nm = form['comment']
                 k = Comment(descr=nm,user=request.user,reply_to=None)
                 k.save()
-               
                 tc = TagComment(business=b,tag=t,thread=k)
                 tc.save()
             else:  #reply to another comment submission
@@ -159,8 +137,7 @@ def search(request):
         location = get_default()
         
     business_list = search_site(term, location)
-    print(business_list)
-    businesses = get_bus_data(business_list,request.user)
+    businesses = get_bus_data(business_list,request.user,True)
     paginator = Paginator(businesses, 10)  # Show 25 contacts per page
     page = request.GET.get('page')
     try:
@@ -174,6 +151,11 @@ def search(request):
     context = get_default_blank_context(request.user)
     context['search_term'] = term
     context['business_list'] = businesses
+    context['nonempty'] = True
+    context.update( {
+        'all_businesses' : businesses,
+        'page_template': "ratings/listing/entry.html",
+    } )
     return render_to_response('ratings/sort.html',  context_instance=RequestContext(request,context))
 
 
@@ -219,8 +201,6 @@ def edit_tag_discussion(request,bus_id,page_id):
     return render_to_response('ratings/busdetail.html',
         RequestContext(request, context))
 
-def help(request):
-    return render_to_response('help.html',context_instance=RequestContext(request))
 
 
 @csrf_exempt
@@ -421,6 +401,8 @@ def index(request, template='ratings/index.html',
         context['your_businesses'] = your_businesses
         context['all_businesses'] = all_businesses
 
+        context['feed'] = get_recent_activity()
+
         context['nonempty'] = True
         context.update( {
             'all_businesses' : all_businesses,
@@ -429,8 +411,6 @@ def index(request, template='ratings/index.html',
 
             'page_template': "ratings/listing/entry.html",
         } )
-        print('zouf get extra')
-        print(context['page_template'])
         return render_to_response(template, context_instance=RequestContext(request,context))
     else:
         businesses = []
@@ -444,6 +424,42 @@ def index(request, template='ratings/index.html',
                
         context = get_unauthenticated_context()
         return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
+
+
+
+def get_recent_activity():
+ 
+    ratings = Rating.objects.filter().order_by('-date')[:5]
+   
+    feed = []
+    
+    for r in ratings:
+        r.type = "business"
+        r.business = get_single_bus_data(r.business, r.user, isSideBar=True)
+        feed.append(r)
+    allcomments = Comment.objects.filter().order_by('-date')
+    for c in allcomments:
+        try: 
+            tc = TagComment.objects.get(thread=c)
+            tc.type = "tagcomment"
+            tc.business = get_single_bus_data(tc.business, c.user, isSideBar=True)
+            tc.user = c.user
+            feed.append(tc)
+        except:
+            pass
+        
+        try:
+            bc = BusinessComment.objects.get(thread=c)
+            bc.business = get_single_bus_data(bc.business, c.user, isSideBar=True)
+            bc.type = "buscomment"
+            bc.user = c.user
+            feed.append(bc)
+        except:
+            pass
+    return feed
+    
+    
+    
 
 def get_user_activity(user):
  

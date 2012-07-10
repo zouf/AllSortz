@@ -5,9 +5,11 @@
 <div class="content">
 	<div id="userProfile">
 		<div class="userDetails" style="width:600px;float:left;">
-			<h1>{{user}}'s Profile</h1>
-			<h3>{{user}}'s traits</h3>
-			<div style="margin:5px 20px;">
+			<h1>{{checkon}}</h1>
+			
+			
+			<h3>{{checkon}}'s traits</h3>
+			<div style="margin:5px 20px; min-height:300px;">
 				{% if checkon == user %}
 					<form class="ui-big-widget" action="/ratings/user_traits/" method="post" >{% csrf_token %}
 						{% for t in user_traits %}
@@ -25,23 +27,25 @@
 					</form>
 				{%else %}
 					{% for t in user_traits %}
+						{% if t.value %}
 						<table><tr><td>
 						<p>{{t.name}}:</p>
 						</td><td>
 						{{t.value}}
 						</td></tr></table>
+						{%endif%}
 					{%endfor%}
 				
 				{%endif%}
 			</div>
-			<p><a href="/ratings/add_trait/" style="font-size:10px"><p >Think we're missing a trait?</p></a>
+			<!--<a href="/ratings/add_trait/" style="font-size:10px"><p >Think we're missing a trait?</p></a>-->
 		</div>
 		
 		<div class="userDetails">
-			<h2>{{user}}'s Sorts</h2>
+			<h2>{{checkon}}'s Sorts</h2>
 			{% include 'ratings/sorts.html' %}
 		</div>
-		
+		<!--
 		<div class="userDetails">
 			<h2>{{user}}'s Communities</h2>
 			{% for community in user_communities %}
@@ -65,29 +69,17 @@
 				<input type="submit" value="+"/>
 			</form>
 			<a href="/ratings/add_community/" style="font-size:10px">Think we're missing a community?</a>	
-		</div>
+		</div>-->
 		
 		<div class="userDetails">
-			<h2>{{user}}'s Watchlist</h2>
+			<h2>{{checkon}}'s Watchlist</h2>
 			{% for watch in user_favorites %}
 				 <a href="/ratings/{{ business.id }}/"> {{watch.name}} </a> |
 			{% endfor %}
 		</div>
 		<div class="userDetails">
-			<h2>{{user}}'s Activity Feed</h2>
-			{% for item in feed %}
-				
-				{% if item.type == "business" %}
-					<a href="/ratings/{{ item.business.id }}/"> <img src="{{ item.business.photourl }}" /> </a>Rated <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a> with {{item.rating}}
-				{%endif%}
-				{% if item.type == "buscomment" %}				
-					<a href="/ratings/{{ item.business.id }}/"> <img src="{{ item.business.photourl }}" /> </a> Discussion of <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>: <i>{{item.thread.descr}}</i> 
-				{%endif%}
-				{% if item.type == "tagcomment" %}				
-					Discussion of <a href="/ratings/{{ item.business.id }}/"> </a>under {{item.tag.name}}: <i>{{item.thread.descr}}</i> 
-				{%endif%}
-				<hr>
-			{% endfor %}
+			<h2>{{checkon}}'s Activity Feed</h2>
+			{% include 'ratings/feed/activity_feed.html' %}
 		</div>
 	</div>
 </div>
@@ -95,87 +87,4 @@
 {% endblock %}
 
 
-	<!--
-		<div id="busRating">
-		{% if rating %}
-			<p> Your rating is {{ rating.rating }}</p>
-		{% endif %}
-		{% if not rating %}
-		{% if user.is_authenticated %}
-			<p> Recommendation for {{user}}: {{ recommendation}} </p>
-		{% endif %}
-			<p> Average across {{numRatings}} users: {{avg}} </p>
-		{% endif %}
-		</div> -->
-	<!--
-	{% if user.is_authenticated %}
-		<form action="." method="post">{% csrf_token %}
-		{{ form.as_p }}
-		<input type="submit" value="Submit" />
-		</form>
-	{% endif %}
-	{% if not user.is_authenticated %}
-		<p>Login to rate</p>
-	{% endif %}
-	-->
 
-	<!--
-					<td valign="top">
-					<div id="review_list" class="news_feed">
-					<form action="." method="post">{% csrf_token %}
-					  	<h3 class="feedTitle">Reviews</h3>
-					  	<input id="id_review" value="Add a review" class="input_box" type="text"  name="review" maxlength="150" onfocus="this.value='';"  /></p>
-						{% for review in reviews %}
-						<div class="reviewListing">
-				    	<table>
-				    	<tr valign="top">
-				    	
-							<td style="width:40px;" valign="top">
-									<div id="review_{{review.id}}" class="review">
-								{% if review.this_rat > 0 %}
-									{% if review.this_rat > 2 %}
-										<div class="vote up">
-										<span id="rev_vote_pos_{{review.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
-										</div>
-										<div class="vote down">
-										<span id="rev_vote_neg_{{review.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
-										</div>
-										
-									{% else %}
-										<div class="vote up">
-										<span id="rev_vote_pos_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
-										</div>
-										<div class="vote down">
-										<span id="vrev_ote_neg_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
-										</div>
-									{%endif%}
-								{%else%}
-										<div class="vote up">
-										<span id="rev_vote_pos_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
-										</div>
-										<div class="vote down">
-										<span id="rev_vote_neg_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
-										</div>
-								{% endif %}
-									
-				
-								  <table>
-								  <tr>
-								  <td><div id="rev_pos_rating_{{review.id}}" class="pos_rating">{{review.pos_ratings}}</div></td>
-								  <td><div id="rev_neg_rating_{{review.id}}" class="neg_rating">{{review.neg_ratings}}</div></td>
-								  </tr>
-								  </table>
-							</div>
-						</td>
-						<td>		
-						   <div class="review_box">		
-						     {{review.descr}}  
-						    </div>
-						 </td>
-						</tr>
-					  </table>
-					    </div>
-					    {%endfor%}
-					    </form>
-					</div>
-				</td>-->

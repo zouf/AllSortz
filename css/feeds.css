@@ -51,3 +51,9 @@
     padding-top: 5px;
     box-shadow: 1px 1px 1px  1px #888;
 }
+
+.feed_text
+{
+	font-size:14px;
+	text-align:left;
+}

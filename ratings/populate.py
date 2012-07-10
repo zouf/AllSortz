@@ -87,6 +87,7 @@ def prepop_questions(user):
         t.save()
 
 def prepop_businesses(user):
+    BusinessPhoto.objects.all().delete()
     reader = csv.reader(open(settings.BASE_DIR+'/prepop/businesses.csv', 'U'), delimiter=',', quotechar='"')
     i = 0
     for row in reader:
@@ -106,12 +107,13 @@ def prepop_businesses(user):
         
         
         bset = Business.objects.filter(name=name,address=addr,state=state,city=city)
-        if bset.count() > 0:
-            continue  
-        
-        
-        b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8"), lat=0, lon=0)
-        b.save()
+#        if bset.count() > 0:
+#            continue  
+#        
+#        
+        #b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8"), lat=0, lon=0)
+        #b.save()
+        b = Business.objects.get(name=name)
         outpath =settings.STATIC_ROOT+'img'+str(i)+'.jpg'
         
 
@@ -128,6 +130,8 @@ def prepop_businesses(user):
 
 
 def prepopulate_database(request):
+    print request.user.is_superuser
+    print request.user
     if not request.user.is_superuser:
         return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
     else:
@@ -138,6 +142,7 @@ def prepopulate_database(request):
 #    UNCOMMENT TO DELETE
 
 #    Business.objects.all().delete()
+
 #    HardTag.objects.all().delete()
 #    Tag.objects.all().delete()
 #    Trait.objects.all().delete()

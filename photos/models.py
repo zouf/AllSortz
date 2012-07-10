@@ -59,7 +59,7 @@ class  BusinessPhoto(models.Model):
         #The IMAGE_SIZES looks like:
         IMAGE_SIZES = { 'image'      : (300, 348),
                     'image_large'    : (600, 450),
-                    'image_thumb'    : (100,100)}
+                    'image_thumb'    : (125,125)}
                     #'image_mini'    : (50, 50) }
 
         #each of which corresponds to an ImageField of the same name
