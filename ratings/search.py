@@ -3,7 +3,7 @@ Created on Jun 12, 2012
 
 @author: zouf
 '''
-from communities.models import BusinessMembership
+from communities.models import BusinessMembership, Community
 from haystack.query import SearchQuerySet
 from ratings.models import Business
 from tags.models import Tag, BusinessTag
@@ -24,25 +24,36 @@ def search_site(searchTerm, locationTerm):
     #    if l.model_name == "community":
     #        locations.append(l.object)
     
+    try:
+        c=Community.objects.get(name=locationTerm)
+    except:
+        logger.error('community object not found!')
+        
+    
+    print('community')
+    print(c)
     businesses = []
     for sr in search_results:
         bus = None
-        print(sr)
         if sr.model_name == "business":
             bus = sr.object
             lon = -74.699607
             lat = 40.32551
-            distance = 10
+            distance = 3
             current_pg_point = "point '({:.5f}, {:.5f})'".format(lon, lat)
             buses_query = ("SELECT * " +
-                           "FROM (SELECT id, (coordinates <@> {}) AS dist FROM ratings_business) AS dists" +
+                           "FROM (SELECT id, (coordinates <@> {}) AS dist FROM ratings_business) AS dists " +
                            "WHERE dist <= {:4f} ORDER BY dist ASC;").format(current_pg_point, distance)
-            buses = Business.objects.raw(buses_query)
 
-            print(buses)
+            buses = Business.objects.raw(buses_query)
+            i=0
             for bb in buses:
+                i+=1
+                print('\nbus: ')
                 print(bb)
+            print(str(i) + " results")
             businesses.append(bus)
+            print('done here')
         elif sr.model_name == "tag":
             bustags = BusinessTag.objects.filter(tag=sr.object)
             for bt in bustags:

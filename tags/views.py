@@ -3,15 +3,14 @@ Created on Jun 12, 2012
 
 @author: zouf
 '''
-from communities.models import UserMembership
+from communities.models import UserMembership, Community
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.db.models.aggregates import Count
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from ratings.models import Business, Comment, PageRelationship, Community, \
-    UserFavorite
+from ratings.models import Business, Comment, PageRelationship, UserFavorite
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from tags.models import Tag, TagRating, CommentTag, UserTag, BusinessTag, \
     BooleanQuestion, HardTag

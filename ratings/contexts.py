@@ -3,11 +3,11 @@ Created on Jun 27, 2012
 
 @author: zouf
 '''
+from communities.models import Community
 from communities.views import get_community, get_default
 from django.contrib.auth.models import AnonymousUser
 from ratings.favorite import is_user_subscribed
-from ratings.models import Community, BusinessComment, CommentRating, TagComment, \
-    Comment
+from ratings.models import BusinessComment, CommentRating, TagComment, Comment
 from ratings.utility import get_lat, get_single_bus_data
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from tags.models import Tag, HardTag, BusinessTag

@@ -28,17 +28,7 @@ class UserFavorite(models.Model):
     date = models.DateTimeField(auto_now=True)
      
         
-#decribes a listing   
-class Community(models.Model):
-    name = models.CharField(max_length=250)
-    date = models.DateTimeField(auto_now=True)
 
-    descr = models.CharField(max_length=1000)
-    city = models.CharField(max_length=100)
-    state = USStateField()  # Yes, this is America-centric..
-
-    def __unicode__(self):
-        return self.name
         
 
 class FacebookUser(models.Model):
