@@ -1,6 +1,7 @@
 *.pyc
 .project
 .pydevproject
+.settings
 /*.pyc
 .project
 .pydevproject
@@ -9,9 +10,10 @@ clib/boost_1_49_0
 *.so
 *.pdf
 docs/.DS_Store
-
+rateout/whoosh_index
 .DS_Store
-
+logs
 clib/Makefile
 venv
 *.pyc
+static

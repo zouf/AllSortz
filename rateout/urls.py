@@ -58,7 +58,7 @@ urlpatterns = patterns('',
     url(r'^ratings/disp/(?P<tag_id>\d+)/$','ratings.views.display_tag'),
 
     #answer questions on businesses
-    url(r'^ratings/answer_questions/(?P<bus_id>\d+)$','ratings.views.ans_business_questions'),
+    url(r'^ratings/answer_questions/(?P<bus_id>\d+)$','ratings.contribute.ans_business_questions'),
 
     #relate traits to yourself 
     url(r'^ratings/user_traits/$','usertraits.views.add_trait_relationships'),
@@ -73,11 +73,11 @@ urlpatterns = patterns('',
 	(r'^search/', include('haystack.urls')),
     
     #for adding content to the site
-	url(r'^ratings/add_business/$', 'ratings.views.add_business'),
-    url(r'^ratings/add_question/$', 'ratings.views.add_question'),
+	url(r'^ratings/add_business/$', 'ratings.contribute.add_business'),
+    url(r'^ratings/add_question/$', 'ratings.contribute.add_question'),
     url(r'^ratings/add_trait/$','usertraits.views.add_trait'),
-    url(r'^ratings/add_new_tag/$', 'ratings.views.add_new_tag'),
-    url(r'^ratings/add_community/$', 'ratings.views.add_community'),
+    url(r'^ratings/add_new_tag/$', 'ratings.contribute.add_new_tag'),
+    url(r'^ratings/add_community/$', 'ratings.contribute.add_community'),
 
 
     #misc. admin stuff

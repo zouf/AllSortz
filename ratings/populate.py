@@ -7,19 +7,15 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from photos.models import BusinessPhoto
 from rateout import settings
-from ratings.models import Business, Rating, Comment, TagComment, \
-    PageRelationship
-from recommendation.models import Recommendation, UserFactor, BusinessFactor
-from tags.models import Tag, HardTag, BusinessTag
+from ratings.models import Business, Rating
+from ratings.utility import setBusLatLng
+from tags.models import Tag, HardTag
 from tags.views import add_tag_to_bus, get_master_summary_tag, get_default_user
 from urllib import urlretrieve
 from usertraits.models import Trait
-from wiki.models import Page
 import csv
 import logging
-import string
 import sys
-import urlparse
 
 logger = logging.getLogger(__name__)
 def create_user(username, uid):
@@ -146,15 +142,13 @@ def prepopulate_database(request):
     
 #    UNCOMMENT TO DELETE
 
-    Business.objects.all().delete()
-    BusinessPhoto.objects.all().delete()
+#    Business.objects.all().delete()
+#    BusinessPhoto.objects.all().delete()
 #    Comment.objects.all().delete()
 #    BusinessTag.objects.all().delete()
 #    TagComment.objects.all().delete()
 #    Page.objects.all().delete()
 #    PageRelationship.objects.all().delete()
-#    
-    
 #    HardTag.objects.all().delete()
 #    Tag.objects.all().delete()
 #    Trait.objects.all().delete()
@@ -163,8 +157,7 @@ def prepopulate_database(request):
     prepop_sorts(request.user)
     prepop_traits(request.user)
     prepop_questions(request.user)
-   
-        
+    
     return HttpResponseRedirect('/')
 
     
@@ -188,12 +181,3 @@ def create_business(name, address, state, city, lat, lon):
         
 
 
-def clear_all_tables():
-    Rating.objects.all().delete()
-    User.objects.all().delete()
-    Recommendation.objects.all().delete()
-    #User.objects.exclude(username="joey").exclude(username="zouf").delete()
-    User.objects.all().delete()
-    Business.objects.all().delete()
-    UserFactor.objects.all().delete()
-    BusinessFactor.objects.all().delete()

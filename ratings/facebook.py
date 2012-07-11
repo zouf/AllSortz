@@ -7,16 +7,14 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import redirect
-from rateout.settings import FB_APP_SECRET, FB_APP_ID
+from rateout.settings import FB_APP_SECRET
 from ratings.models import FacebookUser
 from ratings.views import index
 import base64
-import cgi
 import hashlib
 import hmac
 import json
 import logging
-import urllib
 
 
 logger = logging.getLogger(__name__)

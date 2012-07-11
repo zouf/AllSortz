@@ -337,4 +337,3 @@ def get_hard_tags(b):
             ques['answer'] = ans
             results.append(ques)
     return results
-

@@ -6,16 +6,13 @@ Created on May 17, 2012
 
 from communities.models import BusinessMembership
 from communities.views import get_community
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.utils.encoding import smart_str
-from photos.views import get_photo_mini_url, get_photo_web_url, \
-    get_photo_thumb_url
+from photos.views import get_photo_web_url, get_photo_thumb_url
 from ratings.favorite import get_user_favorites
 from ratings.models import Rating, Business
-from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
-    getBusAvg, getNumLoved, getNumLiked
+from recommendation.normalization import getBusAvg, getNumLoved, getNumLiked
 from tags.models import BusinessTag
-from tags.views import get_pages, get_master_summary_tag, is_master_summary_tag, \
+from tags.views import get_master_summary_tag, is_master_summary_tag, \
     get_master_page_business
 import logging
 import simplejson

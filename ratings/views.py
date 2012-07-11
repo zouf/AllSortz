@@ -1,43 +1,32 @@
-from communities.forms import CommunityForm
 from communities.models import BusinessMembership, UserMembership
-from communities.views import get_community, get_default
+from communities.views import get_default
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
-from django.core.mail.message import EmailMessage
-from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from endless_pagination.decorators import page_template
-from photos.models import BusinessPhoto
 from photos.views import get_photo_web_url
 from ratings.contexts import get_tag_comments, get_business_comments, \
     get_default_blank_context, get_default_tag_context, get_default_bus_context, \
     get_unauthenticated_context
 from ratings.favorite import get_user_favorites, is_user_subscribed
-from ratings.forms import BusinessForm, CommentForm
-from ratings.models import Business, Comment, CommentRating, TagComment, \
-    PageRelationship, BusinessComment, Community, Rating
-from ratings.populate import create_business
+from ratings.feed import  get_all_recent_activity, \
+    get_user_recent_activity
+from ratings.models import Business, Comment, TagComment, PageRelationship, \
+    BusinessComment
 from ratings.search import search_site
-from ratings.utility import get_lat, get_bus_data, get_single_bus_data, \
+from ratings.utility import get_bus_data, \
     get_businesses_by_tag, get_businesses_by_community, get_businesses_trending, \
     get_businesses_by_your
-from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from recommendation.recengine import RecEngine
-from tags.form import HardTagForm, TagForm
-from tags.models import CommentTag, Tag, BusinessTag, UserTag, HardTag, \
-    BooleanQuestion
-from tags.views import get_questions, get_master_summary_tag, add_tag_to_bus
-from usertraits.models import TraitRelationship, Trait
+from tags.form import TagForm
+from tags.models import Tag, UserTag
 from usertraits.views import get_user_traits
 from wiki.forms import PageForm
 from wiki.models import Page
-import datetime
 import logging
-import sys
-import time
 
 
 
@@ -97,17 +86,6 @@ def add_tag_comment(request):
 
 
 
-
-
-def coming_soon(request):
-    if request.user.is_authenticated():
-        return index(request)
-    else:
-        return render_to_response('coming_soon.html', context_instance=RequestContext(request))
-
-
-
-
 @page_template("ratings/listing/entry.html") # just add this decorator
 def display_tag(request,tag_id,extra_context=None):
     t = get_object_or_404(Tag, pk=tag_id)
@@ -145,10 +123,10 @@ def search(request):
         
 
     context = get_default_blank_context(request.user)
-    context['search_term'] = term
-    context['business_list'] = businesses
-    context['nonempty'] = True
     context.update( {
+        'search_term' : term,
+        'business_list' : businesses,
+        'nonempty' : True,
         'all_businesses' : businesses,
         'page_template': "ratings/listing/entry.html",
     } )
@@ -168,8 +146,6 @@ def edit_master_tag_discussion(request,bus_id,page_id):
         b.photourl = get_photo_web_url(b)
     except:
         b.photourl= "" #NONE
-    
-
 
 
     if request.method == 'POST':
@@ -279,149 +255,6 @@ def add_new_tag(request):
     return render_to_response('ratings/contribute/add_content.html',context, context_instance=RequestContext(request))
 
 
-def add_community(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-        
-    #post a question 
-    if request.method=='POST':
-        form = CommunityForm(request.POST,request.FILES)
-        descr = form.data['descr']
-        city = form.data['city']
-        state = form.data['state']
-        name = form.data['name']
-        Community.objects.create(name=name,descr=descr,state=state,city=city)
-
-    context = get_default_blank_context(request.user)
-    context['form'] =CommunityForm     
-    context['type'] = 'community'
-    return render_to_response('ratings/contribute/add_content.html',context, context_instance=RequestContext(request))
-
-
-def add_question(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-        
-    #post a question 
-    if request.method=='POST':
-
-        form = HardTagForm(request.POST)
-        question = form.data['question'] 
-        if 'tag' in form.data:
-            descr = form.data['tag']
-        else:
-            descr = 'unset'
-        HardTag.objects.create(creator=request.user,question=question,descr=descr)
-
-    f = HardTagForm()
-    context = get_default_blank_context(request.user)
-    context['form'] = f
-    context['type'] = 'question'
-    return render_to_response('ratings/contribute/add_content.html', context, context_instance=RequestContext(request))
-
-def ans_business_questions(request,bus_id):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-
-    if request.method != 'POST':
-        b = get_object_or_404(Business, pk=bus_id)
-        try:
-            b.photourl = get_photo_web_url(b)
-        except:
-            b.photourl= "" #NONE
-        questions = get_questions(b,request.user)
-        b = get_single_bus_data(b,request.user)
-
-        context = get_default_bus_context(b, request.user)
-        context['questions'] = questions
-        return render_to_response('ratings/contribute/ans_questions.html', context_instance=RequestContext(request,context))
-    else:
-        
-        bid = request.POST['bid']
-        values = []
-        #get the list of anwers
-        print(request.POST)
-        for key in request.POST:
-            if key.find('answer') > -1:
-                values.append(request.POST[key])
-                
-        b = Business.objects.get(id=bid)
-        
-        for v in values:
-            ans = v.split('_')[1]
-            qid = v.split('_')[0]
-            hardtag = HardTag.objects.get(id=qid)
-            if ans == 'y':
-                BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=True)
-            else:
-                BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=False) 
-        return redirect(detail_keywords,bus_id)
-
-def add_business(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-        
-    if request.method == 'POST':  # add a business
-
-        form = BusinessForm(request.POST, request.FILES)
-        name = form.data['name']
-        logger.debug("Creation of business %s by  %s", name,request.user.username)
-        address = form.data['address']
-        city = form.data['city']
-        state = form.data['state']
-        
-        loc = address + " " + city + " " + state
-        latlng = get_lat(loc)
-        
-        if latlng:
-            b   = create_business(name, address, state, city, lat=latlng[0], lon =latlng[1])
-        else:
-            b = create_business(name, address, state, city, lat=0, lon =0)
-            
-   
-  
-        if 'image' in request.FILES:
-            img = request.FILES['image']
-            print(img)
-            bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
-            bp.save(True)
-   
-        community = get_community(request.user)
-        
-        bm = BusinessMembership(business=b,community=community)
-        bm.save()
-        
-        values = request.POST.getlist('answers')
-        for v in values:
-            ans = v.split('_')[1]
-            qid = v.split('_')[0]
-            hardtag = HardTag.objects.get(id=qid)
-            if ans == 'y':
-                BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=True)
-            else:
-                BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=False) 
-        
-        return redirect(detail_keywords,b.id)
-    else:  # Print a  business form
-        context = get_default_blank_context(request.user)
-        context['questions'] = get_questions(None,request.user)
-        context['form'] = BusinessForm()
-        return render_to_response('ratings/contribute/add_business.html', context, context_instance=RequestContext(request))
-
-#@page_template("ratings/listing/entry.html") # just add this decorator
-#def entry_list(request,template='ratings/listing/entry_list.html',extra_context=None):
-#    context = {'all_businesses' : get_businesses_trending(request.user,request.GET.get('page'),[],True),
-#               'your_businesses' :get_businesses_by_your(request.user,request.GET.get('page'),[],True), 
-#               'community_businesses' :get_businesses_by_community(request.user,request.GET.get('page'),[],True)
-#            }
-#
-#               
-#               
-#    if extra_context is not None:
-#        context.update(extra_context)
-#    return render_to_response(template, context,
-#        context_instance=RequestContext(request))
-
 @page_template("ratings/listing/entry.html") # just add this decorator
 def index(request, template='ratings/index.html',
     extra_context=None):
@@ -441,18 +274,15 @@ def index(request, template='ratings/index.html',
         current_businesses+=your_businesses#.object_list
 
         context = get_default_blank_context(request.user)
-        context['community_businesses'] = community_businesses
-        context['your_businesses'] = your_businesses
-        context['all_businesses'] = all_businesses
 
-        context['feed'] = get_recent_activity()
-
-        context['nonempty'] = True
         context.update( {
-            'all_businesses' : all_businesses,
+            'community_businesses' : community_businesses,
+            'your_businesses' : your_businesses,
+            'all_businesses': all_businesses,
+            'feed' : get_all_recent_activity(),
             'your_businesses' : your_businesses,
             'community_businesses' : community_businesses,
-
+            'nonempty' : True,
             'page_template': "ratings/listing/entry.html",
         } )
         return render_to_response(template, context_instance=RequestContext(request,context))
@@ -468,92 +298,26 @@ def index(request, template='ratings/index.html',
                
         context = get_unauthenticated_context()
         return render_to_response('ratings/index.html', context_instance=RequestContext(request,context))
-
-
-
-def get_recent_activity():
  
-    ratings = Rating.objects.filter().order_by('-date')[:5]
-   
-    feed = []
-    
-    for r in ratings:
-        r.type = "business"
-        r.business = get_single_bus_data(r.business, r.user, isSideBar=True)
-        feed.append(r)
-    allcomments = Comment.objects.filter().order_by('-date')
-    for c in allcomments:
-        try: 
-            tc = TagComment.objects.get(thread=c)
-            tc.type = "tagcomment"
-            tc.business = get_single_bus_data(tc.business, c.user, isSideBar=True)
-            tc.user = c.user
-            feed.append(tc)
-        except:
-            pass
-        
-        try:
-            bc = BusinessComment.objects.get(thread=c)
-            bc.business = get_single_bus_data(bc.business, c.user, isSideBar=True)
-            bc.type = "buscomment"
-            bc.user = c.user
-            feed.append(bc)
-        except:
-            pass
-    return feed
-    
-    
-    
-
-def get_user_activity(user):
- 
-    ratings = Rating.objects.filter(user=user).order_by('-date')[:5]
-   
-    feed = []
-    
-    for r in ratings:
-        r.type = "business"
-        r.business = get_single_bus_data(r.business, user, isSideBar=True)
-        feed.append(r)
-    allcomments = Comment.objects.filter(user=user).order_by('-date')
-    for c in allcomments:
-        try: 
-            tc = TagComment.objects.get(thread=c)
-            tc.type = "tagcomment"
-            tc.business = get_single_bus_data(tc.business, user, isSideBar=True)
-            feed.append(tc)
-        except:
-            pass
-        
-        try:
-            bc = BusinessComment.objects.get(thread=c)
-            bc.business = get_single_bus_data(bc.business, user, isSideBar=True)
-            bc.type = "buscomment"
-            feed.append(bc)
-        except:
-            pass
-    return feed
-    
-    
-    
-    
 
 def user_details(request,uid):
     if not request.user.is_authenticated():
         return redirect(index)
   
     context = get_default_blank_context(request.user)
+    checkon = User.objects.get(id=uid)
+        
     communities = []
     for um in UserMembership.objects.filter(user=request.user):
         communities.append(um.community)
-    context['user_communities'] = communities
-    context['user_favorites'] = get_user_favorites(request.user)
-    context['user_traits'] = get_user_traits(request.user)
-    
-    checkon = User.objects.get(id=uid)
 
-    context['checkon'] = checkon
-    context['feed'] = get_user_activity(checkon)
+    context.update({
+        'user_communities':communities,
+        'user_favorites' : get_user_favorites(request.user),
+        'user_traits' : get_user_traits(request.user),
+        'checkon' : checkon,
+        'feed' : get_user_recent_activity(checkon)
+        })
     return render_to_response('ratings/user/user_detail.html', context_instance=RequestContext(request,context))
     
 def logout_page(request):
