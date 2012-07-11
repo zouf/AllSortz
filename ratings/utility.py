@@ -15,7 +15,7 @@ from ratings.models import Rating, Business
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     getBusAvg, getNumLoved, getNumLiked
 from tags.models import BusinessTag
-from tags.views import get_pages, get_master_summary_tag, is_master_summary_tag,\
+from tags.views import get_pages, get_master_summary_tag, is_master_summary_tag, \
     get_master_page_business
 import logging
 import simplejson
