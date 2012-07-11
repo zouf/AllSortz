@@ -77,21 +77,27 @@ if DEPLOY:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': 'nightout2',                      # Or path to database file if using sqlite3.
-            'USER': 'zouf',                      # Not used with sqlite3.
+            'NAME': 'allsortz-db',                      # Or path to database file if using sqlite3.
+                # Not used with sqlite3.
+            'USER': 'root',
             'PASSWORD': 'zoufzouf',                  # Not used with sqlite3.
-            'HOST': 'rateoutdb-mysql.carvpvtur6or.us-east-1.rds.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
+            'HOST': 'db.allsortz.com',
+            'PORT': '5432',       
+                # Set to empty string for default. Not used with sqlite3.
         }
     }
-
+    
+    #for amazon RDS
+    #'USER': 'zouf',                  
+    # 'HOST': 'rateoutdb-mysql.carvpvtur6or.us-east-1.rds.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
+    # 'PORT': '3306',      
 else:
     DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'nightout2',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'allsortz-db',                      # Or path to database file if using sqlite3.
         'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': 'new-password',                  # Not used with sqlite3.
+        'PASSWORD': 'zoufzouf',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
         }   
