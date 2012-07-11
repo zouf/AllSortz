@@ -15,6 +15,7 @@ from tags.views import get_tags_business, get_tags_user, get_top_tags, \
     get_hard_tags, get_all_sorts, get_master_summary_tag, get_pages, \
     get_bus_master_tag
 import logging
+from ratings.feed import get_bus_recent_activity
 
 
 logger = logging.getLogger(__name__)
@@ -145,24 +146,25 @@ def get_default_bus_context(b,user):
     
     pages = get_pages(b,bus_tags)
     b = get_single_bus_data(b,user)
-    context =   { \
-        'business' : b, \
-        'comments': comments, \
-        'lat':b.lat,\
-        'lng':b.lon,  \
-        'bus_tags':bus_tags, \
-        'pages': pages, \
-        'master_summary': get_master_summary_tag(),\
-        'tags': Tag.objects.all(),\
-        'user_sorts':user_tags,\
-        'top_sorts':top_tags,\
-        'all_sorts':get_all_sorts(4),\
-        'hard_tags':hard_tags,\
-        'location_term':get_community(user) ,\
-        'communities': Community.objects.all(),\
-        'following_business': is_user_subscribed(b,user),\
-
-        }
+    context = {}
+    context.update({
+        'business' : b,
+        'comments': comments, 
+        'lat':b.lat,
+        'lng':b.lon,  
+        'bus_tags':bus_tags, 
+        'pages': pages, 
+        'master_summary': get_master_summary_tag(),
+        'tags': Tag.objects.all().order_by('-descr').reverse(),
+        'user_sorts':user_tags,
+        'top_sorts':top_tags,
+        'all_sorts':get_all_sorts(4),
+        'hard_tags':hard_tags,
+        'location_term':get_community(user) ,
+        'communities': Community.objects.all(),
+        'following_business': is_user_subscribed(b,user),
+        'bus_activity_feed' : get_bus_recent_activity(b)
+        })
 
     return context
 

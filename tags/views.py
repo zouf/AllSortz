@@ -184,7 +184,6 @@ def remove_user_tag(request):
                 tag = Tag.objects.get(descr=nm)
                 UserTag.objects.filter(tag=tag,user=u).delete()
             except: 
-                print('exception goddamit')
                 logger.error("trying to delete a user tag hat wasn't there")
                 
             response_data = dict()
@@ -218,12 +217,25 @@ def remove_user_tag(request):
 
 
 def get_top_tags(N):
-    tags = Tag.objects.filter()[:N]
-    return tags
+    allsorts = []
+    for t in Tag.objects.all().exclude(id=get_master_summary_tag().id):
+        ratingFilter = BusinessTag.objects.filter(tag=t)
+        sortFilter = ratingFilter.aggregate(Count('tag'))
+
+        allsorts.append([t,sortFilter['tag__count']])
+    
+    sorts = sorted(allsorts, key = lambda x : x[1],reverse=True)
+    
+    tags = []
+
+    for s in sorts:
+        tags.append(s[0])
+    
+    return tags[:N]
 
 
 def get_all_sorts(N):
-    tags = Tag.objects.all()
+    tags = Tag.objects.all().order_by('-descr').reverse()
     i = 0
     sorts = []
     for t in tags:

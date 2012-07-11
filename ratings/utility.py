@@ -57,8 +57,9 @@ def get_single_bus_data(b,user,isSideBar=False):
 
     b.loved = getNumLoved(b)
     b.liked = getNumLiked(b)
-    thisRat = Rating.objects.filter(user=user, business=b)
-    if thisRat.count() > 0:
+    
+    #the user exists and has rated something
+    if user and  Rating.objects.filter(user=user, business=b).count() > 0:
         r = Rating.objects.get(user=user, business=b)
         b.this_rat = r.rating
         b.rating = r.rating
@@ -72,7 +73,6 @@ def get_single_bus_data(b,user,isSideBar=False):
         if not is_master_summary_tag(bt.tag):
             b.tags.append(bt.tag)
 
-    
     b.master_page = get_master_page_business(b)
     return b
 

@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.localflavor.us.models import USStateField
 from django.db import models
 from wiki.models import Page
+from django.contrib.gis.db import models as gismodels
 
 
 
@@ -19,7 +20,7 @@ class Business(models.Model):
 
     def __unicode__(self):
         return self.name
-        
+
 
      
 class UserFavorite(models.Model):

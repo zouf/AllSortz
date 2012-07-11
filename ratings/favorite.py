@@ -17,6 +17,6 @@ def get_user_favorites(user):
     return favorites
 
 def is_user_subscribed(b,user):
-    if UserFavorite.objects.filter(business=b,user=user).count() >0:
+    if user and UserFavorite.objects.filter(business=b,user=user).count() >0:
         return True;
     return False

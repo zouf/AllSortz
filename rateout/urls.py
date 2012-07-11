@@ -68,7 +68,7 @@ urlpatterns = patterns('',
     url(r'^$', 'ratings.views.index'),
     url(r'^index*$', 'ratings.views.index'),
     url(r'^index/$', 'ratings.views.index'),
-    url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.detail_keywords'),
+    url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.bus_details'),
     url(r'^ratings/search_tags/$', 'ratings.views.search'),
 	(r'^search/', include('haystack.urls')),
     

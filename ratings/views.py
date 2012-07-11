@@ -156,7 +156,7 @@ def edit_master_tag_discussion(request,bus_id,page_id):
             page.content = form.cleaned_data['content']
 
             page.save()
-            return redirect(detail_keywords, bus_id=bus_id)
+            return redirect(bus_details, bus_id=bus_id)
     else:
         if page:
             wiki_edit_form = PageForm(initial=page.__dict__)
@@ -196,7 +196,7 @@ def edit_tag_discussion(request,bus_id,page_id):
             page.content = form.cleaned_data['content']
 
             page.save()
-            return redirect(detail_keywords, bus_id=bus_id)
+            return redirect(bus_details, bus_id=bus_id)
     else:
         if page:
             wiki_edit_form = PageForm(initial=page.__dict__)
@@ -224,17 +224,14 @@ def edit_tag_discussion(request,bus_id,page_id):
 
 
 @csrf_exempt
-def detail_keywords(request, bus_id):
+def bus_details(request, bus_id):
     b = get_object_or_404(Business, pk=bus_id)
-
     try:
         b.photourl = get_photo_web_url(b)
     except:
         b.photourl= "" #NONE
     
     context = get_default_bus_context(b, request.user)
-    context['following_business'] = is_user_subscribed(b,request.user)
-    
     
     return render_to_response('ratings/busdetail.html', context_instance=RequestContext(request,context))
 

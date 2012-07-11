@@ -57,10 +57,9 @@ class  BusinessPhoto(models.Model):
         
         #Save a thumbnail for each of the given dimensions
         #The IMAGE_SIZES looks like:
-        IMAGE_SIZES = { 'image'      : (300, 348),
-                    'image_large'    : (600, 450),
+        IMAGE_SIZES = { 'image'      : (200, 200),
+                    'image_large'    : (225, 225),
                     'image_thumb'    : (125,125)}
-                    #'image_mini'    : (50, 50) }
 
         #each of which corresponds to an ImageField of the same name
         for field_name, size in IMAGE_SIZES.iteritems():
