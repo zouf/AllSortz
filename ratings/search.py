@@ -30,8 +30,8 @@ def search_site(searchTerm, locationTerm):
         print(sr)
         if sr.model_name == "business":
             bus = sr.object
-            lon = 40.32551
-            lat = -74.699607
+            lon = -74.699607
+            lat = 40.32551
             buses = Business.objects.raw('\
                 SELECT id, ((ACOS(SIN('+str(lat)+' * PI() / 180) * SIN(lat * PI() / 180) + COS('+str(lat)+' * PI() / 180) * COS(lat * PI() / 180) * \
                         COS(('+str(lon)+' - lon) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) \
