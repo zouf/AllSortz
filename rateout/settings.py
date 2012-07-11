@@ -76,7 +76,7 @@ if DEPLOY:
 #use amazon RDS
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'allsortz-db',                      # Or path to database file if using sqlite3.
                 # Not used with sqlite3.
             'USER': 'root',
