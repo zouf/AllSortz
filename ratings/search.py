@@ -32,11 +32,13 @@ def search_site(searchTerm, locationTerm):
             bus = sr.object
             lon = -74.699607
             lat = 40.32551
-            buses = Business.objects.raw('\
-                SELECT id, ((ACOS(SIN('+str(lat)+' * PI() / 180) * SIN(lat * PI() / 180) + COS('+str(lat)+' * PI() / 180) * COS(lat * PI() / 180) * \
-                        COS(('+str(lon)+' - lon) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) \
-                    AS `distance` FROM `ratings_business` HAVING `distance`<=\'10\' ORDER BY `distance` ASC' )
-            
+            distance = 10
+            current_pg_point = "point '({:.5f}, {:.5f})'".format(lon, lat)
+            buses_query = ("SELECT * " +
+                           "FROM (SELECT id, (coordinates <@> {}) AS dist FROM ratings_business) AS dists" +
+                           "WHERE dist <= {:4f} ORDER BY dist ASC;").format(current_pg_point, distance)
+            buses = Business.objects.raw(buses_query)
+
             print(buses)
             for bb in buses:
                 print(bb)
