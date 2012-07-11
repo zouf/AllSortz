@@ -41,9 +41,10 @@ def search_site(searchTerm, locationTerm):
             lat = 40.32551
             distance = 3
             current_pg_point = "point '({:.5f}, {:.5f})'".format(lon, lat)
-            buses_query = ("SELECT * " +
-                           "FROM (SELECT id, (coordinates <@> {}) AS dist FROM ratings_business) AS dists " +
-                           "WHERE dist <= {:4f} ORDER BY dist ASC;").format(current_pg_point, distance)
+            buses_query = " ".join(["SELECT *",
+                                    "FROM (SELECT id, (coordinates <@> {}) AS dist FROM ratings_business) AS dists",
+                                    "WHERE dist <= {:4f} ORDER BY dist ASC;"]).format(current_pg_point, distance)
+            buses = Business.objects.raw(buses_query)
 
             buses = Business.objects.raw(buses_query)
             i=0
