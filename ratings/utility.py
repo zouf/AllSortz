@@ -29,16 +29,19 @@ import urllib2
 
 logger = logging.getLogger(__name__)
 
+def setBusLatLng(b):
+    if b.lat == 0 or b.long == 0:
+        loc = b.address + " " + b.city + ", " + b.state
+        latlng = get_lat(loc)
+        b.lat = latlng[0]
+        b.lon = latlng[1]
+        b.save()
+        
+
 def convertAddressToLatLng():
     for b in Business.objects.all():
-        loc = b.address + " " + b.city + ", " + b.state
-        i = 0
-        time.sleep(5)
-        latlng = get_lat(loc)
-        if latlng:
-            b.lat = latlng[0]
-            b.lon = latlng[1]
-            b.save()
+        setBusLatLng(b) 
+        time.sleep(1)
 
 #isSideBar is true if we're using small images
 def get_single_bus_data(b,user,isSideBar=False):

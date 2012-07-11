@@ -181,6 +181,8 @@ def create_business(name, address, state, city, lat, lon):
     
     b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=address.encode("utf8"), lat=lat, lon=lon)
     b.save()
+    
+    setBusLatLng(b)
     add_tag_to_bus(b,get_master_summary_tag())
     return b
         
