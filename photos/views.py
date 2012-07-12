@@ -70,7 +70,7 @@ def add_photo_by_upload(img,b,user,default):
     return
     
 def add_photo_by_url(phurl, b,user,default):
-    outpath =settings.STATIC_ROOT+'img_dled.jpg'
+    outpath =settings.STATIC_ROOT+str(b.id)+"_"+str(b.city)+"_"+str(b.state)
 
     #print('retrieve'+str(urlparse.urlunparse(phurl)))
     urlretrieve(phurl, outpath)

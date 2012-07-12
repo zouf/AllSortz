@@ -3,9 +3,10 @@ Created on May 29, 2012
 
 @author: zouf
 '''
+from allsortz.views import get_comment_by_id
 from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
-from ratings.models import Business, Rating, Comment, CommentRating
+from ratings.models import Business, Rating, CommentRating
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 import json
 import logging
@@ -15,44 +16,6 @@ import sys
 
 logger = logging.getLogger(__name__)
 
-
-#@csrf_exempt
-#def tip_vote(request):
-#    logger.debug('in tip_vote')
-#    if request.method == 'POST':
-#        try:
-#            tip = Tip.objects.get(id=request.POST['id'])
-#        except Tip.DoesNotExist:
-#            return HttpResponse("{'success': 'false'}")
-#
-#        if request.POST['type'] == 'up':
-#            rat = 5  # rating.rating + 1
-#            res = 'pos'
-#        else:
-#            rat = 1  # rating.rating - 1
-#            res = 'neg'
-#        try:
-#            rating = TipRating.objects.get(tip=tip, user=request.user)
-#        except TipRating.DoesNotExist:
-#            logger.debug("In vote create a new tip rating!")
-#            rating = TipRating.objects.create(tip=tip, user=request.user, rating=rat)
-#        except:
-#            logger.debug("Unexpected error:", sys.exc_info()[0])
-#        else:
-#            logger.debug("tip vote already exists :(")
-#            return HttpResponse("{'success': 'false'}")
-#
-#        rating.save()
-#        response_data = dict()
-#        response_data['id'] = str(request.POST['id'])
-#        response_data['success'] = 'true'
-#        response_data['rating'] = res
-#        response_data['pos_rating'] = getNumPosRatings(tip)
-#        response_data['neg_rating'] = getNumNegRatings(tip)
-#        return HttpResponse(json.dumps(response_data), mimetype="application/json")
-#        #return HttpResponse("{'success':'true', 'rating': '" + str(rat) + "'}")
-#    else:
-#        raise Http404('What are you doing here?')
 
 
 
@@ -96,11 +59,12 @@ def vote(request):
 
 @csrf_exempt
 def comment_vote(request):
+
     logger.debug('in comment_vote')
     if request.method == 'POST':
         try:
-            comment = Comment.objects.get(id=request.POST['id'])
-        except Comment.DoesNotExist:
+            comment = get_comment_by_id(request.POST['id'])
+        except:
             return HttpResponse("{'success': 'false'}")
 
         if request.POST['type'] == 'up':
@@ -114,7 +78,9 @@ def comment_vote(request):
             rating = CommentRating.objects.get(comment=comment, user=request.user)
         except CommentRating.DoesNotExist:
             logger.debug("In vote create a new comment rating!")
-
+            print(comment)
+            print(request.user)
+            print(rat)
             rating = CommentRating.objects.create(comment=comment, user=request.user, rating=rat)
         except:
             logger.error("Unexpected error:", sys.exc_info()[0])
@@ -140,8 +106,8 @@ def remove_comment_vote(request):
     logger.debug('Remove Comment Vote!')
     if request.method == 'POST':
         try:
-            comment = Comment.objects.get(id=request.POST['id'])
-        except Comment.DoesNotExist:
+            comment = get_comment_by_id(request.POST['id']) 
+        except:
             logger.debug("Comment does not exist")
             return HttpResponse("{'success': 'false'}")
 

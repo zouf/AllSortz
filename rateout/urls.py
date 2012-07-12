@@ -35,7 +35,7 @@ urlpatterns = patterns('',
 
 
     #comments on discussion page
-    url(r'^api/add_tag_comment/$','ratings.views.add_tag_comment'),
+    url(r'^api/add_tag_comment/$','comments.views.add_tag_comment'),
 
 
     #favicon
@@ -55,36 +55,36 @@ urlpatterns = patterns('',
     url(r'^user_details/(?P<uid>\d+)/$','ratings.views.user_details'),
     
     #display businesses assoc with a tag
-    url(r'^ratings/disp/(?P<tag_id>\d+)/$','ratings.views.display_tag'),
+    url(r'^ratings/disp/(?P<tag_id>\d+)/$','allsortz.views.display_tag'),
 
     #answer questions on businesses
-    url(r'^ratings/answer_questions/(?P<bus_id>\d+)$','ratings.contribute.ans_business_questions'),
+    url(r'^ratings/answer_questions/(?P<bus_id>\d+)$','allsortz.contribute.ans_business_questions'),
 
     #relate traits to yourself 
     url(r'^ratings/user_traits/$','usertraits.views.add_trait_relationships'),
 
     
     #url(r'^$','ratings.views.coming_soon'),
-    url(r'^$', 'ratings.views.index'),
-    url(r'^index*$', 'ratings.views.index'),
-    url(r'^index/$', 'ratings.views.index'),
-    url(r'^ratings/(?P<bus_id>\d+)/$', 'ratings.views.bus_details'),
-    url(r'^ratings/search_tags/$', 'ratings.views.search'),
+    url(r'^$', 'allsortz.views.index'),
+    url(r'^index*$', 'allsortz.views.index'),
+    url(r'^index/$', 'allsortz.views.index'),
+    url(r'^ratings/(?P<bus_id>\d+)/$', 'allsortz.views.bus_details'),
+    url(r'^ratings/search_tags/$', 'allsortz.views.search'),
 	(r'^search/', include('haystack.urls')),
     
     #for adding content to the site
-	url(r'^ratings/add_business/$', 'ratings.contribute.add_business'),
-    url(r'^ratings/add_question/$', 'ratings.contribute.add_question'),
+	url(r'^ratings/add_business/$', 'allsortz.contribute.add_business'),
+    url(r'^ratings/add_question/$', 'allsortz.contribute.add_question'),
     url(r'^ratings/add_trait/$','usertraits.views.add_trait'),
-    url(r'^ratings/add_new_tag/$', 'ratings.contribute.add_new_tag'),
-    url(r'^ratings/add_community/$', 'ratings.contribute.add_community'),
+    url(r'^ratings/add_new_tag/$', 'allsortz.contribute.add_new_tag'),
+    url(r'^ratings/add_community/$', 'allsortz.contribute.add_community'),
 
 
     #misc. admin stuff
-    url(r'^feedback/$','ratings.webadmin.feedback'),
-    url(r'^contact/$','ratings.webadmin.feedback'),
-    url(r'^about/$', 'ratings.webadmin.allsortz_about'),
-    url(r'^help/$','ratings.webadmin.allsortz_help'),
+    url(r'^feedback/$','allsortz.webadmin.feedback'),
+    url(r'^contact/$','allsortz.webadmin.feedback'),
+    url(r'^about/$', 'allsortz.webadmin.allsortz_about'),
+    url(r'^help/$','allsortz.webadmin.allsortz_help'),
 
     
     url(r'^admin/', include(admin.site.urls)),
@@ -96,7 +96,7 @@ urlpatterns = patterns('',
 
     
     
-    url(r'^ratings/reset_db/$','ratings.populate.prepopulate_database'),
+    url(r'^ratings/reset_db/$','allsortz.populate.prepopulate_database'),
     
     #facebook stuff
     

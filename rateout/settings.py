@@ -260,6 +260,8 @@ INSTALLED_APPS = (
      'communities',
      'activities',
      'privatebeta',
+     'comments',
+     'allsortz',
      'endless_pagination',
     'south',   
      'wiki',

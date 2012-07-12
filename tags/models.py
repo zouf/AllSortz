@@ -33,7 +33,7 @@ class Tag(models.Model):
 class CommentTag(models.Model):
     creator = models.ForeignKey(User)
     date = models.DateTimeField(auto_now=True)
-    comment=models.ForeignKey('ratings.Comment')
+    comment=models.ForeignKey('comments.Comment')
     descr = models.TextField(max_length=1000)  
 
 
