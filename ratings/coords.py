@@ -1,9 +1,12 @@
 import re
 
-##########
-# Custom representation of geographic coordinates. Note that wherever
-# latitude and longitude appear together, *longitude* comes first. This
-# mirrors the convention used by PostgreSQL's earthdistance module.
+"""
+Custom representation of geographic coordinates.
+
+Note that wherever latitude and longitude appear together, *longitude*
+comes first. This mirrors the convention used by PostgreSQL's
+earthdistance module.
+"""
 
 class Coords:
     """A set of geographic coordinates."""
