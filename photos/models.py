@@ -14,6 +14,9 @@ class  BusinessPhoto(models.Model):
     user = models.ForeignKey(User)
     business = models.ForeignKey(Business)
     
+    is_default = models.BooleanField()
+
+    is_default_photo = models.BooleanField()
     
     def image_upload_to_lg(self, filename):
         today = datetime.datetime.today()

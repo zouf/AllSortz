@@ -261,7 +261,7 @@ INSTALLED_APPS = (
      'activities',
      'privatebeta',
      'endless_pagination',
-     
+    'south',   
      'wiki',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',

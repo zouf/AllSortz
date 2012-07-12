@@ -15,10 +15,13 @@ class Business(models.Model):
 
     address = models.CharField(max_length=250)
     city = models.CharField(max_length=100)
-    state = USStateField()  # Yes, this is America-centric..
+    state = USStateField()  # Yes, this is America-centric.
+    
 
     def __unicode__(self):
         return self.name
+
+
 
 
      
@@ -26,9 +29,6 @@ class UserFavorite(models.Model):
     business= models.ForeignKey(Business)
     user = models.ForeignKey(User)
     date = models.DateTimeField(auto_now=True)
-     
-        
-
         
 
 class FacebookUser(models.Model):
@@ -40,6 +40,10 @@ class PageRelationship(models.Model):
     page = models.ForeignKey(Page)
     business = models.ForeignKey(Business)
     tag = models.ForeignKey('tags.Tag')
+    
+    
+    
+    
     
     
     
