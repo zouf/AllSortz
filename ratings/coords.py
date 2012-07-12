@@ -27,6 +27,9 @@ class Coords:
     def lat(self):
         return self._lat
 
+    def __repr__(self):
+        return 'Coords({}, {})'.format(lon, lat)
+
     def __str__(self):
         return '({},{})'.format(lon, lat)
 
