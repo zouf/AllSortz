@@ -4,6 +4,7 @@ Created on Jun 12, 2012
 @author: zouf
 '''
 from communities.models import BusinessMembership, Community
+from geopy import geocoders
 from haystack.query import SearchQuerySet
 from ratings.models import Business
 from tags.models import Tag, BusinessTag
@@ -17,48 +18,34 @@ def search_site(searchTerm, locationTerm):
     print("Searching for "+str(searchTerm) + " near " + str(locationTerm))
     search_results = (SearchQuerySet().filter(content=searchTerm))
     
-    print(search_results)
-    #location_results = (SearchQuerySet().filter(content=locationTerm))
-    #locations = []
-    #for l in location_results:
-    #    if l.model_name == "community":
-    #        locations.append(l.object)
-    
     try:
         c=Community.objects.get(name=locationTerm)
     except:
         logger.error('community object not found!')
-        
     
-    print('community')
-    print(c)
+    g = geocoders.Google()  
+    res = g.geocode(str(c.city) +', '+str(c.state),exactly_one=False)
+    place, (base_lat,base_lng) = res[0]
+    #print "%s: %.5f, %.5f" % (place, base_lat, base_lng)  
+    
     businesses = []
     for sr in search_results:
-        bus = None
-        if sr.model_name == "business":
+        bus = None            
+        if sr.model_name == "business":            
             bus = sr.object
-            lon = -74.699607
-            lat = 40.32551
             distance = 3
-            current_pg_point = "point '({:.5f}, {:.5f})'".format(lon, lat)
+            current_pg_point = "point '({:.5f}, {:.5f})'".format(base_lng, base_lat)
+            
             buses_query = " ".join(["SELECT *",
                                     "FROM (SELECT id, (coordinates <@> {}) AS dist FROM ratings_business) AS dists",
                                     "WHERE dist <= {:4f} ORDER BY dist ASC;"]).format(current_pg_point, distance)
             buses = Business.objects.raw(buses_query)
-
-            buses = Business.objects.raw(buses_query)
-            i=0
-            for bb in buses:
-                i+=1
-                print('\nbus: ')
-                print(bb)
-            print(str(i) + " results")
-            businesses.append(bus)
-            print('done here')
+            for bresult in buses:
+                if bresult.id == bus.id:
+                    businesses.append(bus)
         elif sr.model_name == "tag":
             bustags = BusinessTag.objects.filter(tag=sr.object)
             for bt in bustags:
-                print(bt)
                 businesses.append(bt.business)
         elif sr.model_name == "comment":
             bus = sr.object.business

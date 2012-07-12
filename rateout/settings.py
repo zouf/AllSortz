@@ -32,6 +32,8 @@ if socket.gethostname() in DEV_BOXES:
     DEPLOY = False
 else:
     DEPLOY = True
+    
+
 
 #paginator settings
 ENDLESS_PAGINATION_PER_PAGE =4 
@@ -72,7 +74,7 @@ STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 ##old settings
 
 
-if DEPLOY:
+if not DEPLOY:
 #use amazon RDS
     DATABASES = {
         'default': {

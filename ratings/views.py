@@ -1,6 +1,5 @@
-from communities.forms import CommunityForm
-from communities.models import BusinessMembership, UserMembership, Community
-from communities.views import get_community, get_default
+from communities.models import BusinessMembership, UserMembership
+from communities.views import  get_default
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
@@ -12,16 +11,13 @@ from photos.views import get_photo_web_url
 from ratings.contexts import get_tag_comments, get_business_comments, \
     get_default_blank_context, get_default_tag_context, get_default_bus_context, \
     get_unauthenticated_context
-from ratings.favorite import get_user_favorites, is_user_subscribed
-from ratings.forms import BusinessForm, CommentForm
-from ratings.models import Business, Comment, CommentRating, TagComment, \
-    PageRelationship, BusinessComment, Rating
-from ratings.populate import create_business
+from ratings.favorite import get_user_favorites
+from ratings.feed import get_all_recent_activity, get_user_recent_activity
+from ratings.models import Business, Comment, TagComment, BusinessComment, \
+    PageRelationship
 from ratings.search import search_site
-from ratings.utility import get_bus_data, \
-    get_businesses_by_tag, get_businesses_by_community, get_businesses_trending, \
-    get_businesses_by_your
-from recommendation.recengine import RecEngine
+from ratings.utility import get_bus_data, get_businesses_by_tag, \
+    get_businesses_by_community, get_businesses_trending, get_businesses_by_your
 from tags.form import TagForm
 from tags.models import Tag, UserTag
 from usertraits.views import get_user_traits
@@ -29,15 +25,9 @@ from wiki.forms import PageForm
 from wiki.models import Page
 import logging
 
-
-
-
-
 logger = logging.getLogger(__name__)
 
-re = RecEngine()
-
-
+#re = RecEngine()
 
 @csrf_exempt
 def add_tag_comment(request):

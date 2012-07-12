@@ -4,7 +4,7 @@ Created on Jun 28, 2012
 @author: zouf
 '''
 from communities.forms import CommunityForm
-from communities.models import BusinessMembership
+from communities.models import BusinessMembership, Community
 from communities.views import get_community
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, redirect
@@ -13,7 +13,7 @@ from photos.models import BusinessPhoto
 from photos.views import get_photo_web_url
 from ratings.contexts import get_default_bus_context
 from ratings.forms import BusinessForm
-from ratings.models import Community, Business
+from ratings.models import Business
 from ratings.populate import create_business
 from ratings.utility import get_single_bus_data, get_lat
 from ratings.views import get_default_blank_context
