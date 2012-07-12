@@ -3,15 +3,14 @@ from django.contrib.localflavor.us.models import USStateField
 from django.db import models
 from wiki.models import Page
 
-
+import coords
 
 #decribes a listing   
 class Business(models.Model):
     name = models.CharField(max_length=250)
     date = models.DateTimeField(auto_now=True)
 
-    lat = models.FloatField()
-    lon = models.FloatField()
+    coords = coords.CoordsField()
 
     address = models.CharField(max_length=250)
     city = models.CharField(max_length=100)
