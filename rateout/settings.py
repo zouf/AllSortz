@@ -74,7 +74,7 @@ STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 ##old settings
 
 
-if not DEPLOY:
+if DEPLOY:
 #use amazon RDS
     DATABASES = {
         'default': {
