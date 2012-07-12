@@ -16,8 +16,6 @@ class  BusinessPhoto(models.Model):
     
     is_default = models.BooleanField()
 
-    is_default_photo = models.BooleanField()
-    
     def image_upload_to_lg(self, filename):
         today = datetime.datetime.today()
         return 'user_uploads/%s/%s-%s-%s.%s.%s/large/%s' % (self.user.username, today.year, today.month, today.day, today.hour, today.minute, filename)

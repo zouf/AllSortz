@@ -1,53 +1,15 @@
 {% extends "base.html" %}
 
 {% block body %}
-<script type="text/javascript">
-var directionsDisplay;
-var directionsService = new google.maps.DirectionsService();
-var map;
 
-function initialize() {
-	var latlng = new google.maps.LatLng({{lat}}, {{lng}});
-    var myOptions = {
-      center: latlng,
-      zoom: 16,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    var map = new google.maps.Map(document.getElementById("map_canvas"),
-        myOptions);
-    var marker = new google.maps.Marker({
-      position: latlng,
-      map: map,
-      title: "{{business.name}}"
-  	});
-  	google.maps.event.trigger(map, 'resize') 
-}
-
-
-</script>
 
 {% if business %}	
-	<div id="business" class="content">
-		<div id="busProfile" class="section">
-			<h1><a href="/ratings/{{business.id}}/">{{ business.name }}</a></h1>    
-			{% include 'ratings/busprofile.html' %}
-		</div>
-		<a href="/pics/{{business.id}}/">Pictures</a>
-		<a name="discuss"></a>
-		<div id="discussion" class="section">
-			<div id="sorts">
-				{%if form %}
-					{% include 'ratings/discussion/wikiedit.html' %}
-				{% else %}
-				
-					{% include 'ratings/discussion/wikipages.html' %}
-				{% endif %}
-			</div>
-			{% if not form %}
-				<div id="comment_list">
-					{% include 'ratings/discussion/thread.html' %}
-				</div>
-			{% endif%}
+	<div id="gallery" class="content">
+		<h1> Photos for {{business.name}}</h1>
+		<div class="photo" >
+		{% for p in photos %}
+			<img src={{p.image.url}} />
+		{%endfor%}
 		</div>
 	</div>
     

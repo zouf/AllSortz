@@ -5,17 +5,15 @@ Created on Apr 2, 2012
 '''
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from photos.models import BusinessPhoto
+from photos.views import add_photo_by_url
 from rateout import settings
 from ratings.models import Business, Rating
 from ratings.utility import setBusLatLng
 from tags.models import Tag, HardTag
 from tags.views import add_tag_to_bus, get_master_summary_tag, get_default_user
-from urllib import urlretrieve
 from usertraits.models import Trait
 import csv
 import logging
-import sys
 
 logger = logging.getLogger(__name__)
 def create_user(username, uid):
@@ -117,19 +115,7 @@ def prepop_businesses(user):
         b = Business.objects.get(name=name)
         
         add_tag_to_bus(b, get_master_summary_tag(), get_default_user())
-        outpath =settings.STATIC_ROOT+'img'+str(i)+'.jpg'
-        
-
-        #print('retrieve'+str(urlparse.urlunparse(phurl)))
-        urlretrieve(phurl, outpath)
-        bp = BusinessPhoto(user=user, business=b, image=outpath, title="test main", caption="test cap")
-        try:
-            bp.save(False)
-        except:
-            print("Unexpected error:" + str(sys.exc_info()[0]))
-            logger.error("Unexpected error:" + str(sys.exc_info()[0]))
-            pass
-            
+        add_photo_by_url(phurl,b,user,default=True)
 
 
 def prepopulate_database(request):

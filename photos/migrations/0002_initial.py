@@ -8,15 +8,25 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'BusinessPhoto.is_default2'
-        db.delete_column('photos_businessphoto', 'is_default2')
+        # Adding model 'BusinessPhoto'
+        db.create_table('photos_businessphoto', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('business', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ratings.Business'])),
+            ('is_default', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=100)),
+            ('image_thumb', self.gf('django.db.models.fields.files.ImageField')(max_length=100)),
+            ('image_large', self.gf('django.db.models.fields.files.ImageField')(max_length=100)),
+            ('date', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=300, blank=True)),
+            ('caption', self.gf('django.db.models.fields.TextField')(blank=True)),
+        ))
+        db.send_create_signal('photos', ['BusinessPhoto'])
 
 
     def backwards(self, orm):
-        # Adding field 'BusinessPhoto.is_default2'
-        db.add_column('photos_businessphoto', 'is_default2',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
-                      keep_default=False)
+        # Deleting model 'BusinessPhoto'
+        db.delete_table('photos_businessphoto')
 
 
     models = {

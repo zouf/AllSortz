@@ -102,9 +102,9 @@ urlpatterns = patterns('',
     
     url(r'^handle_fb_login/$','ratings.facebook.handle_fb_login'),
     url(r'^fbauth/$','ratings.facebook.handle_fb_request'),
-    
     (r'^invites/', include('privatebeta.urls')),
     (r'^mywiki/', include('wiki.urls')),
+    (r'^pics/', include('photos.urls'))
         
     
 

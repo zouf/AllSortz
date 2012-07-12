@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template.context import RequestContext
 from photos.models import BusinessPhoto
-from photos.views import get_photo_web_url
+from photos.views import get_photo_web_url, add_photo_by_upload
 from ratings.contexts import get_default_bus_context
 from ratings.forms import BusinessForm
 from ratings.models import Business
@@ -146,9 +146,7 @@ def add_business(request):
   
         if 'image' in request.FILES:
             img = request.FILES['image']
-            print(img)
-            bp = BusinessPhoto(user=request.user, business=b, image=img, title="test main", caption="test cap")
-            bp.save(True)
+            add_photo_by_upload(img,b,request.user,default=True)
    
         community = get_community(request.user)
         
