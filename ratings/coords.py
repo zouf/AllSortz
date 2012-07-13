@@ -1,4 +1,3 @@
-from __future__import unicode_literals
 import re
 
 """
@@ -29,10 +28,16 @@ class Coords:
         return self._lat
 
     def __repr__(self):
-        return 'Coords({}, {})'.format(lon, lat)
+        return '{}({}, {})'.format(self.__class__.__name__,
+                                   self.lon,
+                                   self.lat)
 
     def __str__(self):
-        return '({},{})'.format(lon, lat)
+        return '({}, {})'.format(self.lon, self.lat)
+
+    def __unicode__(self):
+        return unicode(str(self))
+
 
 class CoordsField(models.Field):
     __metaclass__ = models.SubfieldBase
