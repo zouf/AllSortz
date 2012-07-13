@@ -8,14 +8,21 @@
 
 
 <div id="commentDiv" style="display:none;">
+
 	<form action="." name="addTagComment" class="comment" id="comment_form" method="post">
 		<textarea name="comment" class="replybox" id="comment" placeholder="Start a discussion"/></textarea>
 
 			<input type="submit" class="ui-widget buttonme" value="Reply"></p>
-		<input type="hidden" name="bid" value="{{business.id}}"/>
+		{%if business %}
+			<input type="hidden" name="bid" value="{{business.id}}"/>
+		{%endif%}
 		{%if tag %}
 			<input type="hidden" name="tid" value="{{tag.id}}"/>
 		{% endif %}
+		{% if p %}
+			<input type="hidden" name="pid" value="{{p.id}}"/>
+		{%endif%}
+		
 	</form>
 </div>
 <ul>

@@ -32,9 +32,14 @@ function initialize() {
 			<h1><a href="/ratings/{{business.id}}/">{{ business.name }}</a></h1>    
 			{% include 'ratings/busprofile.html' %}
 		</div>
-		<a href="/pics/{{business.id}}/">Pictures</a>
-		<a name="discuss"></a>
+		<div id="photogallery" class="section">
+			<h1> Sorts </h1>
+			{% include 'photos/horizontal_feed.html' %}
+			<a href="/pics/gallery/{{business.id}}/">See More or Add your own</a>
+		</div>
+
 		<div id="discussion" class="section">
+			<h1> Sorts </h1>
 			<div id="sorts">
 				{%if form %}
 					{% include 'ratings/discussion/wikiedit.html' %}

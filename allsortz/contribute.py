@@ -41,6 +41,7 @@ def add_new_tag(request):
 
 
 
+
 def add_community(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)

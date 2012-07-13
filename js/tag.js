@@ -64,18 +64,6 @@ $(document).ready(function(){
 }); 
  
 $(document).ready(function(){
-	$("form[name=appendTag]").live("submit", function(e){
-		alert('append tag')
-		e.preventDefault();
-		var form = $("form[name=appendTag]")
-		var name = $("input[name=tagName]")
-	    $("#mainform").append("<input type=\"hidden\" name=\"tag\" value=\""+name.val()+"\"/>");
-		 $("#mainform").append("<p>"+name.val()+"</p>");
-	    return false;
-	 });
-	});
-
-$(document).ready(function(){
 	$("form[name=addASort]").live("submit", function(e){
 		//e.preventDefault();
 		var form = $("form[name=addASort]")
@@ -91,28 +79,8 @@ $(document).ready(function(){
 	         }
 	    });
 	    return false;
-	 });
-});
+	});
 
-
-$(document).ready(function(){
-$("form[name=addTagTB]").live("submit", function(e){
-	//e.preventDefault();
-	var form = $("form[name=addTagTB]")
-	var serial = form.serialize()
-    
-	$.ajax({ 
-         url   : '/api/add_tag/',
-         type  : form.attr('method'),
-         data  : serial, // data to be submitted
-         success: function(data){
-         	document.getElementById("tag_list").innerHTML = data
-         	 $("#addTagDiv").hide();
-         	rebind_buttons();
-         }
-    });
-    return false;
- });
 
 $("form[name=addTagDD]").live("submit", function(e){
 //	e.preventDefault();
@@ -127,15 +95,15 @@ $("form[name=addTagDD]").live("submit", function(e){
          /*	document.getElementById("tag_list").innerHTML = data   
          	 $("#addTagDiv").hide();
          	rebind_buttons();*/
-
-         	window.location.reload();
+        	// for now, just reload the page
+        	window.location.reload();
         
          }
     });
     return false;
- });
-});
+	});
 
+});
 
 function showAddTag()
 {
@@ -181,27 +149,7 @@ $(document).ready(function(){
 		unsubUser(form.serializeArray()[0].name,form.serializeArray()[0].value);
 		
 	});
-	
-	
-	
-	
-	$("form[name=addUserTagDD]").live("submit", function(e){
-	//	e.preventDefault();
-		var form = $("form[name=addUserTagDD]")
-		var serial = form.serialize()
-	    
-		$.ajax({ 
-	         url   : '/api/add_user_tag/',
-	         type  : form.attr('method'),
-	         data  : serial, // data to be submitted
-	         success: function(data){
-	        	 document.getElementById("tag_list").innerHTML = data      
-	        	 $("#addTagDiv").hide();
-	        	 rebind_buttons();
-	         }
-	    });
-	    return false;
-	 });
+
 	$("form[name=addUserTagTB]").live("submit", function(e){
 	//	e.preventDefault();
 		var form = $("form[name=addUserTagTB]")
@@ -219,7 +167,7 @@ $(document).ready(function(){
 	    });
 	    return false;
 	 });
-	});
+});
 
 
 $("#showEditWiki").live("click",function(e){

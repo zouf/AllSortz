@@ -9,6 +9,7 @@ import datetime
 # Create your models here.
 
 
+
 class  BusinessPhoto(models.Model):
 
     user = models.ForeignKey(User)

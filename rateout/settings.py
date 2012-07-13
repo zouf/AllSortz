@@ -12,7 +12,7 @@ ADMINS = (
      ('Matt Zoufaly', 'matt@allsortz.com'),
 )
 
-DEV_BOXES = ['hydralisk', 'connie-VirtualBox'] # add your dev computer here
+DEV_BOXES = ['hydralisk', 'connie-VirtualBox', 'enceladus'] # add your dev computer here
 
 #always use https
 #SESSION_COOKIE_SECURE= True
@@ -60,7 +60,6 @@ CELERY_RESULT_BACKEND = "amqp"
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 AWS_ACCESS_KEY_ID='AKIAJNT6HH4SMZYBZJKQ'
 AWS_SECRET_ACCESS_KEY='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'
-#AWS_STORAGE_BUCKET_NAME='rateoutimages'
 AWS_STORAGE_BUCKET_NAME='allsortz'
 
 AWS_CALLING_FORMAT=CallingFormat.SUBDOMAIN
@@ -97,7 +96,7 @@ else:
     DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'allsortz-db',                      # Or path to database file if using sqlite3.
+        'NAME': 'allsortz3',                      # Or path to database file if using sqlite3.
         'USER': 'root',                      # Not used with sqlite3.
         'PASSWORD': 'zoufzouf',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -206,7 +205,7 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-#    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'privatebeta.middleware.PrivateBetaMiddleware',
@@ -251,8 +250,8 @@ INSTALLED_APPS = (
     'data_import',
     'recommendation',
 	'registration', 
-	 'celery',
-     'djcelery',
+	 #'celery',
+     #'djcelery',
      'storages',
      'usertraits',
      'tags',
@@ -263,7 +262,7 @@ INSTALLED_APPS = (
      'comments',
      'allsortz',
      'endless_pagination',
-    'south',   
+#    'south',   
      'wiki',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',

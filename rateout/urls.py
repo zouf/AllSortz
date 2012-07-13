@@ -36,14 +36,16 @@ urlpatterns = patterns('',
 
     #comments on discussion page
     url(r'^api/add_tag_comment/$','comments.views.add_tag_comment'),
+    url(r'^api/add_photo_comment/$','comments.views.add_photo_comment'),
+
 
 
     #favicon
     url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to', {'url': STATIC_URL+'css/images/favicon.ico'}),
     
     #URLS for editing wiki pages
-    url(r'^ratings/(?P<bus_id>\d+)/edit/(?P<page_id>\d+)/$','ratings.views.edit_tag_discussion'),
-    url(r'^ratings/(?P<bus_id>\d+)/edit_master/(?P<page_id>\d+)/$','ratings.views.edit_master_tag_discussion'),
+    url(r'^ratings/(?P<bus_id>\d+)/edit/(?P<page_id>\d+)/$','allsortz.views.edit_tag_discussion'),
+    url(r'^ratings/(?P<bus_id>\d+)/edit_master/(?P<page_id>\d+)/$','allsortz.views.edit_master_tag_discussion'),
 
     
     #activity URLs
