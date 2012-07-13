@@ -4,128 +4,44 @@ Created on Jun 27, 2012
 
 @author: zouf
 '''
-from allsortz.feed import get_bus_recent_activity, get_all_recent_activity
+from allsortz.feed import get_all_recent_activity, get_bus_recent_activity
 from allsortz.search import search_site
-from comments.models import Comment, TagComment, BusinessComment
-from communities.models import Community, BusinessMembership
-from communities.views import get_community, get_default
-
-from django.shortcuts import render_to_response, get_object_or_404
+from comments.models import Comment, TagComment, BusinessComment, PhotoComment
+from communities.models import BusinessMembership, Community
+from communities.views import get_default, get_community
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from endless_pagination.decorators import page_template
-from photos.views import get_photo_web_url
+from photos.views import get_photo_web_url, get_all_bus_photos
 from ratings.favorite import is_user_subscribed
-from ratings.models import CommentRating, Business
-from ratings.utility import  get_single_bus_data, get_bus_data, \
-    get_businesses_by_community, get_businesses_trending, get_businesses_by_your, \
-    get_businesses_by_tag
+from ratings.models import CommentRating, Business, PageRelationship
+from ratings.utility import get_bus_data, get_businesses_by_community, \
+    get_businesses_trending, get_businesses_by_your, get_businesses_by_tag, \
+    get_single_bus_data
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
-from tags.models import Tag, HardTag, UserTag
-from tags.views import get_tags_business, get_tags_user, get_top_tags, \
-    get_hard_tags, get_pages, get_bus_master_tag, get_all_sorts, \
-    get_master_summary_tag
+from tags.models import Tag, UserTag, HardTag
+from tags.views import get_tags_user, get_top_tags, get_all_sorts, \
+    get_tags_business, get_hard_tags, get_pages, get_master_summary_tag
+from wiki.forms import PageForm
+from wiki.models import Page
 import logging
+
+
 
 
 
 logger = logging.getLogger(__name__)
 
+################################# Context generation #########################################
 
-def recurse_comments(comment,cur_list,even):
-    cur_list.append(comment)
-    replies = Comment.objects.filter(reply_to=comment).order_by('-date')
-    for c in replies:
-        if even:
-            cur_list.append("open-even")
-        else:
-            cur_list.append("open-odd")
-        recurse_comments(c,cur_list,not even)
-        cur_list.append("close")
-
-
-def get_tag_comments(b,tag):
-    logger.debug('get for'+str(b)+ ' and tag ' + str(tag.descr))
-    tagcomments = TagComment.objects.filter(business=b,tag=tag).order_by('-date')
-
-    comment_list = []
-    for tc in tagcomments:
-        if tc.thread.reply_to is None: #root tag comment
-            comment_list.append("open-even")
-            recurse_comments(tc.thread,comment_list,False)
-            comment_list.append("close")    
-    results = []              
-    for c in comment_list:
-        if c != "open-even" and c != "open-odd" and c != "close":
-            try:
-                rat =  CommentRating.objects.get(comment=c)
-                c.this_rat = rat.rating
-                c.pos_ratings = getNumPosRatings(c)
-                c.neg_ratings = getNumNegRatings(c)
-            except:
-                c.this_rat = 0
-                c.pos_ratings = 0
-                c.neg_ratings = 0
-        results.append(c)
-    return results
-
-
-def get_business_comments(business,user=False):
-    buscomments = BusinessComment.objects.filter(business=business).order_by('-date')
-    for bc in buscomments:
-        print(bc.date)
-    comment_list = []
-    for bc in buscomments:
-        if bc.thread.reply_to is None: #root tag comment
-            comment_list.append("open-even")
-            recurse_comments(bc.thread,comment_list,False)
-            comment_list.append("close")    
-    results = []              
-    for c in comment_list:
-        if c != "open-even" and c != "open-odd" and c != "close":
-            try:
-                rat =  CommentRating.objects.get(comment=c)
-                c.this_rat = rat.rating
-                c.pos_ratings = getNumPosRatings(c)
-                c.neg_ratings = getNumNegRatings(c)
-            except:
-                c.this_rat = 0
-                c.pos_ratings = 0
-                c.neg_ratings = 0
-        results.append(c)
-    return results
 
 def get_default_tag_context(b,t,user):
+    context = get_default_bus_context(b, user)
     comments = get_tag_comments(b,t)
-    bus_tags = get_tags_business(b,user=user,q="")
+    context.update({'comments': comments })
 
-    user_tags = get_tags_user(user,"")
-    top_tags = get_top_tags(10)    
-    hard_tags = get_hard_tags(b)
-    
-    pages = get_pages(b,bus_tags)
-    b = get_single_bus_data(b,user)
-    
-    bus_master_tag = get_bus_master_tag(b,user=user,q="")
-    master_page = get_pages(b,[bus_master_tag.tag])
-        
-    
-    context =   { \
-        'communities': Community.objects.all(),\
-        'business' : b, \
-        'comments': comments, \
-        'lat': b.lat,\
-        'lng':b.lon,  \
-        'bus_tags':bus_tags, \
-        'pages': pages, \
-        'master_page':master_page,\
-        'tags': Tag.objects.all(),\
-        'user_sorts':user_tags,\
-        'top_sorts':top_tags,\
-        'all_sorts':get_all_sorts(4),\
-        'hard_tags':hard_tags,\
-        'location_term':get_community(user)
-        }
 
     return context
 
@@ -174,7 +90,8 @@ def get_default_bus_context(b,user):
         'location_term':get_community(user) ,
         'communities': Community.objects.all(),
         'following_business': is_user_subscribed(b,user),
-        'bus_activity_feed' : get_bus_recent_activity(b)
+        'bus_activity_feed' : get_bus_recent_activity(b),
+        'bus_photos': get_all_bus_photos(b)
         })
 
     return context
@@ -187,6 +104,73 @@ def get_unauthenticated_context():
             'location_term':get_community(None)\
             }
     return context
+
+
+################################################################
+
+
+def recurse_comments(comment,cur_list,even):
+    cur_list.append(comment)
+    replies = Comment.objects.filter(reply_to=comment).order_by('-date')
+    for c in replies:
+        if even:
+            cur_list.append("open-even")
+        else:
+            cur_list.append("open-odd")
+        recurse_comments(c,cur_list,not even)
+        cur_list.append("close")
+
+
+def get_tag_comments(b,tag):
+    logger.debug('get for'+str(b)+ ' and tag ' + str(tag.descr))
+    tagcomments = TagComment.objects.filter(business=b,tag=tag).order_by('-date')
+
+    comment_list = []
+    for tc in tagcomments:
+        if tc.thread.reply_to is None: #root tag comment
+            comment_list.append("open-even")
+            recurse_comments(tc.thread,comment_list,False)
+            comment_list.append("close")    
+    results = []              
+    for c in comment_list:
+        if c != "open-even" and c != "open-odd" and c != "close":
+            try:
+                rat =  CommentRating.objects.get(comment=c)
+                c.this_rat = rat.rating
+                c.pos_ratings = getNumPosRatings(c)
+                c.neg_ratings = getNumNegRatings(c)
+            except:
+                c.this_rat = 0
+                c.pos_ratings = 0
+                c.neg_ratings = 0
+        results.append(c)
+    return results    
+
+
+def get_business_comments(business,user=False):
+    buscomments = BusinessComment.objects.filter(business=business).order_by('-date')
+    for bc in buscomments:
+        print(bc.date)
+    comment_list = []
+    for bc in buscomments:
+        if bc.thread.reply_to is None: #root tag comment
+            comment_list.append("open-even")
+            recurse_comments(bc.thread,comment_list,False)
+            comment_list.append("close")    
+    results = []              
+    for c in comment_list:
+        if c != "open-even" and c != "open-odd" and c != "close":
+            try:
+                rat =  CommentRating.objects.get(comment=c)
+                c.this_rat = rat.rating
+                c.pos_ratings = getNumPosRatings(c)
+                c.neg_ratings = getNumNegRatings(c)
+            except:
+                c.this_rat = 0
+                c.pos_ratings = 0
+                c.neg_ratings = 0
+        results.append(c)
+    return results
 
 
 
@@ -298,4 +282,86 @@ def bus_details(request, bus_id):
     
     return render_to_response('ratings/busdetail.html', context_instance=RequestContext(request,context))
 
+
+def edit_master_tag_discussion(request,bus_id,page_id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+        
+    b = get_object_or_404(Business, pk=bus_id)
+    page = get_object_or_404(Page, pk=page_id)
+
+    try:
+        b.photourl = get_photo_web_url(b)
+    except:
+        b.photourl= "" #NONE
+
+
+    if request.method == 'POST':
+        form = PageForm(request.POST)
+        if form.is_valid():
+            if not page:
+                page = Page()
+            page.content = form.cleaned_data['content']
+
+            page.save()
+            return redirect(bus_details, bus_id=bus_id)
+    else:
+        if page:
+            wiki_edit_form = PageForm(initial=page.__dict__)
+        else:
+            wiki_edit_form = PageForm(initial={'name': page.name})
+
+    
+    try:
+        pgr = PageRelationship.objects.get(page=page)
+    except:
+        pgr = PageRelationship.objects.filter(page=page)[0]
+    t = pgr.tag
+    context = get_default_bus_context(b, request.user)
+    context['form']=wiki_edit_form
+    context['page']=page
+    context['tag'] =t 
+    
+
+    
+    return render_to_response('ratings/busdetail.html', context_instance=RequestContext(request,context))
+
+
+
+
+def edit_tag_discussion(request,bus_id,page_id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+        
+    b = get_object_or_404(Business, pk=bus_id)
+    page = get_object_or_404(Page, pk=page_id)
+
+    if request.method == 'POST':
+        form = PageForm(request.POST)
+        if form.is_valid():
+            if not page:
+                page = Page()
+            page.content = form.cleaned_data['content']
+
+            page.save()
+            return redirect(bus_details, bus_id=bus_id)
+    else:
+        if page:
+            wiki_edit_form = PageForm(initial=page.__dict__)
+        else:
+            wiki_edit_form = PageForm(initial={'name': page.name})
+
+    
+    try:
+        pgr = PageRelationship.objects.get(page=page)
+    except:
+        pgr = PageRelationship.objects.filter(page=page)[0]
+    t = pgr.tag
+    context = get_default_tag_context(b, t, request.user)
+    context.update({'form':wiki_edit_form,
+                    'page': page,
+                    'tag' :t })
+    
+    return render_to_response('ratings/busdetail.html',
+        RequestContext(request, context))
 

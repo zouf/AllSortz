@@ -46,11 +46,18 @@
 								<form action="." name="addReply" class="comment" id="comment_form_{{comment.pk}}" method="post">
 									<textarea name="comment" class="replybox" id="comment_{{comment.pk}}" placeholder="Reply"/></textarea>
 									<input type="submit" class="ui-widget buttonme" value="Reply"></p>
-									<input type="hidden" name="bid" value="{{business.id}}"/>
 									<input type="hidden" name="cid" id="comment_{{comment.pk}}" value="{{comment.pk}}"/> 
 									{%if tag %}
 										<input type="hidden" name="tid" value="{{tag.id}}"/> 
 									{% endif %}
+							
+									{% if p %}
+										<input type="hidden" name="bid" value="{{p.business.id}}"/>		
+										<input type="hidden" name="pid" value="{{p.id}}"/> 
+									{% else %}
+										<input type="hidden" name="bid" value="{{business.id}}"/>
+										
+									{%endif %}
 								</form>
 							</div>
 						</div>

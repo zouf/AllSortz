@@ -26,4 +26,7 @@ class BusinessComment(models.Model):
     thread = models.ForeignKey(Comment)
     date = models.DateTimeField(auto_now=True)
 
-
+class PhotoComment(models.Model):
+    photo = models.ForeignKey('photos.BusinessPhoto')
+    thread = models.ForeignKey(Comment)
+    date = models.DateTimeField(auto_now=True)

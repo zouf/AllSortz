@@ -6,13 +6,20 @@
 {% if business %}	
 	<div id="gallery" class="content">
 		<h1> Photos for {{business.name}}</h1>
-		<div class="photo" >
-		{% for p in photos %}
-			<img src={{p.image.url}} />
-		{%endfor%}
+		<div class="photo_list" id="photo_list">
+			{% include 'photos/photo_feed.html' %}
 		</div>
+		<form name="addPhoto" method="post" action="." >{% csrf_token %}
+			<input type="hidden" name="bid" value="{{business.id}}"/>
+			<input type="text" name="url" value="URL" onfocus="this.value='';" />
+			 <p class="page_text" >or upload your own</p>
+			<input class="ui-widget" type="file" name="image" id="id_image" />
+			 <br>
+			<input type="submit" value="+" />
+		</form>
+		
 	</div>
-    
+
 {% else %}
 	<p>Invalid business.</p>
 {% endif %}

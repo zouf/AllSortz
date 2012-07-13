@@ -25,92 +25,6 @@ logger = logging.getLogger(__name__)
 #re = RecEngine() 
 
 
-def edit_master_tag_discussion(request,bus_id,page_id):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-        
-    b = get_object_or_404(Business, pk=bus_id)
-    page = get_object_or_404(Page, pk=page_id)
-
-    try:
-        b.photourl = get_photo_web_url(b)
-    except:
-        b.photourl= "" #NONE
-
-
-    if request.method == 'POST':
-        form = PageForm(request.POST)
-        if form.is_valid():
-            if not page:
-                page = Page()
-            page.content = form.cleaned_data['content']
-
-            page.save()
-            return redirect(bus_details, bus_id=bus_id)
-    else:
-        if page:
-            wiki_edit_form = PageForm(initial=page.__dict__)
-        else:
-            wiki_edit_form = PageForm(initial={'name': page.name})
-
-    
-    try:
-        pgr = PageRelationship.objects.get(page=page)
-    except:
-        pgr = PageRelationship.objects.filter(page=page)[0]
-    t = pgr.tag
-    context = get_default_bus_context(b, request.user)
-    context['form']=wiki_edit_form
-    context['page']=page
-    context['tag'] =t 
-    
-
-    
-    return render_to_response('ratings/busdetail.html', context_instance=RequestContext(request,context))
-
-
-
-
-def edit_tag_discussion(request,bus_id,page_id):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-        
-    b = get_object_or_404(Business, pk=bus_id)
-    page = get_object_or_404(Page, pk=page_id)
-
-    if request.method == 'POST':
-        form = PageForm(request.POST)
-        if form.is_valid():
-            if not page:
-                page = Page()
-            page.content = form.cleaned_data['content']
-
-            page.save()
-            return redirect(bus_details, bus_id=bus_id)
-    else:
-        if page:
-            wiki_edit_form = PageForm(initial=page.__dict__)
-        else:
-            wiki_edit_form = PageForm(initial={'name': page.name})
-
-    
-    try:
-        pgr = PageRelationship.objects.get(page=page)
-    except:
-        pgr = PageRelationship.objects.filter(page=page)[0]
-    t = pgr.tag
-    context = get_default_tag_context(b, t, request.user)
-    context['form']=wiki_edit_form
-    context['page']=page
-    context['tag'] =t 
-    
-    for tc in context['comments']:
-        print(tc)
-    
-    
-    return render_to_response('ratings/busdetail.html',
-        RequestContext(request, context))
-
 
 
 
@@ -149,7 +63,7 @@ def user_details(request,uid):
         'user_favorites' : get_user_favorites(request.user),
         'user_traits' : get_user_traits(request.user),
         'checkon' : checkon,
-        'feed' : get_user_recent_activity(checkon)
+        'feed' : get_user_recent_activity( checkon)
         })
     return render_to_response('ratings/user/user_detail.html', context_instance=RequestContext(request,context))
     
