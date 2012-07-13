@@ -92,9 +92,6 @@ class CoordsField(models.Field):
             raise ValidationError('Invalid input for a Coords instance.')
         return Coords(match.group('lon'), match.group('lat'))
 
-    def get_prep_value(self, value):
-        return unicode(value)
-
     def get_db_prep_value(self, value, connection, prepared=False):
         if (connection.settings_dict['ENGINE'] !=
                 'django.db.backends.postgresql_psycopg2'):
@@ -107,3 +104,12 @@ class CoordsField(models.Field):
         # Well fuck.
         err = 'Lookup type {!r} not supported.'.format(lookup_type)
         raise TypeError(err)
+
+    def get_db_prep_lookup(self, lookup_type, value, connection,
+                           prepared=False):
+        if (connection.settings_dict['ENGINE'] !=
+                'django.db.backends.postgresql_psycopg2'):
+            # Throw an exception? Which exception?
+            pass
+        super(CoordsField, self).get_db_prep_value(self, value,
+                                                   connection, prepared)
