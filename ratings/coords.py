@@ -1,5 +1,8 @@
 import re
 
+import psycopg2.extensions
+
+
 """
 Custom representation of geographic coordinates.
 
@@ -39,6 +42,30 @@ class Coords:
 
     def __unicode__(self):
         return unicode(str(self))
+
+    # ===== Conformance to Psycopg's ISQLQuote protocol =====
+
+    def __conform__(self, protocol):
+        if protocol is psycopg2.extensions.ISQLQuote:
+            return self
+
+    def getquoted():
+        # Prep longitude
+        adapt_lon = psycopg2.extensions.adapt(self.lon)
+        if hasattr(adapt_lon, 'prepare'):
+            adapt_lon.prepare(self._connection)
+
+        # Prep latitude
+        adapt_lat = psycopg2.extensions.adapt(self.lat)
+        if hasattr(adapt_lat, 'prepare'):
+            adapt_lat.prepare(self._connection)
+
+        return "'({},{})'::geo_coords".format(adapt_lon.getquoted(),
+                                              adapt_lat.getquoted())
+
+
+    def prepare(self, connection):
+        self._connection = connection
 
 
 class CoordsField(models.Field):
