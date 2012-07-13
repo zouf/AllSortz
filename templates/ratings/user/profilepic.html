@@ -1,7 +1,11 @@
 <div class="photo">
-	<p class="pic_title">{{p.title}}</p>
+	<!--<p class="pic_title">{{p.title}}</p>-->
 	<img src="{{p.image_profile.url}}" />
-	<p class="pic_caption">{{p.caption}}</p>
+	<br>
+    {% if checkon == user %}
+		<a style="font-size:10px"  href="#" class="addProfilePic" >Change your Avatar</a>
+	{%endif%}
+	<!--<p class="pic_caption">{{p.caption}}</p>-->
 </div>
 <!--
 <p>

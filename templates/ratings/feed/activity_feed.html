@@ -3,18 +3,13 @@
 	{% if item.type == "business" %}
 		<p  class="feed_text" >
 				<table><tr><td>
-					<table><tr><td>
-					<a href="/user_details/{{item.user.id}}/" ><img src={{item.user.photo.image_thumb.url}} /></a>
-					</td></tr>
-					<tr><td>
-						<a href="/user_details/{{item.user.id}}/" >{{item.user}} </a>
-					</td></tr></table>
+					{% include 'ratings/user/usericon.html' %}
 				</td><td>
-			{% if item.rating == 0 %}
-				didn't care for
-			{%else%}{%if item.rating == 1 %}
+			{% if item.rating == 1 %}
+				hated 
+			{%else%}{%if item.rating == 2 %}
 				didn't care for  
-			{%else%}{%if item.rating == 2%} 
+			{%else%}{%if item.rating == 3%} 
 				liked 
 			{%else%}
 				loved 
@@ -27,12 +22,7 @@
 	{% if item.type == "buscomment" %}				
 		<p class="feed_text"  ><a href="/user_details/{{item.user.id}}/"> 
 				<table><tr><td>
-					<table><tr><td>
-					<a href="/user_details/{{item.user.id}}/" ><img src={{item.user.photo.image_thumb.url}} /></a>
-					</td></tr>
-					<tr><td>
-						<a href="/user_details/{{item.user.id}}/" >{{item.user}} </a>
-					</td></tr></table>
+					{% include 'ratings/user/usericon.html' %}
 				</td><td>
 					
 				
@@ -44,12 +34,7 @@
 	{% if item.type == "tagcomment" %}				
 			<p class="feed_text"  >
 				<table><tr><td>
-					<table><tr><td>
-					<a href="/user_details/{{item.user.id}}/" ><img src={{item.user.photo.image_thumb.url}} /></a>
-					</td></tr>
-					<tr><td>
-						<a href="/user_details/{{item.user.id}}/" >{{item.user}} </a>
-					</td></tr></table>
+					{% include 'ratings/user/usericon.html' %}
 				</td><td>
 					
 		

@@ -97,7 +97,7 @@ def get_default_bus_context(b,user):
         'location_term':get_community(user) ,
         'communities': Community.objects.all(),
         'following_business': is_user_subscribed(b,user),
-        'bus_activity_feed' : get_bus_recent_activity(b),
+         'feed' : get_bus_recent_activity(b),
         'bus_photos': get_all_bus_photos(b)
         })
 
@@ -368,6 +368,7 @@ def edit_tag_discussion(request,bus_id,page_id):
     context.update({'form':wiki_edit_form,
                     'page': page,
                     'tag' :t })
+    
     
     return render_to_response('ratings/busdetail.html',
         RequestContext(request, context))

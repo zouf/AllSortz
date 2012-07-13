@@ -71,7 +71,7 @@ def get_master_summary_tag():
 
 def get_master_page_business(b):
     pages = get_pages(b,[get_master_summary_tag()])
-    return pages[0]
+    return pages[0].page
 
 
 def add_tag_to_bus(b,tag,user=get_default_user()):    
@@ -268,18 +268,17 @@ def get_pages(business,tags):
         try:
             bt = BusinessTag.objects.get(business=business,tag=t)
             relationship = PageRelationship.objects.get(business=business,tag=bt.tag)
-            pages.append(relationship.page)
+            pages.append(relationship)
         except MultipleObjectsReturned:
             #logger.error('Multiple Pages returned in '+str(__name__))
             #XXX 
             relationship = PageRelationship.objects.filter(business=business,tag=bt.tag)[0]
-            pages.append(relationship.page)
+            pages.append(relationship)
         except :
             add_tag_to_bus(business,t,get_default_user())
             bt = BusinessTag.objects.get(business=business,tag=t)
             relationship = PageRelationship.objects.get(business=business,tag=t)
-            pages.append(relationship.page)
-            print relationship.page.id
+            pages.append(relationship)
            
   
     return pages

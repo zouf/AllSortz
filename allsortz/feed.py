@@ -16,11 +16,14 @@ def get_bus_recent_activity(b):
     
     for r in ratings:
         r.type = "business"
+        r.user.photo = get_user_profile_pic(r.user)
         feed.append(r)
     allbuscomments = BusinessComment.objects.filter(business=b).order_by('-date')
     for c in allbuscomments:  
         bc = c
         bc.type = "buscomment"
+        bc.user.photo = get_user_profile_pic(c.user)
+
         feed.append(bc)
     return feed
     

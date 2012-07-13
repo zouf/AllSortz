@@ -37,6 +37,12 @@ function initialize() {
 			{% include 'photos/horizontal_feed.html' %}
 			<a href="/pics/gallery/{{business.id}}/">See More or Add your own</a>
 		</div>
+		
+		<div id="bus_activity_feed" class="section">
+			<h1>Activity Feed</h1>
+			{% include 'ratings/feed/activity_feed.html' %} 
+		</div>
+		
 
 		<div id="discussion" class="section">
 			<a name="discuss" />

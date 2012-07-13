@@ -9,10 +9,12 @@
 			<div class = "section">
 				<table><tr><td>
 					<div id="profile_pic">
-				   		{% include 'ratings/user/profilepic.html'%}
+				   		{% include 'ratings/user/profilepic.html'%}	
 				    </div>
-					{% if checkon == user %}
-						<a style="font-size:10px"  href="#" class="addProfilePic" >Change your Avatar</a>
+				</td><td>
+					Firstname Lastname, etc.
+				</td></tr></table>
+				{% if checkon == user %}
 						<div id="addProfilePicDiv" style="display:none;">
 							<form name="addPhoto" method="post" action="." >{% csrf_token %}
 								<input type="hidden" name="uid" value="{{checkon.id}}"/>
@@ -24,9 +26,6 @@
 							</form>
 						</div>
 				{%endif%}
-				</td><td>
-					Firstname Lastname, etc.
-				</td></tr></table>
 				
 			</div>
 			
