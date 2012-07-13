@@ -8,10 +8,12 @@ comes first. This mirrors the convention used by PostgreSQL's
 earthdistance module.
 """
 
+
 class Coords:
     """A set of geographic coordinates."""
 
     def __init__(self, lon, lat):
+        # TODO: Should also throw an error if lon and lat aren't numbers
         if lon < -180 or lon > 180:
             raise ValueError('Longitude out of range.')
         if lat < -90 or lat > 90:
