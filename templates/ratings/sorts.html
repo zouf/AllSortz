@@ -23,9 +23,9 @@
 
 {% if business %}
 	<form name="addTagDD" action="." method="post">{% csrf_token %}
-	<input type="hidden" value="{{business.id}}" name="bid"/>
+		<input type="hidden" value="{{business.id}}" name="bid"/>
 {%else%}
-<form name="subscribeUser" action="." method="post">
+	<form name="subscribeUser" action="." method="post">
 {%endif%}
 
 		<select name="tag" class="ui-widget">

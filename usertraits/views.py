@@ -1,33 +1,10 @@
 # Create your views here.
-from allsortz.views import get_default_blank_context
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template.context import RequestContext
-from usertraits.form import TraitForm
 from usertraits.models import Trait, TraitRelationship
 import logging
 logger = logging.getLogger(__name__)
 
-def add_trait(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
-        
-    #post a question 
-    if request.method=='POST':
 
-        form = TraitForm(request.POST)
-        name = form.data['name'] 
-        descr = form.data['descr']  
-        
-        if (Trait.objects.filter(creator=request.user,name=name,descr=descr).count() == 0):
-            Trait.objects.create(creator=request.user,name=name,descr=descr)
-
-    f = TraitForm()
-    context = get_default_blank_context(request.user)
-    context['form'] = f
-    context['type'] = 'trait'
-    context['traits'] = Trait.objects.all()
-    return render_to_response('ratings/contribute/add_content.html', context, context_instance=RequestContext(request))
 
 def add_trait_relationships(request):
     if not request.user.is_authenticated():

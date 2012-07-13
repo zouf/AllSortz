@@ -118,7 +118,6 @@ def add_user_tag(request):
 
         if form['type']  == 'tag':
             nm = form['data']
-            print("TAGAGATAT")
             logger.debug('Create a User tag '+str(nm))
             try:
                 tag = Tag.objects.get(descr=nm)

@@ -4,18 +4,22 @@ Created on Jun 27, 2012
 
 @author: zouf
 '''
-from allsortz.feed import get_all_recent_activity, get_bus_recent_activity
+from allsortz.feed import get_all_recent_activity, get_bus_recent_activity, \
+    get_user_recent_activity
 from allsortz.search import search_site
 from comments.models import Comment, TagComment, BusinessComment, PhotoComment
-from communities.models import BusinessMembership, Community
+from communities.models import BusinessMembership, Community, UserMembership
 from communities.views import get_default, get_community
+from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from endless_pagination.decorators import page_template
-from photos.views import get_photo_web_url, get_all_bus_photos
-from ratings.favorite import is_user_subscribed
+from photos.views import get_photo_web_url, get_all_bus_photos, \
+    get_user_profile_pic
+from ratings.favorite import is_user_subscribed, get_user_favorites
 from ratings.models import CommentRating, Business, PageRelationship
 from ratings.utility import get_bus_data, get_businesses_by_community, \
     get_businesses_trending, get_businesses_by_your, get_businesses_by_tag, \
@@ -24,6 +28,9 @@ from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from tags.models import Tag, UserTag, HardTag
 from tags.views import get_tags_user, get_top_tags, get_all_sorts, \
     get_tags_business, get_hard_tags, get_pages, get_master_summary_tag
+from usertraits.form import TraitForm
+from usertraits.models import Trait
+from usertraits.views import get_user_traits
 from wiki.forms import PageForm
 from wiki.models import Page
 import logging
@@ -364,4 +371,52 @@ def edit_tag_discussion(request,bus_id,page_id):
     
     return render_to_response('ratings/busdetail.html',
         RequestContext(request, context))
+    
+def user_details(request,uid):
+    if not request.user.is_authenticated():
+        return redirect('/')
+  
+    context = get_default_blank_context(request.user)
+    checkon = User.objects.get(id=uid)
+        
+    communities = []
+    for um in UserMembership.objects.filter(user=request.user):
+        communities.append(um.community)
+
+    context.update({
+        'user_communities':communities,
+        'user_favorites' : get_user_favorites(request.user),
+        'user_traits' : get_user_traits(request.user),
+        'checkon' : checkon,
+        'feed' : get_user_recent_activity( checkon),
+        'p' : get_user_profile_pic(checkon)
+        })
+    return render_to_response('ratings/user/user_detail.html', context_instance=RequestContext(request,context))
+    
+    
+def add_trait(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
+        
+    #post a question 
+    if request.method=='POST':
+
+        form = TraitForm(request.POST)
+        name = form.data['name'] 
+        descr = form.data['descr']  
+        
+        if (Trait.objects.filter(creator=request.user,name=name,descr=descr).count() == 0):
+            Trait.objects.create(creator=request.user,name=name,descr=descr)
+
+    f = TraitForm()
+    context = get_default_blank_context(request.user)
+    context['form'] = f
+    context['type'] = 'trait'
+    context['traits'] = Trait.objects.all()
+    return render_to_response('ratings/contribute/add_content.html', context, context_instance=RequestContext(request))
+
+def logout_page(request):
+    logout(request)
+    return HttpResponseRedirect('/')
+
 

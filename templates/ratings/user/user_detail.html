@@ -4,11 +4,35 @@
 
 <div class="content">
 	<div id="userProfile">
-		<div class="userDetails" style="width:600px;float:left;">
+		
 			<h1>{{checkon}}</h1>
+			<div class = "section">
+				<table><tr><td>
+					<div id="profile_pic">
+				   		{% include 'ratings/user/profilepic.html'%}
+				    </div>
+					{% if checkon == user %}
+						<a style="font-size:10px"  href="#" class="addProfilePic" >Change your Avatar</a>
+						<div id="addProfilePicDiv" style="display:none;">
+							<form name="addPhoto" method="post" action="." >{% csrf_token %}
+								<input type="hidden" name="uid" value="{{checkon.id}}"/>
+								<input type="text" name="url" value="URL" onfocus="this.value='';" />
+								 <p class="page_text" >or upload your own</p>
+								<input class="ui-widget" type="file" name="image" id="id_image" />
+								 <br>
+								<input type="submit" value="+" />
+							</form>
+						</div>
+				{%endif%}
+				</td><td>
+					Firstname Lastname, etc.
+				</td></tr></table>
+				
+			</div>
 			
 			
-			<h3>{{checkon}}'s traits</h3>
+			<div class="userDetails" style="width:600px;float:left;">
+			<h2>{{checkon}}'s traits</h2>
 			<div style="margin:5px 20px; min-height:300px;">
 				{% if checkon == user %}
 					<form class="ui-big-widget" action="/ratings/user_traits/" method="post" >{% csrf_token %}
@@ -42,6 +66,7 @@
 		</div>
 		
 		<div class="userDetails">
+			<a name="sorts" />
 			<h2>{{checkon}}'s Sorts</h2>
 			{% include 'ratings/sorts.html' %}
 		</div>
@@ -72,12 +97,14 @@
 		</div>-->
 		
 		<div class="userDetails">
+			<a name="watchlist" />
 			<h2>{{checkon}}'s Watchlist</h2>
 			{% for watch in user_favorites %}
-				 <a href="/ratings/{{ business.id }}/"> {{watch.name}} </a> |
+				 <a href="/ratings/{{ watch.id }}/"> {{watch.name}} </a> |
 			{% endfor %}
 		</div>
 		<div class="userDetails">
+			<a name="activity" />
 			<h2>{{checkon}}'s Activity Feed</h2>
 			{% include 'ratings/feed/activity_feed.html' %}
 		</div>
