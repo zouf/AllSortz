@@ -16,7 +16,7 @@ def index(request):
 
 
 def view(request, name):
-    """Shows a single wiki page."""
+    """Shows a single wiki page.""" 
     try:
         page = Page.objects.get(name=name)
     except Page.DoesNotExist:

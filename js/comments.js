@@ -50,33 +50,28 @@ $(function() {
     });
 });
 
-$(document).ready(function(){
-$("form[name=addComment]").live("submit", function(e){
-	e.preventDefault();
-	var form = $("form[name=addComment]")
-	var serial = form.serialize()
-    $.ajax({ 
-         url   : '/api/add_tag_comment/',
-         type  : form.attr('method'),
-         data  : serial, // data to be submitted
-         success: function(data){
-         	var elem = document.getElementById("comment_list")
-         	elem.innerHTML = data
-         	$(".buttonme").button();
-         }
-    });
-    return false;
- });
-});
+
 
 
 $(document).ready(function(){
 	$("form[name=addTagComment]").live("submit", function(e){
 		e.preventDefault();
 		var form = $("form[name=addTagComment]")
+		
 		var serial = form.serialize()
+		var url = '/api/add_tag_comment/'
+		form.serializeArray().forEach(
+			function checkPid(k,v) { 
+				if (k.name == 'pid')
+					url = '/api/add_photo_comment/'
+			}
+		);
+	
+		
+		
+		
 	    $.ajax({ 
-	         url   : '/api/add_tag_comment/',
+	         url   : url,
 	         type  : form.attr('method'),
 	         data  : serial, // data to be submitted
 	         success: function(data){
@@ -98,8 +93,16 @@ $(document).ready(function(){
 		var form = $("form[id=comment_form_"+id+"]")
 		
 		
+		var url = '/api/add_tag_comment/'
+		form.serializeArray().forEach(
+			function checkPid(k,v) { 
+				if (k.name == 'pid')
+					url = '/api/add_photo_comment/'
+			}
+		);
+		
 		$.ajax({
-			url   : '/api/add_tag_comment/',
+			url   : url,
 	         type  : form.attr('method'),
 	         data  : form.serialize(), // data to be submitted
 	         success: function(data){
@@ -128,10 +131,17 @@ $("form[name=addReply]").live("submit", function(e){
 	e.preventDefault();
 	var id = $(this).parents('div.comment').attr('id').split('_')[1];
 	var form = $("form[id=comment_form_"+id+"]")
-	
-	
+	var serial = form.serialize()
+
+	var url = '/api/add_tag_comment/'
+	form.serializeArray().forEach(
+		function checkPid(k,v) { 
+			if (k.name == 'pid')
+				url = '/api/add_photo_comment/'
+		}
+	);
 	$.ajax({
-		url   : '/api/add_tag_comment/',
+		url   : url,
          type  : form.attr('method'),
          data  : form.serialize(), // data to be submitted
          success: function(data){

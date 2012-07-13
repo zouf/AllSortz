@@ -9,7 +9,7 @@
 		<a href="/ratings/disp/{{tag.id}}/">{{tag.descr}}</a>  </td><td>
 		<form name="unsubscribeUser" action="." method="post">
 			<input type="hidden" name="tag" value="{{tag.descr}}" />
-			<input type="submit" value="-" />
+			<input type="submit" class="buttonme ui-small-widget" value="-" />
 		</form>
 		</td></tr></table>
 		<br>
@@ -33,7 +33,7 @@
 				<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>-
 			{%endfor%}
 		</select>
-		<input class="buttonme" type="submit" value="+"/>
+		<input class="buttonme ui-small-widget" type="submit" value="+"/>
 	</form>
 {%endif%}
 	<!--<a href="/ratings/add_new_tag/" style="font-size:10px"><p >Think we're missing a sort?</p></a>-->

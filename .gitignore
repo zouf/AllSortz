@@ -17,3 +17,4 @@ clib/Makefile
 venv
 *.pyc
 static
+src/

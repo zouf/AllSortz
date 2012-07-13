@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block body %}
+	<div id="photo_detail" class="content">
+			<h1 {{p.name}}</h1>
+			<br>
+			<img src="{{p.image.url}}" />
+			<br>
+			<i>{{p.caption}}</i>
+
+			<div id="comment_list">
+					{% include 'ratings/discussion/thread.html' %}
+			</div>
+		
+	</div>
+
+
+{% endblock %}
+
+
+

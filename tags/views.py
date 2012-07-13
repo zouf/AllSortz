@@ -10,15 +10,13 @@ from django.db.models.aggregates import Count
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from ratings.models import Business, Comment, PageRelationship, UserFavorite
-from recommendation.normalization import getNumPosRatings, getNumNegRatings
-from tags.models import Tag, TagRating, CommentTag, UserTag, BusinessTag, \
-    BooleanQuestion, HardTag
-from usertraits.models import TraitRelationship
+from ratings.models import Business, PageRelationship, UserFavorite
+from tags.models import Tag, BusinessTag, UserTag, HardTag, BooleanQuestion
 from wiki.models import Page
 import json
 import logging
 import sys
+
 
 logger = logging.getLogger(__name__)
     
@@ -35,7 +33,7 @@ def get_default_user():
     return user
 
 #sorts tags
-def tag_comp(x,y):
+def tag_comp(x,y): 
     #eventually do something more intelligent here!
     xTot = x.pos_ratings - x.neg_ratings
     yTot = y.pos_ratings - y.neg_ratings

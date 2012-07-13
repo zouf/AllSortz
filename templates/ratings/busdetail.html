@@ -23,44 +23,6 @@ function initialize() {
   	google.maps.event.trigger(map, 'resize') 
 }
 
-function calcRoute() {
- d
-	var start = "New York,NY";
-	var end  = "San Francisco,CA";
-	
-  var waypts =  [
-    {
-      location:"Joplin, MO",
-      stopover:false
-    },{
-      location:"Oklahoma City, OK",
-      stopover:true
-    }];
-  
-  var request = {
-      origin: start,
-      destination: end,
-      waypoints: waypts,
-      optimizeWaypoints: true,
-      travelMode: google.maps.TravelMode.DRIVING
-  };
-  directionsService.route(request, function(response, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-      var route = response.routes[0];
-      var summaryPanel = document.getElementById("directions_panel");
-      summaryPanel.innerHTML = "";
-      // For each route, display summary information.
-      for (var i = 0; i < route.legs.length; i++) {
-        var routeSegment = i+1;
-        summaryPanel.innerHTML += "<b>Route Segment: " + routeSegment + "</b><br />";
-        summaryPanel.innerHTML += route.legs[i].start_address + " to ";
-        summaryPanel.innerHTML += route.legs[i].end_address + "<br />";
-        summaryPanel.innerHTML += route.legs[i].distance.text + "<br /><br />";
-      }
-    }
-  });
-}
 
 </script>
 
@@ -70,9 +32,14 @@ function calcRoute() {
 			<h1><a href="/ratings/{{business.id}}/">{{ business.name }}</a></h1>    
 			{% include 'ratings/busprofile.html' %}
 		</div>
-		
-		<a name="discuss"></a>
+		<div id="photogallery" class="section">
+			<h1> Sorts </h1>
+			{% include 'photos/horizontal_feed.html' %}
+			<a href="/pics/gallery/{{business.id}}/">See More or Add your own</a>
+		</div>
+
 		<div id="discussion" class="section">
+			<h1> Sorts </h1>
 			<div id="sorts">
 				{%if form %}
 					{% include 'ratings/discussion/wikiedit.html' %}

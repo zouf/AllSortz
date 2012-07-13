@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+{% if business %}	
+	<div id="gallery" class="content">
+		<h1> Photos for {{business.name}}</h1>
+		<div class="photo_list" id="photo_list">
+			{% include 'photos/photo_feed.html' %}
+		</div>
+		<form name="addPhoto" method="post" action="." >{% csrf_token %}
+			<input type="hidden" name="bid" value="{{business.id}}"/>
+			<input type="text" name="url" value="URL" onfocus="this.value='';" />
+			 <p class="page_text" >or upload your own</p>
+			<input class="ui-widget" type="file" name="image" id="id_image" />
+			 <br>
+			<input type="submit" value="+" />
+		</form>
+		
+	</div>
+
+{% else %}
+	<p>Invalid business.</p>
+{% endif %}
+{% endblock %}
+
+
+	<!--
+		<div id="busRating">
+		{% if rating %}
+			<p> Your rating is {{ rating.rating }}</p>
+		{% endif %}
+		{% if not rating %}
+		{% if user.is_authenticated %}
+			<p> Recommendation for {{user}}: {{ recommendation}} </p>
+		{% endif %}
+			<p> Average across {{numRatings}} users: {{avg}} </p>
+		{% endif %}
+		</div> -->
+	<!--
+	{% if user.is_authenticated %}
+		<form action="." method="post">{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" value="Submit" />
+		</form>
+	{% endif %}
+	{% if not user.is_authenticated %}
+		<p>Login to rate</p>
+	{% endif %}
+	-->
+
+	<!--
+					<td valign="top">
+					<div id="review_list" class="news_feed">
+					<form action="." method="post">{% csrf_token %}
+					  	<h3 class="feedTitle">Reviews</h3>
+					  	<input id="id_review" value="Add a review" class="input_box" type="text"  name="review" maxlength="150" onfocus="this.value='';"  /></p>
+						{% for review in reviews %}
+						<div class="reviewListing">
+				    	<table>
+				    	<tr valign="top">
+				    	
+							<td style="width:40px;" valign="top">
+									<div id="review_{{review.id}}" class="review">
+								{% if review.this_rat > 0 %}
+									{% if review.this_rat > 2 %}
+										<div class="vote up">
+										<span id="rev_vote_pos_{{review.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>
+										</div>
+										<div class="vote down">
+										<span id="rev_vote_neg_{{review.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+										</div>
+										
+									{% else %}
+										<div class="vote up">
+										<span id="rev_vote_pos_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>
+										</div>
+										<div class="vote down">
+										<span id="vrev_ote_neg_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>
+										</div>
+									{%endif%}
+								{%else%}
+										<div class="vote up">
+										<span id="rev_vote_pos_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>
+										</div>
+										<div class="vote down">
+										<span id="rev_vote_neg_{{review.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>
+										</div>
+								{% endif %}
+									
+				
+								  <table>
+								  <tr>
+								  <td><div id="rev_pos_rating_{{review.id}}" class="pos_rating">{{review.pos_ratings}}</div></td>
+								  <td><div id="rev_neg_rating_{{review.id}}" class="neg_rating">{{review.neg_ratings}}</div></td>
+								  </tr>
+								  </table>
+							</div>
+						</td>
+						<td>		
+						   <div class="review_box">		
+						     {{review.descr}}  
+						    </div>
+						 </td>
+						</tr>
+					  </table>
+					    </div>
+					    {%endfor%}
+					    </form>
+					</div>
+				</td>-->

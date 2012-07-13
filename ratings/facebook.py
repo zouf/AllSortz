@@ -9,7 +9,6 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.shortcuts import redirect
 from rateout.settings import FB_APP_SECRET
 from ratings.models import FacebookUser
-from ratings.views import index
 import base64
 import hashlib
 import hmac
@@ -32,7 +31,7 @@ def handle_fb_login(request):
         if authuser:
             logger.debug("zouflogging logged in "+str(authuser.username))
             login(request,authuser)
-            return redirect(index)
+            return redirect('/')
     #fb_data = parse_signed_request(request.POST.get('signed_request'))
     #logger.debug('Logging in FB user')
     #logger.debug(fb_data)

@@ -1,10 +1,8 @@
 # Create your views here.
+from allsortz.views import get_default_blank_context
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response
 from django.template.context import RequestContext
-from ratings.contexts import get_default_blank_context
-from ratings.models import Business
-from tags.models import BooleanQuestion
 from usertraits.form import TraitForm
 from usertraits.models import Trait, TraitRelationship
 import logging

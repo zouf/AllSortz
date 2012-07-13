@@ -38,6 +38,55 @@
     margin-left: 20px;
 }
 
+
+
+
+
+
+
+
+.display_comments
+{
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Bounding box */
+.display_comments ul
+{
+    list-style: none;
+    margin: 10px 0px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.display_comments li
+{
+    font-size: 16px;
+}
+
+/* Comments */
+.display_comments ul ul
+{
+    list-style: none;
+    padding: 5px;
+}
+
+.display_comments ul ul li
+{
+    list-style: none;
+    margin: 5px 0px;
+    padding: 5px 0px;
+}
+
+/* Replies */
+.display_comments ul ul ul
+{
+    margin-left: 20px;
+}
+
+
+
 .commentListing
 {
     margin: 5px;

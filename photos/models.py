@@ -9,12 +9,14 @@ import datetime
 # Create your models here.
 
 
+
 class  BusinessPhoto(models.Model):
 
     user = models.ForeignKey(User)
     business = models.ForeignKey(Business)
     
-    
+    is_default = models.BooleanField()
+
     def image_upload_to_lg(self, filename):
         today = datetime.datetime.today()
         return 'user_uploads/%s/%s-%s-%s.%s.%s/large/%s' % (self.user.username, today.year, today.month, today.day, today.hour, today.minute, filename)

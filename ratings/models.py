@@ -15,10 +15,13 @@ class Business(models.Model):
 
     address = models.CharField(max_length=250)
     city = models.CharField(max_length=100)
-    state = USStateField()  # Yes, this is America-centric..
+    state = USStateField()  # Yes, this is America-centric.
+    
 
     def __unicode__(self):
         return self.name
+
+
 
 
      
@@ -26,9 +29,6 @@ class UserFavorite(models.Model):
     business= models.ForeignKey(Business)
     user = models.ForeignKey(User)
     date = models.DateTimeField(auto_now=True)
-     
-        
-
         
 
 class FacebookUser(models.Model):
@@ -40,6 +40,14 @@ class PageRelationship(models.Model):
     page = models.ForeignKey(Page)
     business = models.ForeignKey(Business)
     tag = models.ForeignKey('tags.Tag')
+
+
+class CommentRating(models.Model):
+    comment = models.ForeignKey('comments.Comment')
+    user = models.ForeignKey(User)
+    rating = models.PositiveSmallIntegerField() 
+    
+    
     
     
     
@@ -52,29 +60,3 @@ class Rating(models.Model):
         return str(self.user) + " " + str(self.business.name) + " " + str(self.rating)
 
 
-# Create your models here.
-class Comment(models.Model):
-    user = models.ForeignKey(User)
-    date = models.DateTimeField(auto_now=True)
-    reply_to = models.ForeignKey('self', related_name='replies', 
-        null=True, blank=True)
-    descr = models.TextField(max_length=2000)
-    
-# Create your models here.
-class TagComment(models.Model):
-    thread = models.ForeignKey(Comment)
-    tag = models.ForeignKey('tags.Tag')
-    business = models.ForeignKey(Business)
-    date = models.DateTimeField(auto_now=True)
-  
-
-class BusinessComment(models.Model):
-    business = models.ForeignKey(Business)
-    thread = models.ForeignKey(Comment)
-    date = models.DateTimeField(auto_now=True)
-
-
-class CommentRating(models.Model):
-    comment = models.ForeignKey(Comment)
-    user = models.ForeignKey(User)
-    rating = models.PositiveSmallIntegerField()
