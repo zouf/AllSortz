@@ -46,8 +46,10 @@ class CoordsField(models.Field):
         return 'geo_coords'
 
     def to_python(self, value):
-        if isinstance(value, Coords):
+        if value is None or isinstance(value, Coords):
             return value
+        if not isinstance(value, str):
+            raise ValidationError('Invalid input for a Coords instance.')
 
         # 'value' is a '(lon, lat)' string that needs parsing
         match = coords_re.search(value)
