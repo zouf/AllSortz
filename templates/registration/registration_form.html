@@ -14,8 +14,30 @@
 </fb:registration>
 -->
 <form action="." method="post" class="ui-big-widget" name="user">{% csrf_token %}
-	{{ form.as_p }}
+	<p>
+		<input id="id_username" class="required ui-big-widget" type="text" maxlength="30" name="username" placeholder="Username">
+	</p>
+	<p>
+		<input id="id_firstname" class="ui-big-widget" type="text" name="firstname" placeholder="First Name">
+	</p>
+	<p>
+		<input id="id_lastname" class="ui-big-widget" type="text" name="lastname" placeholder="Last Name">
+	</p>
+	<p>
+		<input id="id_password1" class="required ui-big-widget"  placeholder="Password" type="password" name="password1">
+	</p>
+	<p>
+		<input id="id_password2" class="required ui-big-widget"  placeholder="Password (again)" type="password" name="password2">
+	</p>
+	
+	<p>
+		<input id="id_email" class="required ui-big-widget" type="text" maxlength="75" name="email" placeholder="E-mail">
+		<p style="font-size:10px">Don't worry, we'll keep your data locked up. We also hate spam.</p>
+	</p>
+	
+
 	<input type="submit" class="ui-big-widget" value="Submit" />
+	
 </form>
 
 {% endblock %}

@@ -74,7 +74,7 @@ $(document).ready(function(){
 	         type  : form.attr('method'),
 	         data  : serial, // data to be submitted
 	         success: function(data){
-	        	 window.location="."
+	         	window.location.load("#sorts");
 
 	         }
 	    });
@@ -160,6 +160,7 @@ $(document).ready(function(){
 	         type  : form.attr('method'),
 	         data  : serial, // data to be submitted
 	         success: function(data){
+	        	 	alert('asdas')
 	         	$("#tag_list").html( data)
 	         	 $("#addTagDiv").hide();
 	         	rebind_buttons();

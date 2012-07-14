@@ -1,12 +1,12 @@
 {% if business %}
 	{% for tag in bus_tags %}
-		{{tag.descr}} |
+		<a href="/ratings/disp/{{tag.id}}/"><img class="tag_icon" src="{{STATIC_URL}}css/icons/{{tag.icon}}" alt="{{tag.descr}}" title="{{tag.descr}}"/>  </a>
 	{%endfor%}
 	<br>
 {%else%}
 	{% for tag in user_sorts %}
 		<table><tr><td>
-		<a href="/ratings/disp/{{tag.id}}/">{{tag.descr}}</a>  </td><td>
+		<a href="/ratings/disp/{{tag.id}}/"><img class="tag_icon" src="{{STATIC_URL}}css/icons/{{tag.icon}}" alt="{{tag.descr}}" title="{{tag.descr}}"/> </a>  </td><td>
 		<form name="unsubscribeUser" action="." method="post">
 			<input type="hidden" name="tag" value="{{tag.descr}}" />
 			<input type="submit" class="buttonme ui-small-widget" value="-" />
@@ -23,14 +23,14 @@
 
 {% if business %}
 	<form name="addTagDD" action="." method="post">{% csrf_token %}
-	<input type="hidden" value="{{business.id}}" name="bid"/>
+		<input type="hidden" value="{{business.id}}" name="bid"/>
 {%else%}
-<form name="subscribeUser" action="." method="post">
+	<form name="subscribeUser" action="." method="post">
 {%endif%}
 
 		<select name="tag" class="ui-widget">
-			{% for tag in tags %}
-				<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>-
+			{% for tag in tags %}			
+				<option value="{{tag.descr}}" selected="true">{{tag.descr}}</option>
 			{%endfor%}
 		</select>
 		<input class="buttonme ui-small-widget" type="submit" value="+"/>

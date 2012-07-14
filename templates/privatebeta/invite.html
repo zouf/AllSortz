@@ -2,13 +2,14 @@
 {% block body %}
 
 
-<p>Enter your email address and we'll send you an invite soon</p>
+
 <br>
 <form action="{% url privatebeta_invite %}" method="post">
-{{ form }}
-<input type="hidden" name="key" value="{{key}}" />
+
+<input class="ui-big-widget" id="id_email" type="text" maxlength="75" name="email" placeholder="E-mail" >
 {% csrf_token %}
-<input type="submit" value="Submit" />
+<br/><br/>
+<input type="submit" value="Request Beta Access" />
 </form>
 {% endblock %}
 

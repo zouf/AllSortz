@@ -78,7 +78,7 @@ if DEPLOY:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': 'allsortz-db',                      # Or path to database file if using sqlite3.
+            'NAME': 'allsortzdeploy1',                      # Or path to database file if using sqlite3.
                 # Not used with sqlite3.
             'USER': 'root',
             'PASSWORD': 'zoufzouf',                  # Not used with sqlite3.

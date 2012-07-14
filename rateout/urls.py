@@ -1,8 +1,8 @@
+from allsortz.views import logout_page
 from django.conf.urls import url, patterns, include
 from django.contrib import admin
 from rateout import settings
 from rateout.settings import STATIC_URL
-from ratings.views import logout_page
 
 
 admin.autodiscover()
@@ -54,7 +54,7 @@ urlpatterns = patterns('',
 #    url(r'^acts/(?P<act_id>\d+)/$', 'activities.views.detail_activity'),
     
     #URL for user details
-    url(r'^user_details/(?P<uid>\d+)/$','ratings.views.user_details'),
+    url(r'^user_details/(?P<uid>\d+)/$','allsortz.views.user_details'),
     
     #display businesses assoc with a tag
     url(r'^ratings/disp/(?P<tag_id>\d+)/$','allsortz.views.display_tag'),
@@ -77,7 +77,7 @@ urlpatterns = patterns('',
     #for adding content to the site
 	url(r'^ratings/add_business/$', 'allsortz.contribute.add_business'),
     url(r'^ratings/add_question/$', 'allsortz.contribute.add_question'),
-    url(r'^ratings/add_trait/$','usertraits.views.add_trait'),
+    url(r'^ratings/add_trait/$','allsortz.views.add_trait'),
     url(r'^ratings/add_new_tag/$', 'allsortz.contribute.add_new_tag'),
     url(r'^ratings/add_community/$', 'allsortz.contribute.add_community'),
 
@@ -92,7 +92,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     # Login / logout.
     url(r'^login/$', 'django.contrib.auth.views.login'),
-    url(r'^logout/$', logout_page),
+    url(r'^logout/$', 'allsortz.views.logout_page'),
 	url(r'^accounts/', include('registration.urls')),
 #    url(r'^comments/add_comment/(?P<bus_id>\d+)/$','ratings.views.add_comment_form'),
 

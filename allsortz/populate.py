@@ -32,14 +32,13 @@ def prepop_sorts(user):
             continue
        
         descr = row[0]
+        icon = row[1]
 
-        print('Tag name: '+str(descr))   
-        
         tset = Tag.objects.filter(descr=descr)
         if tset.count() > 0:
             continue
              
-        t = Tag(descr=descr,creator=user)
+        t = Tag(descr=descr,creator=user,icon=icon)
         t.save()
         
         
@@ -113,8 +112,7 @@ def prepop_businesses(user):
             b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8"), lat=0, lon=0)
             b.save()
         
-        b = Business.objects.get(name=name)
-        
+        setBusLatLng(b)        
         add_tag_to_bus(b, get_master_summary_tag(), get_default_user())
         add_photo_by_url(phurl,b,user,default=True)
 

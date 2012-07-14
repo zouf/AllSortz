@@ -1,21 +1,1 @@
-Sort,Description
-Value,Has good quantity for price
-Atmosphere,Has a good ambient atmosphere
-Italian,Has Italian food
-Mexican,Has Mexican food
-Chinese,Has Chinese food
-Japanese,Has Japanese food
-Fast,Fast food restaurant
-Bar,Has a bar
-Dessert,Has desserts
-Coffee,Has coffee
-Sandwiches,Has sandwiches
-Pizza,Has pizza
-Seafood,Has seafood dishes
-Classy,Has a classy feel
-Vegetarian,Has vegetarian selections
-Kosher,Has kosher food
-Halal,Has halal food
-Local,Has local cuisine
-Authentic,Has authentic cuisine
-Buffet,Has a buffet
+Sort,IconValue,value.pngAtmosphere,atmosphere.pngItalian,italian.pngMexican,mexican.pngChinese,chinese.pngJapanese,japanese.pngFast,fast.pngCocktails,cocktails.pngDessert,dessert.pngCoffee,coffee.pngSandwiches,sandwiches.pngPizza,pizza.pngSeafood,seafood.pngClassy,classy.pngVegetarian,vegetarian.pngKosher,kosher.pngHalal,halal.pngLocal,local.pngAuthentic,authentic.pngBuffet,buffet.pngParty,party.pngCarnivore,steak.pngWine,wine.pngHealthy,healthy.pngAmerican,american.pngIce Cream,icecream.png

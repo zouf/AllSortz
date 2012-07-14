@@ -33,12 +33,19 @@ function initialize() {
 			{% include 'ratings/busprofile.html' %}
 		</div>
 		<div id="photogallery" class="section">
-			<h1> Sorts </h1>
+			<h1> Photos </h1>
 			{% include 'photos/horizontal_feed.html' %}
 			<a href="/pics/gallery/{{business.id}}/">See More or Add your own</a>
 		</div>
+		
+		<div id="bus_activity_feed" class="section">
+			<h1>Activity Feed</h1>
+			{% include 'ratings/feed/activity_feed.html' %} 
+		</div>
+		
 
 		<div id="discussion" class="section">
+			<a name="discuss" />
 			<h1> Sorts </h1>
 			<div id="sorts">
 				{%if form %}

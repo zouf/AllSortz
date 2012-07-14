@@ -80,28 +80,26 @@
 	{% endif %}
 	
 	<div class="ui-widget">
-		<form method="post" class="ui-big-widget" action="{% url django.contrib.auth.views.login %}" style="margin-left:300px; padding-top:20px" name="user">
+		<form method="post" class="ui-big-widget" action="{% url django.contrib.auth.views.login %}" style="margin-left:45%; padding-top:20px" name="user">
 		{% csrf_token %}
 		<table>
 		<tr>
 		    <td>
 				<!--<td>{{ form.username.label_tag }}</td>
 		    	<td>{{ form.username }}</td>-->
-				<label for="id_username">Username</label>
-				<input type="text" name="username" id="id_username" />
+				<input type="text" name="username" placeholder="Username" id="id_username" />
 			</td>
 		</tr>
 		<tr>
 			<td>
 		    	<!--<td>{{ form.password.label_tag }}</td>
 		    	<td>{{ form.password }}</td>-->
-		    	<label for="id_password">Password</label>
-				<input type="password" name="password" id="id_password" />
+				<input type="password" name="password" placeholder="Password" id="id_password" />
 			</td>
 		</tr>
 		</table>
 
-		<input type="submit" class="ui-big-widget" value="login" style="margin-left:-300px" />
+		<input type="submit" class="ui-big-widget" value="Login" style="margin-left:-60%;" />
 		<input type="hidden" class="ui-big-widget" name="next" value="{{ next }}" />
 		
 		</form>
