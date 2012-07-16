@@ -256,9 +256,9 @@ def index(request, template='ratings/index.html',
 
 @page_template("ratings/listing/entry.html") # just add this decorator
 def display_tag(request,tag_id,extra_context=None):
+    print('asdasdasdasd')
     t = get_object_or_404(Tag, pk=tag_id)
     businesses = get_businesses_by_tag(t,request.user, request.GET.get('page'))
-    
     try:
         UserTag.objects.get(tag=t,user=request.user)
         subscribed=True

@@ -33,6 +33,7 @@ def setBusLatLng(b):
         b.lat = latlng[0]
         b.lon = latlng[1]
         b.save()
+    return b
         
 
 def convertAddressToLatLng():
@@ -42,6 +43,9 @@ def convertAddressToLatLng():
 
 #isSideBar is true if we're using small images
 def get_single_bus_data(b,user,isSideBar=False):
+    if b.lat == 0 or b.lon == 0:
+        b = setBusLatLng(b)
+    
     b.average_rating = round(getBusAvg(b.id) * 2) / 2
 
     if isSideBar:
@@ -72,6 +76,7 @@ def get_single_bus_data(b,user,isSideBar=False):
     for bt in bustags:
         if not is_master_summary_tag(bt.tag):
             b.tags.append(bt.tag)
+            
 
     b.master_page = get_master_page_business(b)
     return b

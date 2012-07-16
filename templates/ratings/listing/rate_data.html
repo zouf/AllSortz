@@ -1,25 +1,31 @@
 
 
-<script type="text/javascript">
-	$(function() {
-		$( ".therating").button();
-
-	});
-</script>
-
-
 <div id="answer_{{business.id}}" class="answer">
+
+
+		<script type="text/javascript">
+			$(function() {
+				$( ".therating").button();
+		
+			});
+		</script>
+
 		<!--<form id ="rateBusiness_{{business.id}}" name="rateBusiness_{{business.id}}" action="."  style=" text-align:center">-->
 
 		{% csrf_token %}
 	
-		<ul id="ratingDD_{{business.id}}" class="dropdown">
-			<li class="therating">Rate
+		<ul  id="ratingDD_{{business.id}}" name="ratingDD_{{business.id}}" class="dropdown">
+			<li class="therating">
+				{% if business.rating == 0 %}Rate{%endif%}
+				{% if business.rating == 1 %}Hated{%endif%}
+				{% if business.rating == 2 %}Meh{%endif%}
+				{% if business.rating == 3 %}Liked{%endif%}
+				{% if business.rating == 4 %}Loved{%endif%}
 				<ul class="sub_menu">
-				<li value="1" {% if business.rating == 1 %} selected="true" {%endif%}>Hated</li>
-				<li value="2" {% if business.rating == 2 %} selected="true" {%endif%}>Meh</li>
-				<li value="3" {% if business.rating == 3 %} selected="true" {%endif%}>Liked</li>
-				<li value="4" {% if business.rating == 4 %} selected="true" {%endif%}>Loved</li>
+				<li class="rating_dropdown first" value="1" {% if business.rating == 1 %} selected="true" {%endif%}>Hated</li>
+				<li class="rating_dropdown" value="2" {% if business.rating == 2 %} selected="true" {%endif%}>Meh</li>
+				<li class="rating_dropdown" value="3" {% if business.rating == 3 %} selected="true" {%endif%}>Liked</li>
+				<li class="rating_dropdown" value="4" {% if business.rating == 4 %} selected="true" {%endif%}>Loved</li>
 				</ul>
 			</li>
 		

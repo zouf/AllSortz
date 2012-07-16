@@ -127,8 +127,8 @@ def prepopulate_database(request):
     
 #    UNCOMMENT TO DELETE
 
-    Business.objects.all().delete()
-    BusinessPhoto.objects.all().delete()
+    #Business.objects.all().delete()
+    #BusinessPhoto.objects.all().delete()
 #    Comment.objects.all().delete()
 #    BusinessTag.objects.all().delete()
 #    TagComment.objects.all().delete()
