@@ -2,7 +2,7 @@
 {% if pages %}
 	{% for page in pages %}
 		<a href="edit/{{ page.id }}/#discuss" rel="bookmark">
-			<div class="sort">
+			<div class="sort" style="background-image: url('{{STATIC_URL}}css/icons/{{page.tag.icon}}');">
 				<h3>{{ page.page.name }} <img class="tag_icon" src="{{STATIC_URL}}css/icons/{{page.tag.icon}}" title="{{page.tag.descr}}" /></h3>
 				
 				{% if not page.page.id %}

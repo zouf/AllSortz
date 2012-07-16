@@ -10,40 +10,42 @@
 			<td valign="top">
 				<table>
 				<tr>
-					<td style="width:125px;">
+					<td valign="bottom" style="width:350px;">
 						<a class="business_name" href="/ratings/{{business.id}}/" class="blocklink">
-							<h3>{{business.name}}</h3 
+							<h3>{{business.name}}</h3>
 						</a>
 					</td>
-					<td style="width:475px;">
-						<i>{{business.city}}, {{business.state}}</i>
+				</tr>
+				<tr>
+					<td valign="top">
+						<div style="font-size:14px"><i>{{business.city}}, {{business.state}}</i></div>
 					</td>
 					<td>
 						{% include 'ratings/listing/rate_data.html' %}
 					</td>
 				</tr>
 				<tr>
-					<td style="width:475px;" colspan="2">
-						
+					<td valign="top">
 						<div class="page_text">
-						{{ business.master_page.rendered|safe|linebreaks }}
+							{{ business.master_page.rendered }}
 						</div>
+						
+						<br>
 						{% if business.tags %}
 							{% for sort in business.tags %}
 								<a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a> &middot;
 							{% endfor %}
 						{% endif %}
-						</div>
 					</td>
-					<td>
-						<p style="font-size:14px">
+					<td valign="top">
+						<div style="font-size:14px">
 							{% if business.liked %}
 								{{business.liked}} liked it.
 							{%endif%}
 							{% if business.loved %}
 								{{business.loved}} loved it!
 							{% endif%}
-						</p>
+						</div>
 					</td>
 				</tr>
 				</table>

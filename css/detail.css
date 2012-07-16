@@ -11,7 +11,7 @@
 #busFeed
 {
     margin: 12px;
-    width: 310px;
+    width: 305px;
     height: 700px;
     text-align: left;
     font-size: 16px;
@@ -55,7 +55,7 @@
     width:200px;
 }
 
-#photogallery
+#photoreel
 {
     text-align: left;
     margin: 12px;
@@ -73,6 +73,9 @@
 {
     text-align: left;
     color: #000000;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.9;
     border-top: 1px solid #1c3752;
     display: inline-block;
     vertical-align: top;
