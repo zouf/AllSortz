@@ -2,7 +2,7 @@
 
 
 <div id="answer_{{business.id}}" class="answer">
-		<form id ="rateBusiness_{{business.id}}" name="rateBusiness_{{business.id}}" action="."  style=" text-align:center">
+		<form id ="rateBusiness_{{business.id}}" name="rateBusiness_{{business.id}}" action=".">
 		{% csrf_token %}
 		<select id= "ratingDD_{{business.id}}" name="ratingDD" class="ratingDD ui-widget">
 			<option value="0" {% if not business.rating %}  selected="true" {%endif%} >--</option>

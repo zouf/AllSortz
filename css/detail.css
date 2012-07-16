@@ -2,7 +2,19 @@
 #busProfile
 {
     margin: 12px;
+    width: 600px;
+    height: 700px;
     text-align: left;
+    float: left;
+}
+
+#busFeed
+{
+    margin: 12px;
+    width: 310px;
+    height: 700px;
+    text-align: left;
+    font-size: 16px;
 }
 
 /* Business details */
@@ -10,7 +22,7 @@
 {
     float: left;
     margin: 10px;
-    width: 300px;
+    width: 575px;
 }
 
 /* Categories a business is sorted under */
