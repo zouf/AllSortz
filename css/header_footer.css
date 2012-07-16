@@ -73,6 +73,20 @@
     z-index:1000;
 }
 
+/* Dropdown bar */
+#dropdown2
+{
+    list-style: none;
+    width: 500px;
+    position: relative;
+    top: 15px;
+    left: 50%;
+    padding: 0px;
+    margin-left: 20px;
+    z-index:1000;
+}
+
+
 #dropdown li
 {
     position: relative;

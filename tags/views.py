@@ -320,6 +320,9 @@ def get_questions(b,user):
     return results
         
 
+
+
+
 def get_hard_tags(b):
     hardtags = HardTag.objects.all()
     results = []

@@ -1,0 +1,45 @@
+* 									{ margin: 0; padding: 0; }
+#page-wrap							{ width: 800px; margin: 25px auto; } 
+a									{ text-decoration: none; }
+ul									{ list-style: none; }
+p                                   { margin: 15px 0; }
+
+/* 
+	LEVEL ONE
+*/
+/*
+
+ul.dropdown li                      { font-weight: bold; float: left; zoom: 1; background: #ECEFFF; }*/
+ul.dropdown a:hover		            { color: #000; }
+ul.dropdown a:active                { color: #ECEFFF; }
+ul.dropdown li a                    { display: block; 
+							
+									border-right: 1px solid #333;
+	 								color: #222; font: 14px Helvetica, Sans-Serif;}
+	 								  
+	 								  
+	 								  
+ul.dropdown li:last-child a         { border-right: none; } /* Doesn't work in IE */
+ul.dropdown li.hover,
+ul.dropdown li:hover                { background: #ECEFFF; color: black; position: relative; }
+ul.dropdown li.hover a              { color: black; }
+
+
+/* 
+	LEVEL TWO
+*/
+ul.dropdown ul 						{ width: 220px; visibility: hidden; position: absolute; top: 100%; left: 0; }
+ul.dropdown ul li 					{ font-weight: normal; background: #fefefe; color: #000; 
+									  border-bottom: 1px solid #ccc;
+									  border-right: 1px solid #ccc; 
+									  border-left: 1px solid #ccc;
+									  float: none; }
+									  
+                                    /* IE 6 & 7 Needs Inline Block */
+ul.dropdown ul li a					{ border-right: none; width: 100%; display: inline-block; } 
+
+/* 
+	LEVEL THREE
+*/
+ul.dropdown ul ul 					{ left: 100%; top: 0; }
+ul.dropdown li:hover > ul 			{ visibility: visible; }

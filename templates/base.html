@@ -5,6 +5,8 @@
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/comments.css" />
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/header_footer.css" />
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/feeds.css" />
+<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/dropdown.css" />
+
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/gallery.css" />
 
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/skins/tango/skin.css" />
@@ -21,6 +23,8 @@
 <script type="text/javascript"  src="{{STATIC_URL}}js/tag.js" /></script>
 <script type="text/javascript"  src="{{STATIC_URL}}js/main.js" /></script>
 <script type="text/javascript"  src="{{STATIC_URL}}js/gallery.js" /></script>
+<script type="text/javascript"  src="{{STATIC_URL}}js/dropdown.js" /></script>
+
 
 <script src="{{STATIC_URL}}js/endless_pagination/js/endless.js" type="text/javascript" charset="utf-8"></script>
 <script src="http://fgnass.github.com/spin.js/dist/spin.min.js" type="text/javascript" charset="utf-8"></script>
@@ -126,23 +130,28 @@ function setupPage()
 			      </table>
 			</form>
 		</div>
-		<ul id="dropdown">
+		
+		
+		
+
+		
+		<ul class="dropdown" id="dropdown2">
 			<li id="yourSorts"  class="ui-big-widget" style="width:120px;">Your Sorts
-				<ul id="dropdown-list1">
+				<ul class="sub_menu">
 					{% for sort in user_sorts %}
 					<li><p style="display:inline"><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></p></li>
 					{% endfor %}
 				</ul>
 			</li>
 			<li id="topSorts"  class="ui-big-widget" style="width:120px;">All Sorts
-				<ul id="dropdown-list2">
+				<ul class="sub_menu">
 					{% for sort in top_sorts %}
-					<li><a href="/ratings/disp/{{sort.id}}/">{{sort.descr}}</a></li>
+					<li><a href="/ratings/disp/{{sort.id}}/"><img class="tag_icon" src="{{STATIC_URL}}css/icons/{{sort.icon}}" alt="{{sort.descr}}" title="{{sort.descr}}"/> {{sort.descr}} </a> </li>
 					{% endfor %}
 				</ul>
 			</li>
 			<li id="addStuff"  class="ui-big-widget" style="width:120px;">Add
-				<ul id="dropdown-list3">
+				<ul class="sub_menu" >
 					<li><a href="/ratings/add_business/">Businesses</a></li>
 					<li><a href="/ratings/add_question/">Questions</a></li>
 					<li><a href="/ratings/add_new_tag/">Sorts</a></li>

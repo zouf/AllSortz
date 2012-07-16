@@ -95,12 +95,15 @@
 
 .even-background
 {
-	background-color: #F9FCEA;
+	/*background-color: #F9FCEA;*/
+	background-color: #F6F9FF;
 	border: 1px solid #1c3752;
 }
 
 .odd-background
 {
-	background-color: #CFDFDF;
+	/*background-color: #CFDFDF;*/
+	background-color: #FCFCFF;
+	
 	border: 1px solid #1c3752;
 }
