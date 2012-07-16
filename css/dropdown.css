@@ -28,8 +28,12 @@ ul.dropdown li.hover a              { color: black; }
 /* 
 	LEVEL TWO
 */
-ul.dropdown ul 						{ width: 220px; visibility: hidden; position: absolute; top: 100%; left: 0; }
-ul.dropdown ul li 					{ font-weight: normal; background: #fefefe; color: #000; 
+ul.dropdown ul 						{ 
+										padding: 0px 10px;
+										
+										 visibility: hidden; 
+										 position: absolute; top: 100%; left: 0; }
+ul.dropdown ul li 					{ padding: 0px 10px;font-weight: normal; background: #fefefe; color: #000; 
 									  border-bottom: 1px solid #ccc;
 									  border-right: 1px solid #ccc; 
 									  border-left: 1px solid #ccc;

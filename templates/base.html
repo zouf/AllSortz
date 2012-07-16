@@ -146,7 +146,7 @@ function setupPage()
 			<li id="topSorts"  class="ui-big-widget" style="width:120px;">All Sorts
 				<ul class="sub_menu">
 					{% for sort in top_sorts %}
-					<li><a href="/ratings/disp/{{sort.id}}/"><img class="tag_icon" src="{{STATIC_URL}}css/icons/{{sort.icon}}" alt="{{sort.descr}}" title="{{sort.descr}}"/> {{sort.descr}} </a> </li>
+					<li><a href="/ratings/disp/{{sort.id}}/"> <span style="white-space: nowrap;"><img class="tag_icon" src="{{STATIC_URL}}css/icons/{{sort.icon}}" alt="{{sort.descr}}" title="{{sort.descr}}"/> {{sort.descr}}</span> </a> </li>
 					{% endfor %}
 				</ul>
 			</li>
