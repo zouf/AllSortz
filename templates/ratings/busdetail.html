@@ -32,15 +32,23 @@ function initialize() {
 			<h1><a href="/ratings/{{business.id}}/">{{ business.name }}</a></h1>    
 			{% include 'ratings/busprofile.html' %}
 		</div>
-		<div id="photogallery" class="section">
-			<h1> Photos </h1>
-			{% include 'photos/horizontal_feed.html' %}
-			<a href="/pics/gallery/{{business.id}}/">See More or Add your own</a>
+		
+		<div id="busFeed" class="section">
+			<h1><a href="/ratings/{{business.id}}/">{{ business.name }}</a></h1>    
+			<div id="map_canvas" style="margin: 10px auto;"></div>
+			<div id="sorted">
+				{% include 'ratings/sorts.html' %}
+			</div>
+			
+			<br>
+			<hr>
+			<h3>Recent Activity</h3>
+			{% include 'ratings/feed/activity_feed.html' %}
 		</div>
 		
-		<div id="bus_activity_feed" class="section">
-			<h1>Activity Feed</h1>
-			{% include 'ratings/feed/activity_feed.html' %} 
+		<div id="photoreel" class="section">
+			{% include 'photos/horizontal_feed.html' %}
+			<a href="/pics/gallery/{{business.id}}/">See More or Add your own</a>
 		</div>
 		
 

@@ -1,48 +1,39 @@
 {% for item in feed %}
-	
-	{% if item.type == "business" %}
-		<p  class="feed_text" >
-				<table><tr><td>
-					{% include 'ratings/user/usericon.html' %}
-				</td><td>
-			{% if item.rating == 1 %}
-				hated 
-			{%else%}{%if item.rating == 2 %}
-				didn't care for  
-			{%else%}{%if item.rating == 3%} 
-				liked 
-			{%else%}
-				loved 
-			{%endif %}{%endif%}{%endif%}
-			
-			<a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>
-			</td></tr></table>
-		</p> 
-	{%endif%}
-	{% if item.type == "buscomment" %}				
-		<p class="feed_text"  ><a href="/user_details/{{item.user.id}}/"> 
-				<table><tr><td>
-					{% include 'ratings/user/usericon.html' %}
-				</td><td>
+	<table>
+	<tr>
+		<td>
+			<a href="/user_details/{{item.user.id}}/" ><img src={{ item.user.photo.image_thumb.url }} /></a>
+		</td>
+		<td>
+			{% if item.type == "buscomment" %}
+				<a href="/user_details/{{item.user.id}}/" >{{item.thread.user}}</a>
+			{% else %}
+				<a href="/user_details/{{item.user.id}}/" >{{item.user}}</a>
+			{% endif %}
+			{% if item.type == "business" %}
+					{% if item.rating == 1 %}
+						hated 
+					{%else%}{%if item.rating == 2 %}
+						didn't care for  
+					{%else%}{%if item.rating == 3%} 
+						liked 
+					{%else%}
+						loved 
+					{%endif %}{%endif%}{%endif%}
 					
-				
-				discussed  <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a> 
+					<a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>
+			{%endif%}
+			{% if item.type == "buscomment" %}
+				discussed  <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>
 				<br> <i>{{item.thread.descr}}</i>
-				</td></tr></table>
-		</p> 
-	{%endif%}
-	{% if item.type == "tagcomment" %}				
-			<p class="feed_text"  >
-				<table><tr><td>
-					{% include 'ratings/user/usericon.html' %}
-				</td><td>
-					
-		
-				was part of a discussion on  <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a> 
+			{%endif%}
+			{% if item.type == "tagcomment" %}
+				discussed <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a> 
 				for <a href="/ratings/disp/{{item.tag.id}}/">{{item.tag.descr}}</a> lovers 
 				<br> <i>{{item.thread.descr}}</i>
-				</td></tr></table>
-			 </p>
-	{%endif%}
+			{%endif%}
+		</td>
+	</tr>
+	</table>
 	<hr>
 {% endfor %}

@@ -22,7 +22,7 @@ def get_bus_recent_activity(b):
     for c in allbuscomments:  
         bc = c
         bc.type = "buscomment"
-        bc.user.photo = get_user_profile_pic(c.user)
+        bc.thread.user.photo = get_user_profile_pic(c.thread.user)
 
         feed.append(bc)
     return feed
