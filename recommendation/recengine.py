@@ -5,6 +5,48 @@ from recommendation.normalization import getNormFactors
 import numpy as np
 
 
+def get_best_current_recommendation(business, user):
+
+        #  my.factors <- me %*% m@fit@W
+        #  barplot(my.factors)
+        #  my.prediction <- my.factors %*% t(m@fit@W)
+        #  items$title[order(my.prediction, decreasing=T)[1:10]]
+
+        NumFactors = 42
+        ufset = UserFactor.objects.filter(user=user)
+        myFactors = np.zeros(NumFactors)
+
+        for uf in ufset:
+            factor = uf.latentFactor
+            relation = uf.relation
+            myFactors[factor] = relation
+
+        if ufset.count() == 0:
+            return 0
+
+        bfset = BusinessFactor.objects.filter(business=business)
+        busFactors = np.zeros(NumFactors)
+        for bf in bfset:
+            factor = bf.latentFactor
+            relation = bf.relation
+            busFactors[factor] = relation
+        
+        if bfset.count() == 0:
+            return 0
+
+        prediction = np.dot(myFactors, busFactors) + getNormFactors(user.id, business.id)
+        print(prediction)
+        print("PREDICTION!!!\n")
+        rec = round(prediction * 2) / 2  # round to half
+
+        if rec > 4.0:
+            rec = 4.0
+        elif rec < 1.0:
+            rec = 1.0
+
+        #Recommendation.objects.filter(username=user, business=business)
+        return rec
+
 
 class RecEngine:
     best_recommendation_table = dict()
@@ -82,43 +124,4 @@ class RecEngine:
         return top10
 
     # CALLED BY THE VIEW TO GET THE BES    T CURRENT RECOMMENDATION
-    def get_best_current_recommendation(self, business, user):
-
-        #  my.factors <- me %*% m@fit@W
-        #  barplot(my.factors)
-        #  my.prediction <- my.factors %*% t(m@fit@W)
-        #  items$title[order(my.prediction, decreasing=T)[1:10]]
-
-        NumFactors = 42
-        ufset = UserFactor.objects.filter(user=user)
-        myFactors = np.zeros(NumFactors)
-
-        for uf in ufset:
-            factor = uf.latentFactor
-            relation = uf.relation
-            myFactors[factor] = relation
-
-        if ufset.count() == 0:
-            return 0
-
-        bfset = BusinessFactor.objects.filter(business=business)
-        busFactors = np.zeros(NumFactors)
-        for bf in bfset:
-            factor = bf.latentFactor
-            relation = bf.relation
-            busFactors[factor] = relation
-
-        if bfset.count() == 0:
-            return 0
-
-        prediction = np.dot(myFactors, busFactors) + getNormFactors(user.id, business.id)
-
-        rec = round(prediction * 2) / 2  # round to half
-
-        if rec > 5.0:
-            rec = 5.0
-        elif rec < 1.0:
-            rec = 1.0
-
-        #Recommendation.objects.filter(username=user, business=business)
-        return rec
+    

@@ -221,6 +221,7 @@ def index(request, template='ratings/index.html',
         current_businesses+=community_businesses#.object_list
         
 
+        
         all_businesses = get_businesses_trending(request.user,request.GET.get('page'),[],True)
         current_businesses+=all_businesses#.object_list
 

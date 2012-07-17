@@ -39,7 +39,9 @@
 					</td>
 					<td valign="top">
 						<div style="font-size:14px">
-							<p>{{business.average_rating}} / 4</p>
+							{% if business.recommendation %}
+								<p>Your rating: {{business.recommendation}}</p>
+							{%endif%}
 							<!--{% if business.liked %}
 								{{business.liked}} liked it.
 							{%endif%}

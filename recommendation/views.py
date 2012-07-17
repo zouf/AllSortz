@@ -1,10 +1,11 @@
-from data_import.views import read_dataset
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db import transaction
 from ratings.models import Business
 from ratings.tests import pop_test_user_bus_data, generate_nmf_test
-from recommendation.models import UserFactor, BusinessFactor
+from recommendation.models import UserFactor, BusinessFactor, Recommendation
 from recommendation.nmf import run_nmf_mult_k, get_p_q_best
+import numpy
 
 
 
@@ -16,9 +17,9 @@ def build_pred_server():
     P, Q, arrID2bid, arrID2uid = get_p_q_best(k, Steps, Alpha)
     print("AFTER)")
 
-    print(len(arrID2uid))
-    print(len(P))
-    #print(len(P))
+#    print(len(arrID2uid))
+#    print(len(P))
+#    #print(len(P))
 
     i = 0
 
@@ -55,22 +56,24 @@ def build_pred_server():
         i += 1
     BusinessFactor.objects.bulk_create(factors)
 
+    Predictions = numpy.dot(P,numpy.transpose(Q))
+    i = 0
+    predictions = []
+    for row in Predictions:
+        print(len(row))
+        j = 0
+        bus = Business.objects.get(id=arrID2bid[j])
+        for cell in row:
+            usr = User.objects.get(id=arrID2uid[i])
+            p = Recommendation(business=bus,recommendation=cell,username=usr)
+            predictions.append(p)
+            j+=1
+        i+=1
+    Recommendation.objects.bulk_create(predictions)
+    transaction.commit();
 
-#    Predictions = numpy.dot(P,numpy.transpose(Q))
-#    i = 0
-#    predictions = []
-#    for row in Predictions:
-#        print(len(row))
-#        j = 0
-#        bus = Business.objects.get(id=arrID2bid[j])
-#        for cell in row:
-#            usr = User.objects.get(id=arrID2uid[i])
-#            p = Recommendation(business=bus,recommendation=cell,username=usr)
-#            predictions.append(p)
-#            j+=1
-#        i+=1
-#    Recommendation.objects.bulk_create(predictions)
-#    transaction.commit();
+
+
 def find_categories_best_k(k):
     Steps = 5000
     Alpha = 0.05
@@ -120,10 +123,6 @@ def find_categories_best_k(k):
         fp.close()
         latentNum = latentNum + 1
     #}
-
-
-def init():
-    read_dataset()
 
 
 def val_nmf(K, Steps):
