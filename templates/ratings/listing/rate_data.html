@@ -16,11 +16,16 @@
 	
 		<ul  id="ratingDD_{{business.id}}" name="ratingDD_{{business.id}}" class="dropdown">
 			<li class="therating">
-				{% if business.rating == 0 %}Rate{%endif%}
-				{% if business.rating == 1 %}Hated{%endif%}
+				{% if business.rating == 0 %}<em>Rate</em>
+				{%else%}
+				
+			
+				
+				<em style="color:black;">{% if business.rating == 1 %}Hated{%endif%}
 				{% if business.rating == 2 %}Meh{%endif%}
 				{% if business.rating == 3 %}Liked{%endif%}
-				{% if business.rating == 4 %}Loved{%endif%}
+				{% if business.rating == 4 %}Loved{%endif%}</em>
+				{%endif%}
 				<ul class="sub_menu">
 				<li class="rating_dropdown first" value="1" {% if business.rating == 1 %} selected="true" {%endif%}>Hated</li>
 				<li class="rating_dropdown" value="2" {% if business.rating == 2 %} selected="true" {%endif%}>Meh</li>
