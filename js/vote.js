@@ -63,17 +63,29 @@ function vote_func(obj,url)
 
 
 $(document).ready(function(){
-	$("select[name=ratingDD]").live("change", function(e){
+	$(".rating_dropdown").live("click", function(e){
+		
 		var rating = this.value
-		var id = $(this).parents('form').attr('name').split('_')[1];
-	
+		var id = $(this).parents('ul').parents('ul').attr('name').split('_')[1];
 	
 		$.ajax({ 
 	         url   : '/api/add_bus_rating/',
 	         type  : 'POST',
 	         data  : { rating: rating, bid: id }, // data to be submitted
 	         success: function(data){
-	         	
+	         	$("#answer_"+id).html(data);
+	         	 $("ul.dropdown li").hover(function(){
+	        	        $(this).addClass("hover");
+	        	        $('ul:first',this).css('visibility', 'visible');
+	        	    
+	        	    }, function(){
+	        	    
+	        	        $(this).removeClass("hover");
+	        	        $('ul:first',this).css('visibility', 'hidden');
+	        	    
+	        	    });
+	        	    
+	        	    $("ul.dropdown li ul li:has(ul)").find("a:first").append(" &raquo; ");
 	         }
 	    });
 	    return false;

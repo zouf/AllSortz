@@ -167,6 +167,7 @@ def getBusAvg(bid):
     ratingFilter = Rating.objects.filter(business=Business.objects.get(id=bid)).aggregate(Sum('rating'), Count('rating'))
     sumRating = ratingFilter['rating__sum']
     countRating = ratingFilter['rating__count']
+
     avg = 0
     K = 5  # calcStdev()
     if countRating != 0:
@@ -179,7 +180,7 @@ def getBusAvg(bid):
 
 
 def getUserAvg(uid):
-    ratingFilter = Rating.objects.filter(username=User.objects.get(id=uid)).aggregate(Sum('rating'), Count('rating'))
+    ratingFilter = Rating.objects.filter(user=User.objects.get(id=uid)).aggregate(Sum('rating'), Count('rating'))
     sumRating = ratingFilter['rating__sum']
     countRating = ratingFilter['rating__count']
     avg = 0

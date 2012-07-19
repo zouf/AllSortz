@@ -11,6 +11,7 @@ from photos.views import get_photo_web_url, get_photo_thumb_url
 from ratings.favorite import get_user_favorites
 from ratings.models import Rating, Business
 from recommendation.normalization import getBusAvg, getNumLoved, getNumLiked
+from recommendation.recengine import get_best_current_recommendation
 from tags.models import BusinessTag
 from tags.views import get_master_summary_tag, is_master_summary_tag, \
     get_master_page_business
@@ -33,6 +34,7 @@ def setBusLatLng(b):
         b.lat = latlng[0]
         b.lon = latlng[1]
         b.save()
+    return b
         
 
 def convertAddressToLatLng():
@@ -40,8 +42,13 @@ def convertAddressToLatLng():
         setBusLatLng(b) 
         time.sleep(1)
 
+
+
 #isSideBar is true if we're using small images
 def get_single_bus_data(b,user,isSideBar=False):
+    if b.lat == 0 or b.lon == 0:
+        b = setBusLatLng(b)
+    
     b.average_rating = round(getBusAvg(b.id) * 2) / 2
 
     if isSideBar:
@@ -72,7 +79,11 @@ def get_single_bus_data(b,user,isSideBar=False):
     for bt in bustags:
         if not is_master_summary_tag(bt.tag):
             b.tags.append(bt.tag)
-
+            
+    if b.rating == 0:
+        #b.recommendation = get_best_current_recommendation(b,user)
+        
+        b.recommendation = getBusAvg(b.id)
     b.master_page = get_master_page_business(b)
     return b
 
@@ -152,6 +163,13 @@ def get_businesses_by_community(user,page,checkForIntersection,isSideBar=False):
 
     return business_list
 
+
+def sort_trending(b1,b2):
+    like_adjust = 0.8
+    love_adjust = 1.0
+    
+    return cmp(like_adjust*b2.liked + love_adjust*b2.loved, like_adjust*b1.liked + love_adjust*b1.loved)
+
 def get_businesses_trending(user,page,checkForIntersection,isSideBar=False):
     alreadyThere = dict()
     for nt in checkForIntersection:
@@ -166,8 +184,10 @@ def get_businesses_trending(user,page,checkForIntersection,isSideBar=False):
     except:
         logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
         businesses = Business.objects.all()
+    
+        
     business_list = get_bus_data(businesses,user,isSideBar)
-
+    business_list = sorted(business_list,cmp=sort_trending)
     return business_list
         
         

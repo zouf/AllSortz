@@ -159,7 +159,7 @@ li
     position: absolute;
     bottom: 50px;
     width: 980px;
-    height: 175px;
+    height: 170px;
     margin: 10px;
     overflow: hidden;
 }
@@ -341,3 +341,9 @@ textarea
 {
     font-size: 14px;
 }	
+
+td
+{
+	font-size:12px;
+
+}

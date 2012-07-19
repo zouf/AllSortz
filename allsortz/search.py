@@ -18,46 +18,74 @@ def search_site(searchTerm, locationTerm):
     print("Searching for "+str(searchTerm) + " near " + str(locationTerm))
     search_results = (SearchQuerySet().filter(content=searchTerm))
     
-    try:
-        c=Community.objects.get(name=locationTerm)
-    except:
-        logger.error('community object not found!')
+    q = searchTerm
     
-    g = geocoders.Google()  
-    res = g.geocode(str(c.city) +', '+str(c.state),exactly_one=False)
-    place, (base_lat,base_lng) = res[0]
-    #print "%s: %.5f, %.5f" % (place, base_lat, base_lng)  
     
     businesses = []
-    for sr in search_results:
-        bus = None            
-        if sr.model_name == "business":            
-            bus = sr.object
-            distance = 3
-            current_pg_point = "point '({:.5f}, {:.5f})'".format(base_lng, base_lat)
-            
-            buses_query = " ".join(["SELECT *",
-                                    "FROM (SELECT id, (coordinates <@> {}) AS dist FROM ratings_business) AS dists",
-                                    "WHERE dist <= {:4f} ORDER BY dist ASC;"]).format(current_pg_point, distance)
-            buses = Business.objects.raw(buses_query)
-            for bresult in buses:
-                if bresult.id == bus.id:
-                    businesses.append(bus)
-        elif sr.model_name == "tag":
-            bustags = BusinessTag.objects.filter(tag=sr.object)
-            for bt in bustags:
-                businesses.append(bt.business)
-        elif sr.model_name == "comment":
-            bus = sr.object.business
-            businesses.append(bus)
-        else:
-            print('error')
-            logger.error('error in search_site')
+    
+    
+    queryset = Business.objects.extra(where=['name @@ plainto_tsquery(%s)'], params=[q])
+    for entry in queryset:
+        businesses.append(entry)
         
-        #if in_location(bus,locations):
+    tagset = Tag.objects.extra(where=['descr @@ plainto_tsquery(%s)'], params=[q])
+    for entry in tagset:
+        bt = BusinessTag.objects.filter(tag=entry)
+        for b in bt:
+            businesses.append(b.business)
+            
+    return businesses
+
+    
+    
+    
+    
+        
+        
         
     
-    return businesses   
+    
+    
+#    try:
+#        c=Community.objects.get(name=locationTerm)
+#    except:
+#        logger.error('community object not found!')
+#    
+#    g = geocoders.Google()  
+#    res = g.geocode(str(c.city) +', '+str(c.state),exactly_one=False)
+#    place, (base_lat,base_lng) = res[0]
+#    #print "%s: %.5f, %.5f" % (place, base_lat, base_lng)  
+#    
+#    businesses = []
+#    for sr in search_results:
+#        bus = None            
+#        if sr.model_name == "business":            
+#            bus = sr.object
+#            distance = 3
+#            current_pg_point = "point '({:.5f}, {:.5f})'".format(base_lng, base_lat)
+#            
+#            buses_query = " ".join(["SELECT *",
+#                                    "FROM (SELECT id, (coordinates <@> {}) AS dist FROM ratings_business) AS dists",
+#                                    "WHERE dist <= {:4f} ORDER BY dist ASC;"]).format(current_pg_point, distance)
+#            buses = Business.objects.raw(buses_query)
+#            for bresult in buses:
+#                if bresult.id == bus.id:
+#                    businesses.append(bus)
+#        elif sr.model_name == "tag":
+#            bustags = BusinessTag.objects.filter(tag=sr.object)
+#            for bt in bustags:
+#                businesses.append(bt.business)
+#        elif sr.model_name == "comment":
+#            bus = sr.object.business
+#            businesses.append(bus)
+#        else:
+#            print('error')
+#            logger.error('error in search_site')
+#        
+#        #if in_location(bus,locations):
+#        
+#    
+#    return businesses   
 
 
 def in_location(bus, locations):

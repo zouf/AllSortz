@@ -5,8 +5,10 @@ Created on May 29, 2012
 '''
 from allsortz.views import get_comment_by_id
 from django.http import HttpResponse, Http404
+from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from ratings.models import Business, Rating, CommentRating
+from ratings.utility import get_single_bus_data
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 import json
 import logging
@@ -23,7 +25,6 @@ logger = logging.getLogger(__name__)
 def vote(request):
     if request.method == 'POST':
         vote_on = request.POST['id']
-        print(vote_on)
         try:
             business = Business.objects.get(id=request.POST['id'])
         except Business.DoesNotExist:
@@ -78,9 +79,6 @@ def comment_vote(request):
             rating = CommentRating.objects.get(comment=comment, user=request.user)
         except CommentRating.DoesNotExist:
             logger.debug("In vote create a new comment rating!")
-            print(comment)
-            print(request.user)
-            print(rat)
             rating = CommentRating.objects.create(comment=comment, user=request.user, rating=rat)
         except:
             logger.error("Unexpected error:", sys.exc_info()[0])
@@ -184,7 +182,10 @@ def add_bus_rating(request):
         response_data['bid'] = str(request.POST['bid'])
         response_data['success'] = 'true'
         response_data['rating'] = rat
-        return HttpResponse(json.dumps(response_data), mimetype="application/json")
+        context = {}
+        business.rating = rating.rating
+        context['business'] = get_single_bus_data(business,request.user)
+        return render_to_response('ratings/listing/rate_data.html',context)
         #return HttpResponse("{'success':'true', 'rating': '" + str(rat) + "'}")
     else:
         raise Http404('What are you doing here?')

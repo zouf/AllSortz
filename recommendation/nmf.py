@@ -1,17 +1,17 @@
-from data_import.views import bus_rating_threshold, user_rating_threshold
 from django.conf import settings
 from django.contrib.auth.models import User
 from ratings.models import Business, Rating
 from recommendation.normalization import getNormFactors
 import copy
-import fastnmf
+
 import math
-import numpy 
+import numpy
 import random
 import sys
+sys.path.append(settings.CLIB_DIR)
+import fastnmf
 import time
 
-sys.path.append(settings.CLIB_DIR)
 
 
 def get_folds(allRatings):
@@ -73,7 +73,7 @@ def getAllRatMatrix(N, M, allRatings):
         if c % 100 == 0:
             print(c)
         c += 1
-        NormFactor = getNormFactors(r.username.id, r.business.id)
+        NormFactor = getNormFactors(r.user.id, r.business.id)
 
         #Need to keep a mapping from the position in the
         # array to the actual business and user ID
@@ -93,12 +93,12 @@ def getAllRatMatrix(N, M, allRatings):
             j += 1
 
         uPos = 0
-        if r.username.id in uid2arrID:
-            uPos = uid2arrID[r.username.id]
+        if r.user.id in uid2arrID:
+            uPos = uid2arrID[r.user.id]
         else:
             uPos = i
-            uid2arrID[r.username.id] = uPos
-            arrID2uid[i] = r.username.id
+            uid2arrID[r.user.id] = uPos
+            arrID2uid[i] = r.user.id
             i += 1
         #        fp2.write("Rating is " + str(r.rating) + " after normalization " +  str(float(r.rating - NormFactor))+ "\n")
 
@@ -110,7 +110,8 @@ def run_nmf_mult_k(K, Steps, Alpha):
     N = User.objects.count()
     M = Business.objects.count()
     allRatings = Rating.objects.all()
-
+    user_rating_threshold = 0
+    bus_rating_threshold =0
     resultFile = settings.RESULTS_DIR + "u" + str(user_rating_threshold) + "_b" + str(bus_rating_threshold) + "_s" + str(Steps) + "_k" + str(K[0]) + "-" + str(K[len(K) - 1])
     predictionFile = settings.RESULTS_DIR + "predictions_" + "u" + str(user_rating_threshold) + "_b" + str(bus_rating_threshold) + "_s" + str(Steps) + "_k" + str(K[0]) + "-" + str(K[len(K) - 1])
     print(resultFile)
@@ -130,7 +131,7 @@ def run_nmf_mult_k(K, Steps, Alpha):
     fp.flush()
     print("Moving data to an array...")
     fp2 = open("/tmp/debug-ratings.txt", "w")
-    allRatMatrix, bid2arrID, uid2arrID, arrID2bid, arrID2uid = getAllRatMatrix(allRatings)
+    allRatMatrix, bid2arrID, uid2arrID, arrID2bid, arrID2uid = getAllRatMatrix(N,M,allRatings)
     print("Generating Folds...")
     folds = get_folds(allRatMatrix)
     print("Fold Generation Complete...")
@@ -174,16 +175,16 @@ def run_nmf_mult_k(K, Steps, Alpha):
             
             floatR = float(r[2])
             floatP = float(prediction)
-            if r[2] > 5:
-                floatR = 5.0
-                roundR = 5;
+            if r[2] > 4:
+                floatR = 4.0
+                roundR = 4;
             elif r[2] < 1:
                 roundR = 1;
                 floatR = 1.0
                 
-            if prediction > 5:
-                roundP = 5
-                floatP = 5.0
+            if prediction > 4:
+                roundP = 4
+                floatP = 4.0
             elif prediction < 1:
                 roundP = 1
                 floatP = 1.0

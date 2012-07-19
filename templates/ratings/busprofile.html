@@ -5,10 +5,10 @@
 			<i>{{business.city}}, {{business.state}}</i>
 		</td>
 		<td>
-			{% include 'ratings/listing/rate_data.html' %}
+			
 		</td>
 		<td>
-			{%if not following_business %}
+		{%if not following_business %}
 				<form  name="subscribeUser" action="." method="post">
 					<input type="hidden" value="{{business.id}}" name="bid" />
 					<input type="submit" value="Follow" />
@@ -70,6 +70,12 @@
 				{%endif%}
 				</div>
 			</td>
+			<tr>
+				<td>	
+				{% include 'ratings/listing/rate_data.html' %}
+						
+				</td>
+			</tr>
 		</tr>
 		</table>
 		

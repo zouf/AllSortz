@@ -38,7 +38,7 @@ class PrivateBetaMiddleware(object):
         self.enable_beta = getattr(settings, 'PRIVATEBETA_ENABLE_BETA', True)
         self.never_allow_views = getattr(settings, 'PRIVATEBETA_NEVER_ALLOW_VIEWS', [])
         self.always_allow_views = getattr(settings, 'PRIVATEBETA_ALWAYS_ALLOW_VIEWS', ['registration.views.register'])
-        self.always_allow_modules = getattr(settings, 'PRIVATEBETA_ALWAYS_ALLOW_MODULES', ['registration'])
+        self.always_allow_modules = getattr(settings, 'PRIVATEBETA_ALWAYS_ALLOW_MODULES', ['registration','ios_interface'])
         self.redirect_url = getattr(settings, 'PRIVATEBETA_REDIRECT_URL', '/invites/')
 
     def process_view(self, request, view_func, view_args, view_kwargs):

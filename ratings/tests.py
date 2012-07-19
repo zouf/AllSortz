@@ -5,11 +5,11 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
+from allsortz.populate import create_user, create_business
 from django.contrib.auth.models import User
 from django.test import TestCase
 from numpy.core.numeric import dot
 from ratings.models import Business, Rating
-from ratings.populate import create_user, create_business
 from recommendation.nmf import run_nmf_mult_k
 import random
 

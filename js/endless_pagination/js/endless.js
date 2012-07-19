@@ -44,7 +44,7 @@ $.fn.spin = function(opts) {
             var data = "querystring_key=" + $(this).attr("rel").split(" ")[0];
             $.get($(this).attr("href"), data, function(data) {
                 container.before(data);
-                container.remove();
+                container.remove();                
             });
             return false;
         });
@@ -78,6 +78,7 @@ $.fn.spin = function(opts) {
                 page_template.height(hgt)
                 page_template.spin(opts)
                 page_template.load($(this).attr("href"), data);
+
                 return false;
             };
         }); 
