@@ -211,6 +211,7 @@ def register(request, backend, success_url=None, form_class=None,
             new_user = authenticate(username=request.POST['username'],
                                     password=request.POST['password1'])
             login(request, new_user)
+            return HttpResponseRedirect("/user_details/"+str(new_user.id)+"/")
             if success_url is None:
                 to, args, kwargs = backend.post_registration_redirect(request, new_user)
                 return redirect(to, *args, **kwargs)

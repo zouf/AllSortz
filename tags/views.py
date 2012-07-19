@@ -11,7 +11,10 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 from ratings.models import Business, PageRelationship, UserFavorite
-from tags.models import Tag, BusinessTag, UserTag, HardTag, BooleanQuestion
+from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
+    isTagRelevant
+from tags.models import Tag, BusinessTag, UserTag, HardTag, BooleanQuestion, \
+    TagRating
 from wiki.models import Page
 import json
 import logging
@@ -75,16 +78,18 @@ def get_master_page_business(b):
 
 
 def add_tag_to_bus(b,tag,user=get_default_user()):    
+    
+    print('adding tag to bus')
     try: 
         bustag = BusinessTag.objects.get(tag=tag,business=b)
     except:
         bustag = BusinessTag.objects.create(tag=tag,business=b,creator=user)
     
     try:
-        PageRelationship.objects.get(business=b,tag=bustag.tag)
+        PageRelationship.objects.get(businesstag=bustag)
     except PageRelationship.DoesNotExist:
         pg = Page.objects.create(name=tag.descr)
-        PageRelationship.objects.create(business=b,tag=bustag.tag,page = pg)
+        PageRelationship.objects.create(businesstag=bustag,page = pg)
         
 
 
@@ -129,7 +134,6 @@ def add_user_tag(request):
                 UserTag.objects.create(tag=tag,user=u)
             user_tags = get_tags_user(u)
             tags = Tag.objects.all()
-            print(user_tags)
             return render_to_response('ratings/sorts.html', {'user':request.user, 'tags': tags, 'user_sorts': user_tags})
         elif form['type']=="comm": #associate a user with a community
             nm = form['data']
@@ -250,7 +254,6 @@ def get_all_tags(request):
         tags = Tag.objects.filter(descr__icontains=q)[:20]
         results = []
         for tag in tags:
-            print(tag.descr)
             results.append(tag.descr)
         data = json.dumps(results)
     else:
@@ -260,26 +263,35 @@ def get_all_tags(request):
     return HttpResponse(data, mimetype)
 
 #get pages for the wiki style entry
-def get_pages(business,tags):
+def get_pages(business,tags,user=None):
     pages = []
-
     for t in tags:
-       
         try:
             bt = BusinessTag.objects.get(business=business,tag=t)
-            relationship = PageRelationship.objects.get(business=business,tag=bt.tag)
-            pages.append(relationship)
+            relationship = PageRelationship.objects.get(businesstag=bt)
         except MultipleObjectsReturned:
             #logger.error('Multiple Pages returned in '+str(__name__))
             #XXX 
-            relationship = PageRelationship.objects.filter(business=business,tag=bt.tag)[0]
-            pages.append(relationship)
+            relationship = PageRelationship.objects.filter(businesstag=bt)[0]
         except :
             add_tag_to_bus(business,t,get_default_user())
             bt = BusinessTag.objects.get(business=business,tag=t)
-            relationship = PageRelationship.objects.get(business=business,tag=t)
-            pages.append(relationship)
-           
+            relationship = PageRelationship.objects.get(businesstag=bt)
+
+       
+        relationship.businesstag.pos_ratings = getNumPosRatings(relationship.businesstag)
+        relationship.businesstag.neg_ratings = getNumNegRatings(relationship.businesstag)
+        relationship.businesstag.is_relevant = isTagRelevant(relationship.businesstag)
+        if user:
+            try:
+                rat =  TagRating.objects.get(user=user,tag=bt)
+                relationship.businesstag.this_rat = rat.rating
+            except:
+                pass
+        pages.append(relationship)
+    
+    
+        
   
     return pages
 
@@ -300,6 +312,7 @@ def get_tags_business(b,user=False,q=""):
     bustags = BusinessTag.objects.filter(business=b).exclude(tag=get_master_summary_tag())
     tags = []
     for bt in bustags:
+        bt.tag.is_relevant = isTagRelevant(bt)
         tags.append(bt.tag)
     return tags
 

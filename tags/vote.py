@@ -6,7 +6,7 @@ Created on Jun 13, 2012
 from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
-from tags.models import Tag, TagRating
+from tags.models import Tag, TagRating, BusinessTag
 import json
 import logging
 import sys
@@ -23,7 +23,7 @@ def tag_vote(request):
     logger.debug('tag_vote')
     if request.method == 'POST':
         try:
-            tag = Tag.objects.get(id=request.POST['id'])
+            tag = BusinessTag.objects.get(id=request.POST['id'])
         except Tag.DoesNotExist:
             return HttpResponse("{'success': 'false'}")
 
@@ -62,7 +62,7 @@ def remove_tag_vote(request):
     logger.debug('Remove Tag Vote!')
     if request.method == 'POST':
         try:
-            tag = Tag.objects.get(id=request.POST['id'])
+            tag = BusinessTag.objects.get(id=request.POST['id'])
         except Tag.DoesNotExist:
             logger.debug("Tag does not exist")
             return HttpResponse("{'success': 'false'}")

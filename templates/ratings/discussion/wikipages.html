@@ -1,10 +1,31 @@
 
 {% if pages %}
 	{% for page in pages %}
-		<a href="edit/{{ page.id }}/#discuss" rel="bookmark">
-			<div class="sort" style="background-image: url('{{STATIC_URL}}css/icons/{{page.tag.icon}}');">
-				<h3>{{ page.page.name }} <img class="tag_icon" src="{{STATIC_URL}}css/icons/{{page.tag.icon}}" title="{{page.tag.descr}}" /></h3>
+
+
+	
+		
+	
+		<!--	<div class="sort" style="background-image: url('{{STATIC_URL}}css/icons/{{page.businesstag.icon}}');">-->
+			<div class="sort" >
+		
+				<table><tr><td>
+					<a href="edit/{{ page.page.id }}/#discuss" rel="bookmark">
+						{% if not page.businesstag.is_relevant %}
+							<p style="font-size:16px;">{{page.businesstag.tag.descr}}<img class="tag_icon" style="background-color:#ff4d4d;" src="{{STATIC_URL}}css/icons/{{page.businesstag.tag.icon}}"  alt="{{page.businesstag.tag.descr}}" title="{{page.businesstag.tag.descr}}" />
+							</p>
+						{%else %}
+							<p style="font-size:16px;">{{page.businesstag.tag.descr}}<img class="tag_icon" src="{{STATIC_URL}}css/icons/{{page.businesstag.tag.icon}}"  alt="{{page.businesstag.tag.descr}}" title="{{page.businesstag.tag.descr}}" />
+							</p>
+						{%endif%}	
+					</a>
+				</td><td>
+						
+					{%include 'ratings/discussion/vote.html' %}
 				
+				</td></tr></table>
+				
+				<a href="edit/{{ page.page.id }}/#discuss" rel="bookmark">
 				{% if not page.page.id %}
 				<p>This page does not exist, <a href="edit/">create it now</a>?</p>
 				{% endif %}
@@ -20,8 +41,8 @@
 				{% else %}
 				<a href="edit/">Create this page</a>
 				{% endif %}-->
+				</a>
 			</div>
-		</a>
 	{% endfor %}
 	
 {% endif %}

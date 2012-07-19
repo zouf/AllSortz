@@ -78,7 +78,10 @@ def get_default_bus_context(b,user):
     top_tags = get_top_tags(10)    
     hard_tags = get_hard_tags(b)
     
-    pages = get_pages(b,bus_tags)
+    pages = get_pages(b,bus_tags,user)
+    
+
+    
     b = get_single_bus_data(b,user)
     context = {}
     context.update({
@@ -156,8 +159,7 @@ def get_tag_comments(b,tag):
 
 def get_business_comments(business,user=False):
     buscomments = BusinessComment.objects.filter(business=business).order_by('-date')
-    for bc in buscomments:
-        print(bc.date)
+
     comment_list = []
     for bc in buscomments:
         if bc.thread.reply_to is None: #root tag comment
@@ -257,7 +259,6 @@ def index(request, template='ratings/index.html',
 
 @page_template("ratings/listing/entry.html") # just add this decorator
 def display_tag(request,tag_id,extra_context=None):
-    print('asdasdasdasd')
     t = get_object_or_404(Tag, pk=tag_id)
     businesses = get_businesses_by_tag(t,request.user, request.GET.get('page'))
     try:
@@ -364,8 +365,8 @@ def edit_tag_discussion(request,bus_id,page_id):
         pgr = PageRelationship.objects.get(page=page)
     except:
         pgr = PageRelationship.objects.filter(page=page)[0]
-    t = pgr.tag
-    context = get_default_tag_context(b, t, request.user)
+    t = pgr.businesstag
+    context = get_default_tag_context(b, t.tag, request.user)
     context.update({'form':wiki_edit_form,
                     'page': page,
                     'tag' :t })

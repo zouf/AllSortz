@@ -38,8 +38,7 @@ class FacebookUser(models.Model):
 
 class PageRelationship(models.Model):
     page = models.ForeignKey(Page)
-    business = models.ForeignKey(Business)
-    tag = models.ForeignKey('tags.Tag')
+    businesstag = models.ForeignKey('tags.BusinessTag')
 
 
 class CommentRating(models.Model):

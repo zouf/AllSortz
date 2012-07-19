@@ -111,6 +111,8 @@ def prepop_businesses(user):
             Business.objects.filter(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8")).delete()
             b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8"), lat=0, lon=0)
             b.save()
+        else:
+            continue
         
         setBusLatLng(b)        
         add_tag_to_bus(b, get_master_summary_tag(), get_default_user())

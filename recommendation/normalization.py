@@ -12,6 +12,13 @@ from tags.models import TagRating
 import math
 
 
+def isTagRelevant(bt):
+    numPos = getNumPosRatings(bt)
+    numNeg = getNumNegRatings(bt)
+    if numPos < numNeg and numNeg > 1:
+        return False
+    return True
+
 
 def getNumLiked(bus):
     ratingFilter = Rating.objects.filter(business=bus, rating__range=["3", "3"])
@@ -38,6 +45,8 @@ def getNumHated(bus):
     countRating = ratingFilter['rating__count']
     return countRating
 
+
+
 def getNumPosRatings(o):
     #get class name
     t = o.__class__.__name__
@@ -61,11 +70,13 @@ def getNumPosRatings(o):
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
-    elif t == 'Tag':
+    elif t == 'BusinessTag':
+    
         ratingFilter = TagRating.objects.filter(tag=o, rating__range=["3", "5"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
+    
     else:
         print("error in getnumpos")
 
@@ -92,7 +103,7 @@ def getNumNegRatings(o):
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
-    elif t == 'Tag':
+    elif t == 'BusinessTag':
         ratingFilter = TagRating.objects.filter(tag=o, rating__range=["1", "2"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']

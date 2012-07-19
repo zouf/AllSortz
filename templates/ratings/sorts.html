@@ -1,7 +1,12 @@
 {% if business %}
 	{% for tag in bus_tags %}
-		<a href="/ratings/disp/{{tag.id}}/"><img class="tag_icon" src="{{STATIC_URL}}css/icons/{{tag.icon}}" alt="{{tag.descr}}" title="{{tag.descr}}"/>  </a>
-	{%endfor%}
+		{% if not tag.is_relevant %}
+							<h3><img class="tag_icon" style="background-color:#ff4d4d;" src="{{STATIC_URL}}css/icons/{{tag.icon}}"  alt="{{tag.descr}}" title="{{tag.descr}}" /></h3>
+			{%else %}
+							<h3><img class="tag_icon" src="{{STATIC_URL}}css/icons/{{tag.icon}}"  alt="{{tag.descr}}" title="{{tag.descr}}" /></h3>
+		{%endif%}	
+	
+		{%endfor%}
 	<br>
 {%else%}
 	{% for tag in user_sorts %}

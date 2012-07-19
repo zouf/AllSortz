@@ -26,7 +26,24 @@
 
 #header
 {
-    background-color: #4985c2;
+    /* fallback/image non-cover color */
+   background-color: #7a9cc7; 
+
+
+   /* Safari 4+, Chrome 1-9 */
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#7a9cc7), to(#7a9cc7));
+
+   /* Safari 5.1+, Mobile Safari, Chrome 10+ */
+   background-image: -webkit-linear-gradient(top, #7a9cc7, #7a9cc7); 
+
+   /* Firefox 3.6+ */
+   background-image: -moz-linear-gradient(top, #7a9cc7, #7a9cc7);
+ 
+   /* IE 10+ */
+   background-image: -ms-linear-gradient(top, #7a9cc7, #7a9cc7);
+
+   /* Opera 11.10+ */
+   background-image: -o-linear-gradient(top, #7a9cc7, #7a9cc7);
     position: absolute;
     top: 60px;
     min-width: 1100px;
@@ -38,7 +55,27 @@
 
 #icon
 {
-    background-color: #4985c2;
+    /* fallback/image non-cover color */
+   background-color: #7a9cc7; 
+
+
+   /* Safari 4+, Chrome 1-9 */
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#7a9cc7), to(#7a9cc7));
+
+   /* Safari 5.1+, Mobile Safari, Chrome 10+ */
+   background-image: -webkit-linear-gradient(top, #7a9cc7, #7a9cc7); 
+
+   /* Firefox 3.6+ */
+   background-image: -moz-linear-gradient(top, #7a9cc7, #7a9cc7);
+ 
+   /* IE 10+ */
+   background-image: -ms-linear-gradient(top, #7a9cc7, #7a9cc7);
+
+   /* Opera 11.10+ */
+   background-image: -o-linear-gradient(top, #7a9cc7, #7a9cc7);
+ 
+ 
+
     padding-left: 27px;
     padding-top: 27px;
     width: 160px;
@@ -55,7 +92,8 @@
 .helper_text
 {
 	font-size: 16px;
-	color: #ECECFF;
+	/*color: #ECECFF;*/
+	color: fefefe;
 	font-family: 'Helvetica', sans-serif;
 	position: relative;
 }

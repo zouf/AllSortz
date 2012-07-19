@@ -2,15 +2,20 @@
 
 {%if  comments%}
 	<a style="font-size:14px"  href="#" class="addReply"  id="reply_{{comment.pk}}">Reply</a>
+{%elif not form  %}
+	<a style="font-size:14px"  href="#" class="addReply"  id="reply_{{comment.pk}}">General Comments?</a>
 {%else%}
 	<a style="font-size:14px"  href="#" class="addReply"  id="reply_{{comment.pk}}">Start a discussion</a>
+
+
 {%endif%}
+
 
 
 <div id="commentDiv" style="display:none;">
 
 	<form action="." name="addTagComment" class="comment" id="comment_form" method="post">
-		<textarea name="comment" class="replybox" id="comment" placeholder="Start a discussion"/></textarea>
+		<textarea name="comment" class="replybox" id="comment" placeholder="..."/></textarea>
 
 			<input type="submit" class="ui-widget buttonme" value="Reply"></p>
 		{%if business %}

@@ -2,6 +2,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from ratings.models import Business
+from wiki.models import Page
 
 
 # Create your models here.
@@ -53,6 +54,7 @@ class BusinessTag(models.Model):
     
 
 class TagRating(models.Model):
-    tag = models.ForeignKey(Tag)
+    tag = models.ForeignKey(BusinessTag)
     user = models.ForeignKey(User)
     rating = models.PositiveSmallIntegerField()
+    
