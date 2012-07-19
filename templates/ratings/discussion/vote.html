@@ -1,0 +1,57 @@
+				<div id="tag_{{page.businesstag.id}}" class="tag" style="margin-right:0px !important;">
+				<table><tr><td>
+				
+					
+						{% if page.businesstag.this_rat == 5 %}
+						<table><tr><td>
+							<div class="vote up">
+								<span id="tag_vote_pos_{{page.businesstag.id}}" class="vote ui-icon ui-icon-circle-check  selected">Yay</p>		
+								<!--<span id="tag_vote_pos_{{page.businesstag.id}}" class="ui-icon ui-icon-arrowthick-1-n ui-state-active selected"  ></span>-->
+							</div>
+						</td><td>
+							<div class="vote down">
+								<span id="tag_vote_neg_{{page.businesstag.id}}" class="vote ui-icon ui-icon-circle-close ui-state-close">Nay</p>		
+								<!--<span id="tag_vote_neg_{{page.businesstag.id}}" class="ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>-->
+							</div>
+						</td></tr></table>
+						{%else %}{% if page.businesstag.this_rat == 1 %}
+						<table><tr><td>
+							<div class="vote up">
+								<span id="tag_vote_pos_{{page.businesstag.id}}" class="vote ui-icon ui-icon-circle-check ">Yay</p>
+								<!--<span id="tag_vote_pos_{{page.businesstag.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active "  ></span>-->
+							</div>
+						</td><td>
+							<div class="vote down">
+								<span id="tag_vote_neg_{{page.businesstag.id}}" class="vote  ui-icon ui-icon-circle-close ui-state-close selected">Nay</p>
+								<!--<span id="tag_vote_neg_{{page.businesstag.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active selected" ></span>-->
+							</div>
+						</td></tr></table>
+						{%else%}
+						<table><tr><td>
+							<div class="vote up">
+								<span id="tag_vote_pos_{{page.businesstag.id}}" class="vote ui-icon ui-icon-circle-check ">Yay</p>
+								<!--<span id="tag_vote_pos_{{page.businesstag.id}}" class="vote ui-icon ui-icon-arrowthick-1-n ui-state-active"  ></span>-->
+							</div>
+						</td><td>
+							<div class="vote down">
+								<span id="tag_vote_neg_{{page.businesstag.id}}" class="vote ui-icon ui-icon-circle-close ui-state-close">Nay</p>
+								<!--<span id="tag_vote_neg_{{page.businesstag.id}}" class="vote ui-icon ui-icon-arrowthick-1-s ui-state-active" ></span>-->
+							</div>
+						</td></tr><tr><td>
+						
+
+						
+						</td></tr></table>
+						{% endif %}
+						{%endif%}
+				</td><td>
+					
+						<table>
+							<tr>
+							<td><div id="tag_pos_rating_{{page.businesstag.id}}" class="pos_rating">{{page.businesstag.pos_ratings}}</div></td>
+							<td><div id="tag_neg_rating_{{page.businesstag.id}}" class="neg_rating">{{page.businesstag.neg_ratings}}</div></td>
+							</tr>
+						</table>
+				</td></tr></table>
+					</div>
+							
