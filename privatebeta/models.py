@@ -21,8 +21,7 @@ class InviteRequest(models.Model):
     
     def accept(self):
         try:
-            mail = EmailMessage('Welcome to AllSortz!', 'Go to http://www.allsortz.com/accounts/register/\
-                to register your account\n\n-The AllSortz Team ', to=[self.email])
+            mail = EmailMessage('Welcome to AllSortz!', 'Go to http://www.allsortz.com/accounts/register/ to register your account\n\n-The AllSortz Team ', to=[self.email])
             mail.send()
         except:
             logger.error('Invalid invite request')
