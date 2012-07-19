@@ -325,7 +325,7 @@ def edit_master_tag_discussion(request,bus_id,page_id):
         pgr = PageRelationship.objects.get(page=page)
     except:
         pgr = PageRelationship.objects.filter(page=page)[0]
-    t = pgr.tag
+    t = pgr.businesstag
     context = get_default_bus_context(b, request.user)
     context['form']=wiki_edit_form
     context['page']=page
