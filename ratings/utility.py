@@ -4,9 +4,11 @@ Created on May 17, 2012
 @author: zouf
 '''
 
+from allsortz.search import get_all_nearby
 from communities.models import BusinessMembership
 from communities.views import get_community
 from django.utils.encoding import smart_str
+from geopy import geocoders
 from photos.views import get_photo_web_url, get_photo_thumb_url
 from ratings.favorite import get_user_favorites
 from ratings.models import Rating, Business
@@ -22,6 +24,7 @@ import urllib
 import urllib2
 
 
+DEFAULT_DISTANCE =3 
 #from rateout.settings import LOG_FILE
 #import time
 
@@ -61,7 +64,7 @@ def get_single_bus_data(b,user,isSideBar=False):
     
 
 
-
+    
     b.loved = getNumLoved(b)
     b.liked = getNumLiked(b)
     
@@ -82,8 +85,9 @@ def get_single_bus_data(b,user,isSideBar=False):
             
     if b.rating == 0:
         #b.recommendation = get_best_current_recommendation(b,user)
-        
-        b.recommendation = getBusAvg(b.id)
+        b.recommendation = int(round(getBusAvg(b.id)))
+    else:
+        b.recommendation = 0
     b.master_page = get_master_page_business(b)
     return b
 
@@ -92,9 +96,19 @@ def get_single_bus_data(b,user,isSideBar=False):
 #TODO: matt fix this to handle ratings from 1-4
 #is SideBar is true if we're going to use smaller data 
 def  get_bus_data(business_list,user,isSideBar=True):
+    return_list = []
     for b in business_list:
-        b = get_single_bus_data(b,user,isSideBar)
-    return business_list
+        bus = Business.objects.get(id=b.id)
+        bus = get_single_bus_data(bus,user,isSideBar)
+        #user has been here before
+        
+        if bus.recommendation > 0: 
+            bus.weight = b.dist + bus.recommendation 
+        else:
+            bus.weight = b.dist + bus.rating 
+        bus.dist = b.dist
+        return_list.append(bus)
+    return return_list
 
 
 
@@ -164,49 +178,72 @@ def get_businesses_by_community(user,page,checkForIntersection,isSideBar=False):
     return business_list
 
 
-def sort_trending(b1,b2):
-    like_adjust = 0.8
-    love_adjust = 1.0
+def sort_weight(b1,b2):
+    return cmp(b2.weight, b1.weight)
     
-    return cmp(like_adjust*b2.liked + love_adjust*b2.loved, like_adjust*b1.liked + love_adjust*b1.loved)
 
-def get_businesses_trending(user,page,checkForIntersection,isSideBar=False):
+
+
+def get_top_unvisited_businesses(user,page,checkForIntersection,isSideBar=False):
+
     alreadyThere = dict()
-    for nt in checkForIntersection:
-        alreadyThere[nt] = True
-        
-    businesses = []
-    try:
-        allBus = Business.objects.all() # order by rating
-        for b in allBus:
-            if b not in alreadyThere:
-                businesses.append(b.business)
-    except:
-        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
-        businesses = Business.objects.all()
+#    for nt in checkForIntersection:
+#        alreadyThere[nt] = True
+#        
+#    businesses = []
+#    try:
+#        allBus = Business.objects.all() # order by rating
+#        for b in allBus:
+#            if b not in alreadyThere:
+#                businesses.append(b.business)
+#    except:
+#        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+#        businesses = Business.objects.all()
     
+    g = geocoders.Google()
+    place, (lat, lng) = g.geocode("Princeton, NJ")  
+    
+    #search around princeton
+    business_list = get_bus_data(get_all_nearby(lat,lng,DEFAULT_DISTANCE),user,isSideBar)
+    business_list = sorted(business_list,cmp=sort_weight)
+    final_list = []
+    for b in business_list:
         
-    business_list = get_bus_data(businesses,user,isSideBar)
-    business_list = sorted(business_list,cmp=sort_trending)
-    return business_list
+
+        
+        if b.recommendation > 0:
+            print('rec is ' + str(b.recommendation))
+            print('rat is ' + str(b.rating))
+            final_list.append(b)
+    
+    return final_list
         
         
 def get_businesses_by_your(user,page,checkForIntersection,isSideBar=False):
-    alreadyThere = dict()
-    for nt in checkForIntersection:
-        alreadyThere[nt] = True
+#    alreadyThere = dict()
+#    for nt in checkForIntersection:
+#        alreadyThere[nt] = True
         
     businesses = []
-    try:
-        allBus = get_user_favorites(user) # order by rating
-        for b in allBus:
-            if b not in alreadyThere:
-                businesses.append(b.business)
-    except:
-        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
-        businesses = Business.objects.all()
-    business_list = get_bus_data(businesses,user,isSideBar)
-    return business_list
+#    try:
+#        allBus = get_user_favorites(user) # order by rating
+#        for b in allBus:
+#            if b not in alreadyThere:
+#                businesses.append(b.business)
+#    except:
+#        logger.debug("error in getting businesses community, maybe businesses wasnt put in community?")
+#        businesses = Business.objects.all()
+    g = geocoders.Google()
+    place, (lat, lng) = g.geocode("Princeton, NJ")  
+    business_list = get_bus_data(get_all_nearby(lat, lng, DEFAULT_DISTANCE),user,isSideBar)
+    final_list = []
+    for b in business_list:
+        if b.rating > 0:
+            print('orec is ' + str(b.recommendation))
+            print('orat is ' + str(b.rating)+'\n')
+            final_list.append(b)
+
+    return final_list
 
 
 def get_businesses_by_tag(t,user,page):

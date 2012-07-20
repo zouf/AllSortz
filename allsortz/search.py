@@ -46,6 +46,7 @@ def search_site(searchTerm, locationTerm):
 
 
 def get_all_nearby(mylat,mylng,distance=1):
+
     current_pg_point = "point '({:.5f}, {:.5f})'".format(mylng, mylat)
     buses_query = " ".join(["SELECT *",
                                     "FROM (SELECT id, (point(lon, lat) <@> {}) AS dist FROM ratings_business) AS dists",
@@ -53,7 +54,7 @@ def get_all_nearby(mylat,mylng,distance=1):
     buses = Business.objects.raw(buses_query)
     return buses
 
-
+  
 
 def in_location(bus, locations):
     for l in locations:

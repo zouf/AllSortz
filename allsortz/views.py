@@ -22,8 +22,8 @@ from photos.views import get_photo_web_url, get_all_bus_photos, \
 from ratings.favorite import is_user_subscribed, get_user_favorites
 from ratings.models import CommentRating, Business, PageRelationship
 from ratings.utility import get_bus_data, get_businesses_by_community, \
-    get_businesses_trending, get_businesses_by_your, get_businesses_by_tag, \
-    get_single_bus_data
+    get_businesses_by_your, get_businesses_by_tag, get_single_bus_data, \
+    get_top_unvisited_businesses
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from tags.models import Tag, UserTag, HardTag
 from tags.views import get_tags_user, get_top_tags, get_all_sorts, \
@@ -223,27 +223,28 @@ def index(request, template='ratings/index.html',
     if request.user.is_authenticated():
         current_businesses = []
         
-        community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),[],True)
-        current_businesses+=community_businesses#.object_list
-        
+#        community_businesses = get_businesses_by_community(request.user,request.GET.get('page'),[],True)
+#        current_businesses+=community_businesses#.object_list
+#        
 
         
-        all_businesses = get_businesses_trending(request.user,request.GET.get('page'),[],True)
-        current_businesses+=all_businesses#.object_list
+        top_businesses = get_top_unvisited_businesses(request.user,request.GET.get('page'),[],True)
+        current_businesses+=top_businesses#.object_list
 
 
         your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),[],True)
         current_businesses+=your_businesses#.object_list
+        
+        
 
         context = get_default_blank_context(request.user)
 
         context.update( {
-            'community_businesses' : community_businesses,
+            #'community_businesses' : community_businesses,
             'your_businesses' : your_businesses,
-            'all_businesses': all_businesses,
+            'all_businesses': top_businesses,
             'feed' : get_all_recent_activity(),
             'your_businesses' : your_businesses,
-            'community_businesses' : community_businesses,
             'nonempty' : True,
             'page_template': "ratings/listing/entry.html",
         } )

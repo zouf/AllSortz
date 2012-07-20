@@ -40,7 +40,14 @@
 					<td valign="top">
 						<div style="font-size:14px">
 							{% if business.recommendation %}
-								<p>Your rating: {{business.recommendation}}</p>
+								<p>Our guess for you:
+								{% if business.recommendation == 1 %} Hate it!{%endif%}
+								{% if business.recommendation == 2 %} Meh{%endif%}
+								{% if business.recommendation == 3 %} Like it.{%endif%}
+								{% if business.recommendation == 4 %} Love it!{%endif%}
+								</p>
+								
+
 							{%endif%}
 							<!--{% if business.liked %}
 								{{business.liked}} liked it.
