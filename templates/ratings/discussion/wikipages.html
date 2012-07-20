@@ -1,39 +1,31 @@
-
 {% if pages %}
 	{% for page in pages %}
-
-
-	
-		
-	
 		<!--	<div class="sort" style="background-image: url('{{STATIC_URL}}css/icons/{{page.businesstag.icon}}');">-->
 			<div class="sort" >
-		
+				<h3 style="border-bottom:1px solid #1c3752;">
 				<table><tr><td>
 					<a href="edit/{{ page.page.id }}/#discuss" rel="bookmark">
+						{{page.businesstag.tag.descr}}
 						{% if not page.businesstag.is_relevant %}
-							<p style="font-size:16px;">{{page.businesstag.tag.descr}}<img class="tag_icon" style="background-color:#ff4d4d;" src="{{STATIC_URL}}css/icons/{{page.businesstag.tag.icon}}"  alt="{{page.businesstag.tag.descr}}" title="{{page.businesstag.tag.descr}}" />
-							</p>
+							<img class="tag_icon" style="background-color:#ff4d4d;" src="{{STATIC_URL}}css/icons/{{page.businesstag.tag.icon}}"  alt="{{page.businesstag.tag.descr}}" title="{{page.businesstag.tag.descr}}" />
 						{%else %}
-							<p style="font-size:16px;">{{page.businesstag.tag.descr}}<img class="tag_icon" src="{{STATIC_URL}}css/icons/{{page.businesstag.tag.icon}}"  alt="{{page.businesstag.tag.descr}}" title="{{page.businesstag.tag.descr}}" />
-							</p>
+							<img class="tag_icon" src="{{STATIC_URL}}css/icons/{{page.businesstag.tag.icon}}"  alt="{{page.businesstag.tag.descr}}" title="{{page.businesstag.tag.descr}}" />
 						{%endif%}	
 					</a>
 				</td><td>
-						
 					{%include 'ratings/discussion/vote.html' %}
-				
 				</td></tr></table>
+				</h3>
 				
 				<a href="edit/{{ page.page.id }}/#discuss" rel="bookmark">
 				{% if not page.page.id %}
-				<p>This page does not exist, <a href="edit/">create it now</a>?</p>
+					This page does not exist, <a href="edit/">create it now</a>?
 				{% endif %}
 				
 				{% if page.page.rendered %}
-					{{ page.page.rendered|safe|linebreaks }}
+					{{ page.page.rendered }}
 				{% else %}
-					<p><em><font color="#999999">No description, click to add.</font></em></p>
+					<em><font color="#999999">No description, click to add.</font></em>
 				{% endif %}
 				
 				<!--{% if page.id %}

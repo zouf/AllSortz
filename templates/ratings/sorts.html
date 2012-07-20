@@ -1,9 +1,9 @@
 {% if business %}
 	{% for tag in bus_tags %}
 		{% if not tag.is_relevant %}
-							<h3><img class="tag_icon" style="background-color:#ff4d4d;" src="{{STATIC_URL}}css/icons/{{tag.icon}}"  alt="{{tag.descr}}" title="{{tag.descr}}" /></h3>
+							<img class="tag_icon" style="background-color:#ff4d4d;" src="{{STATIC_URL}}css/icons/{{tag.icon}}"  alt="{{tag.descr}}" title="{{tag.descr}}" />
 			{%else %}
-							<h3><img class="tag_icon" src="{{STATIC_URL}}css/icons/{{tag.icon}}"  alt="{{tag.descr}}" title="{{tag.descr}}" /></h3>
+							<img class="tag_icon" src="{{STATIC_URL}}css/icons/{{tag.icon}}"  alt="{{tag.descr}}" title="{{tag.descr}}" />
 		{%endif%}	
 	
 		{%endfor%}
@@ -23,9 +23,7 @@
 
 
 {% if not checkon or checkon == user  %}
-
-<p style="font-size:14px;">Apply a Sort <a style="font-size:14px;" href="/help/">?</a></p> 
-
+	<font style="font-size:14px;">Apply a Sort <a style="font-size:14px;" href="/help/">?</a></font>
 {% if business %}
 	<form name="addTagDD" action="." method="post">{% csrf_token %}
 		<input type="hidden" value="{{business.id}}" name="bid"/>
