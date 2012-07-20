@@ -72,7 +72,7 @@ function setupPage()
 	
 	<div id="account">
 		{% if not user.is_authenticated %}
-			<a href="/help/">Help</a> | <a href="/accounts/login/?next=/">Login</a> | <a href="/accounts/register/">Register</a> | <a href="/feedback/">Feedback </a>
+			<a href="/help/">Help</a> | <a href="/feedback/">Feedback </a> | <a href="/accounts/login/?next=/">Login</a> | <a href="/accounts/register/">Register</a>
 		{% else %}
 			 <p style="display:inline;">Howdy, <a href="/user_details/{{user.id}}/">{{user.first_name}}</a></p>
 			 | <a href="/help/">Help</a> 

@@ -1,5 +1,5 @@
 {% for item in feed %}
-	<table>
+	<table style="width:100%;font-size:14px;padding:5px;border-bottom:1px solid #1c3752;">
 	<tr>
 		<td>
 			<a href="/user_details/{{item.user.id}}/" ><img src={{ item.user.photo.image_thumb.url }} /></a>
@@ -25,15 +25,14 @@
 			{%endif%}
 			{% if item.type == "buscomment" %}
 				discussed  <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a>
-				<br> <i>{{item.thread.descr}}</i>
+				<br><i><font style="font-size:14px;">{{item.thread.descr}}</font></i>
 			{%endif%}
 			{% if item.type == "tagcomment" %}
 				discussed <a href="/ratings/{{ item.business.id }}/"> {{item.business}} </a> 
 				for <a href="/ratings/disp/{{item.tag.id}}/">{{item.tag.descr}}</a> lovers 
-				<br> <i>{{item.thread.descr}}</i>
+				<br><i><font style="font-size:14px;">{{item.thread.descr}}</font></i>
 			{%endif%}
 		</td>
 	</tr>
 	</table>
-	<hr>
 {% endfor %}

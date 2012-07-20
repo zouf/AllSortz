@@ -15,6 +15,7 @@
     height: 700px;
     text-align: left;
     font-size: 16px;
+    overflow: hidden;
 }
 
 /* Business details */
@@ -23,6 +24,7 @@
     float: left;
     margin: 10px;
     width: 575px;
+    overflow: hidden;
 }
 
 /* Categories a business is sorted under */
@@ -64,22 +66,22 @@
 /* Discussion of sorts */
 #sorts
 {
-    margin: 10px;
+    margin: 0px 10px;
     overflow: auto;
 }
 
 /* Sort under discussion */
 .sort
 {
-    text-align: left;
+    text-align: center;
+    font-size: 14px;
     color: #000000;
     background-repeat: no-repeat;
     background-position: center;
     opacity: 0.9;
-    border-top: 1px solid #1c3752;
     display: inline-block;
     vertical-align: top;
-    margin: 20px;
-    padding: 5px;
+    margin: 10px 20px;
+    padding: 0px 5px;
     width: 250px;
 }

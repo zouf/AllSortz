@@ -48,21 +48,20 @@ function initialize() {
 		
 		<div id="photoreel" class="section">
 			{% include 'photos/horizontal_feed.html' %}
-			<a href="/pics/gallery/{{business.id}}/">See More Photos or Add your own</a>
+			<font style="font-size:14px;"><a href="/pics/gallery/{{business.id}}/">See More Photos or Add your own</a></font>
 		</div>
 		
-			<a name="discuss"></a>
+		<a name="discuss"></a>
 		<div id="discussion" class="section">
-
 			<h1> Sorts </h1>
 			<div id="sorts">
 				{%if form %}
 					{% include 'ratings/discussion/wikiedit.html' %}
 				{% else %}
-				
 					{% include 'ratings/discussion/wikipages.html' %}
 				{% endif %}
 			</div>
+			<br>
 			{% if not form %}
 				<div id="comment_list">
 					{% include 'ratings/discussion/thread.html' %}
