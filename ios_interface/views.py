@@ -36,6 +36,8 @@ def get_businesses(request):
         logger.error('invalid query to server. No username')
         response_data['success'] = False
         response_data['result'] = ' no username given'
+        return HttpResponse(json.dumps(response_data), mimetype="application/json")
+
         
     #username
     uname = request.GET['uname'] 
@@ -82,7 +84,7 @@ def get_businesses(request):
     business_list = get_bus_data_ios(businesses,user)
     business_list = sorted(business_list,cmp=order_by_rating)
 
-    repsonse_data = dict()
+    response_data = dict()
     response_data['success'] = True
     response_data['result'] = business_list
     return HttpResponse(json.dumps(response_data), mimetype="application/json")
