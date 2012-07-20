@@ -43,49 +43,16 @@ def search_site(searchTerm, locationTerm):
         
         
         
-    
-    
-    
-#    try:
-#        c=Community.objects.get(name=locationTerm)
-#    except:
-#        logger.error('community object not found!')
-#    
-#    g = geocoders.Google()  
-#    res = g.geocode(str(c.city) +', '+str(c.state),exactly_one=False)
-#    place, (base_lat,base_lng) = res[0]
-#    #print "%s: %.5f, %.5f" % (place, base_lat, base_lng)  
-#    
-#    businesses = []
-#    for sr in search_results:
-#        bus = None            
-#        if sr.model_name == "business":            
-#            bus = sr.object
-#            distance = 3
-#            current_pg_point = "point '({:.5f}, {:.5f})'".format(base_lng, base_lat)
-#            
-#            buses_query = " ".join(["SELECT *",
-#                                    "FROM (SELECT id, (coordinates <@> {}) AS dist FROM ratings_business) AS dists",
-#                                    "WHERE dist <= {:4f} ORDER BY dist ASC;"]).format(current_pg_point, distance)
-#            buses = Business.objects.raw(buses_query)
-#            for bresult in buses:
-#                if bresult.id == bus.id:
-#                    businesses.append(bus)
-#        elif sr.model_name == "tag":
-#            bustags = BusinessTag.objects.filter(tag=sr.object)
-#            for bt in bustags:
-#                businesses.append(bt.business)
-#        elif sr.model_name == "comment":
-#            bus = sr.object.business
-#            businesses.append(bus)
-#        else:
-#            print('error')
-#            logger.error('error in search_site')
-#        
-#        #if in_location(bus,locations):
-#        
-#    
-#    return businesses   
+
+
+def get_all_nearby(mylat,mylng,distance=1):
+    current_pg_point = "point '({:.5f}, {:.5f})'".format(mylng, mylat)
+    buses_query = " ".join(["SELECT *",
+                                    "FROM (SELECT id, (point(lon, lat) <@> {}) AS dist FROM ratings_business) AS dists",
+                                    "WHERE dist <= {:4f} ORDER BY dist ASC;"]).format(current_pg_point, distance)
+    buses = Business.objects.raw(buses_query)
+    return buses
+
 
 
 def in_location(bus, locations):

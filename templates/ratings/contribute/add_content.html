@@ -35,7 +35,10 @@
 				
 				<h2> Current Questions: </h3>
 				
+				{% for q in value_questions%}
+					<p>{{q.question}}</p>
 				
+				{%endfor%}
 				{% for q in questions %}
 					<p>{{q.question}}</p>
 				{%endfor%}

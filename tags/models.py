@@ -21,7 +21,21 @@ class BooleanQuestion(models.Model):
     date = models.DateTimeField(auto_now=True)
     agree = models.BooleanField() 
 
-    
+
+class ValueTag(models.Model):
+    creator = models.ForeignKey(User)
+    date = models.DateTimeField(auto_now=True)
+    descr = models.TextField(max_length=1000)
+    question = models.TextField(max_length=1000)
+      
+
+class IntegerQuestion(models.Model):
+    valuetag = models.ForeignKey(ValueTag)
+    user = models.ForeignKey(User)
+    business = models.ForeignKey('ratings.Business')
+    date = models.DateTimeField(auto_now=True)
+    value  = models.IntegerField() 
+
 
 
 

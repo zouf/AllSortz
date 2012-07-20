@@ -10,7 +10,7 @@ from photos.views import add_photo_by_url
 from rateout import settings
 from ratings.models import Business, Rating
 from ratings.utility import setBusLatLng
-from tags.models import Tag, HardTag
+from tags.models import Tag, HardTag, ValueTag
 from tags.views import add_tag_to_bus, get_master_summary_tag, get_default_user
 from usertraits.models import Trait
 import csv
@@ -73,15 +73,29 @@ def prepop_questions(user):
        
         question = row[0]
         descr = row[1]
+        tagtype = row[2]
         print('tag question: '+str(question))
         print('tag descr: '+str(descr))
         
-        tset = HardTag.objects.filter(question=question)
-        if tset.count() > 0:
-            continue
         
-        t = HardTag(descr=descr,question=question,creator=user)
-        t.save()
+        if tagtype == 'boolean':
+            
+            tset = HardTag.objects.filter(question=question)
+            if tset.count() > 0:
+                continue
+            
+            t = HardTag(descr=descr,question=question,creator=user)
+            t.save()
+        elif tagtype=='integer':
+            tset = ValueTag.objects.filter(question=question)
+            if tset.count() > 0:
+                continue
+            
+            t = ValueTag(descr=descr,question=question,creator=user)
+            t.save()
+        
+        
+        
 
 def prepop_businesses(user):
 
@@ -91,7 +105,7 @@ def prepop_businesses(user):
         i+=1
         if i == 1:
             continue
-       
+    
         name = row[0]
         addr = row[1]
         city = row[2]
@@ -136,7 +150,8 @@ def prepopulate_database(request):
 #    TagComment.objects.all().delete()
 #    Page.objects.all().delete()
 #    PageRelationship.objects.all().delete()
-#    HardTag.objects.all().delete()
+    HardTag.objects.all().delete()
+    ValueTag.objects.all().delete()
 #    Tag.objects.all().delete()
 #    Trait.objects.all().delete()
 #    

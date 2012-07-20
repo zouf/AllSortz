@@ -6,7 +6,7 @@ Created on Jun 12, 2012
 from communities.models import UserMembership, Community
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
-from django.db.models.aggregates import Count
+from django.db.models.aggregates import Count, Avg
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
@@ -14,7 +14,7 @@ from ratings.models import Business, PageRelationship, UserFavorite
 from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
     isTagRelevant
 from tags.models import Tag, BusinessTag, UserTag, HardTag, BooleanQuestion, \
-    TagRating
+    TagRating, ValueTag, IntegerQuestion
 from wiki.models import Page
 import json
 import logging
@@ -24,7 +24,13 @@ import sys
 logger = logging.getLogger(__name__)
     
     
-
+def getValueTagsWithOptions():
+    values = ValueTag.objects.all()
+    for v in values:
+        if v.descr == 'Price':
+            v.options = [5,10,20,40]
+    return values
+            
 def get_default_user():
     try:
         user = User.objects.get(username='zouf')
@@ -175,8 +181,7 @@ def remove_user_tag(request):
     u = request.user
     if request.method == 'POST':  # add a tag!
         form = request.POST
-        print(form)
-        print('delete a tag in form')
+
         if form['type']  == 'tag':
             nm = form['data']
             logger.debug('delete a User tag '+str(nm))
@@ -334,7 +339,18 @@ def get_questions(b,user):
         
 
 
-
+def get_value_tags(b):
+    valuetags = ValueTag.objects.all()
+    results = []
+    for vt in valuetags:
+        AvgPrice = IntegerQuestion.objects.filter(valuetag=vt,business=b).aggregate(Avg('value'))
+        print(AvgPrice)
+        avg = AvgPrice['value__avg']
+        tag = dict()
+        tag['question'] = vt.question
+        tag['avg'] = avg
+        results.append(tag) 
+    return results
 
 def get_hard_tags(b):
     hardtags = HardTag.objects.all()

@@ -15,8 +15,8 @@ from ratings.models import Business
 from ratings.utility import get_single_bus_data, get_lat
 from ratings.views import get_default_blank_context
 from tags.form import TagForm, HardTagForm
-from tags.models import HardTag, BooleanQuestion, Tag
-from tags.views import get_questions
+from tags.models import HardTag, BooleanQuestion, Tag, IntegerQuestion, ValueTag
+from tags.views import get_questions, getValueTagsWithOptions
 import logging
 
 
@@ -80,6 +80,7 @@ def add_question(request):
     context = get_default_blank_context(request.user)
     context['form'] = f
     context['type'] = 'question'
+    context['value_questions'] = getValueTagsWithOptions()
     return render_to_response('ratings/contribute/add_content.html', context, context_instance=RequestContext(request))
 
 def ans_business_questions(request,bus_id):
@@ -97,20 +98,25 @@ def ans_business_questions(request,bus_id):
 
         context = get_default_bus_context(b, request.user)
         context['questions'] = questions
+        context['value_questions'] = getValueTagsWithOptions()
+        print(context['value_questions'][0].options)
         return render_to_response('ratings/contribute/ans_questions.html', context_instance=RequestContext(request,context))
     else:
         
         bid = request.POST['bid']
-        values = []
+        values = []   
+        booleans = []
         #get the list of anwers
-        print(request.POST)
         for key in request.POST:
             if key.find('answer') > -1:
+                booleans.append(request.POST[key])
+        for key in request.POST:
+            if key.find('values') > -1:
                 values.append(request.POST[key])
                 
         b = Business.objects.get(id=bid)
         
-        for v in values:
+        for v in booleans:
             ans = v.split('_')[1]
             qid = v.split('_')[0]
             hardtag = HardTag.objects.get(id=qid)
@@ -118,6 +124,14 @@ def ans_business_questions(request,bus_id):
                 BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=True)
             else:
                 BooleanQuestion.objects.create(hardtag=hardtag,business = b,user=request.user,agree=False) 
+        
+        
+        for v in values:
+            ans = v.split('_')[1]
+            vid = v.split('_')[0]
+            valuetag = ValueTag.objects.get(id=vid)
+            IntegerQuestion.objects.create(valuetag=valuetag,business = b,user=request.user,value=ans) 
+          
         return redirect('/ratings/'+str(bus_id)+'/')
 
 def add_business(request):

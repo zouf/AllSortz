@@ -82,6 +82,13 @@
 		<br>
 		<h3>Quick Facts</h3>
 		<table>
+		
+			{% for ht in value_tags %}
+				
+					<tr><td style="padding-left:10px;width:400px;font-size:16px;">{{ht.question}}</td>
+					<td style="padding-left:50px;font-size:16px;">${{ht.avg}}</td></tr>
+				
+			{% endfor%}
 			{% for ht in hard_tags %}
 				{% if ht.answer %}
 					<tr><td style="padding-left:10px;width:400px;font-size:16px;">{{ht.question}}</td>

@@ -10,7 +10,25 @@
 	{% if questions %}
 	<form class="ui-big-widget" action="/ratings/answer_questions/{{business.id}}" method="post" >{% csrf_token %}
 
+		<div id="valueQuestions">
+
+			<table>
+			{% for q in value_questions %}
+				
+				{% if q.options%}
+				<tr>
+						<td><p>{{q.question}}</p></td>
+						{% for o in q.options %}
+							<td><input id="{{q.id}}_{{o}}" type="radio" name="values_{{q.id}}" value="{{q.id}}_{{o}}"> {{o}} </td>
+						{%endfor%}
 	
+				</tr>
+				{%endif%}
+			{% endfor %}	
+			</table>
+		
+		</div>
+		
 		<div id="tagQuestions">
 			<table>
 			{% for q in questions %}
@@ -23,6 +41,9 @@
 			</table>
 		
 		</div>
+
+		
+		
 				<p><input class="ui-big-widget" type="submit" value="Done" /></p>
 				<input type="hidden" value="{{business.id}}" name="bid" />
 			</form>

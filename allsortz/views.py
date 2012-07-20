@@ -27,7 +27,8 @@ from ratings.utility import get_bus_data, get_businesses_by_community, \
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from tags.models import Tag, UserTag, HardTag
 from tags.views import get_tags_user, get_top_tags, get_all_sorts, \
-    get_tags_business, get_hard_tags, get_pages, get_master_summary_tag
+    get_tags_business, get_hard_tags, get_pages, get_master_summary_tag, \
+    get_value_tags
 from usertraits.form import TraitForm
 from usertraits.models import Trait
 from usertraits.views import get_user_traits
@@ -64,8 +65,8 @@ def get_default_blank_context(user):
               'user_sorts':user_tags,\
             'top_sorts':top_tags,\
              'tags': Tag.objects.all(),\
-             'questions': HardTag.objects.all(),\
             'all_sorts':get_all_sorts(4),\
+               'questions': HardTag.objects.all(),\
             'location_term':community }   
     return context     
 
@@ -77,6 +78,8 @@ def get_default_bus_context(b,user):
     user_tags = get_tags_user(user,"")
     top_tags = get_top_tags(10)    
     hard_tags = get_hard_tags(b)
+    value_tags = get_value_tags(b)
+    
     
     pages = get_pages(b,bus_tags,user)
     
@@ -97,6 +100,7 @@ def get_default_bus_context(b,user):
         'top_sorts':top_tags,
         'all_sorts':get_all_sorts(4),
         'hard_tags':hard_tags,
+        'value_tags':value_tags,
         'location_term':get_community(user) ,
         'communities': Community.objects.all(),
         'following_business': is_user_subscribed(b,user),
