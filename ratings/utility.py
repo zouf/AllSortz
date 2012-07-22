@@ -102,11 +102,19 @@ def  get_bus_data(business_list,user,isSideBar=True):
         bus = get_single_bus_data(bus,user,isSideBar)
         #user has been here before
         
-        if bus.recommendation > 0: 
-            bus.weight = b.dist + bus.recommendation 
-        else:
-            bus.weight = b.dist + bus.rating 
-        bus.dist = b.dist
+        try:
+            if bus.recommendation > 0: 
+                bus.weight = b.dist + bus.recommendation 
+            else:
+                bus.weight = b.dist + bus.rating 
+            bus.dist = b.dist
+        except: #if no distance attribute
+            if bus.recommendation > 0: 
+                bus.weight =  bus.recommendation 
+            else:
+                bus.weight =  bus.rating
+            
+
         return_list.append(bus)
     return return_list
 
@@ -239,8 +247,6 @@ def get_businesses_by_your(user,page,checkForIntersection,isSideBar=False):
     final_list = []
     for b in business_list:
         if b.rating > 0:
-            print('orec is ' + str(b.recommendation))
-            print('orat is ' + str(b.rating)+'\n')
             final_list.append(b)
 
     return final_list

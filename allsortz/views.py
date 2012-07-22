@@ -234,7 +234,7 @@ def index(request, template='ratings/index.html',
 
         your_businesses = get_businesses_by_your(request.user,request.GET.get('page'),[],True)
         current_businesses+=your_businesses#.object_list
-        
+        your_businesses = Business.objects.all() 
         
 
         context = get_default_blank_context(request.user)
