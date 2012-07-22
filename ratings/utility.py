@@ -59,7 +59,7 @@ def get_single_bus_data(b,user,isSideBar=False):
     else:
         b.photourl = get_photo_web_url(b)
     
-    
+    logger.debug(b.photourl)
     b.num_ratings = getNumRatings(b.id)
     
 
