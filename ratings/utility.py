@@ -220,8 +220,6 @@ def get_top_unvisited_businesses(user,page,checkForIntersection,isSideBar=False)
 
         
         if b.recommendation > 0:
-            print('rec is ' + str(b.recommendation))
-            print('rat is ' + str(b.rating))
             final_list.append(b)
     
     return final_list
