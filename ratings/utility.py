@@ -246,8 +246,8 @@ def get_businesses_by_your(user,page,checkForIntersection,isSideBar=False):
     business_list = get_bus_data(get_all_nearby(lat, lng, DEFAULT_DISTANCE),user,isSideBar)
     final_list = []
     for b in business_list:
-        if b.rating > 0:
-            final_list.append(b)
+        #i b.rating > 0:
+        final_list.append(b)
 
     return final_list
 
