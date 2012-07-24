@@ -12,7 +12,7 @@ $(function() {
 {% if nonempty %}
 
     <div id="trending" class="section">
-    	<h1>Trending</h1>
+    	<h1>Places to Try</h1>
     	{% if search_term %}
 			<h2 class="search_term">{{search_term}}</h2>
 			{%if location_term %}
@@ -39,12 +39,15 @@ $(function() {
 		</table>
     </div>
 	<div id="community" class="section">
-		<h1>Top Picks for {{user}}</h1>
+		<h1>All Businesses</h1>
 		<table style="width:100%;">
 			<tr>
 				<td>
 					<input type="hidden" value="business" id="vote_on" />
-					{% include 'ratings/listing/entry_list.html' %}				
+					{% for business in your_businesses %}
+						{%include 'ratings/listing/singlebus.html' %}
+					{% endfor %}
+							
 				</td>
 			</tr>
 		</table>

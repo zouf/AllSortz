@@ -36,6 +36,8 @@ def get_single_bus_data_ios(b,user):
     d['id'] = b.id
     
     
+    d['dist'] = b.dist 
+    
     
     d['average_rating']  = round(getBusAvg(b.id) * 2) / 2
     d['photourl'] = get_photo_thumb_url(b)   

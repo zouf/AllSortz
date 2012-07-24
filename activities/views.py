@@ -7,13 +7,11 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from photos.models import BusinessPhoto
-from ratings.forms import BusinessForm
 from ratings.models import Business
-from ratings.populate import create_business
 from ratings.utility import get_bus_data, get_avg_latlng
-from ratings.views import detail_keywords, paginate_businesses
 import activities
 import logging
+
 
 
 logger = logging.getLogger(__name__)
@@ -70,7 +68,7 @@ def detail_activity(request, act_id):
         aw.save()
     waypoints = ActivityWaypoint.objects.filter(activity=activity)
     business_list = get_bus_data(Business.objects.all(),request.user)
-    business_list = paginate_businesses(business_list,request.GET.get('page'),5)
+    #business_list = paginate_businesses(business_list,request.GET.get('page'),5)
     waypoint_form = ActivityWaypointForm()
     latlng = get_avg_latlng(business_list)   
     

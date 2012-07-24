@@ -38,7 +38,7 @@ class PrivateBetaMiddleware(object):
         self.enable_beta = getattr(settings, 'PRIVATEBETA_ENABLE_BETA', True)
         self.never_allow_views = getattr(settings, 'PRIVATEBETA_NEVER_ALLOW_VIEWS', [])
         self.always_allow_views = getattr(settings, 'PRIVATEBETA_ALWAYS_ALLOW_VIEWS', ['registration.views.register'])
-        self.always_allow_modules = getattr(settings, 'PRIVATEBETA_ALWAYS_ALLOW_MODULES', ['registration','ios_interface'])
+        self.always_allow_modules = getattr(settings, 'PRIVATEBETA_ALWAYS_ALLOW_MODULES', ['registration.views','ios_interface.views'])
         self.redirect_url = getattr(settings, 'PRIVATEBETA_REDIRECT_URL', '/invites/')
 
     def process_view(self, request, view_func, view_args, view_kwargs):
@@ -48,10 +48,9 @@ class PrivateBetaMiddleware(object):
         whitelisted_modules = ['django.contrib.auth.views', 'django.views.static', 'privatebeta.views']
         if self.always_allow_modules:
             whitelisted_modules += self.always_allow_modules
-
+            
         full_view_name = '%s.%s' % (view_func.__module__, view_func.__name__)
 
-        print(full_view_name)
         if full_view_name in self.never_allow_views:
             return HttpResponseRedirect(self.redirect_url)
 
