@@ -6,7 +6,6 @@ Created on May 8, 2012
 from activities.models import ActRating
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Sum, Count
-from numpy.ma.core import std
 from ratings.models import Rating, Business, CommentRating
 from tags.models import TagRating
 import math
@@ -123,8 +122,8 @@ def calcStdev():
     for u in User.objects.all():
         uList.append(getUserAvg(u.id))
 
-    stdevAllRat = std(bList)
-    stdevURat = std(uList)
+    stdevAllRat = 0#std(bList)
+    stdevURat =0# std(uList)
     return float(stdevURat ** 2) / float(stdevAllRat ** 2)
 
 

@@ -1,4 +1,4 @@
-from celery.execute import send_task
+#from celery.execute import send_task
 from ratings.models import Rating, Business
 from recommendation.models import UserFactor, BusinessFactor
 from recommendation.normalization import getNormFactors

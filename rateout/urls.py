@@ -1,9 +1,8 @@
 from allsortz.views import logout_page
 from django.conf.urls import url, patterns, include
-from django.contrib import admin
 from rateout import settings
 from rateout.settings import STATIC_URL
-
+from django.contrib import admin
 
 admin.autodiscover()
 
@@ -72,7 +71,7 @@ urlpatterns = patterns('',
     url(r'^index/$', 'allsortz.views.index'),
     url(r'^ratings/(?P<bus_id>\d+)/$', 'allsortz.views.bus_details'),
     url(r'^ratings/search_tags/$', 'allsortz.views.search'),
-	(r'^search/', include('haystack.urls')),
+#	(r'^search/', include('haystack.urls')),
     
     #for adding content to the site
 	url(r'^ratings/add_business/$', 'allsortz.contribute.add_business'),

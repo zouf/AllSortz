@@ -5,10 +5,10 @@ Created on Jun 12, 2012
 '''
 from communities.models import BusinessMembership, Community
 from geopy import geocoders
-from haystack.query import SearchQuerySet
 from ratings.models import Business
 from tags.models import Tag, BusinessTag
 import logging
+#from haystack.query import SearchQuerySet
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ def search_site(searchTerm, locationTerm):
     
     logger.debug("Searching for "+str(searchTerm) + " near " + str(locationTerm))
     print("Searching for "+str(searchTerm) + " near " + str(locationTerm))
-    search_results = (SearchQuerySet().filter(content=searchTerm))
+#    search_results = (SearchQuerySet().filter(content=searchTerm))
     
     q = searchTerm
     

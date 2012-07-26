@@ -1,5 +1,5 @@
-# Django settings for nightout project.
-from S3 import CallingFormat
+## Django settings for nightout project.
+
 import os
 import socket
 DEBUG = True
@@ -7,7 +7,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))+'/..'
 
-#add your admin name here
+#add your admin name heres
 ADMINS = (
      ('Matt Zoufaly', 'matt@allsortz.com'),
 )
@@ -53,8 +53,8 @@ BROKER_PORT = 5672
 BROKER_VHOST = "/"
 BROKER_USER = "guest"
 BROKER_PASSWORD = "guest"
-CELERY_IMPORTS = ("ratings.tasks", )
-CELERY_RESULT_BACKEND = "amqp"
+#CELERY_IMPORTS = ("ratings.tasks", )
+#CELERY_RESULT_BACKEND = "amqp"
 
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
@@ -62,7 +62,7 @@ AWS_ACCESS_KEY_ID='AKIAJNT6HH4SMZYBZJKQ'
 AWS_SECRET_ACCESS_KEY='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'
 AWS_STORAGE_BUCKET_NAME='allsortz'
 
-AWS_CALLING_FORMAT=CallingFormat.SUBDOMAIN
+#AWS_CALLING_FORMAT=CallingFormat.SUBDOMAIN
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 #import djcelery
 
@@ -71,7 +71,6 @@ STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 
 ##old settings
-
 
 if DEPLOY:
 #use amazon RDS
@@ -220,12 +219,12 @@ LOGIN_URL = '/accounts/login/'
 
 
 #haystack search plugin
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
-    },
-}
+#HAYSTACK_CONNECTIONS = {
+#    'default': {
+#        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+#        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+#    },
+#}
 
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -245,11 +244,11 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'haystack',
+#    'haystack',
 	'ratings',
     'data_import',
     'recommendation',
-	'registration', 
+	#'registration', 
 	 #'celery',
      #'djcelery',
      'storages',
