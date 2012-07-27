@@ -4,9 +4,9 @@ Created on Jul 11, 2012
 @author: zouf
 '''
 from comments.models import BusinessComment, Comment, TagComment
+from photos.views import get_user_profile_pic
 from ratings.models import Rating
 from ratings.utility import get_single_bus_data
-from photos.views import get_user_profile_pic
 
 
 def get_bus_recent_activity(b):

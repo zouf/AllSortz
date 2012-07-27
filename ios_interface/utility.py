@@ -3,13 +3,15 @@ Created on Jul 19, 2012
 
 @author: zouf
 '''
-from photos.views import get_photo_thumb_url
-from ratings.models import Rating
+#from photos.models import BusinessPhoto
+
+from ratings.models import Rating, Business
 from ratings.utility import setBusLatLng
 from recommendation.normalization import getBusAvg, getNumRatings, getNumLoved, \
     getNumLiked
 from tags.models import BusinessTag
 from tags.views import get_master_summary_tag, is_master_summary_tag
+
 
 #TODO: matt fix this to handle ratings from 1-4
 #is SideBar is true if we're going to use smaller data 
@@ -19,6 +21,19 @@ def  get_bus_data_ios(business_list,user):
         d = get_single_bus_data_ios(b,user)
         data.append(d)
     return data
+
+
+
+
+
+def get_all_nearby(mylat,mylng,distance=1):
+
+    current_pg_point = "point '({:.5f}, {:.5f})'".format(mylng, mylat)
+    buses_query = " ".join(["SELECT *",
+                                    "FROM (SELECT id, (point(lon, lat) <@> {}) AS dist FROM ratings_business) AS dists",
+                                    "WHERE dist <= {:4f} ORDER BY dist ASC;"]).format(current_pg_point, distance)
+    buses = Business.objects.raw(buses_query)
+    return buses
 
 
 #isSideBar is true if we're using small images
@@ -40,7 +55,7 @@ def get_single_bus_data_ios(b,user):
     
     
     d['average_rating']  = round(getBusAvg(b.id) * 2) / 2
-    d['photourl'] = get_photo_thumb_url(b)   
+    #d['photourl'] = get_url_view(b)   
     d['num_ratings'] = getNumRatings(b.id)
     
     d['loved'] = getNumLoved(b)

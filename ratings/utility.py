@@ -9,7 +9,7 @@ from communities.models import BusinessMembership
 from communities.views import get_community
 from django.utils.encoding import smart_str
 from geopy import geocoders
-from photos.views import get_photo_web_url, get_photo_thumb_url
+from photos.views import get_photo_thumb_url, get_photo_web_url
 from ratings.favorite import get_user_favorites
 from ratings.models import Rating, Business
 from recommendation.normalization import getBusAvg, getNumLoved, getNumLiked
@@ -46,7 +46,6 @@ def convertAddressToLatLng():
         time.sleep(1)
 
 
-
 #isSideBar is true if we're using small images
 def get_single_bus_data(b,user,isSideBar=False):
     if b.lat == 0 or b.lon == 0:
@@ -58,15 +57,14 @@ def get_single_bus_data(b,user,isSideBar=False):
         b.photourl = get_photo_thumb_url(b)
     else:
         b.photourl = get_photo_web_url(b)
-    
-    logger.debug(b.photourl)
-    b.num_ratings = getNumRatings(b.id)
+    #  logger.debug(b.photourl)
+    #b.num_ratings = getNumRatings(b.id)
     
 
 
-    
-    b.loved = getNumLoved(b)
-    b.liked = getNumLiked(b)
+#    
+#    b.loved = getNumLoved(b)
+#    b.liked = getNumLiked(b)
     
     #the user exists and has rated something
     if user and  Rating.objects.filter(user=user, business=b).count() > 0:
@@ -90,6 +88,8 @@ def get_single_bus_data(b,user,isSideBar=False):
         b.recommendation = 0
     b.master_page = get_master_page_business(b)
     return b
+
+
 
 
 
@@ -216,9 +216,7 @@ def get_top_unvisited_businesses(user,page,checkForIntersection,isSideBar=False)
     business_list = sorted(business_list,cmp=sort_weight)
     final_list = []
     for b in business_list:
-        
-
-        
+            
         if b.recommendation > 0:
             final_list.append(b)
     

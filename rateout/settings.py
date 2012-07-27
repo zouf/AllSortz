@@ -1,6 +1,7 @@
 ## Django settings for nightout project.
 
-import os
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+import os.path
 import socket
 DEBUG = True
 
@@ -71,7 +72,6 @@ STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 
 ##old settings
-
 if DEPLOY:
 #use amazon RDS
     DATABASES = {
@@ -196,7 +196,6 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 TEMPLATE_CONTEXT_PROCESSORS += (
      'django.core.context_processors.request',
 )
@@ -247,8 +246,9 @@ INSTALLED_APPS = (
 #    'haystack',
 	'ratings',
     'data_import',
+    'ios_interface',
     'recommendation',
-	#'registration', 
+	'registration', 
 	 #'celery',
      #'djcelery',
      'storages',

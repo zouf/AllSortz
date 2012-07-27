@@ -18,17 +18,18 @@ from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from endless_pagination.decorators import page_template
 from photos.views import get_photo_web_url, get_all_bus_photos, \
-    get_user_profile_pic
+    get_user_profile_pic, get_photo_thumb_url
 from ratings.favorite import is_user_subscribed, get_user_favorites
-from ratings.models import CommentRating, Business, PageRelationship
+from ratings.models import CommentRating, Business, PageRelationship, Rating
 from ratings.utility import get_bus_data, get_businesses_by_community, \
-    get_businesses_by_your, get_businesses_by_tag, get_single_bus_data, \
-    get_top_unvisited_businesses
-from recommendation.normalization import getNumPosRatings, getNumNegRatings
-from tags.models import Tag, UserTag, HardTag
+    get_businesses_by_your, get_businesses_by_tag, get_top_unvisited_businesses, \
+    setBusLatLng, get_single_bus_data
+from recommendation.normalization import getNumPosRatings, getNumNegRatings, \
+    getBusAvg
+from tags.models import Tag, UserTag, HardTag, BusinessTag
 from tags.views import get_tags_user, get_top_tags, get_all_sorts, \
     get_tags_business, get_hard_tags, get_pages, get_master_summary_tag, \
-    get_value_tags
+    get_value_tags, is_master_summary_tag, get_master_page_business
 from usertraits.form import TraitForm
 from usertraits.models import Trait
 from usertraits.views import get_user_traits
@@ -41,7 +42,8 @@ import logging
 
 
 logger = logging.getLogger(__name__)
-
+def get_url_view(o):
+    return get_photo_web_url(o)
 ################################# Context generation #########################################
 
 
@@ -228,7 +230,7 @@ def index(request, template='ratings/index.html',
 #        
 
         
-        top_businesses = get_top_unvisited_businesses(request.user,request.GET.get('page'),[],True)
+        top_businesses = get_businesses_by_your(request.user,request.GET.get('page'),[],True)
         current_businesses+=top_businesses#.object_list
 
 

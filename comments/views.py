@@ -11,6 +11,8 @@ from ratings.models import Business
 from ratings.utility import get_businesses_by_tag
 from tags.models import Tag, UserTag
 import logging
+#from photos.models import BusinessPhoto
+#from photos.views import get_photo_comments
 
 
 logger = logging.getLogger(__name__)

@@ -63,12 +63,12 @@ def in_location(bus, locations):
             return True
     return False
 
-def N_recent_results(term,N):
-    recent_results = SearchQuerySet().filter(content=term).order_by('-pub_date')[:N]
-    results = []
-    for sr in recent_results:
-        
-        t = Tag.objects.get(pk=sr.pk)
-        results.append(t.business)
-    return results   
+#def N_recent_results(term,N):
+#    recent_results = SearchQuerySet().filter(content=term).order_by('-pub_date')[:N]
+#    results = []
+#    for sr in recent_results:
+#        
+#        t = Tag.objects.get(pk=sr.pk)
+#        results.append(t.business)
+#    return results   
 

@@ -1,13 +1,20 @@
-from allsortz.search import get_all_nearby
+#from allsortz.search import get_all_nearby
+from comments.models import Comment
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from geopy import geocoders
 from httplib import HTTPResponse
-from ios_interface.utility import get_bus_data_ios
-from ratings.models import Business
+from ios_interface.authenticate import authenticate_api_request
+from ios_interface.utility import get_bus_data_ios, get_single_bus_data_ios
+from ratings.models import Business, Rating
+from tags.models import BusinessTag
+from tags.views import get_default_user
 import json
 import logging
 import simplejson as json
+from allsortz.search import get_all_nearby
+
+
 
 
 logger = logging.getLogger(__name__)
@@ -22,8 +29,6 @@ def order_by_rating(b1,b2):
         return cmp(b1['recommendation'],b2['rating'])
     else:     
         return cmp(b1['recommendation'], b2['recommendation'])
-
-
 def order_by_weight(b1,b2):
 
     if b1['weight'] and b2['weight']:
@@ -34,36 +39,70 @@ def order_by_weight(b1,b2):
         return cmp(b2['weight'],b1['weight'])
     else:     
         return cmp(b2['weight'], b1['weight'])
+def get_user(request):
+    return get_default_user()
+
+def server_error(msg):
+    response_data = dict()
+    response_data['success'] = False
+    response_data['result'] = msg
+    return HttpResponse(json.dumps(response_data), mimetype="application/json")    
+
+def server_data(data):
+    response_data = dict()
+    response_data['success'] = True
+    response_data['result'] = data
+    return HttpResponse(json.dumps(response_data), mimetype="application/json")    
 
 
-# < 0 => b1 > b2
-# 0 => b1 equiv b2
-# > 0 => b
-
-
-def get_businesses(request):
-
-    
-    if 'uname' not in request.GET:
-        response_data = dict()
-        logger.error('invalid query to server. No username')
-        response_data['success'] = False
-        response_data['result'] = ' no username given'
-        return HttpResponse(json.dumps(response_data), mimetype="application/json")
-
-        
-    #username
-    uname = request.GET['uname'] 
+def get_business(request):
     try:
-        user = User.objects.get(username=uname)
+        user = authenticate_api_request(request)
     except:
-        response_data = dict()
-        logger.error("invalid username trying to get data")
-        response_data['success'] = False
-        response_data['result'] = 'Invalid username'
-        return HttpResponse(json.dumps(response_data), mimetype="application/json")
-
+        return server_error('Failure to authenticate')
     
+    if 'id' not in request.GET:
+        return server_error('ID not provided')
+    
+    oid = request.GET['id']
+    try:
+        bus = Business.objects.get(id=oid)
+    except: 
+        return server_error('Business with id '+str(oid)+'not found')
+
+    bus_data = get_single_bus_data_ios(bus,user)
+    return server_data(bus_data)
+
+def rate_business(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+    
+    if 'id' not in request.GET:
+        return server_error('ID not provided')
+    
+    oid = request.GET['id']
+    try:
+        bus = Business.objects.get(id=oid)
+    except: 
+        return server_error('Business with id '+str(oid)+'not found')
+        
+        
+    if 'rating' not in request.GET:
+        return server_error('Rating not provided')
+    
+    rating = request.GET['rating']
+    Rating.objects.create(business=bus, reating=rating,user=user) 
+    bus_data = get_single_bus_data_ios(bus,user)
+    return server_data(bus_data)
+    
+def get_businesses(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+        
     
     #Weights for sorting. 
     #score weight
@@ -103,16 +142,12 @@ def get_businesses(request):
         place, (lat, lng) = g.geocode("Princeton, NJ")  
 
 
-    print('before neraby)')
+#    print('before neraby)')
     #nearby_businesses = get_all_nearby(lat,lng,3)
-    print('after nearby')
+#    print('after nearby')
 
     MAX_RATING = 4.0
     DISTANCE = 3
-    
-    
-    
-
     top_businesses = get_bus_data_ios(get_all_nearby(lat, lng, DISTANCE) ,user)
 
     #NORMALIZATION
@@ -127,11 +162,170 @@ def get_businesses(request):
         b['weight'] +=  dw*((DISTANCE - float(b['dist'])/DISTANCE))
         #print('weight is ' + str(b['weight']))
     top_businesses = sorted(top_businesses,cmp=order_by_weight)
+    return server_data(top_businesses)
+
+
+def get_business_categories(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+    return server_error("Unimplemented")
+
+def get_business_category(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+        
+    if 'id' not in request.GET:
+        return server_error("No Category ID provided")
     
+    oid = request.GET['id']
+    try:
+        category = BusinessTag.objects.get(id=oid)
+    except: 
+        return server_error('Category with id '+str(oid)+'not found')
+    
+    #TODO serialize cateogry?
+    return server_data(category)
+
+def rate_business_category(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+        
+    if 'id' not in request.GET:
+        return server_error("No Category ID provided")
+    
+    oid = request.GET['id']
+    try:
+        category = BusinessTag.objects.get(id=oid)
+    except: 
+        return server_error('Category with id '+str(oid)+'not found')
+    return server_error("Unimplemented")
+
+
+def get_comment(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+        
+    if 'id' not in request.GET:
+        return server_error("No Comment ID provided")
+    
+    oid = request.GET['id']
+    try:
+        comment = Comment.objects.get(id=oid)
+    except: 
+        return server_error('Comment with id '+str(oid)+'not found')
+    return server_error("Unimplemented")
+
+def rate_comment(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+        
+    if 'id' not in request.GET:
+        return server_error("No Comment ID provided")
+    
+    oid = request.GET['id']
+    try:
+        comment = Comment.objects.get(id=oid)
+    except: 
+        return server_error('Comment with id '+str(oid)+'not found')
+    
+    if 'rating' not in request.GET:
+        return server_error("No rating specified")
+    
+    return server_error("Unimplemented")
+
+
+
+def get_photos(request):
     response_data = dict()
-    response_data['success'] = True
-    response_data['result'] = top_businesses
+    response_data['success'] = False
+    response_data['result'] = ''
     return HttpResponse(json.dumps(response_data), mimetype="application/json")
 
 
+def get_photo(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+        
+    if 'id' not in request.GET:
+        return server_error("No Comment ID provided")
+    
+    if 'type' not in request.GET:
+        return server_error("Photo type not specified")
+    
+    oid = request.GET['id']
+    phototype = request.GET['type']
+    
+#    if phototype=="business":
+#        try:
+#            photo = BusinessPhoto.objects.get(id=oid)
+#        except: 
+#            return server_error('BusinessPhoto with id '+str(oid)+'not found')
+#    elif phototype=="user":
+#            try:
+#                photo = UserPhoto.objects.get(id=oid)
+#            except: 
+#                return server_error('UserPhoto with id '+str(oid)+'not found')
+#    else:
+#        return server_error("Invalid phototype specified: " + str(phototype))
+#    
+    return server_error("Unimplemented")
 
+def rate_photo(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+        
+    if 'id' not in request.GET:
+        return server_error("No Comment ID provided")
+    
+    if 'type' not in request.GET:
+        return server_error("Photo type not specified")
+    
+    if 'rating' not in request.GET:
+        return server_error("Rating not specified for Photo")
+    
+    oid = request.GET['id']
+    phototype = request.GET['type']
+    rating = request.GET['rating']
+#    
+#    if phototype=="business":
+#        try:
+#            photo = BusinessPhoto.objects.get(id=oid)
+#        except: 
+#            return server_error('BusinessPhoto with id '+str(oid)+'not found')
+#    elif phototype=="user":
+#            try:
+#                photo = UserPhoto.objects.get(id=oid)
+#            except: 
+#                return server_error('UserPhoto with id '+str(oid)+'not found')
+#    else:
+#        return server_error("Invalid phototype specified: " + str(phototype))
+
+
+def get_queries(request):
+    response_data = dict()
+    response_data['success'] = False
+    response_data['result'] = 'Not even the model is implemented yet'
+    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+
+
+def get_query(request):
+    response_data = dict()
+    response_data['success'] = False
+    response_data['result'] = 'Not even the model is implemented yet'
+    return HttpResponse(json.dumps(response_data), mimetype="application/json")
+
+ 
