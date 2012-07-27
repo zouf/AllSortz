@@ -14,11 +14,11 @@ from tags.views import get_master_summary_tag, is_master_summary_tag
 
 
 #TODO: matt fix this to handle ratings from 1-4
-#is SideBar is true if we're going to use smaller data 
-def  get_bus_data_ios(business_list,user):
+#is SideBar is true if we're going to use smaller data
+def get_bus_data_ios(business_list, user):
     data = []
     for b in business_list:
-        d = get_single_bus_data_ios(b,user)
+        d = get_single_bus_data_ios(b, user)
         data.append(d)
     return data
 
@@ -37,52 +37,53 @@ def get_all_nearby(mylat,mylng,distance=1):
 
 
 #isSideBar is true if we're using small images
-def get_single_bus_data_ios(b,user):
+def get_single_bus_data_ios(b, user):
     if b.lat == 0 or b.lon == 0:
         b = setBusLatLng(b)
-    
+
     d = dict()
     d['name'] = b.name
     d['city'] = b.city
     d['state'] = b.state
     d['address'] = b.address
-    d['lat'] = b.lat
-    d['lon'] = b.lon
-    d['id'] = b.id
-    
-    
-    d['dist'] = b.dist 
-    
-    
-    d['average_rating']  = round(getBusAvg(b.id) * 2) / 2
-    #d['photourl'] = get_url_view(b)   
-    d['num_ratings'] = getNumRatings(b.id)
-    
-    d['loved'] = getNumLoved(b)
-    d['liked'] = getNumLiked(b)
-    
+
+    d['latitude'] = b.lat
+    d['longitude'] = b.lon
+    d['businessID'] = b.id
+
+
+    d['distanceFromCurrentUser'] = b.dist
+
+
+    d['ratingOverAllUsers']  = round(getBusAvg(b.id) * 2) / 2
+    d['photo'] = get_photo_thumb_url(b)
+    d['numberOfRatings'] = getNumRatings(b.id)
+
+    d['numberOfLoves'] = getNumLoved(b)
+    d['numberOfLikes'] = getNumLiked(b)
+
     #the user exists and has rated something
-    if user and  Rating.objects.filter(user=user, business=b).count() > 0:
+    if user and Rating.objects.filter(user=user, business=b).count() > 0:
         r = Rating.objects.get(user=user, business=b)
         d['this_rat'] = r.rating
-        d['rating'] = r.rating
+        d['ratingForCurrentUser'] = r.rating
     else:
         d['this_rat'] = 0
-        d['rating'] = 0
-        
+        d['ratingForCurrentUser'] = 0
+
     bustags = BusinessTag.objects.filter(business=b).exclude(tag=get_master_summary_tag())
     d['tags'] = []
     for bt in bustags:
-        
+
         if not is_master_summary_tag(bt.tag):
             tagDict = dict()
             tagDict['name'] = bt.tag.descr
             tagDict['id'] = bt.tag.id
             d['tags'].append(tagDict)
-        
-            
+
+
     if d['rating'] == 0:
-        #b.recommendation = get_best_current_recommendation(b,user)
-        
-        d['recommendation'] = getBusAvg(b.id)
+        #b.recommendation = get_best_current_recommendation(b, user)
+
+        d['ratingRecommendation'] = getBusAvg(b.id)
     return d
