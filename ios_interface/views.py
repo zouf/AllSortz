@@ -152,14 +152,14 @@ def get_businesses(request):
 
     #NORMALIZATION
     for b in top_businesses:
-        if 'rating' in b:
+        if 'ratingForCurrentUser' != 0:
             #print('rating at '+str(b['rating']))
-            b['weight'] = sw*(float(b['rating'])/MAX_RATING) 
+            b['weight'] = sw*(float(b['ratingForCurrentUser'])/MAX_RATING) 
         
         else:
             #print('rec at ' + str(b['recommendation']))       
-            b['weight'] = sw*float((b['recommendation'])/MAX_RATING)
-        b['weight'] +=  dw*((DISTANCE - float(b['dist'])/DISTANCE))
+            b['weight'] = sw*float((b['ratingRecommendation'])/MAX_RATING)
+        b['weight'] +=  dw*((DISTANCE - float(b['distanceFromCurrentUser'])/DISTANCE))
         #print('weight is ' + str(b['weight']))
     top_businesses = sorted(top_businesses,cmp=order_by_weight)
     return server_data(top_businesses)

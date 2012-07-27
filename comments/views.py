@@ -1,16 +1,16 @@
-from allsortz.views import get_tag_comments, get_business_comments, \
-    get_default_blank_context
+from allsortz.views import get_tag_comments, get_business_comments
 from comments.models import Comment, TagComment, BusinessComment, PhotoComment
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template.context import RequestContext
+from django.http import HttpResponse, Http404
+from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from endless_pagination.decorators import page_template
 from photos.models import BusinessPhoto
 from photos.views import get_photo_comments
-from ratings.models import Business
-from ratings.utility import get_businesses_by_tag
-from tags.models import Tag, UserTag
+from ratings.models import Business, CommentRating
+from recommendation.normalization import getNumPosRatings, getNumNegRatings
+from tags.models import Tag
+import json
 import logging
+import sys
 #from photos.models import BusinessPhoto
 #from photos.views import get_photo_comments
 
@@ -96,4 +96,74 @@ def add_photo_comment(request):
         comment_list = get_photo_comments(photo)
         return render_to_response('ratings/discussion/thread.html', {'p':photo, 'comments': comment_list})
             
+
+@csrf_exempt
+def comment_vote(request):
+
+    logger.debug('in comment_vote')
+    if request.method == 'POST':
+        try:
+            comment = Comment.objects.get(id=(request.POST['id']))
+        except:
+            return HttpResponse("{'success': 'false'}")
+
+        if request.POST['type'] == 'up':
+            rat = 5  # rating.rating + 1
+            res = 'pos'
+        else:
+            rat = 1  # rating.rating - 1
+            res = 'neg'
+        
+        try:
+            rating = CommentRating.objects.get(comment=comment, user=request.user)
+        except CommentRating.DoesNotExist:
+            logger.debug("In vote create a new comment rating!")
+            rating = CommentRating.objects.create(comment=comment, user=request.user, rating=rat)
+        except:
+            logger.error("Unexpected error:", sys.exc_info()[0])
+        
+        rating.save()
+        response_data = dict()
+        response_data['id'] = str(request.POST['id'])
+        response_data['success'] = 'true'
+        response_data['rating'] = res
+        response_data['pos_rating'] = getNumPosRatings(comment)
+        response_data['neg_rating'] = getNumNegRatings(comment)
+        return HttpResponse(json.dumps(response_data), mimetype="application/json")
+        #return HttpResponse("{'success':'true', 'rating': '" + str(rat) + "'}")
+    else:
+        raise Http404('What are you doing here?')
+
+
+
+
+
+@csrf_exempt
+def remove_comment_vote(request):
+    logger.debug('Remove Comment Vote!')
+    if request.method == 'POST':
+        try:
+            comment = Comment.objects.get(id=(request.POST['id']))
+        except:
+            logger.debug("Comment does not exist")
+            return HttpResponse("{'success': 'false'}")
+
+        try:
+            rating = CommentRating.objects.filter(comment=comment, user=request.user)
+        except CommentRating.DoesNotExist:
+            logger.debug("Comment does not exist")
+            pass
+        else:
+            logger.debug("Deleting a comment rating")
+            rating.delete()
+
+        response_data = dict()
+        response_data['id'] = str(request.POST['id'])
+        response_data['success'] = 'true'
+        response_data['pos_rating'] = getNumPosRatings(comment)
+        response_data['neg_rating'] = getNumNegRatings(comment)
+
+        return HttpResponse(json.dumps(response_data), mimetype="application/json")
+    else:
+        raise Http404('What are you doing here?')
 

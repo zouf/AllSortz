@@ -56,7 +56,7 @@ def get_single_bus_data_ios(b, user):
 
 
     d['ratingOverAllUsers']  = round(getBusAvg(b.id) * 2) / 2
-    d['photo'] = get_photo_thumb_url(b)
+    #d['photo'] = get_photo_thumb_url(b)
     d['numberOfRatings'] = getNumRatings(b.id)
 
     d['numberOfLoves'] = getNumLoved(b)
@@ -82,7 +82,7 @@ def get_single_bus_data_ios(b, user):
             d['tags'].append(tagDict)
 
 
-    if d['rating'] == 0:
+    if d['ratingForCurrentUser'] == 0:
         #b.recommendation = get_best_current_recommendation(b, user)
 
         d['ratingRecommendation'] = getBusAvg(b.id)

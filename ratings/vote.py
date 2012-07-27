@@ -3,7 +3,7 @@ Created on May 29, 2012
 
 @author: zouf
 '''
-from allsortz.views import get_comment_by_id
+#from allsortz.views import get_comment_by_id
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
@@ -57,76 +57,6 @@ def vote(request):
     else:
         raise Http404('What are you doing here?')
 
-
-@csrf_exempt
-def comment_vote(request):
-
-    logger.debug('in comment_vote')
-    if request.method == 'POST':
-        try:
-            comment = get_comment_by_id(request.POST['id'])
-        except:
-            return HttpResponse("{'success': 'false'}")
-
-        if request.POST['type'] == 'up':
-            rat = 5  # rating.rating + 1
-            res = 'pos'
-        else:
-            rat = 1  # rating.rating - 1
-            res = 'neg'
-        
-        try:
-            rating = CommentRating.objects.get(comment=comment, user=request.user)
-        except CommentRating.DoesNotExist:
-            logger.debug("In vote create a new comment rating!")
-            rating = CommentRating.objects.create(comment=comment, user=request.user, rating=rat)
-        except:
-            logger.error("Unexpected error:", sys.exc_info()[0])
-        
-        rating.save()
-        response_data = dict()
-        response_data['id'] = str(request.POST['id'])
-        response_data['success'] = 'true'
-        response_data['rating'] = res
-        response_data['pos_rating'] = getNumPosRatings(comment)
-        response_data['neg_rating'] = getNumNegRatings(comment)
-        return HttpResponse(json.dumps(response_data), mimetype="application/json")
-        #return HttpResponse("{'success':'true', 'rating': '" + str(rat) + "'}")
-    else:
-        raise Http404('What are you doing here?')
-
-
-
-
-
-@csrf_exempt
-def remove_comment_vote(request):
-    logger.debug('Remove Comment Vote!')
-    if request.method == 'POST':
-        try:
-            comment = get_comment_by_id(request.POST['id']) 
-        except:
-            logger.debug("Comment does not exist")
-            return HttpResponse("{'success': 'false'}")
-
-        try:
-            rating = CommentRating.objects.filter(comment=comment, user=request.user)
-        except CommentRating.DoesNotExist:
-            logger.debug("Comment does not exist")
-            pass
-        else:
-            logger.debug("Deleting a comment rating")
-            rating.delete()
-
-        response_data = dict()
-        response_data['id'] = str(request.POST['id'])
-        response_data['success'] = 'true'
-        response_data['pos_rating'] = getNumPosRatings(comment)
-        response_data['neg_rating'] = getNumNegRatings(comment)
-
-        return HttpResponse(json.dumps(response_data), mimetype="application/json")
-    else:
-        raise Http404('What are you doing here?')
 
 
 

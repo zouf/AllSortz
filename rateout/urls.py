@@ -1,4 +1,3 @@
-from allsortz.views import logout_page
 from django.conf.urls import url, patterns, include
 from rateout import settings
 from rateout.settings import STATIC_URL
@@ -9,8 +8,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     #api for comments
-    url(r'^api/comment_vote/$', 'ratings.vote.comment_vote'),
-    url(r'^api/remove_comment_vote*', 'ratings.vote.remove_comment_vote'),
+    url(r'^api/comment_vote/$', 'comments.views.comment_vote'),
+    url(r'^api/remove_comment_vote*', 'comments.views.remove_comment_vote'),
     
     #api for tags
     url(r'^api/add_a_sort/$', 'tags.views.add_a_sort'),
