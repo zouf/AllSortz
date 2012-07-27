@@ -5,6 +5,7 @@ Created on Jul 19, 2012
 '''
 #from photos.models import BusinessPhoto
 
+from ios_interface.photos import get_photo_url
 from ratings.models import Rating, Business
 from ratings.utility import setBusLatLng
 from recommendation.normalization import getBusAvg, getNumRatings, getNumLoved, \
@@ -56,7 +57,7 @@ def get_single_bus_data_ios(b, user):
 
 
     d['ratingOverAllUsers']  = round(getBusAvg(b.id) * 2) / 2
-    #d['photo'] = get_photo_thumb_url(b)
+    d['photo'] = get_photo_url(b)
     d['numberOfRatings'] = getNumRatings(b.id)
 
     d['numberOfLoves'] = getNumLoved(b)
@@ -64,7 +65,10 @@ def get_single_bus_data_ios(b, user):
 
     #the user exists and has rated something
     if user and Rating.objects.filter(user=user, business=b).count() > 0:
-        r = Rating.objects.get(user=user, business=b)
+        try:
+            r = Rating.objects.get(user=user, business=b)
+        except Rating.MultipleObjectsReturned:
+            r = Rating.objects.filter(user=user,business=b)[0]
         d['this_rat'] = r.rating
         d['ratingForCurrentUser'] = r.rating
     else:
