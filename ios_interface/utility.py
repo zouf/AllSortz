@@ -31,29 +31,29 @@ def get_single_bus_data_ios(b,user):
     d['city'] = b.city
     d['state'] = b.state
     d['address'] = b.address
-    d['lat'] = b.lat
-    d['lon'] = b.lon
-    d['id'] = b.id
+    d['latitude'] = b.lat
+    d['longitude'] = b.lon
+    d['businessID'] = b.id
     
     
-    d['dist'] = b.dist 
+    d['distanceFromCurrentUser'] = b.dist
     
     
-    d['average_rating']  = round(getBusAvg(b.id) * 2) / 2
-    d['photourl'] = get_photo_thumb_url(b)   
-    d['num_ratings'] = getNumRatings(b.id)
+    d['ratingOverAllUsers']  = round(getBusAvg(b.id) * 2) / 2
+    d['photo'] = get_photo_thumb_url(b)
+    d['numberOfRatings'] = getNumRatings(b.id)
     
-    d['loved'] = getNumLoved(b)
-    d['liked'] = getNumLiked(b)
+    d['numberOfLoves'] = getNumLoved(b)
+    d['numberOfLikes'] = getNumLiked(b)
     
     #the user exists and has rated something
     if user and  Rating.objects.filter(user=user, business=b).count() > 0:
         r = Rating.objects.get(user=user, business=b)
         d['this_rat'] = r.rating
-        d['rating'] = r.rating
+        d['ratingForCurrentUser'] = r.rating
     else:
         d['this_rat'] = 0
-        d['rating'] = 0
+        d['ratingForCurrentUser'] = 0
         
     bustags = BusinessTag.objects.filter(business=b).exclude(tag=get_master_summary_tag())
     d['tags'] = []
@@ -69,5 +69,5 @@ def get_single_bus_data_ios(b,user):
     if d['rating'] == 0:
         #b.recommendation = get_best_current_recommendation(b,user)
         
-        d['recommendation'] = getBusAvg(b.id)
+        d['ratingRecommendation'] = getBusAvg(b.id)
     return d
