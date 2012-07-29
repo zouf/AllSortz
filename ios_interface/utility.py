@@ -82,7 +82,7 @@ def get_single_bus_data_ios(b, user):
         if not is_master_summary_tag(bt.tag):
             tagDict = dict()
             tagDict['name'] = bt.tag.descr
-            tagDict['id'] = bt.tag.id
+            tagDict['tagID'] = bt.tag.id
             d['tags'].append(tagDict)
 
 

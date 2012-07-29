@@ -7,7 +7,7 @@ Created on May 29, 2012
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
-from ratings.models import Business, Rating, CommentRating
+from ratings.models import Business, Rating
 from ratings.utility import get_single_bus_data
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 import json

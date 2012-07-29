@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.models import USStateField
 from django.db import models
+from ratings.utility import get_lat
 from wiki.models import Page
 
 
@@ -20,6 +21,12 @@ class Business(models.Model):
 
     def __unicode__(self):
         return self.name
+    def save(self):
+        loc = self.address + " " + self.city + ", " + self.state
+        latlng = get_lat(loc)
+        self.lat = latlng[0]
+        self.lon = latlng[1]
+        super(Business, self).save()
 
 
 
@@ -44,8 +51,7 @@ class PageRelationship(models.Model):
 class CommentRating(models.Model):
     comment = models.ForeignKey('comments.Comment')
     user = models.ForeignKey(User)
-    rating = models.PositiveSmallIntegerField() 
-    
+
     
     
     

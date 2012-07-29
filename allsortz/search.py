@@ -3,8 +3,7 @@ Created on Jun 12, 2012
 
 @author: zouf
 '''
-from communities.models import BusinessMembership, Community
-from geopy import geocoders
+from communities.models import BusinessMembership
 from ratings.models import Business
 from tags.models import Tag, BusinessTag
 import logging

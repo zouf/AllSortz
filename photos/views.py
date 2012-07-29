@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render_to_response
 from django.template.context import RequestContext
-from photos.models import BusinessPhoto, UserPhoto
+from ios_interface.models import Photo
 from rateout import settings
 from ratings.models import Business, CommentRating
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
@@ -25,25 +25,10 @@ import time
 
 logger = logging.getLogger(__name__)
 
-def get_gallery_context(user):
-    user_tags = get_tags_user(user,"")
-    top_tags = get_top_tags(10)    
-    community = get_community(user)
-
-    context = {\
-            'communities': Community.objects.all(),\
-            'community': community,\
-              'user_sorts':user_tags,\
-            'top_sorts':top_tags,\
-             'tags': Tag.objects.all(),\
-             'questions': HardTag.objects.all(),\
-            'all_sorts':get_all_sorts(4),\
-            'location_term':community }   
-    return context    
 
 
 def get_photo_thumb_url(b):
-    qset  = BusinessPhoto.objects.filter(business=b,is_default=True)
+    qset  = Photo.objects.filter(business=b,is_default=True)
     if qset.count() < 1:
         return False
     ph = qset[0].image_thumb
@@ -52,16 +37,24 @@ def get_photo_thumb_url(b):
 
 #gets web photo (medium)
 def get_photo_web_url(b):
-    qset  = BusinessPhoto.objects.filter(business=b,is_default=True)
+    qset  = Photo.objects.filter(business=b,is_default=True)
     if qset.count() < 1:
         return None
     ph = qset[0].image
     return ph.url
 
+#gets web photo (medium)
+def get_photo_medium_url(b):
+    qset  = Photo.objects.filter(business=b,is_default=True)
+    if qset.count() < 1:
+        return None
+    ph = qset[0].image_medium
+    return ph.url
+
 
 #gets web photo (large)
 def get_photo_large_url(b):
-    qset  = BusinessPhoto.objects.filter(business=b,is_default=True)
+    qset  = Photo.objects.filter(business=b,is_default=True)
     if qset.count() < 1:
         return False
     ph = qset[0].image_large
@@ -69,7 +62,7 @@ def get_photo_large_url(b):
 
     
 def add_userphoto_by_upload(img,user,default):
-    up = UserPhoto(user=user, image_profile=img,  title=user.username, caption=user.username,is_default=default)
+    up = Photo(user=user, business=None,image_profile=img,  title=user.username, caption=user.username,is_default=default)
     up.save(True)
     return up
     
@@ -81,7 +74,7 @@ def add_userphoto_by_url(phurl, user,default):
     except:
         return None
     print(outpath)
-    up = UserPhoto(user=user, image_profile=outpath, title=user.username, caption=user.username,is_default=default)
+    up = Photo(user=user, business=None, image_profile=outpath, title=user.username, caption=user.username,is_default=default)
     try:
         up.save(False)
     except:
@@ -93,7 +86,7 @@ def add_userphoto_by_url(phurl, user,default):
   
       
 def add_photo_by_upload(img,b,user,default):
-    bp = BusinessPhoto(user=user, business=b, image=img, title=b.name, caption=b.name,is_default=default)
+    bp = Photo(user=user, business=b, image=img, title=b.name, caption=b.name,is_default=default)
     bp.save(True)
     return bp
 
@@ -104,13 +97,13 @@ def add_photo_by_url(phurl, b,user,default):
         urlretrieve(phurl, outpath)
     except:
         return None
-    bp = BusinessPhoto(user=user, business=b, image=outpath, title=b.name, caption=b.name,is_default=default)
-    try:
-        bp.save(False)
-    except:
-        print("Unexpected error:" + str(sys.exc_info()[0]))
-        logger.error("Unexpected error:" + str(sys.exc_info()[0]))
-        pass
+    bp = Photo(user=user, business=b, image=outpath, title=b.name, caption=b.name,is_default=default)
+#    try:
+    bp.save(False)
+#    except:
+#        print("Unexpected error:" + str(sys.exc_info()[0]))
+#        logger.error("Unexpected error:" + str(sys.exc_info()[0]))
+#        pass
     return bp
 
 def add_photo_to_bus(request):
@@ -177,7 +170,7 @@ def add_photo_to_user(request):
     
 
 def get_all_bus_photos(b):
-    photos = BusinessPhoto.objects.filter(business=b)
+    photos = Photo.objects.filter(business=b)
     for p in photos:
         p.comment_list = get_top_photo_comments(p,5)
     
@@ -248,7 +241,7 @@ def get_photo_comments(photo,user=False):
 #    
 
 def  photo_detail(request,ph_id):
-    photo = get_object_or_404(BusinessPhoto,pk=ph_id)
+    photo = get_object_or_404(Photo,pk=ph_id)
     print(photo)
     context = {
         'p' : photo,
@@ -264,9 +257,9 @@ def get_default_pic():
 def get_user_profile_pic(user):
     photo = None
     try:
-        photo = UserPhoto.objects.get(user=user,is_default=True)
-    except UserPhoto.MultipleObjectsReturned:
-        photo = UserPhoto.objects.filter(user=user,is_default=True).order_by('-date')[0]
+        photo = Photo.objects.get(user=user,business=None,is_default=True)
+    except Photo.MultipleObjectsReturned:
+        photo = Photo.objects.filter(user=user,is_default=True).order_by('-date')[0]
     except:
         return get_default_pic()
     return photo
@@ -289,4 +282,19 @@ def full_gallery(request):
     context = {}
     return redirect('ratings/', RequestContext(request,context))
     
-    
+
+def get_gallery_context(user):
+    user_tags = get_tags_user(user,"")
+    top_tags = get_top_tags(10)    
+    community = get_community(user)
+
+    context = {\
+            'communities': Community.objects.all(),\
+            'community': community,\
+              'user_sorts':user_tags,\
+            'top_sorts':top_tags,\
+             'tags': Tag.objects.all(),\
+             'questions': HardTag.objects.all(),\
+            'all_sorts':get_all_sorts(4),\
+            'location_term':community }   
+    return context    

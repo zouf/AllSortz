@@ -15,6 +15,7 @@ from tags.models import BusinessTag, TagRating, Tag
 from tags.views import get_default_user
 import logging
 import simplejson as json
+from ratings.utility import setBusLatLng
 
 MAX_RATING = 4.0
 DISTANCE = 3
@@ -59,6 +60,9 @@ def server_data(data):
     response_data['result'] = data
     return HttpResponse(json.dumps(response_data), mimetype="application/json")    
 
+'''
+Code to handle businesses
+'''
 
 def get_business(request):
     try:
@@ -105,6 +109,94 @@ def rate_business(request):
     bus_data = get_single_bus_data_ios(bus,user)
     return server_data(bus_data)
     
+def add_business(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+    
+    if 'businessName' not in request.GET:
+        return server_error("Name not provided")
+    businessName = request.get['businessName']
+    
+    if 'streetAddr' not in request.GET:
+        return server_error("Address not provided")
+    streetAddr = request.get['streetAddr']
+    
+    if 'businessCity' not in request.GET:
+        return server_error("City not provided")
+    businessCity = request.GET['businessCity']
+
+    if 'businessPhone' not in request.GET:
+        return server_error("Phone not provided")
+    businessPhone = request.GET['businessPhone']
+    
+    if 'businessState' not in request.GET:
+        return server_error("state not provided")
+    businessState = request.GET['businessState']
+    
+    if Business.objects.filter(name=businessName,addr=streetAddr, city=businessCity, state=businessState).count() > 0:
+        return server_error("Business already exists")
+    else:
+        bus= Business.objects.create(name=businessName,city=businessCity,state=businessState)
+    
+    bus.dist = 6.66
+    bus_data = get_single_bus_data_ios(bus,user)
+    return server_data(bus_data)
+
+def modify_business(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+    
+    if 'id' not in request.GET:
+        return server_error("ID not provided for business")
+    oid = request.GET['id']
+    
+    try:
+        bus = Business.objects.get(id = oid)
+    except:
+        return server_error("Getting business with id "+str(oid)+" failed")
+    
+    if 'businessName' in request.GET:
+        bus.name = request.GET['businessName']
+    
+    if 'streetAddr'  in request.GET:
+        bus.addr = request.get['streetAddr']
+    
+    if 'businessCity'  in request.GET:
+        bus.city = request.get['businessCity']
+
+    if 'businessPhone'  in request.GET:
+        return server_error("Phone not implemented")
+    
+    if 'businessState' in request.GET:
+        bus.state = request.GET['businessState']
+        
+    bus.save()
+    bus.dist = 6.66
+    bus_data = get_single_bus_data_ios(bus,user)
+    return server_data(bus_data)
+
+def remove_business(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+    
+    if 'id' not in request.GET:
+        return server_error("ID not provided for business")
+    oid = request.GET['id']
+    
+    try:
+        bus = Business.objects.get(id=oid)
+        name = bus.name
+        Business.objects.filter(id = oid).delete()
+    except:
+        return server_error("Deleting business with id "+str(oid)+" failed")
+    return server_data("Deletion of business "+str(name)+ " was a success")
+
 def get_businesses(request):
     try:
         user = authenticate_api_request(request)
@@ -167,13 +259,18 @@ def get_businesses(request):
     return server_data(top_businesses)
 
 
+'''
+Code to handle business categories
+'''
+
+
 def get_business_categories(request):
     try:
         user = authenticate_api_request(request)
     except:
         return server_error('Failure to authenticate')
     if 'id' not in request.GET:
-        return server_error("No Category ID provided")
+        return server_error("No Business ID provided")
     oid = request.GET['id']
     
     try:
@@ -228,6 +325,54 @@ def rate_business_category(request):
     data = get_category_data(category,user)
     return server_data(data)
 
+def add_business_cateogry(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+    if 'id' not in request.GET:
+        return server_error("No BUsiness ID provided")
+    oid = request.GET['id']
+    
+    if 'tagid' not in request.GET:
+        return server_error("No Category ID provided")
+    tagid = request.GET['tagid']
+    
+    try:
+        bus = Business.objects.get(id=oid)
+        tag = Tag.objects.get(id=tagid)
+    except: 
+        return server_error('Retrieving business and category failed (IDs: '+str(oid)+ ' and ' + str(tagid))
+    
+    if BusinessTag.objects.filter(business=bus,tag=tag).count() > 0:
+        category = BusinessTag.objects.get(business=bus, tag=tag)
+    else:
+        category = BusinessTag.objects.create(business=bus,tag=tag,creator=user)
+    data = get_category_data(category,user)
+    return server_data(data)
+
+def remove_business_cateogry(request):
+    try:
+        user = authenticate_api_request(request)
+    except:
+        return server_error('Failure to authenticate')
+        
+    if 'id' not in request.GET:
+        return server_error("No Category ID provided")
+    oid = request.GET['id']
+    
+    try:
+        category = BusinessTag.objects.filter(id=oid).delete()
+    except: 
+        return server_error('Category with id '+str(oid)+'not found')
+    
+    data = get_category_data(category,user)
+    return server_data(data)
+
+'''
+Code to handle comments
+'''
+
 
 def get_comment(request):
     try:
@@ -270,7 +415,16 @@ def rate_comment(request):
     data = get_comment_data(comment,user)
     return server_data(data)
 
+def add_comment(request):
+    return server_error("unimplemented")
 
+def remove_comment(request):
+    return server_error("unimplemented")
+
+
+'''
+Code to handle photos
+'''
 
 def get_photos(request):
     try:
@@ -341,7 +495,18 @@ def rate_photo(request):
     data = get_photo_data(photo,user)
     return server_data(data)
     
-    
+ 
+def add_photo(requst):
+    return server_error("unimplemented")
+
+def remove_photo(requst):
+    return server_error("unimplemented")
+
+
+'''
+Code to handle queries
+''' 
+
 def get_queries(request):
     try:
         user = authenticate_api_request(request)
@@ -379,9 +544,20 @@ def get_query(request):
     data = get_query_data(query,user)
     return server_data(data)
  
+def add_query(requst):
+    return server_error("unimplemented")
+
+def remove_query(requst):
+    return server_error("unimplemented")
+ 
+def modify_query(requst):
+    return server_error("unimplemented")
+ 
  
 def prepop_queries(user):
     user = get_default_user()
     for t in Tag.objects.all():
         q = Query(name=t.descr,proximity=5,value=5,score=5,price=5,visited=False,deal=False,networked=False,text="",creator=user,is_default=True)
         q.save()
+        
+        

@@ -97,6 +97,7 @@ def add_tag_to_bus(b,tag,user=get_default_user()):
         pg = Page.objects.create(name=tag.descr)
         PageRelationship.objects.create(businesstag=bustag,page = pg)
         
+    print('done adding tag to bus')
 
 
 @csrf_exempt

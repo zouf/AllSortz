@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from photos.models import BusinessPhoto
 from photos.views import add_photo_by_url
+from queries.models import Query
 from rateout import settings
 from ratings.models import Business, Rating
 from ratings.utility import setBusLatLng
@@ -63,6 +64,11 @@ def prepop_traits(user):
         t = Trait(name=name,descr=descr,creator=user)
         t.save()
 
+
+            
+        
+        
+
 def prepop_questions(user):
     reader = csv.reader(open(settings.BASE_DIR+'/prepop/questions.csv', 'U'), delimiter=',', quotechar='"')
     i = 0
@@ -98,7 +104,8 @@ def prepop_questions(user):
         
 
 def prepop_businesses(user):
-
+    if user == None:
+        user = get_default_user()
     reader = csv.reader(open(settings.BASE_DIR+'/prepop/businesses.csv', 'U'), delimiter=',', quotechar='"')
     i = 0
     for row in reader:
@@ -126,15 +133,15 @@ def prepop_businesses(user):
             b = Business(name=name.encode("utf8"), city=city.encode("utf8"), state=state, address=addr.encode("utf8"), lat=0, lon=0)
             b.save()
         else:
-            continue
-        
+            b = bset[0]
+            
         setBusLatLng(b)        
         add_tag_to_bus(b, get_master_summary_tag(), get_default_user())
         add_photo_by_url(phurl,b,user,default=True)
 
 
 def prepopulate_database(request):
-
+    
     if not request.user.is_superuser:
         return HttpResponseRedirect('/accounts/login/?next=%s'%request.path)
 
@@ -144,14 +151,14 @@ def prepopulate_database(request):
 #    UNCOMMENT TO DELETE
 
     #Business.objects.all().delete()
-    #BusinessPhoto.objects.all().delete()
+#    BusinessPhoto.objects.all().delete()
 #    Comment.objects.all().delete()
 #    BusinessTag.objects.all().delete()
 #    TagComment.objects.all().delete()
 #    Page.objects.all().delete()
 #    PageRelationship.objects.all().delete()
-    HardTag.objects.all().delete()
-    ValueTag.objects.all().delete()
+#    HardTag.objects.all().delete()
+#    ValueTag.objects.all().delete()
 #    Tag.objects.all().delete()
 #    Trait.objects.all().delete()
 #    
@@ -159,7 +166,7 @@ def prepopulate_database(request):
     prepop_sorts(request.user)
     prepop_traits(request.user)
     prepop_questions(request.user)
-    
+    prepop_queries(request.user)
     return HttpResponseRedirect('/')
 
     

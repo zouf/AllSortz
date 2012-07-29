@@ -3,7 +3,7 @@
 '''
 from allsortz.forms import BusinessForm
 from allsortz.populate import create_business
-from allsortz.views import get_default_bus_context
+from allsortz.views import get_default_bus_context, get_default_blank_context
 from communities.forms import CommunityForm
 from communities.models import BusinessMembership, Community
 from communities.views import get_community
@@ -13,7 +13,6 @@ from django.template.context import RequestContext
 from photos.views import get_photo_web_url, add_photo_by_upload
 from ratings.models import Business
 from ratings.utility import get_single_bus_data, get_lat
-from ratings.views import get_default_blank_context
 from tags.form import TagForm, HardTagForm
 from tags.models import HardTag, BooleanQuestion, Tag, IntegerQuestion, ValueTag
 from tags.views import get_questions, getValueTagsWithOptions

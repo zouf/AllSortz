@@ -252,6 +252,7 @@ INSTALLED_APPS = (
 	 #'celery',
      #'djcelery',
      'storages',
+     'queries',
      'usertraits',
      'tags',
      'photos',

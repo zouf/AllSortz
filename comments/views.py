@@ -108,10 +108,10 @@ def comment_vote(request):
             return HttpResponse("{'success': 'false'}")
 
         if request.POST['type'] == 'up':
-            rat = 5  # rating.rating + 1
+            rat = 1  # rating.rating + 1
             res = 'pos'
         else:
-            rat = 1  # rating.rating - 1
+            rat = 0  # rating.rating - 1
             res = 'neg'
         
         try:

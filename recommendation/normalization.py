@@ -6,6 +6,7 @@ Created on May 8, 2012
 from activities.models import ActRating
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Sum, Count
+from ios_interface.models import PhotoRating
 from ratings.models import Rating, Business, CommentRating
 from tags.models import TagRating
 import math
@@ -60,7 +61,12 @@ def getNumPosRatings(o):
 #        countRating = ratingFilter['rating__count']
 #        return countRating
     elif t == 'Comment':
-        ratingFilter = CommentRating.objects.filter(comment=o, rating__range=["3", "5"])
+        ratingFilter = CommentRating.objects.filter(comment=o, rating__range=["1", "5"])
+        ratingFilter = ratingFilter.aggregate(Count('rating'))
+        countRating = ratingFilter['rating__count']
+        return countRating
+    elif t == 'Photo':
+        ratingFilter = PhotoRating.objects.filter(photo=o, rating__range=["1", "5"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
@@ -75,7 +81,6 @@ def getNumPosRatings(o):
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
-    
     else:
         print("error in getnumpos")
 
@@ -92,10 +97,14 @@ def getNumNegRatings(o):
 #        ratingFilter = ratingFilter.aggregate(Count('rating'))
 #        countRating = ratingFilter['rating__count']
 #        return countRating
+    #TODO: transition the comments to be 0=> neg, 1=>positive
     elif t == 'Comment':
-        ratingFilter = CommentRating.objects.filter(comment=o, rating__range=["1", "2"])
-        ratingFilter = ratingFilter.aggregate(Count('rating'))
-        countRating = ratingFilter['rating__count']
+        ratingFilter = CommentRating.objects.filter(comment=o, rating=0)
+        countRating = ratingFilter.count()
+        return countRating
+    elif t == 'Photo':
+        ratingFilter = PhotoRating.objects.filter(photo=o, rating=0)
+        countRating = ratingFilter.count()
         return countRating
     elif t=="Activity":
         ratingFilter = ActRating.objects.filter(activity=o,rating__range=["1", "2"])

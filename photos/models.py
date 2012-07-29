@@ -2,10 +2,12 @@ from PIL import Image
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.db import models
+from os.path import basename
 from ratings.models import Business
 import StringIO
 import datetime
-from os.path import basename
+#from django.contrib.auth.models import User
+#from ratings.models import Business
 
 # Create your models here.
 

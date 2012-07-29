@@ -9,11 +9,10 @@ from communities.models import BusinessMembership
 from communities.views import get_community
 from django.utils.encoding import smart_str
 from geopy import geocoders
-from photos.views import get_photo_thumb_url, get_photo_web_url
-from ratings.favorite import get_user_favorites
+from photos.views import get_photo_thumb_url, get_photo_web_url, \
+    get_photo_medium_url
 from ratings.models import Rating, Business
-from recommendation.normalization import getBusAvg, getNumLoved, getNumLiked
-from recommendation.recengine import get_best_current_recommendation
+from recommendation.normalization import getBusAvg
 from tags.models import BusinessTag
 from tags.views import get_master_summary_tag, is_master_summary_tag, \
     get_master_page_business
@@ -31,7 +30,7 @@ DEFAULT_DISTANCE =3
 logger = logging.getLogger(__name__)
 
 def setBusLatLng(b):
-    if b.lat == 0 or b.long == 0:
+    if b.lat == 0 or b.lon == 0:
         loc = b.address + " " + b.city + ", " + b.state
         latlng = get_lat(loc)
         b.lat = latlng[0]
@@ -54,7 +53,7 @@ def get_single_bus_data(b,user,isSideBar=False):
     b.average_rating = round(getBusAvg(b.id) * 2) / 2
 
     if isSideBar:
-        b.photourl = get_photo_thumb_url(b)
+        b.photourl = get_photo_medium_url(b)
     else:
         b.photourl = get_photo_web_url(b)
     #  logger.debug(b.photourl)
