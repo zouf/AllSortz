@@ -1,8 +1,11 @@
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.models import USStateField
 from django.db import models
-from ratings.utility import get_lat
+from django.utils.encoding import smart_str
 from wiki.models import Page
+import simplejson
+import urllib
+import urllib2
 
 
 
@@ -23,7 +26,13 @@ class Business(models.Model):
         return self.name
     def save(self):
         loc = self.address + " " + self.city + ", " + self.state
-        latlng = get_lat(loc)
+        location = urllib.quote_plus(smart_str(loc))
+        dd = urllib2.urlopen("http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % location).read() 
+        ft = simplejson.loads(dd)
+        if ft["status"] == 'OK':
+            lat = str(ft["results"][0]['geometry']['location']['lat']) 
+            lng = str(ft["results"][0]['geometry']['location']['lng'])
+        latlng = [lat, lng]
         self.lat = latlng[0]
         self.lon = latlng[1]
         super(Business, self).save()
