@@ -24,7 +24,24 @@ def get_bus_data_ios(business_list, user):
         data.append(d)
     return data
 
+class ReadJSONError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
 
+ 
+def get_json_post_or_error(key,request):
+    if key in request.POST:
+        return request.POST[key]
+    raise ReadJSONError("POST Key: " + str(key) + " not found in request " + str(request.path))
+
+
+
+def get_json_get_or_error(key,request):
+    if key in request.GET:
+        return request.GET[key]
+    raise ReadJSONError("GET Key: '" + str(key) + "' not found in request " + str(request.path))
 
 
 

@@ -4,11 +4,13 @@ from django.core.files.base import ContentFile
 from django.db import models
 from os.path import basename
 from ratings.models import Business
+from tags.models import BusinessTag
 import StringIO
 import datetime
 #from django.contrib.auth.models import User
 #from ratings.models import Business
 # Create your models here.
+
 
 
 
@@ -98,3 +100,19 @@ class AllsortzUser(models.Model):
 
     def __unicode__(self):
         return self.user.username
+
+class Discussion(models.Model):
+    user = models.ForeignKey(User)
+    date = models.DateTimeField(auto_now=True)
+    reply_to = models.ForeignKey('self', related_name='replies', 
+        null=True, blank=True)
+    content = models.TextField(max_length=2000)
+
+class CategoryDiscussion(Discussion):
+    businesstag = models.ForeignKey('tags.BusinessTag')
+  
+class BusinessDiscussion(Discussion):
+    business = models.ForeignKey('ratings.Business')
+
+class PhotoDiscussion(Discussion):
+    photo = models.ForeignKey('photos.BusinessPhoto')

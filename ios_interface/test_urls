@@ -21,6 +21,9 @@ Test urls
 /ios/businesses/
 /ios/businesses/?id=1
 /ios/business/rate/?id=1&rating=5
+c.post('/ios/business/add/',{'businessName':'HoagieTesting', 'streetAddr':'242 Nassau St.', 'businessCity':'Princeton','businessState':'NJ', 'businessPhone':'123' })
+
+
 
 /ios/business/categories/?id=1
 /ios/business/category/?id=1

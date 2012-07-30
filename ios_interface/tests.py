@@ -14,8 +14,12 @@ class SimpleTest(TestCase):
         Tests that 1 + 1 always equals 2.
         """
         self.assertEqual(1 + 1, 2)
-        
 
+"""
+    Business POSTING
+    >>> from django.test.client import Client
+    >>> c = Client()
+    >>> response = c.post('/ios/business/add/',{'businessName':'HoagieTesting', 'streetAddr':'242 Nassau St.', 'businessCity':'Princeton','businessState':'NJ', 'businessPhone':'123' })
+    >>> response = c.post('/ios/business/edit/?id=25',{'businessName':'MoreHoagies!'})
 
-
-
+"""

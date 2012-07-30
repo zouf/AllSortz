@@ -14,10 +14,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def get_category_data(category,user):
+def get_tag_data(tag,user):
     data = dict()
-    data['categoryName'] = category.tag.descr
-    data['categoryID'] = category.id
+    data['tagName'] = tag.descr
+    data['tagID'] = tag.id
+    return data
+    
+def get_category_data(category,user):
+    data = get_tag_data(category.tag, user)
     numPositive = getNumPosRatings(category)
     numNegative = getNumNegRatings(category)
     totalRatings = numPositive+numNegative
@@ -40,6 +44,7 @@ def get_category_data(category,user):
     else:
         data['userIsSubscribed'] = False 
     return data
+
 
 def get_categories_data(categories,user):
     data = []
@@ -125,7 +130,7 @@ def get_query_data(query,user):
     
     queryTags = []
     for qt in QueryTag.objects.filter(query=query):
-        queryTags.append(get_category_data(qt.tag,user))
+        queryTags.append(get_tag_data(qt.tag,user))
     data['queryCategories'] = queryTags
     
     return data

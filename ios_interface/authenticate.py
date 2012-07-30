@@ -23,6 +23,11 @@ def create_device(request):
     device.manufacturer = "apple"
     return device
 
+class AuthenticationFailed(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
 
 def authenticate_api_request(request):
     if 'deviceID' in request.GET:   #using only the device ID
@@ -58,7 +63,9 @@ def authenticate_api_request(request):
         user = get_default_user()
         g = geocoders.Google()
         _, (lat, lng) = g.geocode("Princeton, NJ") 
-        request.user.current_location = (lat,lng) 
+        user.current_location = (lat,lng) 
+        print(user.current_location)
+        
         return user
         
 

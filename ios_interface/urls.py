@@ -21,6 +21,7 @@ urlpatterns = patterns('ios_interface.views',
     (r'^comment/add/$', 'add_comment'),
     (r'^comment/remove/$', 'remove_comment'),
     (r'^comment/rate/$', 'rate_comment'),
+    (r'^comment/edit/$','edit_comment'),
     
     (r'^photos/$', 'get_photos'),
     (r'^photo/$', 'get_photo'),
