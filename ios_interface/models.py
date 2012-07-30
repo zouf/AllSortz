@@ -83,5 +83,18 @@ class PhotoRating(models.Model):
     photo = models.ForeignKey(Photo)
     user = models.ForeignKey(User)
     rating = models.PositiveSmallIntegerField() 
-    
-    
+
+class Device(models.Model):
+    os = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+    manufacturer = models.CharField(max_length=100)
+    deviceID = models.IntegerField()
+
+
+class AllsortzUser(models.Model):
+    user = models.OneToOneField(User)
+    metric = models.BooleanField()
+    device = models.ForeignKey(Device)
+
+    def __unicode__(self):
+        return self.user.username

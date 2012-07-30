@@ -89,12 +89,4 @@ class Rating(models.Model):
 
 
 
-class AllsortzUser(User):
-    """User with app settings."""
-    metric = models.BooleanField()
-    deviceID = models.IntegerField()
-    
-    
-    # Use UserManager to get the create_user method, etc.
-    objects = UserManager()
 
