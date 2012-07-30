@@ -5,7 +5,7 @@ urlpatterns = patterns('ios_interface.views',
     (r'^business/$', 'get_business'),
     (r'^business/add/$', 'add_business'),
     (r'^business/remove/$', 'remove_business'),
-    (r'^business/modify/$', 'modfiy_business'),
+    (r'^business/edit/$', 'edit_business'),
     (r'^business/rate/$', 'rate_business'),
     
     #returns the categories associated  with a business
@@ -32,7 +32,7 @@ urlpatterns = patterns('ios_interface.views',
     (r'^query/$', 'get_query'),
     (r'^query/remove/$', 'get_query'),
     (r'^query/add/$', 'add_query'),
-    (r'^query/modify/$', 'modfy_query')
+    (r'^query/edit/$', 'edit_query')
 
 
 

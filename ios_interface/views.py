@@ -2,7 +2,7 @@
 from allsortz.search import get_all_nearby
 from comments.models import Comment
 from django.http import HttpResponse
-from geopy import geocoders
+from geopy import geocoders, distance
 from ios_interface.authenticate import authenticate_api_request
 from ios_interface.models import Photo, PhotoRating
 from ios_interface.serializer import get_category_data, get_categories_data, \
@@ -11,11 +11,11 @@ from ios_interface.serializer import get_category_data, get_categories_data, \
 from ios_interface.utility import get_bus_data_ios, get_single_bus_data_ios
 from queries.models import Query
 from ratings.models import Business, Rating, CommentRating
+from ratings.utility import setBusLatLng
 from tags.models import BusinessTag, TagRating, Tag
 from tags.views import get_default_user
 import logging
 import simplejson as json
-from ratings.utility import setBusLatLng
 
 MAX_RATING = 4.0
 DISTANCE = 3
@@ -79,7 +79,7 @@ def get_business(request):
     except: 
         return server_error('Business with id '+str(oid)+'not found')
 
-    bus.dist = 6.66
+    bus.dist = distance.distance(user.current_location,(bus.lat,bus.lon)).miles
     bus_data = get_single_bus_data_ios(bus,user)
     return server_data(bus_data)
 
@@ -105,7 +105,7 @@ def rate_business(request):
     if Rating.objects.filter(business=bus,user=user).count() > 0:
         Rating.objects.filter(business=bus,user=user).delete()
     Rating.objects.create(business=bus, rating=rating,user=user) 
-    bus.dist = 6.66
+    bus.dist = distance.distance(user.current_location,(bus.lat,bus.lon)).miles
     bus_data = get_single_bus_data_ios(bus,user)
     return server_data(bus_data)
     
@@ -140,11 +140,11 @@ def add_business(request):
     else:
         bus= Business.objects.create(name=businessName,city=businessCity,state=businessState)
     
-    bus.dist = 6.66
+    bus.dist = distance.distance(user.current_location,bus.lat,bus.lon).miles
     bus_data = get_single_bus_data_ios(bus,user)
     return server_data(bus_data)
 
-def modify_business(request):
+def edit_business(request):
     try:
         user = authenticate_api_request(request)
     except:
@@ -175,7 +175,7 @@ def modify_business(request):
         bus.state = request.GET['businessState']
         
     bus.save()
-    bus.dist = 6.66
+    bus.dist = distance.distance(user.current_location,(bus.lat,bus.lon)).miles
     bus_data = get_single_bus_data_ios(bus,user)
     return server_data(bus_data)
 
@@ -238,7 +238,7 @@ def get_businesses(request):
         lng = request.GET['lng']
     else:
         g = geocoders.Google()
-        place, (lat, lng) = g.geocode("Princeton, NJ")  
+        _, (lat, lng) = g.geocode("Princeton, NJ")  
 
 
     nearby_businesses = get_all_nearby(lat,lng,DISTANCE)
@@ -325,7 +325,7 @@ def rate_business_category(request):
     data = get_category_data(category,user)
     return server_data(data)
 
-def add_business_cateogry(request):
+def add_business_category(request):
     try:
         user = authenticate_api_request(request)
     except:
@@ -351,7 +351,7 @@ def add_business_cateogry(request):
     data = get_category_data(category,user)
     return server_data(data)
 
-def remove_business_cateogry(request):
+def remove_business_category(request):
     try:
         user = authenticate_api_request(request)
     except:
@@ -550,7 +550,7 @@ def add_query(requst):
 def remove_query(requst):
     return server_error("unimplemented")
  
-def modify_query(requst):
+def edit_query(requst):
     return server_error("unimplemented")
  
  

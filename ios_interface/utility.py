@@ -6,12 +6,13 @@ Created on Jul 19, 2012
 #from photos.models import BusinessPhoto
 
 from ios_interface.photos import get_photo_url
-from ratings.models import Rating, Business
+from ratings.models import Rating, Business, PageRelationship
 from ratings.utility import setBusLatLng
 from recommendation.normalization import getBusAvg, getNumRatings, getNumLoved, \
     getNumLiked
 from tags.models import BusinessTag
 from tags.views import get_master_summary_tag, is_master_summary_tag
+from ios_interface.serializer import get_category_data
 
 
 #TODO: matt fix this to handle ratings from 1-4
@@ -69,21 +70,14 @@ def get_single_bus_data_ios(b, user):
             r = Rating.objects.get(user=user, business=b)
         except Rating.MultipleObjectsReturned:
             r = Rating.objects.filter(user=user,business=b)[0]
-        d['this_rat'] = r.rating
         d['ratingForCurrentUser'] = r.rating
     else:
-        d['this_rat'] = 0
         d['ratingForCurrentUser'] = 0
 
-    bustags = BusinessTag.objects.filter(business=b).exclude(tag=get_master_summary_tag())
-    d['tags'] = []
+    bustags = BusinessTag.objects.filter(business=b)   #.exclude(tag=get_master_summary_tag())
+    d['categories'] = []
     for bt in bustags:
-
-        if not is_master_summary_tag(bt.tag):
-            tagDict = dict()
-            tagDict['name'] = bt.tag.descr
-            tagDict['tagID'] = bt.tag.id
-            d['tags'].append(tagDict)
+        d['categories'].append(get_category_data(bt,user))
 
 
     if d['ratingForCurrentUser'] == 0:

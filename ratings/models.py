@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import  User, UserManager
 from django.contrib.localflavor.us.models import USStateField
 from django.db import models
 from django.utils.encoding import smart_str
@@ -8,6 +8,21 @@ import urllib
 import urllib2
 
 
+#class RatingManager(models.Manager):
+#    def get_query_set(self):
+#        allBusinesses = super(Business, self).get_query_set().all()
+#        for b in allBusinesses:      
+#            #b.average_rating =  round(getBusAvg(b.id) * 2) / 2
+#            #b.photo = get_photo_url(b)
+#            #b.numberOfRatings = getNumRatings(b.id)
+#            #b.numberOfLoves = getNumLoved(b)
+#            #b.numberOfLikes = getNumLiked(b)
+#            bustags = BusinessTag.objects.filter(business=b).exclude(tag=get_master_summary_tag())
+#            b.tags = []
+#            for bt in bustags:
+#                if not is_master_summary_tag(bt):
+#                    b.tags.append(bt)
+#        return allBusinesses
 
 #decribes a listing   
 class Business(models.Model):
@@ -21,7 +36,6 @@ class Business(models.Model):
     city = models.CharField(max_length=100)
     state = USStateField()  # Yes, this is America-centric.
     
-
     def __unicode__(self):
         return self.name
     def save(self):
@@ -73,4 +87,14 @@ class Rating(models.Model):
     def __unicode__(self):
         return str(self.user) + " " + str(self.business.name) + " " + str(self.rating)
 
+
+
+class AllsortzUser(User):
+    """User with app settings."""
+    metric = models.BooleanField()
+    deviceID = models.IntegerField()
+    
+    
+    # Use UserManager to get the create_user method, etc.
+    objects = UserManager()
 

@@ -6,9 +6,13 @@ Created on Jul 27, 2012
 from comments.models import Comment
 from ios_interface.models import PhotoRating
 from queries.models import QueryTag
-from ratings.models import CommentRating
+from ratings.models import CommentRating, PageRelationship
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from tags.models import UserTag
+from wiki.models import Page
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_category_data(category,user):
     data = dict()
@@ -22,13 +26,19 @@ def get_category_data(category,user):
     else:
         data['categoryRating'] = 0.0
 
+    try:
+        pgr = PageRelationship.objects.get(businesstag=category)
+    except PageRelationship.DoesNotExist:
+        pg = Page.objects.create(name=category.tag.descr)
+        pgr = PageRelationship.objects.create(businesstag=category,page = pg)
+        
+    
+    data['categoryContent'] = pgr.page.rendered
     tagfilter = UserTag.objects.filter(user=user,tag=category)
     if tagfilter.count() > 0:
         data['userIsSubscribed'] = True
     else:
-        data['userIsSubscribed'] = False
-
-        
+        data['userIsSubscribed'] = False 
     return data
 
 def get_categories_data(categories,user):

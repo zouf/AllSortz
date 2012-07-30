@@ -1,7 +1,6 @@
 
 from django.contrib.auth.models import User
 from django.db import models
-from ratings.models import Business
 from wiki.models import Page
 
 
