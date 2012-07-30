@@ -29,9 +29,9 @@ urlpatterns = patterns('ios_interface.views',
     (r'^photo/rate/$', 'rate_photo'),
 
     (r'^queries/$', 'get_queries'),
-    (r'^query/$', 'get_query')
-    (r'^query/remove/$', 'get_query')
-    (r'^query/add/$', 'add_query')
+    (r'^query/$', 'get_query'),
+    (r'^query/remove/$', 'get_query'),
+    (r'^query/add/$', 'add_query'),
     (r'^query/modify/$', 'modfy_query')
 
 
