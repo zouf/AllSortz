@@ -37,8 +37,7 @@ else:
 
 
 #paginator settings
-ENDLESS_PAGINATION_PER_PAGE =4 
-
+ENDLESS_PAGINATION_PER_PAGE =5
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'admin@allsortz.com'

@@ -38,20 +38,6 @@ $(function() {
 			</tr>
 		</table>
     </div>
-	<div id="community" class="section">
-		<h1>All Businesses</h1>
-		<table style="width:100%;">
-			<tr>
-				<td>
-					<input type="hidden" value="business" id="vote_on" />
-					{% for business in your_businesses %}
-						{%include 'ratings/listing/singlebus.html' %}
-					{% endfor %}
-							
-				</td>
-			</tr>
-		</table>
-	</div>
 
 {% else %}
     <p>No businesses found. </p>
