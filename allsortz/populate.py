@@ -5,6 +5,7 @@ Created on Apr 2, 2012
 '''
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+from ios_interface.views import prepop_queries
 from photos.models import BusinessPhoto
 from photos.views import add_photo_by_url
 from queries.models import Query

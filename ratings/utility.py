@@ -58,7 +58,8 @@ def get_single_bus_data(b,user,isSideBar=False):
         b.photourl = get_photo_web_url(b)
     #  logger.debug(b.photourl)
     #b.num_ratings = getNumRatings(b.id)
-    
+    print(b.photourl)
+    print('above is url!\n')
 
 
 #    

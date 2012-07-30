@@ -295,10 +295,12 @@ def get_comment_by_id(cid):
 def bus_details(request, bus_id):
     b = get_object_or_404(Business, pk=bus_id)
     try:
+        print('get URL!\n')
+
         b.photourl = get_photo_web_url(b)
     except:
         b.photourl= "" #NONE
-    
+    print('url is ' + str(b.photourl))
     context = get_default_bus_context(b, request.user)
     
     return render_to_response('ratings/busdetail.html', context_instance=RequestContext(request,context))
