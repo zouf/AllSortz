@@ -75,8 +75,8 @@ if DEPLOY:
 #use amazon RDS
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': 'allsortzdeploy1',                      # Or path to database file if using sqlite3.
+            'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'allsortz-deploy-geo',                      # Or path to database file if using sqlite3.
                 # Not used with sqlite3.
             'USER': 'root',
             'PASSWORD': 'zoufzouf',                  # Not used with sqlite3.
@@ -93,7 +93,7 @@ if DEPLOY:
 else:
     DATABASES = {
     'default': {
-        'ENGINE': 'ddjango.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'allsortz-geo',                      # Or path to database file if using sqlite3.
         'USER': 'root',                      # Not used with sqlite3.
         'PASSWORD': 'zoufzouf',                  # Not used with sqlite3.
