@@ -8,11 +8,17 @@ from ios_interface.models import PhotoRating
 from queries.models import QueryTag
 from ratings.models import CommentRating, PageRelationship
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
-from tags.models import UserTag
+from tags.models import UserTag, Tag
 from wiki.models import Page
 import logging
 
 logger = logging.getLogger(__name__)
+
+def get_tags_data(tag,user):
+    data = []
+    for t in Tag.objects.all():
+        data.append(get_tag_data(t,user))
+    return data
 
 def get_tag_data(tag,user):
     data = dict()
@@ -25,6 +31,7 @@ def get_category_data(category,user):
     numPositive = getNumPosRatings(category)
     numNegative = getNumNegRatings(category)
     totalRatings = numPositive+numNegative
+    data['categoryID'] = category.id
     if totalRatings != 0:
         data['categoryRating'] = numPositive / totalRatings
     else:
@@ -111,12 +118,13 @@ def get_photos_data(photos,user,order_by):
 
 def get_query_data(query,user):
     data=dict()
+    data['queryID'] = query.id
     data['queryName'] = query.name
     data['queryCreator'] = query.creator.username
     data['proximityWeight'] = query.proximity
     data['priceWeight'] = query.price
     data['valueWeight'] = query.value
-    data['scoreWEight'] = query.score
+    data['scoreWeight'] = query.score
     
     data['userHasVisited'] = query.visited
     
@@ -124,14 +132,13 @@ def get_query_data(query,user):
 
     data['networked'] = query.networked
     data['deal'] = query.deal
-    data['visited'] = query.visited
     
     data['isCreatedByUs'] = query.is_default
     
     queryTags = []
     for qt in QueryTag.objects.filter(query=query):
         queryTags.append(get_tag_data(qt.tag,user))
-    data['queryCategories'] = queryTags
+    data['queryTags'] = queryTags
     
     return data
 

@@ -29,6 +29,34 @@ class AuthenticationFailed(Exception):
     def __str__(self):
         return repr(self.value)
 
+class AuthorizationError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
+
+
+
+
+def authorize_user(user, request, request_type):
+    if request_type == "delete":
+        if not user.is_superuser:
+            raise AuthorizationError("User not authorized to delete")
+        return True
+    elif request_type == "get":
+        return True
+    elif request_type == "edit":
+        if not user.is_superuser:
+            raise AuthorizationError("User not authorized to delete")
+        return True
+    elif request_type == "add":
+        return True
+    elif request_type == "rate":
+        return True
+    else:
+        raise AuthorizationError("Invalid request type")
+        
 def authenticate_api_request(request):
     if 'deviceID' in request.GET:   #using only the device ID
         deviceID = request.GET['deviceID']

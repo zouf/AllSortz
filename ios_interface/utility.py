@@ -61,15 +61,16 @@ def get_single_bus_data_ios(b, user):
         b = setBusLatLng(b)
 
     d = dict()
-    d['name'] = b.name
-    d['city'] = b.city
-    d['state'] = b.state
-    d['address'] = b.address
+    d['businessID'] = b.id
+    d['businessName'] = b.name
+    d['businessCity'] = b.city
+    d['businessState'] = b.state
+    d['streetAddr'] = b.address
 
     d['latitude'] = b.lat
     d['longitude'] = b.lon
     d['businessID'] = b.id
-
+    d['businessPhone'] = '555 555-5555'
 
     d['distanceFromCurrentUser'] = b.dist
 

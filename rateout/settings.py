@@ -93,8 +93,8 @@ if DEPLOY:
 else:
     DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'allsortz3',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'ddjango.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'allsortz-geo',                      # Or path to database file if using sqlite3.
         'USER': 'root',                      # Not used with sqlite3.
         'PASSWORD': 'zoufzouf',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -266,7 +266,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
 	'django.contrib.contenttypes',
-
+    'django.contrib.gis',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

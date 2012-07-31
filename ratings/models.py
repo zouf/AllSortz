@@ -1,6 +1,7 @@
-from django.contrib.auth.models import  User, UserManager
+from django.build.lib.django.contrib.gis.geos.factory import fromstr
+from django.contrib.auth.models import User, UserManager
+from django.contrib.gis.db import models
 from django.contrib.localflavor.us.models import USStateField
-from django.db import models
 from django.utils.encoding import smart_str
 from wiki.models import Page
 import simplejson
@@ -24,13 +25,14 @@ import urllib2
 #                    b.tags.append(bt)
 #        return allBusinesses
 
-#decribes a listing   
+
 class Business(models.Model):
     name = models.CharField(max_length=250)
     date = models.DateTimeField(auto_now=True)
 
     lat = models.FloatField()
     lon = models.FloatField()
+    geom = models.PointField()
 
     address = models.CharField(max_length=250)
     city = models.CharField(max_length=100)
@@ -49,6 +51,8 @@ class Business(models.Model):
         latlng = [lat, lng]
         self.lat = latlng[0]
         self.lon = latlng[1]
+        self.geom = fromstr('POINT('+str(self.lon)+ ' '+str(self.lat)+')', srid=4326)
+        
         super(Business, self).save()
 
 

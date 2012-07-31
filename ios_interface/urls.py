@@ -2,6 +2,8 @@ from django.conf.urls import patterns
 
 urlpatterns = patterns('ios_interface.views',
     (r'^businesses/$', 'get_businesses'),
+    (r'^businesses/query/$', 'query_businesses'),
+
     (r'^business/$', 'get_business'),
     (r'^business/add/$', 'add_business'),
     (r'^business/remove/$', 'remove_business'),
@@ -14,6 +16,8 @@ urlpatterns = patterns('ios_interface.views',
     (r'^business/category/add/$', 'add_business_category'),
     (r'^business/category/remove/$', 'remove_business_category'),
     (r'^business/category/rate/$', 'rate_business_category'),
+    (r'^tags/$', 'get_tags'),
+
 
    #currently not designed / implemented    
    # (r'^comments/$', 'get_comment'),
