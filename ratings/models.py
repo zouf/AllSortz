@@ -1,6 +1,6 @@
-from django.build.lib.django.contrib.gis.geos.factory import fromstr
 from django.contrib.auth.models import User, UserManager
 from django.contrib.gis.db import models
+from django.contrib.gis.geos.factory import fromstr
 from django.contrib.localflavor.us.models import USStateField
 from django.utils.encoding import smart_str
 from wiki.models import Page
