@@ -4,6 +4,8 @@ Created on Jun 12, 2012
 @author: zouf
 '''
 from communities.models import BusinessMembership
+from django.contrib.gis.geos.factory import fromstr
+from django.contrib.gis.measure import D
 from ratings.models import Business
 from tags.models import Tag, BusinessTag
 import logging
@@ -45,13 +47,11 @@ def search_site(searchTerm, locationTerm):
 
 
 def get_all_nearby(mylat,mylng,distance=1):
-
-    current_pg_point = "point '({:.5f}, {:.5f})'".format(mylng, mylat)
-    buses_query = " ".join(["SELECT *",
-                                    "FROM (SELECT id, (point(lon, lat) <@> {}) AS dist FROM ratings_business) AS dists",
-                                    "WHERE dist <= {:4f} ORDER BY dist ASC;"]).format(current_pg_point, distance)
-    buses = Business.objects.raw(buses_query)
-    return buses
+    DISTANCE=3
+    all_buses = Business.objects.all()
+    pnt = fromstr('POINT('+str(mylng)+ ' '+str(mylat)+')', srid=4326)
+    nearby_buses =  all_buses.filter(geom__distance_lte=(pnt, D(mi=DISTANCE)))
+    return nearby_buses
 
   
 

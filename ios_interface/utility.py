@@ -6,13 +6,12 @@ Created on Jul 19, 2012
 #from photos.models import BusinessPhoto
 
 from ios_interface.photos import get_photo_url
-from ratings.models import Rating, Business, PageRelationship
+from ios_interface.serializer import get_category_data
+from ratings.models import Rating, Business
 from ratings.utility import setBusLatLng
 from recommendation.normalization import getBusAvg, getNumRatings, getNumLoved, \
     getNumLiked
 from tags.models import BusinessTag
-from tags.views import get_master_summary_tag, is_master_summary_tag
-from ios_interface.serializer import get_category_data
 
 
 #TODO: matt fix this to handle ratings from 1-4
@@ -72,7 +71,7 @@ def get_single_bus_data_ios(b, user):
     d['businessID'] = b.id
     d['businessPhone'] = '555 555-5555'
 
-    d['distanceFromCurrentUser'] = str(b.distance)
+    d['distanceFromCurrentUser'] = str(b.get_distance(user))
 
 
     d['ratingOverAllUsers']  = round(getBusAvg(b.id) * 2) / 2

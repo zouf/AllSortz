@@ -1,11 +1,10 @@
 #from allsortz.search import get_all_nearby
-from comments.models import Comment
 from django.http import HttpResponse
 from geopy import geocoders, distance
 from ios_interface.authenticate import authenticate_api_request, \
     AuthenticationFailed, AuthorizationError, authorize_user
 from ios_interface.models import Photo, PhotoRating, BusinessDiscussion, \
-    CategoryDiscussion, PhotoDiscussion
+    CategoryDiscussion, PhotoDiscussion, Discussion
 from ios_interface.photos import add_photo_by_upload, add_photo_by_url
 from ios_interface.serializer import get_category_data, get_categories_data, \
     get_comment_data, get_photo_data, get_photos_data, get_query_data, \
@@ -13,7 +12,7 @@ from ios_interface.serializer import get_category_data, get_categories_data, \
 from ios_interface.utility import get_bus_data_ios, get_single_bus_data_ios, \
     ReadJSONError, get_json_post_or_error, get_json_get_or_error
 from queries.models import Query, QueryTag
-from queries.views import  perform_query_from_param
+from queries.views import perform_query_from_param, perform_query_from_obj
 from ratings.models import Business, Rating, CommentRating
 from tags.models import BusinessTag, TagRating, Tag
 from tags.views import get_default_user
@@ -43,11 +42,10 @@ def server_data(data):
 Code to handle businesses
 '''
 
-def get_business(request):
+def get_business(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "get")
-        oid = get_json_get_or_error('id', request)
         bus = Business.objects.get(id=oid)
     except ReadJSONError as e:
         return server_error(e.value)
@@ -55,16 +53,13 @@ def get_business(request):
         return server_error(e.value)
     except: 
         return server_error('Business with id '+str(oid)+'not found')
-
-    bus.dist = distance.distance(user.current_location,(bus.lat,bus.lon)).miles
     bus_data = get_single_bus_data_ios(bus,user)
     return server_data(bus_data)
 
-def rate_business(request):
+def rate_business(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "rate")
-        oid = get_json_get_or_error('id', request)
         rating = get_json_get_or_error('rating', request)
         bus = Business.objects.get(id=oid)
     except ReadJSONError as e:
@@ -93,13 +88,14 @@ def add_business(request):
         phone =  get_json_post_or_error('businessPhone', request)
         
         #already exists
-        if Business.objects.filter(name=name,addr=addr,city=city,state=state).count() ==  0:
-            bus = Business.objects.create(name=name,addr=addr,city=city,state=state)
-        elif Business.objects.filter(name=name,addr=addr,city=city,state=state).count() > 1: #too many
-            Business.objects.filter(name=name,addr=addr,city=city,state=state).delete()
-            bus = Business.objects.create(name=name,addr=addr,city=city,state=state)
+        if Business.objects.filter(name=name,address=addr,city=city,state=state).count() ==  0:
+            bus = Business(name=name,address=addr,city=city,state=state)
+            bus.save()
+        elif Business.objects.filter(name=name,address=addr,city=city,state=state).count() > 1: #too many
+            Business.objects.filter(name=name,address=addr,city=city,state=state).delete()
+            Business.objects.create(name=name,address=addr,city=city,state=state,phone=phone)
         else:
-            bus = Business.objects.get(name=name,addr=addr,city=city,state=state)                    
+            bus = Business.objects.get(name=name,address=addr,city=city,state=state)                    
     except ReadJSONError as e:
         return server_error(e.value)
     except (AuthenticationFailed, AuthorizationError) as e:
@@ -108,11 +104,10 @@ def add_business(request):
     bus_data = get_single_bus_data_ios(bus,user)
     return server_data(bus_data)
 
-def edit_business(request):
+def edit_business(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "edit")
-        oid = get_json_get_or_error('id', request)
         bus = Business.objects.get(id = oid)
     except ReadJSONError as e:
         return server_error(e.value)
@@ -145,11 +140,10 @@ def edit_business(request):
     bus_data = get_single_bus_data_ios(bus,user)
     return server_data(bus_data)
 
-def remove_business(request):
+def remove_business(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "remove")
-        oid = get_json_get_or_error('id', request)
         bus = Business.objects.get(id=oid)
         name = bus.name
         Business.objects.filter(id = oid).delete()
@@ -161,22 +155,20 @@ def remove_business(request):
         return server_error("Deleting business with id "+str(oid)+" failed")
     return server_data("Deletion of business "+str(name)+ " was a success")
 
-def query_businesses(request):
+def query_businesses(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "query")
-        queryID = get_json_get_or_error('id', request)
-        q = Query.objects.get(id=queryID)
+        q = Query.objects.get(id=oid)
     except (AuthenticationFailed, AuthorizationError) as e:
         return server_error(e.value)
     except ReadJSONError as e:
         return server_error(e.value)
     except:
-        return server_error("Couldn't get query with ID " + str(queryID))
-    
-    #nearby_businesses = get_all_nearby(user.current_location[0],user.current_location[1],DISTANCE)
-    #top_businesses = get_bus_data_ios(nearby_businesses ,user)
-    return server_error('unimplemented') #server_data(top_businesses)
+        return server_error("Couldn't get query with ID " + str(oid))
+
+    data = perform_query_from_obj(user,user.current_location,q)
+    return server_data(data) #server_data(top_businesses)
     
 def get_businesses(request):
     try:
@@ -244,11 +236,10 @@ Code to handle business categories
 '''
 
 
-def get_business_categories(request):
+def get_business_categories(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "get")
-        oid = get_json_get_or_error('id', request)
         bus = Business.objects.get(id=oid)
     except ReadJSONError as e:
         return server_error(e.value)
@@ -262,11 +253,10 @@ def get_business_categories(request):
     data = get_categories_data(categories,user)
     return server_data(data)
 
-def get_business_category(request):
+def get_business_category(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "get")
-        oid = get_json_get_or_error('id', request)
         category = BusinessTag.objects.get(id=oid)
     except ReadJSONError as e:
         return server_error(e.value)
@@ -278,11 +268,10 @@ def get_business_category(request):
     data = get_category_data(category,user)
     return server_data(data)
 
-def rate_business_category(request):
+def rate_business_category(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "rate")
-        oid = get_json_get_or_error('id', request)
         rating = get_json_get_or_error('rating', request)
         category = BusinessTag.objects.get(id=oid)
     except ReadJSONError as e:
@@ -297,12 +286,11 @@ def rate_business_category(request):
     data = get_category_data(category,user)
     return server_data(data)
 
-def add_business_category(request):
+def add_business_category(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "add")
         tagid = get_json_get_or_error('tagID', request)
-        oid = get_json_get_or_error('businessID', request)
         bus = Business.objects.get(id=oid)
         tag = Tag.objects.get(id=tagid)
     except ReadJSONError as e:
@@ -319,11 +307,10 @@ def add_business_category(request):
     data = get_category_data(category,user)
     return server_data(data)
 
-def remove_business_category(request):
+def remove_business_category(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "remove")
-        oid = get_json_get_or_error('id', request)
         BusinessTag.objects.filter(id=oid).delete()
     except ReadJSONError as e:
         return server_error(e.value)
@@ -346,13 +333,21 @@ def get_tags(request):
 Code to handle comments
 '''
 
-
-def get_comment(request):
+def get_comments(request):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "get")
-        oid = get_json_get_or_error('id', request)
-        comment = Comment.objects.get(id=oid)
+    except ReadJSONError as e:
+        return server_error(e.value)
+    except (AuthenticationFailed, AuthorizationError) as e:
+        return server_error(e.value)
+    return server_error('unimplemented')
+
+def get_comment(request,oid):
+    try:
+        user = authenticate_api_request(request)
+        authorize_user(user, request, "get")
+        comment = Discussion.objects.get(id=oid)
     except ReadJSONError as e:
         return server_error(e.value)
     except (AuthenticationFailed, AuthorizationError) as e:
@@ -361,13 +356,12 @@ def get_comment(request):
     data = get_comment_data(comment,user)
     return server_data(data)
 
-def rate_comment(request):
+def rate_comment(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "rate")
-        oid = get_json_get_or_error('id', request)
         rating = get_json_get_or_error('rating', request)
-        comment = Comment.objects.get(id=oid)
+        comment = Discussion.objects.get(id=oid)
     except ReadJSONError as e:
         return server_error(e.value)
     except (AuthenticationFailed, AuthorizationError) as e:
@@ -393,7 +387,7 @@ def add_comment(request):
     try:
         if 'replyTo' in request.GET:
             replyToID = request.GET['replyTo']
-            replyComment = Comment.objects.get(id=replyToID)
+            replyComment = Discussion.objects.get(id=replyToID)
         else:
             replyComment = None
     except:
@@ -422,11 +416,10 @@ def add_comment(request):
     data = get_comment_data(comment,user)
     return server_data(data)
 
-def edit_comment(request):
+def edit_comment(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "edit")
-        oid = get_json_get_or_error('id', request)  
         content = get_json_post_or_error('commentContent', request)  
     except ReadJSONError as e:
         return server_error(e.value)
@@ -437,18 +430,17 @@ def edit_comment(request):
     data = get_comment_data(comment,user)
     return server_data(data)
     
-def remove_comment(request):
+def remove_comment(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "user")
-        oid = get_json_get_or_error('id', request)  
     except ReadJSONError as e:
         return server_error(e.value)
     except (AuthenticationFailed, AuthorizationError) as e:
         return server_error(e.value)
     
     try:
-        Comment.objects.filter(id=oid).delete()
+        Discussion.objects.filter(id=oid).delete()
     except: 
         return server_error('Comment with id '+str(oid)+' not found. Deletion failed')
     
@@ -459,11 +451,10 @@ def remove_comment(request):
 Code to handle photos
 '''
 
-def get_photos(request):
+def get_photos(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "get")
-        oid = get_json_get_or_error('id', request)  
         phototype = get_json_get_or_error('type', request)  
         order_by = get_json_get_or_error('order_by', request)  
     except ReadJSONError as e:
@@ -485,12 +476,11 @@ def get_photos(request):
     return server_data(data)
 
 
-def get_photo(request):
+def get_photo(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "get")
         authorize_user(user,request,"get")
-        oid = get_json_get_or_error('id', request)
         photo = Photo.objects.get(id=oid)
     except ReadJSONError as e:
         return server_error(e.value)
@@ -502,11 +492,10 @@ def get_photo(request):
     data = get_photo_data(photo,user)
     return server_data(data)
 
-def rate_photo(request):
+def rate_photo(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "rate")
-        oid = get_json_get_or_error('id', request)
         rating = get_json_get_or_error('rating', request)
     except ReadJSONError as e:
         return server_error(e.value)
@@ -557,11 +546,10 @@ def add_photo(request):
     data = get_photo_data(photo,user)
     return server_data(data)
 
-def remove_photo(request):
+def remove_photo(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "remove")
-        oid = get_json_get_or_error('id', request)
         Photo.objects.filter(id=oid).delete()
     except ReadJSONError as e:
         return server_error(e.value)
@@ -596,11 +584,10 @@ def get_queries(request):
     return server_data(data)
     
     
-def get_query(request):
+def get_query(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "get")
-        oid = get_json_get_or_error('id', request)
         query = Query.objects.get(id=oid)
     except ReadJSONError as e:
         return server_error(e.value)
@@ -648,12 +635,11 @@ def add_query(request):
     data = get_query_data(query,user)
     return server_data(data)
 
-def remove_query(request):
+def remove_query(request,oid):
     try:
         user = authenticate_api_request(request)
         authorize_user(user, request, "remove")
-        oid = get_json_get_or_error('id', request)
-        Query.objects.filter(id=oid).delete(0)
+        Query.objects.filter(id=oid).delete()
     except ReadJSONError as e:
         return server_error(e.value)
     except (AuthenticationFailed, AuthorizationError) as e:

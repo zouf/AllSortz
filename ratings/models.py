@@ -1,9 +1,11 @@
-from django.contrib.gis.geos.factory import fromstr
 from django.contrib.auth.models import User, UserManager
 from django.contrib.gis.db import models
 from django.contrib.gis.geos.factory import fromstr
+from django.contrib.localflavor.us.forms import USPhoneNumberField, \
+    USZipCodeField
 from django.contrib.localflavor.us.models import USStateField
 from django.utils.encoding import smart_str
+from geopy import geocoders, distance
 from wiki.models import Page
 import simplejson
 import urllib
@@ -37,21 +39,45 @@ class Business(models.Model):
 
     address = models.CharField(max_length=250)
     city = models.CharField(max_length=100)
-    state = USStateField()  # Yes, this is America-centric.
+    
+
+    # Right now: America centric 
+    state = USStateField()  
+    phone = USPhoneNumberField()
+    zipcode = USZipCodeField()
+    
     objects = models.GeoManager()
     def __unicode__(self):
         return self.name
+    
+    #gets distance between this business and a user
+    def get_distance(self,user):
+        if user.current_location:
+            distance.distance(user.current_location,(self.lat,self.lon)).miles
+        else:
+            return None
+        
     def save(self):
-        loc = self.address + " " + self.city + ", " + self.state
+        loc = self.address + " " + self.city + ", " + self.state        
         location = urllib.quote_plus(smart_str(loc))
         dd = urllib2.urlopen("http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % location).read() 
         ft = simplejson.loads(dd)
         if ft["status"] == 'OK':
             lat = str(ft["results"][0]['geometry']['location']['lat']) 
             lng = str(ft["results"][0]['geometry']['location']['lng'])
-        latlng = [lat, lng]
-        self.lat = latlng[0]
-        self.lon = latlng[1]
+            zipcode = None
+            for jsonStr in ft["results"][0]['address_components']:
+                print jsonStr
+                if 'types' in jsonStr:
+                    for tp in jsonStr['types']:
+                        if tp == " postal_code":
+                            zipcode = str.long_name
+                            break
+            
+        print('trying to save!') 
+        self.zipcode  = zipcode
+        self.lat = lat
+        self.lon = lng 
         self.geom = fromstr('POINT('+str(self.lon)+ ' '+str(self.lat)+')', srid=4326)
         
         super(Business, self).save()
@@ -79,6 +105,7 @@ class PageRelationship(models.Model):
 class CommentRating(models.Model):
     comment = models.ForeignKey('comments.Comment')
     user = models.ForeignKey(User)
+    rating = models.IntegerField()
 
     
     

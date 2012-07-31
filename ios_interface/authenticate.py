@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import login
 from geopy import geocoders
 from ios_interface.models import AllsortzUser, Device
+from queries.views import DISTANCE
 from tags.views import get_default_user
 import logging
 
@@ -77,7 +78,7 @@ def authenticate_api_request(request):
                 genuser.save()
             except:
                 logger.error('Error in generating a new user!')
-            asuser = AllsortzUser.objects.create(user=genuser,device=device,metric=False)
+            asuser = AllsortzUser.objects.create(user=genuser,device=device,metric=False,distance_threshold=DISTANCE)
         
         
         print("An AllSortz user with device ID "+str(device.deviceID))

@@ -77,7 +77,7 @@ def perform_query_from_param(user,location,weights,text,tags,visited = None, dea
                           text=text,tags=tags,visited=visited,deal=deal,networked=networked)
     
 def distance_weight(user,location,b):   
-    return b.distance.mi / DISTANCE
+    return (DISTANCE - b.distance.mi) / DISTANCE
 
   
 def score_weight(user,b):
@@ -112,7 +112,6 @@ def query_internal(user,location,score,proximity,value,price,text,tags,visited,d
         b.weight = scoreWeight + proxWeight + priceWeight + valueWeight
         new_list.append(b)
     new_list = sorted(new_list,cmp=order_by_weight) 
-
     return new_list
         
     

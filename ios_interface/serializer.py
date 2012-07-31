@@ -3,10 +3,9 @@ Created on Jul 27, 2012
 
 @author: zouf
 '''
-from comments.models import Comment
-from ios_interface.models import PhotoRating
+from ios_interface.models import PhotoRating, DiscussionRating
 from queries.models import QueryTag
-from ratings.models import CommentRating, PageRelationship
+from ratings.models import  PageRelationship
 from recommendation.normalization import getNumPosRatings, getNumNegRatings
 from tags.models import UserTag, Tag
 from wiki.models import Page
@@ -71,7 +70,7 @@ def get_comment_data(comment,user):
     data['negativeVotes'] = numNegative
     
     try:
-        thisUsersRating = CommentRating.objects.get(comment=comment,user=user)
+        thisUsersRating = DiscussionRating.objects.get(discussion=comment,user=user)
     except:
         thisUsersRating = None
     

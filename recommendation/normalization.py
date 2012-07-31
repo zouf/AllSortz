@@ -6,7 +6,7 @@ Created on May 8, 2012
 from activities.models import ActRating
 from django.contrib.auth.models import User
 from django.db.models.aggregates import Sum, Count
-from ios_interface.models import PhotoRating
+from ios_interface.models import PhotoRating, DiscussionRating
 from ratings.models import Rating, Business, CommentRating
 from tags.models import TagRating
 import math
@@ -55,11 +55,11 @@ def getNumPosRatings(o):
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
-#    elif t == 'Tip':
-#        ratingFilter = TipRating.objects.filter(tip=o, rating__range=["3", "5"])
-#        ratingFilter = ratingFilter.aggregate(Count('rating'))
-#        countRating = ratingFilter['rating__count']
-#        return countRating
+    elif t == 'Discussion':
+        ratingFilter = DiscussionRating.objects.filter(discussion=o, rating__range=["1", "5"])
+        ratingFilter = ratingFilter.aggregate(Count('rating'))
+        countRating = ratingFilter['rating__count']
+        return countRating
     elif t == 'Comment':
         ratingFilter = CommentRating.objects.filter(comment=o, rating__range=["1", "5"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
@@ -76,7 +76,6 @@ def getNumPosRatings(o):
         countRating = ratingFilter['rating__count']
         return countRating
     elif t == 'BusinessTag':
-    
         ratingFilter = TagRating.objects.filter(tag=o, rating__range=["3", "5"])
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
@@ -92,11 +91,10 @@ def getNumNegRatings(o):
         ratingFilter = ratingFilter.aggregate(Count('rating'))
         countRating = ratingFilter['rating__count']
         return countRating
-#    elif t == 'Tip':
-#        ratingFilter = TipRating.objects.filter(tip=o, rating__range=["1", "2"])
-#        ratingFilter = ratingFilter.aggregate(Count('rating'))
-#        countRating = ratingFilter['rating__count']
-#        return countRating
+    elif t == 'Comment':
+        ratingFilter = DiscussionRating.objects.filter(discussion=o, rating=0)
+        countRating = ratingFilter.count()
+        return countRating
     #TODO: transition the comments to be 0=> neg, 1=>positive
     elif t == 'Comment':
         ratingFilter = CommentRating.objects.filter(comment=o, rating=0)
