@@ -3,8 +3,9 @@ Created on Jul 31, 2012
 
 @author: zouf
 '''
-from django.build.lib.django.contrib.gis.geos.factory import fromstr
-from django.build.lib.django.contrib.gis.measure import D
+
+from django.contrib.gis.geos.factory import fromstr
+from django.contrib.gis.measure import D
 from geopy import distance
 from queries.models import Query
 from ratings.models import Business, Rating
@@ -38,7 +39,6 @@ def order_by_rating(b1,b2):
 #        return cmp(b2['weight'], b1['weight'])
 
 def order_by_weight(b1,b2):
-    print(b1.weight)
     if b1.weight and b2.weight:
         return cmp(b2.weight, b1.weight)
     elif b1.weight:
@@ -51,17 +51,15 @@ def order_by_weight(b1,b2):
 def get_nearby_businesses(mylat,mylng,distance=3):
 
     #current_pg_point = "point '({:.5f}, {:.5f})'".format(mylng, mylat)
+    all_buses = Business.objects.all()
     pnt = fromstr('POINT('+str(mylng)+ ' '+str(mylat)+')', srid=4326)
-
-#    buses_query = " ".join(["SELECT *",
-#                                    "FROM (SELECT id, (point(lon, lat) <@> {}) AS dist FROM ratings_business) AS dists",
-#                                    "WHERE dist <= {:4f} ORDER BY dist ASC;"]).format(current_pg_point, distance)
-#    
-#    filtered = Business.objects.filter(name="Hoagie Haven")
-#    buses = filtered.raw(buses_query)
-    buses =  Business.objects.filter(geom__distance_gte=(pnt, D(mi=20)))
-    print(buses)
-    return buses
+    nearby_buses =  all_buses.filter(geom__distance_lte=(pnt, D(mi=DISTANCE)))
+    with_distances = []
+    print('before')
+    for b in nearby_buses.distance(pnt):
+        with_distances.append(b)
+    print('after')
+    return with_distances
 
 
 
@@ -79,8 +77,7 @@ def perform_query_from_param(user,location,weights,text,tags,visited = None, dea
                           text=text,tags=tags,visited=visited,deal=deal,networked=networked)
     
 def distance_weight(user,location,b):   
-    dist  = distance.distance(location,(b.lat,b.lon)).miles / DISTANCE
-    return dist / DISTANCE
+    return b.distance.mi / DISTANCE
 
   
 def score_weight(user,b):
@@ -108,13 +105,14 @@ def query_internal(user,location,score,proximity,value,price,text,tags,visited,d
    
     new_list = []
     for b in all_nearby:
-        scoreWeight = score_weight(user,b) 
+        scoreWeight = 1.0#score_weight(user,b) 
         proxWeight = distance_weight(user,location,b)
         priceWeight = price_weight(user,b) #TODO GET PRICE
         valueWeight = value_weight(user,b) #TODO GET PRICE
         b.weight = scoreWeight + proxWeight + priceWeight + valueWeight
         new_list.append(b)
     new_list = sorted(new_list,cmp=order_by_weight) 
+
     return new_list
         
     

@@ -75,8 +75,8 @@ if DEPLOY:
 #use amazon RDS
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': 'allsortzdeploy1',                      # Or path to database file if using sqlite3.
+            'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'allsortzdeploygeo',                      # Or path to database file if using sqlite3.
                 # Not used with sqlite3.
             'USER': 'root',
             'PASSWORD': 'zoufzouf',                  # Not used with sqlite3.
@@ -93,13 +93,15 @@ if DEPLOY:
 else:
     DATABASES = {
     'default': {
-        'ENGINE': 'ddjango.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'allsortz-geo',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        #'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'allsortzdeploygeo',                      # Or path to database file if using sqlite3.
         'USER': 'root',                      # Not used with sqlite3.
         'PASSWORD': 'zoufzouf',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'HOST': 'db.allsortz.com',
+        'PORT': '5432',     
         }   
+ 
     }
     
 # Local time zone for this installation. Choices can be found here:
@@ -266,7 +268,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
 	'django.contrib.contenttypes',
-    'django.contrib.gis',
+#    'django.contrib.gis',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

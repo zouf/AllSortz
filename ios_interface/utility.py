@@ -72,7 +72,7 @@ def get_single_bus_data_ios(b, user):
     d['businessID'] = b.id
     d['businessPhone'] = '555 555-5555'
 
-    d['distanceFromCurrentUser'] = b.dist
+    d['distanceFromCurrentUser'] = str(b.distance)
 
 
     d['ratingOverAllUsers']  = round(getBusAvg(b.id) * 2) / 2

@@ -5,7 +5,6 @@ Created on Apr 2, 2012
 '''
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from ios_interface.views import prepop_queries
 from photos.models import BusinessPhoto
 from photos.views import add_photo_by_url
 from queries.models import Query
@@ -140,7 +139,12 @@ def prepop_businesses(user):
         add_tag_to_bus(b, get_master_summary_tag(), get_default_user())
         add_photo_by_url(phurl,b,user,default=True)
 
-
+def prepop_queries(user):
+    user = get_default_user()
+    for t in Tag.objects.all():
+        q = Query(name=t.descr,proximity=5,value=5,score=5,price=5,visited=False,deal=False,networked=False,text="",creator=user,is_default=True)
+        q.save()
+        
 def prepopulate_database(request):
     
     if not request.user.is_superuser:

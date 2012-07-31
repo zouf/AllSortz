@@ -230,11 +230,11 @@ def get_businesses(request):
         g = geocoders.Google()
         _, (lat, lng) = g.geocode("Princeton, NJ")  
     
-    
-    
+        
     businesses = perform_query_from_param(user, (lat, lng),weights,tags,searchText)
+    print('before serial')
     top_businesses = get_bus_data_ios(businesses ,user)
-    
+    print('after serial')
 
     return server_data(top_businesses)
 

@@ -1,3 +1,4 @@
+from django.contrib.gis.geos.factory import fromstr
 from django.contrib.auth.models import User, UserManager
 from django.contrib.gis.db import models
 from django.contrib.gis.geos.factory import fromstr
@@ -37,7 +38,7 @@ class Business(models.Model):
     address = models.CharField(max_length=250)
     city = models.CharField(max_length=100)
     state = USStateField()  # Yes, this is America-centric.
-    
+    objects = models.GeoManager()
     def __unicode__(self):
         return self.name
     def save(self):
